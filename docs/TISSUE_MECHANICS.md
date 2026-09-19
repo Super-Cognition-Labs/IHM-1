@@ -526,6 +526,19 @@ worst excursion on all three — 5.96° mean to 5.27°. They do not replace the
 stops; a first reading that said they did came from one drop and is withdrawn
 above.
 
+**"Needs a deformable continuum" is no longer true of the stack, and still true of
+fascia (2026-09-18).** `ihm/assembly/soft_tissue_layer.py` is a 3-D neo-Hookean
+layer per segment, from the skin to this body's measured soft-tissue depth, carried
+by the segment and returning the load it transmits (`docs/SOFT_BODY.md`). It closes
+none of the rows above. The adipose row stays a data gap: the layer is parameterised
+by the depth map and the in-vivo layer modulus, not by any fat geometry. Fascia and
+the bursae/sheaths need contact between two SOFT surfaces, and the layer only
+contacts a rigid half-space. What it does give those rows is something to be built
+on: a continuum whose confined limit is the shipped foundation column to 7e-12, and
+whose unconfined limit is analytic neo-Hookean to 8e-10. On this body's own heel it
+is 4-17x softer than the column at the same penetration, not mesh-converged at the
+contact surface, and 3.6-36 s per solve.
+
 ---
 
 ## The 51 are a REGISTRATION failure first, and a path failure second
