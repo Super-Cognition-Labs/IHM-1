@@ -69,7 +69,8 @@ clipped.** Verified here independently: its clavicle and scapula violate the tri
 inequality and its **radius carries a negative principal moment** (−4.5e-06 kg·m²).
 They were rebuilt from this body's own anatomy.
 
-**Can it press itself up? The girdle is not the limit — the elbow is.** Against a body
+**Can it press itself up? The elbow is the smallest number among the links that HAVE
+muscle — which is not the smallest number in the chain.** Against a body
 weight of 761.1 N, arms straight gives **3,265 N (4.29 body weights)**, bounded by the
 scapula; at the worst-case lever it is **345 N (0.45 body weights)**, bounded by the
 **elbow's 43.7 N·m**, which this build does not touch. Shoulder torques rose 4–31×
@@ -77,7 +78,44 @@ and are bidirectionally balanced for the first time. Before the girdle the quest
 had **no answer at all**: the humerus was jointed straight to `torso`, so a press-up
 load reached the trunk through joint reactions with no muscle in the path. **This is
 capacity at one pose, not demonstrated behaviour** — nothing integrates, and a
-per-axis sum of `Fmax·|r|` is not a tension-feasible torque cone.
+per-axis sum of `Fmax·|r|` is not a tension-feasible torque cone. **And the wrist weakens it
+further:** the girdle's argument was that the press-up is bounded because every newton
+reaches the trunk through muscle. The wrist is the one link with no muscle and,
+measured from the model file, no elastic resistance inside its declared range either —
+only `-1.0*qdot` damping and a `CoordinateLimitForce` that by construction acts outside
+the range. Inside the range it is a free hinge.
+
+**The thoracic joint is no longer unmuscled** (`1643a94` pre-registered, `7f4e15a`,
+`docs/WRIST_AND_THORAX.md`). The old verdict predated the girdle's 60 Seth 2019
+muscles. Re-asked under a rule committed before it ran — nearest anatomical surface
+must be one of the 48 thorax-partition structures, **no vertebra**, margin clearing
+√2 × 62 mm — **ten muscles passed, five per side** (pectoralis major thoracic I/M,
+pectoralis minor, serratus anterior I/M). The refusals validate the instrument:
+trapezius, rhomboid and levator scapulae land 0.4–5.7 mm from a vertebra or disc, and
+latissimus returns MIXED. `gait2392_ercspn` reads 32.2 mm, reproducing a number
+`ARTICULATED_SPINE.md` computed differently. 11 gates, 1 recorded FAILED (distal-only
+at 1e-9 m, below the assembler's noise floor, replaced by a pre-registered paired
+difference that is **exactly 0.000e+00 at all 17 bodies**), re-run here.
+
+**The shape of that result is the finding:** `thoracic_extension` reads **903.7 N·m one
+way and 0.0 the other** — no antagonist, because that is erector spinae and its origin
+sits on T12 inside the torso. One-directionally muscled at 900 N·m against a
+30 N·m/rad stop is something a search drives straight to its bound, so it ships
+`default_enabled: false`.
+
+**The wrist is blocked on licence, and the work stopped there.** Of 1,641 `.osim` files
+on disk (414 unique by content), **four** have a muscle path reaching a carpal or
+metacarpal; three are Gonzalez, Buchanan & Delp 1997, whose own terms read *"You may
+not copy or distribute this model"* and *"non-commercial, academic work"* — **stricter
+than MoBL-ARMS**. Twenty-five other models, this repo's own variants among them,
+declare wrist coordinates with **no muscle reaching the hand at all**. The clean donor
+is Stanford-VA (Holzbaur 2005): BSD-3, citation required, **no non-commercial clause**,
+behind the same SimTK login wall. Verified here: `wrist.osim` carries **no in-file
+grant** while **33** other models in that same tree do, and the tree has no root
+licence — so the Apache file in the *other* repo is the trap, not a grant. The
+registration would be cheap: a Rajagopal donor's `radius_hand_r` offset times this
+model's own scale factors reproduces this plant's offset **exactly on all three
+components**.
 
 **Still missing:** forearm rotation (the Arm26 donor fuses it — `pro_sup` has a
 2.16 mm moment arm), the wrist, the hand. Recorded from the build: on the left,
@@ -1133,10 +1171,11 @@ worker's report.
    citations** (established from primary sources), and is already published in a public
    repo — an owner decision, not an engineering one. The licence-clean alternative is
    Seth 2019 (CC BY 4.0), whose provenance and completeness are being established.
-4. **Muscles for the joints that still have none.** The thoracic joint has no donor
-   muscles (candidate attachments sit 32 mm above a joint centre itself uncertain to
-   62 mm); the wrists wait on a forearm donor. The subtalar and neck are done, and the
-   toe joint's geometry is now corrected in a variant (§0.2a).
+4. **The wrist — an owner decision, not an engineering one.** The thoracic joint is now
+   driven (ten muscles, five per side, `default_enabled: false` until it has an
+   antagonist). No licence-clean wrist donor is on disk: the only wrist models here
+   forbid redistribution outright, and the clean one needs a SimTK account. Until then
+   the press-up chain contains a **free hinge**.
 5. **Decide the identified plant's toe joints** (§0.2a). Measured cost is negligible;
    the corrected foot is 27.8 mm longer, so adopting it means re-identifying the plant.
 6. **A fatigue law.** Blocked on the engine: no published law runs on what BioGears
