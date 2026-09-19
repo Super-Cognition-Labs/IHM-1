@@ -553,15 +553,47 @@ previously refused to start.
 deformable skin with self-contact, and an afferent allocation that is not capped
 at 128 points.
 
-### 2.1 A deforming soft-tissue layer exists — and is not yet in the plant loop
+### 2.1 A deforming soft-tissue layer exists — and is NOW in the plant loop (18 Sep 2026)
 
 `docs/SOFT_BODY.md`; built in `a1b2812`, made convergent, depth-correct and fast in
 `17ecc4e`. Per segment, tissue from the skin down to the body's own measured depth
 is meshed and solved with the same constitutive law as the shipped supine
 foundation; its reactions on the rigid core are the force and moment on the bone.
 Selectable as `soft_tissue: layer_fitted_local_confined`. **It is the first
-implementation of any part of ACTUATION_STAGES' "participant" mode, and it is not
-yet coupled: nothing it computes flows back into the integrator.**
+implementation of any part of ACTUATION_STAGES' "participant" mode.**
+
+**COUPLED, later the same day** (`docs/SOFT_BODY.md`, first section;
+`scripts/verify_soft_tissue_coupled.py`, 32 gates, 0 FAILED over two runs). A
+`*_coupled` identity makes `ArticulatedBodyPlant.advance` pose each coupled segment's
+layer at that segment's own transform every step and apply what it transmits through
+the same `forces=` port a caller uses. The sentence that used to stand here — *nothing
+it computes flows back into the integrator* — is withdrawn. What the measurement says,
+and none of it is comfortable:
+
+* **Off is off, bit for bit.** An unloaded coupled plant is the historical plant in
+  every coordinate for 81 steps, because a segment whose skin is clear of the support
+  emits no force port at all. An unloaded segment costs below the timer's resolution.
+* **Sub-cycling was built, measured, and NOT adopted.** Against a per-step reference,
+  holding the reaction for 2 steps already costs 26% of the peak reaction and moves the
+  plant 1.45x further than the layer's own 15% force uncertainty does. The reason is one
+  number: the reaction grew at **1,473 N/s**, so a 10% bar allows a **1.0 ms** hold — a
+  tenth of the plant step. A cadence is set by how fast the contact develops, not by
+  what the solve costs. The coupling runs at one solve per step and is **5.4x short of
+  real time** (53.9 ms of coupling per 10 ms step, on ONE 14,874-DOF segment).
+* **Not at the foot.** At the scaffold's own stance the foot's skin sits **36.3 mm above
+  the floor** while the source foot spheres carry 616 N, and it still clears by 32.4 mm
+  at the bottom of a 770 N landing — so a coupled `calcn_l` returns **exactly 0 N** in
+  every upright trajectory the scaffold can produce. And if it touched: 5.57 N at 2.5 mm,
+  leaving the constitutive domain at 3.0 mm, against 761 N of weight.
+* **It does not replace the engine's own contact.** No option here removes one segment's
+  engine contact, so a coupled segment that has one carries both. The double count is
+  reported in every frame beside the layer's own force rather than left to be inferred.
+  The measurement was run on `ulna_l`, chosen because it is the segment with the longest
+  window in which its skin is below the floor and its engine element is not — 69 steps,
+  during which the engine's force on it peaked at 1.7e-04 N against the layer's 14.7 N.
+* **When the rigid core would enter the support the step RAISES** and the plant is left
+  exactly where it was. Gated, with the plant's coordinates compared bitwise across the
+  raise.
 
 **The first heel result is withdrawn.** Every earlier "heel" figure — the
 1.113 / 0.457 / 0.657 N non-converging sequence, and the "4.4–17× softer than the
@@ -601,11 +633,12 @@ run 5 at 19:33 — postdates all three, and the census was pre-registered (19:39
 before its first run (20:05). A depth-map *build* at 18:59 preceded the 19:17
 amendment; it is geometry, and the amendment concerns geometry.
 
-*Still to close:* coupling it into the integration loop (a caller in `articulated.py`
-and a force path the engine accepts), real-time cost, a converged mesh, bone as the
-rigid core (skin and bone are not co-registered in the bundle), muscle as a
-volumetric activation-coupled solid, and sliding between soft surfaces for fascia and
-bursae.
+*Still to close:* an IMPLICIT coupling (an explicit reaction is a step behind by
+construction, and on a contact this fast even one step is 10x outside the bar),
+real-time cost, a converged mesh, a plant option that removes ONE segment's engine
+contact so the layer can replace it instead of adding to it, bone as the rigid core
+(skin and bone are not co-registered in the bundle), muscle as a volumetric
+activation-coupled solid, and sliding between soft surfaces for fascia and bursae.
 
 ---
 
@@ -1017,6 +1050,7 @@ worker's report.
 | — | the bed skin foundation **loads again** — its manifest had been stale since 8 Sep |
 | — | nociception: cutaneous and visceral transduction, every constant cited |
 | — | soft tissue: a layer that deforms and pushes back on its bone (§2.1) |
+| §2.1 | that layer is **in the plant's loop**: opt-in, off is bit-identical, and sub-cycling measured and refused |
 
 **Open, in order**
 
@@ -1026,9 +1060,15 @@ worker's report.
    unchanged by pinning the floor) against the repartitioned inertia itself. Needs a
    per-body proxy-radius engine option, then `tweld` with the torso ball pinned at
    0.2577 m. **Queued for the next sequenced engine batch.**
-2. **Couple the soft tissue into the integration loop.** It deforms, it is not in the
-   loop, and a loaded step costs 136–159 ms against the plant's 10 ms (§2.1). Needs a
-   cadence chosen by measurement, not taste.
+2. **Make the soft-tissue coupling implicit, and affordable.** It is IN the loop now
+   (§2.1), contact-gated, and free when unloaded. Two things it is not. Sub-cycling was
+   measured against a per-step reference and **refused**: the reaction grows at
+   1,473 N/s, so a 10% bar allows a 1.0 ms hold — a tenth of the plant step — and even
+   at one solve per step an explicit reaction is 10x outside its own bar. That needs an
+   implicit coupling, which needs a stiffness through the engine's force interface,
+   which the interface does not take. And it costs 53.9 ms per 10 ms step on ONE
+   14,874-DOF segment, which needs a compiled solver or a nonlinear reduced basis that
+   passes K2/K3.
 3. **The shoulder girdle.** MoBL-ARMS 4.1 is **non-commercial BSD-3 with two required
    citations** (established from primary sources), and is already published in a public
    repo — an owner decision, not an engineering one. The licence-clean alternative is

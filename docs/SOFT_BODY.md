@@ -11,18 +11,214 @@ This is the first piece of the participant mode: **a 3-D soft-tissue layer per s
 deforms under contact and returns the load it transmits to its bone.** It is real, verified
 against analytic answers, and wired so a live body can ask for it. It was first built slow,
 not mesh-converged at the contact surface, and apparently softer than every measurement it
-was built from. **The first section below (2026-09-18) revises all three.** The "softer"
+was built from. **The 2026-09-18 section below revises all three.** The "softer"
 claim was measured on a seam wedge, not the heel, and is withdrawn. The surface is now
 body-fitted and its heel force moves monotonically with refinement, but is not converged.
-The solve is 10–20x faster, and still 9–16x short of the plant step. **It is not the
-participant mode.** It is the part that was buildable from what was already on disk, with
-the reason each remaining part is blocked.
+The solve is 10–20x faster, and still 9–16x short of the plant step. It was also not in
+the plant's integration loop; **the first section below puts it there, and measures what
+that costs.** It is still not the whole participant mode: it is the part that was buildable
+from what was already on disk, with the reason each remaining part is blocked.
 
 Code: `ihm/assembly/soft_tissue_layer.py`. Selection: `ihm/assembly/plant_options.py`
 (`soft_tissue`: `layer_map_*` is the layer as first built, bit for bit; `layer_fitted_local_*`
-is the fitted, local-depth layer). Battery: `scripts/verify_soft_tissue.py`, which writes
-`data/derived/soft-tissue-layer-v1/report.json`. Also: `scripts/build_soft_tissue_local_depth.py`,
-`scripts/census_soft_tissue_fitted.py`, `scripts/measure_soft_tissue_speed.py`.
+is the fitted, local-depth layer; `*_coupled` is the same layer, in the plant's loop).
+Batteries: `scripts/verify_soft_tissue.py` → `data/derived/soft-tissue-layer-v1/report.json`,
+and `scripts/verify_soft_tissue_coupled.py` → `data/derived/soft-tissue-coupled-v1/report.json`.
+Also: `scripts/build_soft_tissue_local_depth.py`, `scripts/census_soft_tissue_fitted.py`,
+`scripts/measure_soft_tissue_speed.py`.
+
+---
+
+## 2026-09-18 (later): the layer is IN the plant's loop, and no cadence is acceptable
+
+`docs/ACTUATION_STAGES.md`'s **fully present participant** mode is this coupling, and
+`docs/WORKBENCH_AUTHENTICITY.md` 2.1 was the gap: the layer deformed, pushed back on its bone,
+and nothing it computed reached the integrator. It reaches it now. What that is worth, and
+what it costs, is below, and the headline is a negative: **on a contact that develops as fast
+as this one, no sub-cycling cadence is acceptable, so the coupling runs at one solve per plant
+step and is 5.4x short of real time.**
+
+Code: `SoftTissueCoupling` in `ihm/assembly/soft_tissue_layer.py`; call site
+`ArticulatedBodyPlant.__init__`/`.advance`; selection
+`plant_options.SOFT_TISSUE_COUPLED`. Battery: `scripts/verify_soft_tissue_coupled.py`,
+pre-registered in its own header in `5a511f4`, before any gated run. Runs:
+`logs/verify_soft_tissue_coupled.run1-PASS.log` and `.run2.log` — **32 gates, 0 FAILED, both
+runs, and run 2 reproduces run 1 gate for gate and number for number** except the wall clocks
+and two recorded figures run 2 corrected (below).
+
+### The coupling, in three parts
+
+| | |
+|---|---|
+| **only where it matters** | every plant step, each coupled segment's layer gets ONE matrix-vector product over its own nodes, giving its minimum gap and its **core's** minimum gap against the support. Skin clear → exactly zero, **no force port at all**, no solve. Measured cost: **0.0000 ms median over 96 unloaded steps** (below the timer). This is not an approximation — it is the same predicate `solve` uses to decide there is nothing to do |
+| **sub-cycling** | a loaded segment is re-solved when `resolve_interval_s` has elapsed and the reaction is HELD in between: the world force vector (the support's normal is world-fixed) at a centre of pressure carried as a station in the **segment** frame, so the station follows the segment and the moment it delivers changes as the segment moves |
+| **warm starting** | each solve begins from the last solve's shape in the segment frame, which `solve` already takes as an argument like any other |
+
+**Two gates are NOT sub-cycled**, because both are free: contact onset, and **bottoming out**.
+A held reaction that sailed past the step where the rigid core entered the support would be a
+coupling that hid its own failure.
+
+**Nothing is swallowed.** `solve` raises when the core would enter the support and when an
+element leaves the constitutive domain; both are re-raised with the segment named
+(`SoftTissueBottomedOut`, `SoftTissueLeftDomain`), `articulated.py` catches neither, and the
+step simply does not happen. Gate X9: the reference run terminates that way and **the plant's
+coordinates after the raise equal the coordinates before it, bitwise.**
+
+**The one wrench component a point force cannot carry.** The engine's port is a point force on
+a body, so the layer's (force, moment) is delivered at `p = (F × M)/|F|²`, which gives
+`p × F = M` exactly *when M ⊥ F*. Frictionless contact against a half-space puts every nodal
+force along the normal, so `M·F` must be zero — **checked on every emit, not assumed** (X3:
+2.10e-10 of the wrench scale over 8 solves). A wrench with a real axial moment raises rather
+than losing it silently.
+
+### The fixture, and why it is this one
+
+**This is the 22-segment scaffold collapsing.** Not the body. Nothing here is a statement
+about a human forearm.
+
+Upright plant, `pelvis_ty = 1.03` (the scaffold's own near-stance height: 616 N under the left
+foot at t=0 against 761 N of weight; the model's default 0.93 starts the foot 63.7 mm *inside*
+the floor), no actuation, 10 ms steps, one coupled segment: **`ulna_l`**.
+
+`ulna_l` was chosen by measurement, over a 200-step uncoupled collapse that counted, for every
+anchored segment, the steps in which its skin is below the floor **while its own engine contact
+element is not**:
+
+| segment | steps skin below floor | of which the layer is the ONLY contact |
+|---|---:|---:|
+| `ulna_r` | 99 | **99** |
+| `ulna_l` | 69 | **69** |
+| `tibia_r` | 33 | 33 |
+| `torso` | 129 | 93 |
+| `hand_r` | 137 | 43 |
+| `calcn_l`, `calcn_r` | 0 | **0** |
+
+In that window the layer is the only thing touching that segment and there is nothing to
+double-count against. Measured in the run: the engine's own force on `ulna_l` peaked at
+**1.67e-04 N** while the layer carried up to 14.73 N — five orders down, so the double count
+is not what any number here is measuring.
+
+### **The foot cannot be the fixture, and that is a result** — measured
+
+| | |
+|---|---|
+| at the scaffold's own stance the foot's **skin** sits **36.3 mm above the floor** while the source foot spheres carry 616 N | the spheres reach ~36 mm below the skin |
+| in a free drop from `pelvis_ty = 1.06`, peak foot load **770 N**, the skin still clears the floor by **32.4 mm** | |
+| → **a coupled layer on `calcn_l` returns exactly 0 N in every upright trajectory the scaffold can produce** | this is the skin bundle's own documented caveat, now measured for the deformable layer |
+
+And if it did touch: at the flat stance pose `calcn_l`'s layer carries **0.119 / 0.430 / 1.278
+/ 2.866 / 5.574 N** at 0.5 / 1 / 1.5 / 2 / 2.5 mm, and **leaves the constitutive domain at
+3.0 mm** (min J 0.180) — its rigid core is 3.76 mm under its lowest skin point there. Body
+weight is 761 N. **This layer cannot carry a standing body, and no cadence changes that.**
+
+### Known answers, as printed (run 2; run 1 identical)
+
+| gate | verdict | what it says |
+|---|---|---|
+| X0 | PASS | two identical uncoupled runs agree **bitwise** in every coordinate over 140 steps. Without this every comparison below is void, so the battery stops here if it fails |
+| X1 | PASS | the canonical force round trip: `registration.force` returns the source body, station and force the coupling handed it — **4.16e-16 m, 2.49e-14 N** |
+| X2 | PASS | **the coupling invents no force path**: a fixed wrench through the coupling and the same force passed by a CALLER through `forces=` give **bitwise identical** plants over 20 steps |
+| X2b | PASS | CONTROL THAT CAN FAIL: the same comparison with the force **negated** DIFFERS, at step 1. Without it X2 could be comparing two plants that never felt the force |
+| X3 | PASS | the delivered point force reproduces the layer's wrench, axial moment included: **2.10e-10** over 8 solves |
+| X4 | PASS | the layer's own force balance on every coupled solve: worst **7.10e-09** |
+| **X5** | **PASS** | **OFF IS OFF, BIT FOR BIT.** `None`, the uncoupled identity and the **coupled** plant agree bitwise in every coordinate for **81 steps**, up to the step the layer first emits a port. An unloaded coupled plant **is** the historical plant |
+| X6 | PASS | **call it twice at the same input**: `advance_state` is a pure function of `(state, transforms, dt)` — bitwise, unloaded and loaded |
+| X7 | PASS | two identical coupled runs agree bitwise over 105 steps and stop for the same reason |
+| X8 | PASS | checkpoint from a **loaded** step, two steps, restore, two steps: bitwise. A coupling whose held reaction is not checkpointed fails this |
+| X9 | PASS | the run raises `SoftTissueLeftDomain` at step 104, re-raises on the next call, and **the plant is left exactly where it was** |
+| X9b | PASS | a pose with the rigid core 10.00 mm inside the support raises `SoftTissueBottomedOut` naming the segment and the depth — from the cheap per-step gate, not from a solve |
+| X10z | PASS | KNOWN ANSWER on the staleness instrument: the replay reads **exactly 0.000000** at the per-step interval |
+| X10b | PASS | CONTROL THAT CAN FAIL: holding the first reaction forever reads **0.9697**, which exceeds the 0.10 bar. If it did not, the metric could not see staleness and X10 would mean nothing |
+
+### What staleness costs, and the cadence
+
+`e_N` is the held reaction against the per-step reference, **on the reference run's own poses**
+(so the comparison is not confounded by the trajectories diverging), peak-normalised. `d_N` is
+the closed loop: each cadence's own run against the reference, as the coupled segment's
+greatest displacement difference.
+
+**The bar for `d_N` is measured, not chosen**: `d_u` is what the layer's OWN force uncertainty
+does to the same plant — the same run with the reaction scaled by 0.85, the 15% the layer's
+convergence study (CV7–CV10) leaves on the table. Staleness must not be worse than the model's
+own error.
+
+| interval | steps held | `e_N` (bar 0.10) | `d_N` (bar `d_u` = 1.913e-04 m) | solves | terminates |
+|---:|---:|---:|---:|---:|---|
+| **10 ms** | 1 | **0.0000** | **0.000e+00** | 8 | LeftDomain @ 104 |
+| 20 ms | 2 | 0.2606 | 2.776e-04 | 4 | LeftDomain @ 104 |
+| 50 ms | 5 | 0.7091 | 9.605e-04 | 3 | LeftDomain @ **108** |
+| 100 ms | 10 | 0.9697 | 1.160e-03 | 2 | LeftDomain @ **108** |
+| 200 ms | 20 | 0.9697 | 1.160e-03 | 2 | LeftDomain @ **118** |
+| 500 ms | 50 | 0.9697 | 1.160e-03 | 2 | **BottomedOut** @ 119 |
+
+**Every interval above 10 ms fails, and the first one fails by 1.45x.** At and past 100 ms the
+error equals "hold forever" — the interval is longer than the 80 ms loaded window, so the
+cadence never re-solves inside it, and by this repo's own rule those rows are VOID and count as
+FAILED. The termination step and even the termination *reason* move with the cadence, which is
+a qualitative change, not a loss of resolution.
+
+**OUTCOME (c) of the three pre-registered outcomes: no sub-cycling cadence is acceptable at
+these costs.** The coupling ships at one solve per plant step.
+
+### Why, in one number that carries to a different contact
+
+The reaction grew from 0.45 N to 14.73 N over five steps: a peak loading rate of
+**1,472.86 N/s**.
+A 10% bar on a 14.73 N peak therefore allows a hold of **1.0 ms** — a *tenth* of the plant
+step. That is the transferable statement: **a cadence is set by how fast the contact develops,
+not by how much the solve costs**, and
+`τ_max = 0.10 · max|F| / max|dF/dt|`. A contact loading 50x more slowly would tolerate a 50 ms
+hold; this one does not tolerate one step. Note what that also says about the coupling at
+N = 1: the force is computed at the pose the step starts from and held through it, so even the
+per-step coupling is 10x outside its own bar on this trajectory. **An explicit coupling cannot
+be made accurate on a contact this fast by choosing a cadence; it needs an implicit one.**
+
+### Cost, as measured
+
+| | |
+|---|---|
+| unloaded segment | **0.0000 ms** median over 96 steps (below the timer) |
+| one loaded solve, `ulna_l` (14,874 DOF, penetration to ~10 mm) | **676.9 ms** median, 1,393 ms max (run 2); 2,012 / 3,869 ms in run 1 on a 3x busier machine |
+| the coupling, amortised over the whole 105-step run | **53.9 ms per 10 ms plant step → 5.4x short of real time** |
+| the arm's whole wall clock per step, coupling AND plant | **221.7 ms** (run 2) — mostly the collapsing scaffold's own contact solve, **not** the coupling. Run 1 reported this number as the coupling's; see the correction below |
+| what the reaction does to the scaffold at all | the coupled run's forearm ends **1.310e-03 m** from the uncoupled run's |
+| peak reaction | **14.73 N**, against 761 N of body weight |
+| peak RSS | 1,054 MB |
+
+`ulna_l`'s solve is far more expensive than the 136–159 ms heel figure for two measured
+reasons and no mysterious one: it is **14,874 DOF against the heel's 7,296**, and the collapse
+drives it to ~10 mm of penetration where the load stepping multiplies, against the heel ramp's
+4 mm.
+
+### Two recorded figures run 1 got wrong, and the shape of it
+
+Run 1 passed all 32 gates. Two of its RECORDED numbers were still wrong, and both were
+corrected before run 2. **No bar moved, and no gate was rescored.**
+
+1. **The amortised cost counted work the coupling never did.** Run 1 divided each arm's WHOLE
+   wall clock by its steps and called it the coupling's per-step cost: **552 ms**. But a
+   collapsing 22-segment scaffold with 28 contact elements costs most of that by itself (run 2:
+   221.7 ms a step in total against the coupling's 53.9 ms). Same family as this repo's *"a ratio whose denominator the
+   treatment also changes"* — here the **numerator** held work the treatment never did, and
+   the error was **10x** and in the direction that made the coupling look worse than it is.
+2. **A typed constant.** Run 1 typed `ulna_l`'s bounding radius into X3's scale. It is read off
+   the coupling now. The value is identical; a number nobody transcribes cannot be
+   mistranscribed.
+
+### What the coupling does NOT do
+
+- **It does not replace the engine's own contact.** A coupled segment that also carries an
+  engine contact element is a **second path to the floor**. Nothing in this repo's option set
+  removes a segment's engine contact per segment, so the double count is inherent and is
+  *reported*: every frame carries the engine's own resultant on each coupled segment beside
+  the layer's. On this fixture it is 1.67e-04 N against 14.73 N; on the foot it would be the
+  whole of body weight.
+- **It does not make the layer converged.** No force from this layer is good to better than
+  about 10% (CV7–CV10). A cadence cannot fix a discretisation error, and `d_u` above is that
+  error expressed as plant motion.
+- **It is not real time**, and the cadence does not make it so.
+- **It is not the participant mode.** One segment of one scaffold, against a frictionless
+  rigid half-space, with the muscle still inside a rigid core.
 
 ---
 
@@ -250,7 +446,11 @@ so it cannot pass K2/K3 at finite strain, and on this heel its force is **−1.8
 −12% at 2 mm and −27% at 4 mm** against the nonlinear solve. A reduced model that fast and
 that wrong at stance-sized strains is not a layer.
 
-### The call, for whoever integrates it (not done here: `articulated.py` is owned elsewhere)
+### The call, for whoever integrates it — **DONE (see the first section)**
+
+`ArticulatedBodyPlant` now makes this call itself when the selection asks for a coupled
+identity. What follows is the raw call, kept because it is what the coupling does internally
+and what an offline caller still uses.
 
 ```python
 from ihm.assembly.plant_options import resolve_fidelity
@@ -476,14 +676,14 @@ an observed failure, not a tested prediction. The script says so.
 
 ## What it is NOT
 
-- **Not in the native integrator.** Selecting `{'mechanical_fidelity': {'soft_tissue':
-  'layer_map_confined'}}` gives the live body a disclosed identity: `articulated.py` already
-  writes the whole selection to `mechanical_fidelity.json`. `build_selected_layers` builds the
-  layers from it. The engine still integrates the rigid scaffold and its own contact.
-  **Nothing flows back into the plant** unless a caller poses the layer each step and applies
-  `segment_force_n` / `segment_moment_nm` as external loads. That caller would live in
-  `articulated.py` or the native stream, which were outside this work's territory. At the costs
-  above, closing that loop would cost tens of seconds per 10 ms step.
+- **Still not in the native integrator, but now in the plant's LOOP.** The engine integrates
+  the rigid scaffold and its own contact, and the layer is not one of its force elements. What
+  changed 2026-09-18 (first section): a coupled identity (`*_coupled`) makes
+  `ArticulatedBodyPlant.advance` pose each coupled segment's layer at that segment's own
+  transform every step and apply what it transmits through the same `forces=` port a caller
+  uses. An uncoupled identity still flows back **nothing**, and is bit-for-bit the historical
+  plant. The coupled one costs 53.9 ms per 10 ms step on one 14,874-DOF segment, and **no
+  sub-cycling cadence was acceptable** on the contact it was measured against.
 - **Not muscle.** Everything deeper than `h` is rigid, which is the shipped layer map's own
   assumption.
 - **Not bone-anchored.** The bone meshes would be the right core, but the skin bundle records
@@ -506,7 +706,10 @@ an observed failure, not a tested prediction. The script says so.
 
 | wanted | blocked by | kind |
 |---|---|---|
-| the layer in the plant's integration loop | a caller in `articulated.py` / the native stream (not in this work's territory). The call and its cost are in the first section: 136–159 ms per loaded heel step against 10 ms | territory + compute |
+| ~~the layer in the plant's integration loop~~ | **DONE 2026-09-18**, first section. What remains is cost (53.9 ms per 10 ms step on one segment) and the fact that no cadence amortises it: the contact develops at 1,473 N/s and a 10% bar allows a 1.0 ms hold | — |
+| an **implicit** coupling (the layer inside the plant's own step, not held across it) | the engine's force port takes a force, not a stiffness, and an explicit reaction is a step behind by construction. Measured: even at one solve per plant step the coupling is 10x outside its own accuracy bar on a fast contact | solver + engine interface |
+| a coupled foot | the scaffold's source foot spheres reach 36 mm below the skin, so the layer never touches in any upright trajectory; and at the stance pose it carries 5.57 N at 2.5 mm and leaves the constitutive domain at 3.0 mm against 761 N of weight | geometry + model |
+| coupling without a double count | no option in this repo removes ONE segment's engine contact, so a coupled segment that has an engine contact element carries both. Visible in every frame, not removable from here | plant options |
 | real-time cost | Python/numpy at 7,296 DOF: triangular solves and element kernels take ~1 ms each, times 5–8 Newton iterations and 30–60 CG steps. The linear condensed reduction is fast but 2–27% wrong. Would need a compiled solver, or a nonlinear reduced basis that passes K2/K3 | compute (buildable) |
 | a converged contact force | staircase removed (fitted surface); what remains is first-order convergence of linear tets, ~8–15% at the finest affordable spacing. Would need quadratic or mixed elements, or a finer mesh than 4 GiB allows (2.5 mm median heel did not fit) | discretisation (buildable) |
 | local depth for `radius_l` | the layer map (vertex argmax) and the bundle (triangle argmax) disagree on vertex 89206 | data / partition |

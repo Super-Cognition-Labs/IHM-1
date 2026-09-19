@@ -131,6 +131,22 @@ itself, which CAN fail:
   X10b Holding the first reaction forever must EXCEED the bar (as stated above).
 The adopted cadence, and which of (a)/(b)/(c) obtained, are RECORDED.  No bar moves.
 
+CORRECTIONS MADE AFTER RUN 1 (logs/verify_soft_tissue_coupled.run1-PASS.log, 32 gates,
+0 FAILED).  Neither touches a bar, and run 2 must reproduce run 1 gate for gate and number for
+number on everything else:
+  * Run 1's "amortised ms per step" was the WHOLE arm's wall clock over its steps, so it
+    counted the plant's own advance -- a collapsing 22-segment scaffold with 28 contact
+    elements costs about 0.4 s a step by itself -- as though the coupling had spent it.  It
+    read 552 ms where the COUPLING spent 153 ms.  Both are now reported, separately and
+    labelled; the coupling's own figure is the one that is compared with the plant step.  Same
+    shape as this repo's own "a ratio whose denominator the treatment also changes": the
+    numerator held work the treatment never did.
+  * Run 1 typed `ulna_l`'s own bounding radius into X3's scale.  It is now read off the
+    coupling.  The value is identical, and a number nobody transcribes cannot be mistranscribed.
+  * ADDED, recorded only: the divergence between the coupled reference and the UNCOUPLED run
+    (does the reaction move the scaffold at all?), and the engine's own contact force on the
+    coupled segment during the loaded window (how big is the double count?).
+
 THE DECISION, fixed before the data.  The adopted cadence is the LARGEST interval passing X10,
 X11 and X12.  Then, separately and without moving any bar, the amortised per-step cost of that
 cadence is reported against the 10 ms plant step.  Three outcomes, all of them results:
@@ -252,6 +268,7 @@ def trajectory(plant, steps, forces_at=None):
         native = plant.native.snapshot()
         frame = plant.state.get('soft_tissue_coupling')
         rows[-1]['coupling'] = None if frame is None else frame['segments']
+        rows[-1]['engine'] = None if frame is None else frame['engine_contact_on_coupled_segments']
     return rows, stop
 
 
@@ -259,7 +276,7 @@ def sample(native, k):
     T = np.asarray(native['bodies'][BODY]['transform_ground'], float)
     return {'step': k, 'time_s': native['time_s'],
             'q': {n: v['value'] for n, v in native['coordinates'].items()},
-            'origin_m': T[:3, 3].tolist(), 'coupling': None}
+            'origin_m': T[:3, 3].tolist(), 'coupling': None, 'engine': None}
 
 
 def same_q(a, b):
@@ -378,6 +395,7 @@ def main():
          owner_ok and worst_p <= 1e-12 and worst_f <= 1e-12,
          'owner %s, %.2e m, %.2e N' % (owner_ok, worst_p, worst_f))
     anchor = plant.soft_force_ids[BODY]
+    radius = plant.soft_coupling.radius_m[BODY]
     basis, offset = plant.registration.basis.copy(), plant.registration.global_map[:3, 3].copy()
     plant.close()
 
@@ -433,7 +451,7 @@ def main():
         if magnitude == 0:
             continue
         solves += 1
-        scale = max(float(np.linalg.norm(m_solved)), magnitude * 0.2519073143759591)
+        scale = max(float(np.linalg.norm(m_solved)), magnitude * radius)
         worst_wrench = max(worst_wrench, float(np.linalg.norm(m_delivered - m_solved)) / scale)
         worst_axial = max(worst_axial, abs(float(f @ m_solved)) / magnitude / scale)
         worst_balance = max(worst_balance, float(entry['balance_force_relative']))
@@ -503,7 +521,7 @@ def main():
          branch == again and len(branch) > 0,
          'standing at step %d, %d steps compared' % (mark, len(branch)))
 
-    return _cadence(report, r1, stop1, wall1, series1, began)
+    return _cadence(report, r1, stop1, wall1, series1, began, ua)
 
 
 def _two(plant):
@@ -549,7 +567,13 @@ def _identical(a, b):
     return True
 
 
-def _cadence(report, r1, stop1, wall1, series1, began):
+def coupling_cost(rows):
+    """What the COUPLING spent, per plant step -- not what the arm's wall clock spent."""
+    spent = sum(row['coupling'][0]['wall_seconds'] for row in rows if row['coupling'])
+    return 1e3 * spent / max(1, len(rows)), spent
+
+
+def _cadence(report, r1, stop1, wall1, series1, began, uncoupled):
     """X10-X12: what staleness costs, and which cadence survives it."""
     magnitudes = np.array([float(np.linalg.norm(f)) for f, _, _ in series1])
     peak = float(magnitudes.max())
@@ -602,8 +626,10 @@ def _cadence(report, r1, stop1, wall1, series1, began):
                               and abs(arm_stop['step'] - stop1['step']) <= 1))
         rows.append({'interval_s': interval, 'steps_held': int(round(interval / DT)),
                      'staleness': errors[interval], 'divergence_m': d, 'common_steps': n,
-                     'solves': arm_solves, 'wall_s': arm_wall,
-                     'amortised_ms_per_step': 1e3 * arm_wall / max(1, len(arm_rows)),
+                     'solves': arm_solves, 'arm_wall_s': arm_wall,
+                     'coupling_ms_per_step': coupling_cost(arm_rows)[0],
+                     'coupling_wall_s': coupling_cost(arm_rows)[1],
+                     'arm_ms_per_step_including_the_plant': 1e3 * arm_wall / max(1, len(arm_rows)),
                      'stop': arm_stop, 'same_stop': bool(same_stop), 'void': bool(void)})
         print('     %5.0f ms  e %8.4f  d %.3e m  solves %3d  stop %s' %
               (interval * 1e3, errors[interval], d, arm_solves,
@@ -639,11 +665,21 @@ def _cadence(report, r1, stop1, wall1, series1, began):
     adopted = max(passing) if passing else None
     solve_ms = float(np.median(walls) * 1e3) if walls else float('nan')
     amortised = None if adopted is None else \
-        next(r['amortised_ms_per_step'] for r in rows if r['interval_s'] == adopted)
+        next(r['coupling_ms_per_step'] for r in rows if r['interval_s'] == adopted)
     rate = float(np.max(np.abs(np.diff(magnitudes))) / DT) if len(magnitudes) > 1 else 0.0
     tau = STALENESS_BAR * peak / rate if rate > 0 else float('inf')
 
+    d_off, n_off = divergence(uncoupled, r1)
+    engine = 0.0
+    for row in r1:
+        if row['coupling'] and row['coupling'][0]['in_contact'] and row.get('engine'):
+            engine = max(engine, float(np.linalg.norm(row['engine'][BODY]['force_n'])))
+
     print('\nRECORDED (never gated)', flush=True)
+    print('     coupled vs UNCOUPLED     %.3e m over %d steps: what the reaction does to the '
+          'scaffold at all' % (d_off, n_off), flush=True)
+    print('     engine force on %-8s %.3e N at worst while the layer was loaded: the size of '
+          'the double count' % (BODY, engine), flush=True)
     print('     loaded window            %.0f ms (%d steps in contact, %d carrying load)'
           % (window_s * 1e3, contact_steps, loaded_steps), flush=True)
     print('     peak reaction            %.4f N   (body weight is 761 N)' % peak, flush=True)
@@ -656,7 +692,7 @@ def _cadence(report, r1, stop1, wall1, series1, began):
     print('     adopted cadence          %s' % ('NONE' if adopted is None
                                                 else '%.0f ms' % (adopted * 1e3)), flush=True)
     if adopted is not None:
-        print('     amortised cost there     %.1f ms per 10 ms plant step -> %s'
+        print('     COUPLING cost there      %.1f ms per 10 ms plant step -> %s'
               % (amortised, 'REAL TIME' if amortised <= 10 else
                  '%.1fx short of real time' % (amortised / 10)), flush=True)
     if adopted is None or adopted <= DT:
@@ -671,7 +707,9 @@ def _cadence(report, r1, stop1, wall1, series1, began):
     print('     OUTCOME (%s)             %s' % (outcome[0], outcome[1]), flush=True)
     report['outcome'] = {'branch': outcome[0], 'statement': outcome[1]}
 
-    report.update({'gates': RESULTS, 'cadence_rows': rows, 'amortised_ms_adopted': amortised, 'staleness': errors,
+    report.update({'gates': RESULTS, 'cadence_rows': rows, 'coupling_ms_adopted': amortised,
+                   'coupled_vs_uncoupled_divergence_m': d_off,
+                   'engine_force_on_coupled_segment_n': engine, 'staleness': errors,
                    'staleness_hold_forever': e_forever, 'uncertainty_divergence_m': d_u,
                    'adopted_interval_s': adopted, 'loaded_window_s': window_s,
                    'contact_steps': contact_steps, 'loaded_steps': loaded_steps,

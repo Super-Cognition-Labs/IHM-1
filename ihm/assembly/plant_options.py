@@ -208,14 +208,23 @@ SOFT_TISSUE_LAYERS = {
 # `resolve_interval_s` is the cadence: how long a solved reaction is HELD before the layer is
 # re-solved.  A caller may name any of SOFT_TISSUE_RESOLVE_INTERVALS_S, which are the
 # intervals the staleness measurement actually covers; nothing else is accepted, because an
-# unmeasured cadence is an unmeasured fidelity claim.  The default is what that measurement
-# chose -- see scripts/verify_soft_tissue_coupled.py and docs/SOFT_BODY.md.
+# unmeasured cadence is an unmeasured fidelity claim.
+#
+# THE DEFAULT IS ONE SOLVE PER PLANT STEP, BECAUSE THE MEASUREMENT REFUSED EVERY OTHER
+# CADENCE.  scripts/verify_soft_tissue_coupled.py, run 2 (docs/SOFT_BODY.md): against a
+# per-step reference on the same trajectory, holding for 2 steps already costs 26% of the peak
+# reaction and moves the plant 1.45x further than the layer's OWN 15% force uncertainty does;
+# 5 steps costs 71%; past 10 steps the interval is longer than the whole loaded window.  The
+# reason is a single number, and it carries to any other contact: the reaction grew at
+# 1,472.86 N/s, so a 10% bar allows a hold of 1.0 ms -- a TENTH of the plant step.  A cadence
+# is set by how fast the contact develops, not by what the solve costs.  Sub-cycling is
+# therefore built, measured and NOT adopted, and the coupling is 5.4x short of real time.
 SOFT_TISSUE_COUPLED = {
     'layer_fitted_local_confined_coupled': {'layer': 'layer_fitted_local_confined'},
     'layer_fitted_local_unconfined_coupled': {'layer': 'layer_fitted_local_unconfined'},
 }
 SOFT_TISSUE_RESOLVE_INTERVALS_S = (0.010, 0.020, 0.050, 0.100, 0.200, 0.500)
-DEFAULT_SOFT_TISSUE_RESOLVE_INTERVAL_S = 0.050
+DEFAULT_SOFT_TISSUE_RESOLVE_INTERVAL_S = 0.010
 SOFT_TISSUE_COUPLED_METHOD = 'fast'
 
 # Measured, and re-derived by scripts/verify_soft_tissue.py, which fails if it moves: at
@@ -517,6 +526,14 @@ def resolve_fidelity(root, value=None, *, environment='supine'):
                 'raises': ['SoftTissueBottomedOut', 'SoftTissueLeftDomain',
                            'SoftTissueWrenchNotDeliverable'],
                 'measurement': 'scripts/verify_soft_tissue_coupled.py',
+                'cadence_basis': 'One solve per plant step. Sub-cycling is built and was '
+                                 'measured against a per-step reference; every interval above '
+                                 '10 ms failed, the first by 1.45x, because the reaction grew '
+                                 'at 1473 N/s and a 10 per cent bar allows a 1.0 ms hold. See '
+                                 'docs/SOFT_BODY.md.',
+                'build_cost': 'Each coupled segment builds its own layer at plant construction: '
+                              'about 1-2 s and 100-200 MB for a small segment, 484 s and ~1 GB '
+                              'for every anchored segment at once. Name `segments`.',
                 'disclosure': DISCLOSURE['soft_tissue_coupled']}
 
     selection['basis'] = ('Server-owned bundles resolved by identity; a client never supplies '
