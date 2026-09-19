@@ -238,13 +238,36 @@ flips. The same runs reproduced three numbers recorded weeks earlier — the uns
 crawl's 1.450 rad, the stopped crawl's 0.220 rad, F2's 0.2202 — which also confirms
 on the rebuilt engine that the §1.3 damping fix moved no plant.
 
-**A defect underneath it, in the upstream foot.** Giving the toe muscles geometry
-paths (the route that fixed the subtalar) is **not viable as is**: it produces an
-impossible sign pattern — the dorsal extensor and the plantar flexors share a sign.
-The cause is in the files, including upstream `subject_walk_scaled.osim`: the toe
-muscles' last calcaneal via points were scaled ×1.156 while the mtp joint offset
-(0.1788 m) was not, so they sit 8–22 mm *beyond* the axis they should straddle, where
-Rajagopal places them 5–17 mm short of it.
+**The defect underneath it is now diagnosed exactly, and fixed in a variant**
+(`fb9b90d` pre-registered, `118096e` results, `docs/FOOT_GEOMETRY.md`).
+`subject_walk_scaled.osim` is `Rajagopal2016.osim` through OpenSim's ScaleTool, which
+multiplies every joint offset by its own parent body's factors. Audited over the
+shared offset frames — and verified here independently against both source files —
+**exactly two nonzero offsets are byte-identical to the unscaled original, and they
+are the left and right toe joints.** The ankle's went −0.400 → −0.465 m, the
+subtalar's −0.0488 → −0.0599; `mtp`'s stayed at 0.1788. The same two frames are also
+the only ones whose `orientation` was dropped, from Rajagopal's oblique
+`−3.14159 ±0.619901 0` to a plain `0 0 0` hinge. Rajagopal ships `mtp_angle` **locked**,
+which is why it never showed upstream.
+
+The correction is the rule the other offsets obey — Rajagopal's own translation times
+this model's own calcn scale factors, with its orientation restored — giving
+**0.1788 → 0.20663 m (+27.82 mm)**. Nothing is typed; the builder re-derives it and
+refuses if the audit stops holding.
+
+**The sign pattern is now anatomically possible**, and the number was predicted before
+the engine saw the model and reproduced to **0.0004 mm**: extensors `edl` −6.05 and
+`ehl` −7.55 mm, flexors `fdl` +6.83 and `fhl` +7.13 mm. Previously `ehl` read **+24.1**,
+sharing a sign with the flexors. It was the **offset**, not the axis, that carried the
+sign error. Toe paths on the corrected geometry now *reduce* ankle excursion
+(−0.013 supine unstopped, −0.076 in the crawl) where the shipped geometry *raised* it
+by +0.078.
+
+**It does not repair the unstopped crawl** (1.37 rad), F2's bar moves ≤0.0011 rad, and
+neither F2 nor G-S flips. `mtp` is also welded in a separate spine-variant plant
+(`model_mtp_welded.osim`); the largest change to any of its 46 coordinates is
+0.0061 rad. The recommendation to leave `engineering_stance_v1` alone is **reinforced**:
+the corrected foot is 27.8 mm longer, so adopting it means re-identifying that plant.
 
 **Recommendation from that evidence:** leave `engineering_stance_v1` as it is (its
 stance linearization was solved with mtp free at 0.113 rad, so changing it means
