@@ -1,0 +1,1226 @@
+{
+  "schema": "ihm.shoulder-girdle-press-up-capacity.v1",
+  "measured_by": "scripts/measure_shoulder_girdle_capacity.py",
+  "plant": "data/models/shoulder_girdle_v1/registration.json",
+  "baseline_plant": "data/models/articulated_spine_v1/registration.json",
+  "pose": "each model's own rest pose; moment arms are pose dependent and no press-up pose was evaluated",
+  "controls": {
+    "soleus_r_about_ankle_angle_r_m": -0.04970801926106321,
+    "baseline_soleus_r_about_ankle_angle_r_m": -0.04970801926106321,
+    "moment_arms_repeat_call_identical": true
+  },
+  "gravity_m_s2": [
+    0.0,
+    -9.80665,
+    0.0
+  ],
+  "body_weight_n": 761.115709569285,
+  "levers": {
+    "glenohumeral_torso_m": [
+      0.0040867035257739995,
+      0.38515234020809996,
+      0.198768021792
+    ],
+    "scapulothoracic_torso_m": [
+      0.01958923533581903,
+      0.38378712078258154,
+      0.09245004908388564
+    ],
+    "sternoclavicular_torso_m": [
+      0.06661014745896685,
+      0.41565819943543914,
+      0.033494613532261026
+    ],
+    "glenohumeral_to_scapulothoracic_m": 0.10745093595387907,
+    "glenohumeral_to_sternoclavicular_m": 0.17931839829268972,
+    "glenohumeral_to_hand_m": 0.5701101985756925,
+    "elbow_to_hand_m": 0.2534026305833229,
+    "basis": "straight-line distance, which is at least the perpendicular distance from the joint to the hand load line of action, so dividing by it makes the force bound conservative"
+  },
+  "girdle_bounds_nm": {
+    "clav_prot_r": {
+      "plus_bound_nm": 211.55629154886162,
+      "minus_bound_nm": 431.1974589317357,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_TrapeziusScapula_S_r",
+          "moment_arm_m": -0.10692465598352577,
+          "max_isometric_force_n": 1043.0,
+          "moment_nm": -111.52241619081738
+        },
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": -0.1482348490761038,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -92.5430162782116
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_I_r",
+          "moment_arm_m": -0.20066897292148536,
+          "max_isometric_force_n": 414.4,
+          "moment_nm": -83.15722237866353
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_M_r",
+          "moment_arm_m": -0.1391777479031364,
+          "max_isometric_force_n": 470.4,
+          "moment_nm": -65.46921261363535
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_I_r",
+          "moment_arm_m": 0.07778104199729124,
+          "max_isometric_force_n": 571.2,
+          "moment_nm": 44.428531188852766
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_M_r",
+          "moment_arm_m": 0.05886835767936564,
+          "max_isometric_force_n": 683.2,
+          "moment_nm": 40.21886196654261
+        }
+      ]
+    },
+    "clav_elev_r": {
+      "plus_bound_nm": 402.70316194276194,
+      "minus_bound_nm": 382.6085650246175,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": 0.17010790988240942,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": 135.83456819930157
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_S_r",
+          "moment_arm_m": 0.0643574945159331,
+          "max_isometric_force_n": 1043.0,
+          "moment_nm": 67.12486678011823
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_I_r",
+          "moment_arm_m": -0.09958847179952789,
+          "max_isometric_force_n": 571.2,
+          "moment_nm": -56.884935091890334
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_I_r",
+          "moment_arm_m": -0.13683434875935888,
+          "max_isometric_force_n": 414.4,
+          "moment_nm": -56.70415412587832
+        },
+        {
+          "muscle": "arm26_BICshort_r",
+          "moment_arm_m": 0.1269168946410929,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 55.27992262987443
+        },
+        {
+          "muscle": "seth_SerratusAnterior_I_r",
+          "moment_arm_m": -0.10669479048767247,
+          "max_isometric_force_n": 430.0,
+          "moment_nm": -45.87875990969916
+        }
+      ]
+    },
+    "scapula_abduction_r": {
+      "plus_bound_nm": 181.96868084713773,
+      "minus_bound_nm": 330.4308400910514,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_TrapeziusScapula_S_r",
+          "moment_arm_m": -0.07617056310373695,
+          "max_isometric_force_n": 1043.0,
+          "moment_nm": -79.44589731719763
+        },
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": -0.07783660835407924,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -48.59339459545166
+        },
+        {
+          "muscle": "seth_SerratusAnterior_I_r",
+          "moment_arm_m": 0.10695184871058047,
+          "max_isometric_force_n": 430.0,
+          "moment_nm": 45.9892949455496
+        },
+        {
+          "muscle": "seth_SerratusAnterior_M_r",
+          "moment_arm_m": 0.08158460434748102,
+          "max_isometric_force_n": 508.0,
+          "moment_nm": 41.444979008520356
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_M_r",
+          "moment_arm_m": -0.08497127258562578,
+          "max_isometric_force_n": 470.4,
+          "moment_nm": -39.970486624278365
+        },
+        {
+          "muscle": "seth_Rhomboideus_I_r",
+          "moment_arm_m": -0.09671435791859535,
+          "max_isometric_force_n": 407.4,
+          "moment_nm": -39.40142941603575
+        }
+      ]
+    },
+    "scapula_elevation_r": {
+      "plus_bound_nm": 552.6695384890546,
+      "minus_bound_nm": 531.4613274998284,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": 0.23756378537503076,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": 189.69943389766956
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_S_r",
+          "moment_arm_m": 0.0875393020398934,
+          "max_isometric_force_n": 1043.0,
+          "moment_nm": 91.30349202760881
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_I_r",
+          "moment_arm_m": -0.13933215812619526,
+          "max_isometric_force_n": 571.2,
+          "moment_nm": -79.58652872168274
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_I_r",
+          "moment_arm_m": -0.19077605617540544,
+          "max_isometric_force_n": 414.4,
+          "moment_nm": -79.057597679088
+        },
+        {
+          "muscle": "arm26_BICshort_r",
+          "moment_arm_m": 0.17843619109231731,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 77.71966739216973
+        },
+        {
+          "muscle": "seth_PectoralisMinor_r",
+          "moment_arm_m": -0.14750179834269794,
+          "max_isometric_force_n": 429.8,
+          "moment_nm": -63.39627292769158
+        }
+      ]
+    },
+    "scapula_upward_rot_r": {
+      "plus_bound_nm": 182.05088921040326,
+      "minus_bound_nm": 175.42537687058248,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_SerratusAnterior_I_r",
+          "moment_arm_m": 0.15755051350600183,
+          "max_isometric_force_n": 430.0,
+          "moment_nm": 67.74672080758079
+        },
+        {
+          "muscle": "seth_Rhomboideus_I_r",
+          "moment_arm_m": -0.11346998352388667,
+          "max_isometric_force_n": 407.4,
+          "moment_nm": -46.22767128763142
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_I_r",
+          "moment_arm_m": 0.09681827609857993,
+          "max_isometric_force_n": 414.4,
+          "moment_nm": 40.121493615251524
+        },
+        {
+          "muscle": "seth_SerratusAnterior_M_r",
+          "moment_arm_m": 0.06430502421833635,
+          "max_isometric_force_n": 508.0,
+          "moment_nm": 32.666952302914865
+        },
+        {
+          "muscle": "seth_LevatorScapulae_r",
+          "moment_arm_m": -0.11267145226352743,
+          "max_isometric_force_n": 280.0,
+          "moment_nm": -31.54800663378768
+        },
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": -0.022006359864783442,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -17.572518479226876
+        }
+      ]
+    },
+    "scapula_winging_r": {
+      "plus_bound_nm": 674.6136922283782,
+      "minus_bound_nm": 571.019259459694,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": -0.21922262969029782,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -175.0536542602966
+        },
+        {
+          "muscle": "seth_SerratusAnterior_I_r",
+          "moment_arm_m": -0.24335084787371267,
+          "max_isometric_force_n": 430.0,
+          "moment_nm": -104.64086458569645
+        },
+        {
+          "muscle": "seth_SerratusAnterior_M_r",
+          "moment_arm_m": -0.1998174113769055,
+          "max_isometric_force_n": 508.0,
+          "moment_nm": -101.507244979468
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_I_r",
+          "moment_arm_m": 0.17765030974335083,
+          "max_isometric_force_n": 571.2,
+          "moment_nm": 101.473856925402
+        },
+        {
+          "muscle": "seth_LatissimusDorsi_M_r",
+          "moment_arm_m": 0.3087378906879434,
+          "max_isometric_force_n": 315.0,
+          "moment_nm": 97.25243556670216
+        },
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": 0.15292051755097338,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 95.46827910707268
+        }
+      ]
+    },
+    "clav_prot_l": {
+      "plus_bound_nm": 211.5562915488616,
+      "minus_bound_nm": 431.1974589317353,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_TrapeziusScapula_S_l",
+          "moment_arm_m": -0.10692465598352555,
+          "max_isometric_force_n": 1043.0,
+          "moment_nm": -111.52241619081714
+        },
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": -0.1482348490761034,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -92.54301627821135
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_I_l",
+          "moment_arm_m": -0.20066897292148486,
+          "max_isometric_force_n": 414.4,
+          "moment_nm": -83.15722237866332
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_M_l",
+          "moment_arm_m": -0.13917774790313603,
+          "max_isometric_force_n": 470.4,
+          "moment_nm": -65.46921261363518
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_I_l",
+          "moment_arm_m": 0.07778104199729124,
+          "max_isometric_force_n": 571.2,
+          "moment_nm": 44.428531188852766
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_M_l",
+          "moment_arm_m": 0.0588683576793657,
+          "max_isometric_force_n": 683.2,
+          "moment_nm": 40.21886196654265
+        }
+      ]
+    },
+    "clav_elev_l": {
+      "plus_bound_nm": 402.7031619427621,
+      "minus_bound_nm": 382.60856502461775,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": 0.17010790988240945,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": 135.8345681993016
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_S_l",
+          "moment_arm_m": 0.06435749451593314,
+          "max_isometric_force_n": 1043.0,
+          "moment_nm": 67.12486678011827
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_I_l",
+          "moment_arm_m": -0.09958847179952787,
+          "max_isometric_force_n": 571.2,
+          "moment_nm": -56.88493509189033
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_I_l",
+          "moment_arm_m": -0.13683434875935893,
+          "max_isometric_force_n": 414.4,
+          "moment_nm": -56.70415412587834
+        },
+        {
+          "muscle": "arm26_BICshort_l",
+          "moment_arm_m": 0.126916894641093,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 55.27992262987446
+        },
+        {
+          "muscle": "seth_SerratusAnterior_I_l",
+          "moment_arm_m": -0.1066947904876727,
+          "max_isometric_force_n": 430.0,
+          "moment_nm": -45.87875990969926
+        }
+      ]
+    },
+    "scapula_abduction_l": {
+      "plus_bound_nm": 181.96868084713762,
+      "minus_bound_nm": 330.4308400910513,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_TrapeziusScapula_S_l",
+          "moment_arm_m": -0.07617056310373696,
+          "max_isometric_force_n": 1043.0,
+          "moment_nm": -79.44589731719765
+        },
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": -0.07783660835407925,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -48.59339459545168
+        },
+        {
+          "muscle": "seth_SerratusAnterior_I_l",
+          "moment_arm_m": 0.10695184871058035,
+          "max_isometric_force_n": 430.0,
+          "moment_nm": 45.98929494554955
+        },
+        {
+          "muscle": "seth_SerratusAnterior_M_l",
+          "moment_arm_m": 0.08158460434748098,
+          "max_isometric_force_n": 508.0,
+          "moment_nm": 41.444979008520335
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_M_l",
+          "moment_arm_m": -0.0849712725856258,
+          "max_isometric_force_n": 470.4,
+          "moment_nm": -39.97048662427837
+        },
+        {
+          "muscle": "seth_Rhomboideus_I_l",
+          "moment_arm_m": -0.09671435791859533,
+          "max_isometric_force_n": 407.4,
+          "moment_nm": -39.40142941603573
+        }
+      ]
+    },
+    "scapula_elevation_l": {
+      "plus_bound_nm": 531.4613274998289,
+      "minus_bound_nm": 552.6695384890547,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": -0.23756378537503076,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -189.69943389766956
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_S_l",
+          "moment_arm_m": -0.08753930203989344,
+          "max_isometric_force_n": 1043.0,
+          "moment_nm": -91.30349202760885
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_I_l",
+          "moment_arm_m": 0.13933215812619548,
+          "max_isometric_force_n": 571.2,
+          "moment_nm": 79.58652872168287
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_I_l",
+          "moment_arm_m": 0.19077605617540533,
+          "max_isometric_force_n": 414.4,
+          "moment_nm": 79.05759767908796
+        },
+        {
+          "muscle": "arm26_BICshort_l",
+          "moment_arm_m": -0.17843619109231734,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": -77.71966739216974
+        },
+        {
+          "muscle": "seth_PectoralisMinor_l",
+          "moment_arm_m": 0.14750179834269797,
+          "max_isometric_force_n": 429.8,
+          "moment_nm": 63.39627292769159
+        }
+      ]
+    },
+    "scapula_upward_rot_l": {
+      "plus_bound_nm": 175.4253768705824,
+      "minus_bound_nm": 182.05088921040385,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_SerratusAnterior_I_l",
+          "moment_arm_m": -0.1575505135060019,
+          "max_isometric_force_n": 430.0,
+          "moment_nm": -67.74672080758081
+        },
+        {
+          "muscle": "seth_Rhomboideus_I_l",
+          "moment_arm_m": 0.11346998352388668,
+          "max_isometric_force_n": 407.4,
+          "moment_nm": 46.22767128763143
+        },
+        {
+          "muscle": "seth_TrapeziusScapula_I_l",
+          "moment_arm_m": -0.09681827609857993,
+          "max_isometric_force_n": 414.4,
+          "moment_nm": -40.121493615251524
+        },
+        {
+          "muscle": "seth_SerratusAnterior_M_l",
+          "moment_arm_m": -0.06430502421833635,
+          "max_isometric_force_n": 508.0,
+          "moment_nm": -32.666952302914865
+        },
+        {
+          "muscle": "seth_LevatorScapulae_l",
+          "moment_arm_m": 0.11267145226352744,
+          "max_isometric_force_n": 280.0,
+          "moment_nm": 31.548006633787683
+        },
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": 0.022006359864783442,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": 17.572518479226876
+        }
+      ]
+    },
+    "scapula_winging_l": {
+      "plus_bound_nm": 674.6136922283807,
+      "minus_bound_nm": 571.0192594596974,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": -0.2192226296902987,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -175.05365426029732
+        },
+        {
+          "muscle": "seth_SerratusAnterior_I_l",
+          "moment_arm_m": -0.24335084787371314,
+          "max_isometric_force_n": 430.0,
+          "moment_nm": -104.64086458569665
+        },
+        {
+          "muscle": "seth_SerratusAnterior_M_l",
+          "moment_arm_m": -0.19981741137690623,
+          "max_isometric_force_n": 508.0,
+          "moment_nm": -101.50724497946837
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_I_l",
+          "moment_arm_m": 0.17765030974335094,
+          "max_isometric_force_n": 571.2,
+          "moment_nm": 101.47385692540206
+        },
+        {
+          "muscle": "seth_LatissimusDorsi_M_l",
+          "moment_arm_m": 0.3087378906879446,
+          "max_isometric_force_n": 315.0,
+          "moment_nm": 97.25243556670254
+        },
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": 0.15292051755097424,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 95.46827910707322
+        }
+      ]
+    },
+    "arm_flex_r": {
+      "plus_bound_nm": 116.46048329644356,
+      "minus_bound_nm": 169.92629772114927,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_DeltoideusScapula_P_r",
+          "moment_arm_m": -0.04962706637722738,
+          "max_isometric_force_n": 1324.4,
+          "moment_nm": -65.72608670999995
+        },
+        {
+          "muscle": "seth_TeresMajor_r",
+          "moment_arm_m": -0.039055489630568416,
+          "max_isometric_force_n": 851.2,
+          "moment_nm": -33.244032773539836
+        },
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": -0.0397635299353768,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -31.751973923997085
+        },
+        {
+          "muscle": "seth_DeltoideusScapula_M_r",
+          "moment_arm_m": 0.010311371931315575,
+          "max_isometric_force_n": 2597.8,
+          "moment_nm": 26.786882003171602
+        },
+        {
+          "muscle": "seth_DeltoideusClavicle_A_r",
+          "moment_arm_m": 0.032287311480201294,
+          "max_isometric_force_n": 707.7,
+          "moment_nm": 22.849730334538457
+        },
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": 0.022718674455660906,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 14.183268462669103
+        }
+      ]
+    },
+    "arm_add_r": {
+      "plus_bound_nm": 151.5986390862334,
+      "minus_bound_nm": 151.4643897009545,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_DeltoideusScapula_M_r",
+          "moment_arm_m": -0.031624453794796344,
+          "max_isometric_force_n": 2597.8,
+          "moment_nm": -82.15400606812194
+        },
+        {
+          "muscle": "seth_Coracobrachialis_r",
+          "moment_arm_m": 0.05378037223517773,
+          "max_isometric_force_n": 648.2,
+          "moment_nm": 34.860437282842206
+        },
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": 0.02597418643719421,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": 20.74090735382832
+        },
+        {
+          "muscle": "arm26_BICshort_r",
+          "moment_arm_m": 0.03728897380420963,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 16.241585430161546
+        },
+        {
+          "muscle": "seth_Infraspinatus_I_r",
+          "moment_arm_m": 0.015543448599184348,
+          "max_isometric_force_n": 1037.4,
+          "moment_nm": 16.124773576793842
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_M_r",
+          "moment_arm_m": 0.02349364038225336,
+          "max_isometric_force_n": 683.2,
+          "moment_nm": 16.050855109155496
+        }
+      ]
+    },
+    "arm_rot_r": {
+      "plus_bound_nm": 81.26339561544283,
+      "minus_bound_nm": 90.18894258584336,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_Infraspinatus_I_r",
+          "moment_arm_m": -0.028762047847473573,
+          "max_isometric_force_n": 1037.4,
+          "moment_nm": -29.837748436969086
+        },
+        {
+          "muscle": "seth_Infraspinatus_S_r",
+          "moment_arm_m": -0.02819622747496415,
+          "max_isometric_force_n": 967.4,
+          "moment_nm": -27.277030459280315
+        },
+        {
+          "muscle": "seth_Subscapularis_I_r",
+          "moment_arm_m": 0.02007412676919146,
+          "max_isometric_force_n": 854.0,
+          "moment_nm": 17.143304260889508
+        },
+        {
+          "muscle": "seth_Subscapularis_M_r",
+          "moment_arm_m": 0.022592977842215284,
+          "max_isometric_force_n": 609.0,
+          "moment_nm": 13.759123505909107
+        },
+        {
+          "muscle": "seth_DeltoideusScapula_M_r",
+          "moment_arm_m": -0.00508301244568315,
+          "max_isometric_force_n": 2597.8,
+          "moment_nm": -13.204649731395687
+        },
+        {
+          "muscle": "seth_TeresMinor_r",
+          "moment_arm_m": -0.017519263203819704,
+          "max_isometric_force_n": 695.8,
+          "moment_nm": -12.18990333721775
+        }
+      ]
+    },
+    "elbow_flex_r": {
+      "plus_bound_nm": 22.919768839426542,
+      "minus_bound_nm": 43.71561635677623,
+      "muscles": 6,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": -0.021354691643272614,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -17.052148370986046
+        },
+        {
+          "muscle": "arm26_BRA_r",
+          "moment_arm_m": 0.016065403946087072,
+          "max_isometric_force_n": 987.26,
+          "moment_nm": 15.860730699813923
+        },
+        {
+          "muscle": "arm26_TRIlat_r",
+          "moment_arm_m": -0.021354691643272614,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -13.331733992895092
+        },
+        {
+          "muscle": "arm26_TRImed_r",
+          "moment_arm_m": -0.021354691643272614,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -13.331733992895092
+        },
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": 0.0066603496118474315,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 4.158056262676351
+        },
+        {
+          "muscle": "arm26_BICshort_r",
+          "moment_arm_m": 0.0066603496118474315,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 2.9009818769362674
+        }
+      ]
+    },
+    "arm_flex_l": {
+      "plus_bound_nm": 116.4604832964435,
+      "minus_bound_nm": 169.92629772114927,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_DeltoideusScapula_P_l",
+          "moment_arm_m": -0.049627066377227386,
+          "max_isometric_force_n": 1324.4,
+          "moment_nm": -65.72608670999995
+        },
+        {
+          "muscle": "seth_TeresMajor_l",
+          "moment_arm_m": -0.039055489630568395,
+          "max_isometric_force_n": 851.2,
+          "moment_nm": -33.24403277353982
+        },
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": -0.0397635299353768,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -31.751973923997085
+        },
+        {
+          "muscle": "seth_DeltoideusScapula_M_l",
+          "moment_arm_m": 0.01031137193131557,
+          "max_isometric_force_n": 2597.8,
+          "moment_nm": 26.786882003171588
+        },
+        {
+          "muscle": "seth_DeltoideusClavicle_A_l",
+          "moment_arm_m": 0.032287311480201274,
+          "max_isometric_force_n": 707.7,
+          "moment_nm": 22.849730334538442
+        },
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": 0.022718674455660916,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 14.183268462669108
+        }
+      ]
+    },
+    "arm_add_l": {
+      "plus_bound_nm": 151.59863908623373,
+      "minus_bound_nm": 151.46438970095457,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_DeltoideusScapula_M_l",
+          "moment_arm_m": -0.031624453794796344,
+          "max_isometric_force_n": 2597.8,
+          "moment_nm": -82.15400606812194
+        },
+        {
+          "muscle": "seth_Coracobrachialis_l",
+          "moment_arm_m": 0.05378037223517773,
+          "max_isometric_force_n": 648.2,
+          "moment_nm": 34.860437282842206
+        },
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": 0.025974186437194218,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": 20.740907353828327
+        },
+        {
+          "muscle": "arm26_BICshort_l",
+          "moment_arm_m": 0.0372889738042096,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 16.241585430161532
+        },
+        {
+          "muscle": "seth_Infraspinatus_I_l",
+          "moment_arm_m": 0.015543448599184311,
+          "max_isometric_force_n": 1037.4,
+          "moment_nm": 16.124773576793807
+        },
+        {
+          "muscle": "seth_PectoralisMajorThorax_M_l",
+          "moment_arm_m": 0.023493640382253364,
+          "max_isometric_force_n": 683.2,
+          "moment_nm": 16.0508551091555
+        }
+      ]
+    },
+    "arm_rot_l": {
+      "plus_bound_nm": 81.2633956154428,
+      "minus_bound_nm": 90.18894258584339,
+      "muscles": 22,
+      "top": [
+        {
+          "muscle": "seth_Infraspinatus_I_l",
+          "moment_arm_m": -0.028762047847473576,
+          "max_isometric_force_n": 1037.4,
+          "moment_nm": -29.83774843696909
+        },
+        {
+          "muscle": "seth_Infraspinatus_S_l",
+          "moment_arm_m": -0.02819622747496417,
+          "max_isometric_force_n": 967.4,
+          "moment_nm": -27.277030459280336
+        },
+        {
+          "muscle": "seth_Subscapularis_I_l",
+          "moment_arm_m": 0.020074126769191458,
+          "max_isometric_force_n": 854.0,
+          "moment_nm": 17.143304260889504
+        },
+        {
+          "muscle": "seth_Subscapularis_M_l",
+          "moment_arm_m": 0.0225929778422153,
+          "max_isometric_force_n": 609.0,
+          "moment_nm": 13.759123505909118
+        },
+        {
+          "muscle": "seth_DeltoideusScapula_M_l",
+          "moment_arm_m": -0.005083012445683151,
+          "max_isometric_force_n": 2597.8,
+          "moment_nm": -13.204649731395689
+        },
+        {
+          "muscle": "seth_TeresMinor_l",
+          "moment_arm_m": -0.017519263203819704,
+          "max_isometric_force_n": 695.8,
+          "moment_nm": -12.18990333721775
+        }
+      ]
+    },
+    "elbow_flex_l": {
+      "plus_bound_nm": 22.919768839426983,
+      "minus_bound_nm": 43.715616356776195,
+      "muscles": 6,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": -0.021354691643272593,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -17.052148370986032
+        },
+        {
+          "muscle": "arm26_BRA_l",
+          "moment_arm_m": 0.01606540394608752,
+          "max_isometric_force_n": 987.26,
+          "moment_nm": 15.860730699814365
+        },
+        {
+          "muscle": "arm26_TRIlat_l",
+          "moment_arm_m": -0.021354691643272593,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -13.33173399289508
+        },
+        {
+          "muscle": "arm26_TRImed_l",
+          "moment_arm_m": -0.021354691643272593,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -13.33173399289508
+        },
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": 0.006660349611847431,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 4.158056262676351
+        },
+        {
+          "muscle": "arm26_BICshort_l",
+          "moment_arm_m": 0.006660349611847431,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 2.900981876936267
+        }
+      ]
+    }
+  },
+  "baseline_arm_bounds_nm": {
+    "arm_flex_r": {
+      "plus_bound_nm": 18.713500876859737,
+      "minus_bound_nm": 31.751973923997117,
+      "muscles": 3,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": -0.039763529935376844,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -31.751973923997117
+        },
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": 0.02271867445566074,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 14.183268462668998
+        },
+        {
+          "muscle": "arm26_BICshort_r",
+          "moment_arm_m": 0.01040093767607388,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 4.530232414190739
+        }
+      ]
+    },
+    "arm_add_r": {
+      "plus_bound_nm": 36.982492783989876,
+      "minus_bound_nm": 10.731598715348147,
+      "muscles": 3,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": 0.025974186437194197,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": 20.74090735382831
+        },
+        {
+          "muscle": "arm26_BICshort_r",
+          "moment_arm_m": 0.037288973804209674,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 16.241585430161567
+        },
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": -0.017189810532353272,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -10.731598715348147
+        }
+      ]
+    },
+    "arm_rot_r": {
+      "plus_bound_nm": 5.557038232699691,
+      "minus_bound_nm": 2.9130626239282207,
+      "muscles": 3,
+      "top": [
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": 0.005405173473373289,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 3.374449799426944
+        },
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": -0.0036480772227724047,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -2.9130626239282207
+        },
+        {
+          "muscle": "arm26_BICshort_r",
+          "moment_arm_m": 0.005010993739720697,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 2.182588433272747
+        }
+      ]
+    },
+    "elbow_flex_r": {
+      "plus_bound_nm": 22.919768839426332,
+      "minus_bound_nm": 43.71561635677611,
+      "muscles": 6,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_r",
+          "moment_arm_m": -0.021354691643272555,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -17.052148370986
+        },
+        {
+          "muscle": "arm26_BRA_r",
+          "moment_arm_m": 0.016065403946086868,
+          "max_isometric_force_n": 987.26,
+          "moment_nm": 15.86073069981372
+        },
+        {
+          "muscle": "arm26_TRIlat_r",
+          "moment_arm_m": -0.021354691643272555,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -13.331733992895055
+        },
+        {
+          "muscle": "arm26_TRImed_r",
+          "moment_arm_m": -0.021354691643272555,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -13.331733992895055
+        },
+        {
+          "muscle": "arm26_BIClong_r",
+          "moment_arm_m": 0.0066603496118474255,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 4.1580562626763475
+        },
+        {
+          "muscle": "arm26_BICshort_r",
+          "moment_arm_m": 0.0066603496118474255,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 2.9009818769362647
+        }
+      ]
+    },
+    "arm_flex_l": {
+      "plus_bound_nm": 18.713500876859808,
+      "minus_bound_nm": 31.751973923997117,
+      "muscles": 3,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": -0.039763529935376844,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -31.751973923997117
+        },
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": 0.022718674455660854,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 14.18326846266907
+        },
+        {
+          "muscle": "arm26_BICshort_l",
+          "moment_arm_m": 0.01040093767607388,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 4.530232414190739
+        }
+      ]
+    },
+    "arm_add_l": {
+      "plus_bound_nm": 36.982492783989876,
+      "minus_bound_nm": 10.731598715348122,
+      "muscles": 3,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": 0.025974186437194197,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": 20.74090735382831
+        },
+        {
+          "muscle": "arm26_BICshort_l",
+          "moment_arm_m": 0.037288973804209674,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 16.241585430161567
+        },
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": -0.01718981053235323,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -10.731598715348122
+        }
+      ]
+    },
+    "arm_rot_l": {
+      "plus_bound_nm": 5.557038232699716,
+      "minus_bound_nm": 2.9130626239282207,
+      "muscles": 3,
+      "top": [
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": 0.005405173473373329,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 3.3744497994269693
+        },
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": -0.0036480772227724047,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -2.9130626239282207
+        },
+        {
+          "muscle": "arm26_BICshort_l",
+          "moment_arm_m": 0.005010993739720697,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 2.182588433272747
+        }
+      ]
+    },
+    "elbow_flex_l": {
+      "plus_bound_nm": 22.91976883942828,
+      "minus_bound_nm": 43.71561635677611,
+      "muscles": 6,
+      "top": [
+        {
+          "muscle": "arm26_TRIlong_l",
+          "moment_arm_m": -0.021354691643272555,
+          "max_isometric_force_n": 798.52,
+          "moment_nm": -17.052148370986
+        },
+        {
+          "muscle": "arm26_BRA_l",
+          "moment_arm_m": 0.016065403946088838,
+          "max_isometric_force_n": 987.26,
+          "moment_nm": 15.860730699815667
+        },
+        {
+          "muscle": "arm26_TRIlat_l",
+          "moment_arm_m": -0.021354691643272555,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -13.331733992895055
+        },
+        {
+          "muscle": "arm26_TRImed_l",
+          "moment_arm_m": -0.021354691643272555,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": -13.331733992895055
+        },
+        {
+          "muscle": "arm26_BIClong_l",
+          "moment_arm_m": 0.0066603496118474255,
+          "max_isometric_force_n": 624.3,
+          "moment_nm": 4.1580562626763475
+        },
+        {
+          "muscle": "arm26_BICshort_l",
+          "moment_arm_m": 0.0066603496118474255,
+          "max_isometric_force_n": 435.56,
+          "moment_nm": 2.9009818769362647
+        }
+      ]
+    }
+  },
+  "press_up": {
+    "per_axis": {
+      "clav_prot_r": {
+        "plus_bound_nm": 211.55629154886162,
+        "minus_bound_nm": 431.1974589317357,
+        "weaker_direction_nm": 211.55629154886162,
+        "force_at_st_lever_n": 1968.8641115203266
+      },
+      "clav_elev_r": {
+        "plus_bound_nm": 402.70316194276194,
+        "minus_bound_nm": 382.6085650246175,
+        "weaker_direction_nm": 382.6085650246175,
+        "force_at_st_lever_n": 3560.774614274591
+      },
+      "scapula_abduction_r": {
+        "plus_bound_nm": 181.96868084713773,
+        "minus_bound_nm": 330.4308400910514,
+        "weaker_direction_nm": 181.96868084713773,
+        "force_at_st_lever_n": 1693.504846949344
+      },
+      "scapula_elevation_r": {
+        "plus_bound_nm": 552.6695384890546,
+        "minus_bound_nm": 531.4613274998284,
+        "weaker_direction_nm": 531.4613274998284,
+        "force_at_st_lever_n": 4946.083743076434
+      },
+      "scapula_upward_rot_r": {
+        "plus_bound_nm": 182.05088921040326,
+        "minus_bound_nm": 175.42537687058248,
+        "weaker_direction_nm": 175.42537687058248,
+        "force_at_st_lever_n": 1632.609109574252
+      },
+      "scapula_winging_r": {
+        "plus_bound_nm": 674.6136922283782,
+        "minus_bound_nm": 571.019259459694,
+        "weaker_direction_nm": 571.019259459694,
+        "force_at_st_lever_n": 5314.232532183725
+      }
+    },
+    "chain": {
+      "girdle (scapulothoracic, binding axis scapula_upward_rot_r)": {
+        "capacity_nm": 175.42537687058248,
+        "lever_m": 0.10745093595387907,
+        "force_n": 1632.609109574252
+      },
+      "shoulder (arm_flex_r, weaker direction)": {
+        "capacity_nm": 116.46048329644356,
+        "lever_m": 0.5701101985756925,
+        "force_n": 204.2771442913967
+      },
+      "elbow (elbow_flex_r, extension)": {
+        "capacity_nm": 43.71561635677623,
+        "lever_m": 0.2534026305833229,
+        "force_n": 172.51445360351863
+      }
+    },
+    "weakest_link": "elbow (elbow_flex_r, extension)",
+    "girdle_per_arm_n": 1632.609109574252,
+    "readings": {
+      "arms_straight_girdle_only": {
+        "both_arms_n": 3265.218219148504,
+        "body_weights": 4.290041813742472,
+        "limited_by": "girdle, axis scapula_upward_rot_r",
+        "geometry": "load line through the elbow and glenohumeral centres, so only the scapula needs holding"
+      },
+      "worst_case_lever": {
+        "both_arms_n": 345.02890720703726,
+        "body_weights": 0.4533199129502779,
+        "limited_by": "elbow (elbow_flex_r, extension)",
+        "geometry": "hand force perpendicular to each segment at full segment length; a floor on what a bent arm can hold"
+      }
+    },
+    "binding_axis": "scapula_upward_rot_r",
+    "per_arm_n": 172.51445360351863,
+    "both_arms_n": 345.02890720703726,
+    "body_weights": 0.4533199129502779,
+    "baseline_bound_n": null,
+    "baseline_reason": "In articulated_spine_v1 the humerus is jointed directly to torso, so at the top of a press-up the hand load reaches the trunk through joint reactions with no muscle in the path. The quantity is not unbounded because the plant is strong; it is undefined because nothing carries it."
+  },
+  "not_claimed": [
+    "This is capacity, not behaviour. Nothing here integrates and nothing here is a controller; the body has not been shown to press itself up.",
+    "Sum(Fmax * |r|) is full activation at optimal fibre length with no force-velocity, no tendon state and no activation dynamics: a ceiling.",
+    "A per-axis sum is not a tension-feasible torque cone.",
+    "Moment arms are pose dependent and these are the rest pose's.",
+    "The lever is a straight-line distance, not the perpendicular distance to a line of action in a press-up pose."
+  ]
+}
