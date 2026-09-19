@@ -3,6 +3,8 @@ from pathlib import Path
 import json,hashlib
 import xml.etree.ElementTree as ET
 
+from ihm.body_constants import ANATOMICAL_MASS_KG
+
 # Body mass is measured on this specimen's own geometry, not inherited. The
 # BioGears StandardMale 77.1107029 kg constant cannot be reconciled with the
 # acquired envelope: the composed fill weighs 31.7461 kg over the 0.032117 m3
@@ -13,7 +15,12 @@ import xml.etree.ElementTree as ET
 # and 0.534 kg (residual density swept over the whole [1000, 1060] band). Only
 # the height in the inherited profile ever came from the atlas.
 MASS_LEDGER='data/derived/interstitial-composition-prior-v1/ledger.json'
-MASS_KG=70.7713
+# Declared once, with its provenance, in ihm/body_constants.py; re-exported here
+# under its historical name because scripts import it from this module. The
+# value is unchanged and build_profile still gates it on the ledger below, so
+# this file remains the thing that refuses to write a profile the composition
+# does not support.
+MASS_KG=ANATOMICAL_MASS_KG
 
 def build_profile(root):
     root=Path(root)

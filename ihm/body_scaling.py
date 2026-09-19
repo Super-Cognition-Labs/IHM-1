@@ -54,6 +54,8 @@ from __future__ import annotations
 
 import math
 
+from .body_constants import ANATOMICAL_MASS_KG
+
 SCHEMA = 'ihm.body-scaling.v1'
 
 
@@ -88,10 +90,11 @@ PRIMITIVES: dict[str, dict] = {
                'leaving it implicit.')),
     'density': dict(
         exponent=0, kind='material', unit='kg/m3',
-        basis=('Tissue composition. The anatomical mass 70.7713 kg is composed by '
+        basis=('Tissue composition. The anatomical mass %.4f kg is composed by '
                'ihm/assembly/profile.py from a voxel partition at sourced '
                'per-constituent densities; those densities are properties of fat, '
-               'muscle, bone and blood, not of the specimen carrying them.')),
+               'muscle, bone and blood, not of the specimen carrying them.'
+               % ANATOMICAL_MASS_KG)),
     'elastic_modulus': dict(
         exponent=0, kind='material', unit='Pa',
         basis=("A material property of the tissue. This repository's own ligament "

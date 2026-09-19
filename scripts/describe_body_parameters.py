@@ -18,6 +18,8 @@ from ihm.body_parameters import (PARAMETERS, MECHANICAL_SOURCE_MASS_KG,   # noqa
                                  ANATOMICAL_STATURE_M, ANATOMICAL_MASS_KG,
                                  ANATOMY_REGISTRATION_SCALE, STATURE_DISAGREEMENT,
                                  MASS_DISAGREEMENT, assert_measured_defaults, resolve)
+from ihm.body_constants import (BIOGEARS_STANDARDMALE_WEIGHT_LB,          # noqa: E402
+                                POUND_KG, BIOGEARS_INITIAL_STOMACH_KG)
 
 STATUS_NOTE = {
     'surfaced': 'already a runtime knob; this schema only names and bounds it',
@@ -72,8 +74,11 @@ def main():
     print('  mechanical (OpenSim Rajagopal subject)')
     print('    source model mass      %12.6f kg   (sum of 22 <Body><mass>)'
           % MECHANICAL_SOURCE_MASS_KG)
-    print('    mass actually asked for%12.6f kg   (unattributed literal, %d call sites)'
-          % (MECHANICAL_TARGET_MASS_KG, 67))
+    print('    mass actually asked for%12.6f kg   (BioGears StandardMale at t=0:'
+          % MECHANICAL_TARGET_MASS_KG)
+    print('                                            %g lb x %g + %g kg stomach,'
+          % (BIOGEARS_STANDARDMALE_WEIGHT_LB, POUND_KG, BIOGEARS_INITIAL_STOMACH_KG))
+    print('                                            exact; see ihm/body_constants.py)')
     print('    stature proxy          %12.6f m    (floor markers to Head marker)'
           % MECHANICAL_STATURE_M)
     print('  anatomical (BodyParts3D atlas + BioGears)')

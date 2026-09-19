@@ -6232,3 +6232,206 @@ What has changed is that the parametrization no longer stops at the scaffold.
 
    CAVEAT: four CT subjects registered onto a male-derived body. A statement about the
    registration and this body's thorax, not about any subject's anatomy.
+
+---
+
+## 6. The two-body constants, counted — 2026-09-18
+
+Item 0.3 of `docs/WORKBENCH_AUTHENTICITY.md`: *two bodies with different stature
+and different mass, and a mass that is "a bare literal in 67 places across 58
+files, no derivation found".* This section is the audit that sentence asked for.
+Three things came out of it, and the first two were not what the task expected.
+
+### 6.1 The mechanical mass HAS a derivation, and it is a physiology number
+
+`MECHANICAL_TARGET_MASS_KG = 77.6122029` was recorded as unattributed in
+`CLAUDE.md`, in `ihm/body_parameters.py` and in `WORKBENCH_AUTHENTICITY.md`.
+It is the **BioGears StandardMale patient's weight at t = 0**:
+
+| term | value | where |
+|---|---:|---|
+| declared patient weight, 170 lb × 0.45359237 | 77.1107029 kg | `.../patients/StandardMale.xml:6` (`unit="lb" value="170"`) |
+| + stomach water, 0.5 L | 0.5 kg | `StandardMale@0s.xml:1005` |
+| + calcium, 500 mg | 0.0005 kg | `:1003` |
+| + sodium, 1 g | 0.001 kg | `:1004` |
+| **= ** | **77.6122029 kg** | |
+
+The sum equals the constant in **exact IEEE-754 double arithmetic** — not to a
+tolerance; `170*0.45359237 + 0.5015 == 77.6122029` is `True`. And the number is
+already on disk verbatim, as `<Weight unit="kg" value="77.6122029"/>` at
+`data/raw/physiology/biogears/share/data/states/StandardMale@0s.xml:8` and as
+`<RestingPatientMass_kg>` at `:1235`, in **8 of the 19** BioGears `*@0s` state
+files (`Male_22_Fit_Soldier`, `Male_25_Normal`, `StandardMale`, `Male_44_*`).
+
+**What that means is a modelling finding, not a tidy-up.** The mechanical plant
+is scaled to the *fed* weight of a **physiology** reference patient. It is not
+an anthropometric measurement of the OpenSim subject, and it is the same 170 lb
+that this repository's own composition ledger rejected as unreachable in the
+acquired envelope (`ihm/assembly/profile.py`: it would need a 1185.8 kg/m³ void
+and a negative Siri fat fraction). So the anatomy refused the BioGears patient's
+declared weight, and the mechanics adopted the same patient's weight plus half a
+litre of water — from opposite ends of the same repository, neither referring to
+the other.
+
+**Established vs inferred.** The arithmetic identity and the eight verbatim
+occurrences are established and are re-derived on every run of
+`scripts/verify_body_constants.py`. The *intent* — that the literal was lifted so
+that mechanics and physiology would agree on one body weight — is inference,
+from the commit that introduced it (`756078c`, "Integrate continuing native
+articulation, metabolic states and canonical feedback", 5 Sep 2026, where it
+first appears as `target_mass_kg=77.6122029` in an acceptance script written
+beside the metabolic-state work). Nothing states it.
+
+The four candidate derivations checked before this one all remain refuted, and
+are kept in `ihm/body_constants.py` so a future reader re-checks them rather than
+re-proposing them: not the summed source-model masses (85.26984854173146 kg), not
+the anatomical composed mass (70.7713 kg), not 170 lb alone, and not the trial's
+ground reaction force (60.83 kg, a duty-cycle artefact). The superseded guess —
+"most likely the AddBiomechanics subject's measured mass" — is refuted by the
+identity being exact.
+
+### 6.2 The count was wrong, and the instrument is why
+
+"67 places across 58 files" was a 2026-09-10 figure that had not been re-measured.
+It is also *not a number the repository can have one of*, because two defensible
+denominators differ by a factor of 600.
+
+**The instrument trap, worth more than the count.** The shell `grep` in this
+environment is a wrapper function that passes `--ignore-files`, so it silently
+skips everything in `.gitignore` — here `data/raw`, `data/derived`,
+`data/runtime`, `artifacts`, `logs`, `dist`, `test-results`, `.venv`. A
+repository-wide `grep -rn` from the prompt returned **124** lines in 0.031 s;
+`/usr/bin/grep -rnI` over the same tree returns **67,932**. The fast answer looks
+exactly like the slow one. **Quote `/usr/bin/grep` or `git grep`, and say which.**
+
+Exact literals only, `/usr/bin/grep -rnI <pattern> <entry>`, `.git` excluded, one
+pass at 2026-09-18 (lines/files). Rounded forms are *not* counted here; see 6.3.
+
+| entry | `77.6122029` | `1.7972725296074763` | `70.7713` | `1.7194712` |
+|---|---:|---:|---:|---:|
+| `ihm/` | 5/1 | 2/1 | 3/1 | 3/2 |
+| `scripts/` | 29/24 | 0/0 | 10/7 | 0/0 |
+| `docs/` | 26/19 | 0/0 | 16/12 | 4/4 |
+| `app/` | 0/0 | 0/0 | 0/0 | 1/1 |
+| `artifacts/` | 0/0 | 0/0 | 0/0 | 3/3 |
+| `data/` | 67,871/42,485 | 19/6 | 300/247 | 1,243/1,242 |
+| `CLAUDE.md` | 1/1 | 0/0 | 1/1 | 0/0 |
+| **whole tree** | **67,932/42,554** | **21/7** | **330/268** | **1,254/1,252** |
+| **tracked only** (`git grep`) | **109/82** | **0/0** | **27/20** | **6/6** |
+
+Within `data/`, the mechanical mass is dominated by two subtrees measured
+separately: `data/research/` **40,146 lines in 40,020 files** and `data/derived/`
+**27,388 in 2,267**, plus `data/models/` 60/43, `data/runtime/` 142/88 and
+`data/raw/` 16/8 — the last being the BioGears state files, i.e. the *source*,
+not a copy. (The tree is being written to by other jobs; these subtree figures
+were taken minutes apart and sum to 119 lines short of the `data/` row.)
+
+### 6.3 Classification, and what was actually changed
+
+**(a) genuine input to the mechanical plant — LEFT ALONE.**
+`data/raw/physiology/biogears/share/data/states/*@0s.xml` is the *origin* of
+`77.6122029`. It is vendored upstream BioGears and is not ours to edit; it is
+now the artefact the guard reads the constant back out of.
+
+**(b) recorded history in a derived artefact or a dated doc — LEFT ALONE, and
+that is the majority by three orders of magnitude.** 67,871 lines under `data/`,
+26 in `docs/`. Each says what a particular run was handed. Rewriting them would
+falsify the record, and `data/research/hair_*.json` additionally carries
+`77.61218724193209` kg — the constant *minus* 1.5658 × 10⁻⁵ kg of separately
+partitioned hair, a derived residual and not a transcription error.
+
+**(c) a copy that should reference a single source.** Where they are:
+
+| where | count | done? |
+|---|---|---|
+| `ihm/**` | 8 lines in 4 files, before | **yes — now 0 outside `ihm/body_constants.py`** |
+| `scripts/**` | 22 live literals in 20 files (+7 prose lines in 5) | **no — see below** |
+| `app/src/clothing.js:79` | 1 (`1.7194712` as a live divisor) | **no — outside this task's territory** |
+
+What was unified, all behaviour-preserving to the exact float and verified by
+diffing the full `resolve()` output and the whole `PARAMETERS` schema against the
+pre-change module (identical but for the deliberately rewritten provenance
+prose):
+
+* **`ihm/body_constants.py` (new)** — every constant declared once, with its
+  provenance, what body it describes, and what it is legitimate to use it for.
+  It imports nothing, on purpose.
+* `ihm/body_parameters.py` — imports and **re-exports** all of them under their
+  historical names, so the 46 files that read `from ihm.body_parameters import …`
+  are untouched. It keeps the schema, ranges and consumer lists.
+* `ihm/assembly/profile.py` — `MASS_KG` is now `ANATOMICAL_MASS_KG`. It still
+  gates itself on the composition ledger first, so the chain is
+  ledger → constant → `profile.json` → `assert_measured_defaults`. Rebuilt
+  `profile.json` is **byte-identical** (sha256 `824d7db5…`).
+* `ihm/body_scaling.py` — the `density` primitive's prose interpolates the
+  constant; the emitted string is character-identical.
+
+**Two copies were deliberately kept as *checked mirrors* rather than imports**,
+declared in `body_constants.MIRRORS` and compared for exact equality on every
+guard run:
+
+* `ihm/assembly/garment_wardrobe.py:REFERENCE_HEIGHT_M`. That module promises in
+  its own docstring to import numpy and scipy only, because
+  `scripts/fit_garments_to_envelope.py` loads it out of process in the vendored
+  libigl venv. An import was *tested* and does work there today — `import ihm`
+  pulls numpy and scipy and nothing else — and was rejected anyway, because
+  taking it would make garment fitting depend on whatever `ihm/__init__.py` grows
+  later. A checked mirror keeps the declared import surface and still cannot drift.
+* `ihm/assembly/anatomy_pose.py:REGISTRATION_SCALE`. That module takes
+  `ihm.body_parameters` only as a deferred import inside a function, deliberately,
+  and it is the one verified to 7.8 × 10⁻¹⁶ against Simbody. Not edited for
+  tidiness.
+
+### 6.4 The guard
+
+`scripts/verify_body_constants.py`. `.venv/bin/python scripts/verify_body_constants.py --self-test`.
+
+* **A** — every `.py` under `ihm/` parsed with `ast`; any numeric literal equal to
+  a declared constant fails. This catches a literal *however it is spelled*:
+  `77.6122029`, `7.76122029e1` and `77.61220290` are one float and three strings.
+* **B** — a text scan for the digit forms, including the rounded ones, because a
+  docstring that still says 1.7973 m after the constant moved is a reader misled.
+* **B2** — `ihm/` must contain no non-`.py` file, since A and B read Python only.
+  It contains 0 today; a JSON config dropped in there would otherwise sit outside
+  both scans and the "zero literals" claim would quietly become false.
+* **C** — the mirrors, compared with `==` and no tolerance. A mirror is a copy,
+  not an approximation, and a tolerance would hide a typo.
+* **D** — every constant against its source: the source mass re-added from the
+  `.osim`, the stature re-measured from its markers, the anatomical pair re-read
+  from `profile.json` and the composition ledger, and the mechanical mass
+  re-derived **two independent ways** — the exact arithmetic identity and the
+  BioGears state file parsed as XML.
+* **E** — `ihm.body_parameters` still hands out the same objects.
+* **idempotence** — the scan is run twice over the same tree and the results must
+  be equal. Not a known-answer check: a known answer tests the value, idempotence
+  tests whether the instrument is a function at all.
+* **`--self-test`** — plants a literal, a rounded number in a docstring, and a
+  drifted mirror in a scratch tree, and asserts each check reports them. Without
+  it, "0 raw literals found" is indistinguishable from "the scanner looked at
+  nothing".
+
+What the guard does **not** police, each with a reason in the source: `scripts/**`
+(counted, not changed); `data/**`, `out/`, `logs/` and dated docs entries
+(recorded history); `77.1107029`, which must appear inside the argument for why
+it was rejected; and `0.963`, which is three significant figures and too easy to
+collide with — it is pinned by the mirror check instead.
+
+### 6.5 What was NOT done, deliberately
+
+**The two bodies are still two bodies** — 0.66% apart in stature, 9.7% in mass.
+Nerve and skin-patch routes scale by `stature / ANATOMICAL_STATURE_M`; the
+displayed anatomy and the plant scale by `stature / MECHANICAL_STATURE_M`
+(`scripts/materialize_body_variant.py:193`, `known_seam`). Making them one body
+means choosing a subject, re-fitting the path polynomials and re-composing the
+mass ledger. That is a modelling decision and no part of it belongs in a refactor.
+What has changed is that the seam is declared in **one** place and a guard stops
+it drifting.
+
+**The 22 live literals in `scripts/`** are each a one-line, behaviour-preserving
+`from ihm.body_constants import …`. They were left because they are outside this
+task's territory — and because they are still being *added*: four of the files in
+the table above (`verify_articulated_spine.py`, `verify_display_pose.py`,
+`verify_plant_fidelity.py`, `measure_display_pose_disagreement.py`) did not carry
+the literal at the start of this audit and do now, written by other work in
+progress the same day. **A guard that covers `ihm/` only does not stop the number
+spreading through `scripts/`**, and that is the next thing to close.

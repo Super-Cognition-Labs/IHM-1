@@ -34,31 +34,36 @@ import hashlib, json, math
 # ---------------------------------------------------------------------------
 # Measured constants.  Every one is recomputed by ``assert_measured_defaults``
 # from the artifact named beside it, so none of them can drift away from its
-# own evidence.  That is the pattern ``ihm/assembly/profile.py`` uses for
-# ``MASS_KG`` and the reason its 70.7713 kg is trustworthy.
+# own evidence.  That is the pattern ``ihm/assembly/profile.py`` uses for its
+# ``MASS_KG`` and the reason that number is trustworthy.
+#
+# THE NUMBERS THEMSELVES ARE NOT WRITTEN HERE.  Every one of the two bodies'
+# defining constants is declared exactly once, with its provenance, in
+# ``ihm/body_constants.py``, and imported below.  They are re-exported under
+# their historical names so that the forty-odd call sites that already read
+# ``from ihm.body_parameters import ...`` keep working unchanged; this module
+# stays the place that gives them a schema, a range and a consumer list.
+# ``scripts/verify_body_constants.py`` fails if a raw literal of any of them
+# reappears anywhere under ``ihm/``.
 # ---------------------------------------------------------------------------
 
-MECHANICAL_MODEL = ('data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/'
-                    'example3DWalking/subject_walk_scaled.osim')
+from .body_constants import (            # noqa: F401  (re-exported by design)
+    ANATOMICAL_MASS_KG,
+    ANATOMICAL_PROFILE,
+    ANATOMICAL_STATURE_M,
+    ANATOMY_REGISTRATION_SCALE,
+    KNOWN_SEAM,
+    MASS_DISAGREEMENT,
+    MECHANICAL_MODEL,
+    MECHANICAL_SOURCE_MASS_KG,
+    MECHANICAL_STATURE_M,
+    MECHANICAL_TARGET_MASS_KG,
+    STATURE_DISAGREEMENT,
+    SUPERSEDED_BIOGEARS_STANDARDMALE_MASS_KG,
+)
+
 MECHANICAL_PATHSET = ('data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/'
                       'example3DWalking/subject_walk_scaled_FunctionBasedPathSet.xml')
-ANATOMICAL_PROFILE = 'data/derived/canonical/profile.json'
-
-#: Sum of the 22 ``<Body><mass>`` entries in the source ``.osim``.  This is what
-#: the native engine divides into ``target_mass_kg`` to get its uniform
-#: ``mass_scale`` (``scripts/native_mechanical_stream.cpp``, line 51).
-MECHANICAL_SOURCE_MASS_KG = 85.26984854173146
-
-#: The mass every mechanical script actually asks for.  It is a literal, and no
-#: derivation for it exists anywhere in this repository: it is not the source
-#: model's mass (85.270 kg), not the anatomical body's composed mass
-#: (70.7713 kg), not the superseded BioGears StandardMale constant
-#: (77.1107029 kg), and not recoverable from the trial's ground reaction force
-#: (mean vertical GRF over ``grf_walk.mot`` gives 60.83 kg, which is a duty-cycle
-#: artefact, not a weight).  It is most likely the AddBiomechanics subject's
-#: measured mass, carried in by hand.  Recorded as unattributed rather than
-#: guessed.
-MECHANICAL_TARGET_MASS_KG = 77.6122029
 
 #: Survey-weighted regression of log weight on log standing height, NHANES
 #: 2017-2018 BMX_J + DEMO_J, 4,822 adults aged 20-79, weighted by WTMEC2YR.
@@ -85,25 +90,6 @@ MASS_STATURE_EXPONENT = 2.034
 #: with different means, and using the within-sex slope is the more faithful
 #: answer to "if I ask for a taller woman, what should she weigh".
 MASS_STATURE_EXPONENT_BY_SEX = {'male': 2.372, 'female': 1.721}
-
-#: Vertical distance, at the model's default pose, from the plane of the
-#: AddBiomechanics ``*Ground`` virtual markers to the ``Head`` marker.  Measured
-#: by ``ihm.native.model_scaling.head_marker_height_m``; see that function for
-#: why this and not a bounding box.
-MECHANICAL_STATURE_M = 1.7972725296074763
-
-#: Head-to-toe extent of the canonical skin mesh (BodyParts3D ``FJ2810``), as
-#: written into ``data/derived/canonical/profile.json`` by
-#: ``ihm/assembly/profile.py``.
-ANATOMICAL_STATURE_M = 1.7194712
-
-#: Composed over the anatomical body's own measured interior; supersedes the
-#: inherited BioGears StandardMale 77.1107029 kg.  See ``profile.py``.
-ANATOMICAL_MASS_KG = 70.7713
-
-#: Fitted similarity scale taking OpenSim body geometry onto the BodyParts3D
-#: atlas (``scripts/bind_anatomy_to_segments.py``; ``docs/ANATOMY_SEGMENT_BINDING.md``).
-ANATOMY_REGISTRATION_SCALE = 0.963
 
 #: Where the sex-stratified proportions come from.  Written by
 #: ``scripts/index_anthropometry.py``; survey-weighted over 4,883 NHANES
@@ -138,16 +124,10 @@ LEG_SEGMENT_BODIES = ('femur_r', 'femur_l', 'tibia_r', 'tibia_l', 'patella_r',
                       'toes_r', 'toes_l')
 
 
-def _rel(x, y):
-    return abs(x - y) / y
-
-
-#: How far apart the two bodies are, as a fraction.  Printed rather than
-#: absorbed, because it is the honest error bar on any statement of the form
-#: "the body is N metres tall".
-STATURE_DISAGREEMENT = _rel(MECHANICAL_STATURE_M * ANATOMY_REGISTRATION_SCALE,
-                            ANATOMICAL_STATURE_M)
-MASS_DISAGREEMENT = _rel(MECHANICAL_TARGET_MASS_KG, ANATOMICAL_MASS_KG)
+# ``STATURE_DISAGREEMENT`` and ``MASS_DISAGREEMENT`` -- how far apart the two
+# bodies are, as a fraction -- are imported from ``ihm.body_constants`` above.
+# They are printed rather than absorbed, because they are the honest error bar
+# on any statement of the form "the body is N metres tall".
 
 
 # ---------------------------------------------------------------------------
@@ -190,21 +170,42 @@ PARAMETERS = (
         name='mass_kg', unit='kg', kind='continuous',
         range=(35.0, 160.0), default=MECHANICAL_TARGET_MASS_KG, status='surfaced',
         body='mechanical',
-        basis=('Unattributed literal. 45 call sites in 41 files now read '
-               'MECHANICAL_TARGET_MASS_KG; 22 lines in 18 files still carry 77.6122029 '
-               '(2026-09-10: docstrings and recorded text, which keep the number, and '
-               'call sites where ihm is not importable before first use). '
+        basis=('The BioGears StandardMale PHYSIOLOGY patient at t = 0: 170 lb '
+               '(%r kg) plus the 0.5015 kg of stomach contents the '
+               'engine seeds (0.5 L water, 500 mg calcium, 1 g sodium). The sum '
+               'is exact in IEEE-754 double arithmetic and the number appears '
+               'verbatim as <Weight unit="kg"> in 8 of the 19 BioGears *@0s '
+               'state files. It is not a mechanical number: the plant is scaled '
+               'to the fed weight of a physiology reference patient, and to the '
+               'same 170 lb this repository\'s own composition ledger rejected '
+               'as unreachable for the anatomical body. Recorded as an '
+               'UNATTRIBUTED LITERAL here and in CLAUDE.md until 2026-09-18, '
+               'when the audit found it; declared once, with the derivation and '
+               'with what remains inference, in ihm/body_constants.py, and '
+               're-derived on every run of scripts/verify_body_constants.py. '
+               'Counted 2026-09-18: '
+               '46 files carry MECHANICAL_TARGET_MASS_KG by name over 106 lines, '
+               'ZERO lines under ihm/ still carry the raw literal '
+               '(scripts/verify_body_constants.py fails if one reappears), and '
+               '24 lines in 20 scripts/ files still do -- 21 of them live '
+               'target_mass_kg= arguments and 3 of them prose. Those 21 are '
+               'behaviour-preserving one-line replacements and are NOT done; '
+               'data/derived/**, data/research/** and dated docs entries carry '
+               'the number as a record of what a run was handed and are left '
+               'alone deliberately. '
                'A SECOND mass is in use: 22 call sites in 21 files -- the stance, posture '
                'and motor-learning line (solve_native_*_stance*, train_native_posture, '
                'collect_body_corpus, finetune_ibm_on_body and the rest) -- pass a literal '
                '70 kg, which is neither this value nor MECHANICAL_SOURCE_MASS_KG '
-               '(85.26984854173146). Those runs are a 70 kg body: their standing weight is '
+               '(%r). Those runs are a 70 kg body: their standing weight is '
                '686.7 N (docs/NATIVE_POSTURAL_CONTROL.md), against 761.38 N here, so contact '
                'forces, stance margins and any learned controller from that line do not '
                'transfer to this body without rescaling. Recorded, not silently changed: '
                'rewriting 70 to this constant would alter every one of those results. See '
-               'MECHANICAL_TARGET_MASS_KG for the four candidate derivations '
-               'that were checked and rejected.'),
+               'ihm/body_constants.py:MECHANICAL_TARGET_MASS_KG for the derivation and '
+               'for the four candidates that were checked and rejected before it.'
+               % (SUPERSEDED_BIOGEARS_STANDARDMALE_MASS_KG,
+                  MECHANICAL_SOURCE_MASS_KG)),
         range_basis=('Measured. The same NHANES sample gives a survey-weighted '
                      '0.5th-99.5th percentile weight of 45.1-164.5 kg over both '
                      'sexes. The declared bound 35-160 kg is close to that and '
@@ -392,9 +393,10 @@ PARAMETERS = (
         range_basis='Prior range; not validated.',
         source=ANATOMICAL_PROFILE,
         consumers=(),
-        limitation=('Declared only. The anatomical mass 70.7713 kg is composed '
+        limitation=('Declared only. The anatomical mass %.4f kg is composed '
                     'from a voxel partition at sourced per-constituent '
-                    'densities, and this fraction is not one of its inputs.'),
+                    'densities, and this fraction is not one of its inputs.'
+                    % ANATOMICAL_MASS_KG),
     ),
     dict(
         name='environment', unit='category', kind='enum',
@@ -585,9 +587,11 @@ def resolve(request=None):
         'stature_scale': stature_scale,
         # The factor for quantities MEASURED ON THE ANATOMICAL BODY -- nerve route
         # lengths, skin-patch route lengths -- when the request is read as the
-        # person's stature.  Those were measured on the 1.7195 m skin, not on the
-        # 1.7973 m scaffold, so scaling them by `stature_scale` gave a "2.03 m"
-        # body the nerves of a 1.942 m one (docs/BODY_PERIPHERAL.md, 18 Sep 2026).
+        # person's stature.  Those were measured on the ANATOMICAL_STATURE_M skin,
+        # not on the MECHANICAL_STATURE_M scaffold, so scaling them by
+        # `stature_scale` gave a "2.03 m" body the nerves of a 1.942 m one
+        # (docs/BODY_PERIPHERAL.md, 18 Sep 2026).  The two statures and the seam
+        # between them are declared in ihm/body_constants.py.
         'anatomical_stature_scale': resolved['stature_m'] / ANATOMICAL_STATURE_M,
         'mass_scale': resolved['mass_kg'] / MECHANICAL_SOURCE_MASS_KG,
         'mass_source': ('requested' if 'mass_kg' in request

@@ -19,7 +19,13 @@ import numpy as np
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
 
-REFERENCE_HEIGHT_M = 1.7194712
+# The anatomical body's stature: the head-to-toe extent of the canonical skin
+# mesh. Declared with its provenance as ANATOMICAL_STATURE_M in
+# ihm/body_constants.py, and MIRRORED here rather than imported because this
+# module promises above to import numpy and scipy only, so that
+# scripts/fit_garments_to_envelope.py can load it inside the vendored libigl
+# venv. scripts/verify_body_constants.py fails if the two stop matching.
+REFERENCE_HEIGHT_M = 1.7194712   # == ihm.body_constants.ANATOMICAL_STATURE_M
 SLAB_AREA_REJECT_M2 = 2.5
 SOURCE_UNITS_PER_M = 10.0  # MakeHuman base mesh is authored in decimetres.
 
