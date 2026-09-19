@@ -1,0 +1,57 @@
+{
+  "schema": "ihm.articulated-spine-variant.v1",
+  "model_path": "data/models/articulated_spine_v1/model.osim",
+  "model_sha256": "b1b8d725d192b81e902b047fc70ec5bc329d67a265be0ef1d74923b6318cc0ea",
+  "catalog_path": "data/models/articulated_spine_v1/catalog.json",
+  "catalog_sha256": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+  "base_model_path": "data/models/engineering_stance_v1/model.osim",
+  "base_model_sha256": "be3baf542b44425c2802095439cabf976eccaad42406564338d20c2deb421d68",
+  "sources": {
+    "data/models/engineering_stance_v1/model.osim": "be3baf542b44425c2802095439cabf976eccaad42406564338d20c2deb421d68",
+    "data/models/engineering_stance_v1/catalog.json": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+    "data/research/cervical_inertia/v2/manifest.json": "1dda3735d5887c5fa8951ccc87704dc947e9e38b2662ee4698e7faac8811f402",
+    "data/research/thoracic_mechanism/native_composition_v1/plan.json": "2098ca532f0d955b0fcc5fe6a8d0042931c297989edb0037632eaa4d3d9ad136",
+    "data/derived/canonical/anatomy.json": "874479e434e2637c08a1f5153de88fdaf138d33f55ae91a3bb7b1578ed891d5f",
+    "data/research/cervical/MASI_HMaleMuscle_HMaleMassDistr.osim": "191d1bfdd328273d644f5822d85457e5e8fefd5037459c17d7f24b27d8b2681a",
+    "data/raw/anatomy/opensim-models/source/Models/Rajagopal/RajagopalLaiUhlrich2023.osim": "8f30d0b64750b87eb7f705907862590535212b4afd7e919faa3fd7d1683d22ec",
+    "scripts/build_articulated_spine.py": "bead8e9142d46456322a948df2cbb0d6b060349438fd1a69cf0112080f7c6b18",
+    "ihm/assembly/cervical_inertia.py": "8b84dbef6321dc7e6fb4d02960bc7c28d9b2f777072f951253d0fe71da79eb69",
+    "data/models/articulated_spine_v1/model.osim": "b1b8d725d192b81e902b047fc70ec5bc329d67a265be0ef1d74923b6318cc0ea",
+    "data/models/articulated_spine_v1/catalog.json": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5"
+  },
+  "muscle_count": 98,
+  "body_count": 25,
+  "default_enabled": false,
+  "native_acceptance_complete": false,
+  "scope": "Adds head/cervical/thoracic bodies, wrists and subtalar joints to engineering_stance_v1 by repartitioning its single torso body. No identified linearization, no stance acceptance, no muscle crosses any new joint: this is a kinematic and inertial variant only.",
+  "not_claimed": [
+    "No linearization.npz: the identified stance plant of engineering_stance_v1 was solved on 22 bodies and 33 coordinates and does not transfer.",
+    "The nine spine/neck coordinates carry no actuator and no muscle. They are free coordinates with a passive stop and viscous damping only.",
+    "thoracic_* ranges are an explicit engineering bound, not a measurement.",
+    "Scapulae and clavicles are not in the thoracic material partition, so the shoulder girdle and both arms still ride torso, not thorax."
+  ],
+  "mass_scale_used": 0.9101951537068372,
+  "joint_centres_torso_frame_m": {
+    "thoracic": [
+      -0.02248832600074327,
+      0.07777191578711196,
+      0.0011903422328554166
+    ],
+    "neck": [
+      -0.03453595610910243,
+      0.37427292673540347,
+      0.0020482888231434077
+    ],
+    "atlantooccipital": [
+      -0.035054024242826415,
+      0.4941264741779331,
+      0.002618029860958802
+    ]
+  },
+  "partition_kg_mass_scaled": {
+    "head": 4.0,
+    "cervical": 3.418919568221101,
+    "thorax": 2.2980530088410562,
+    "torso": 17.93770438819818
+  }
+}
