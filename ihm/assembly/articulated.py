@@ -17,10 +17,8 @@ from .continuous_surface_binding import ContinuousSurfaceBinding,DEFAULT_ASSET
 # blend is fitted to a set of segment supports and ContinuousSurfaceBinding.from_root refuses
 # any other set, so a 25-body variant cannot run on the 22-segment blend. The base entry is
 # the asset every result before 18 Sep 2026 used, passed exactly as the default was.
-SURFACE_BINDINGS={
-    'engineering_stance_v1':DEFAULT_ASSET,
-    'articulated_spine_v1':'data/derived/continuous-surface-binding-articulated-spine-v1/continuous_surface_binding.json.gz',
-}
+from .anatomy_pose import SKIN_BINDINGS as SURFACE_BINDINGS   # one table, owned by anatomy_pose
+assert SURFACE_BINDINGS['engineering_stance_v1']==DEFAULT_ASSET, 'base skin blend must be the historical asset'
 
 BASIS=np.array([[0.,0.,-1.],[0.,1.,0.],[1.,0.,0.]])
 
@@ -143,6 +141,16 @@ class ArticulatedBodyPlant:
         self.native=NativeMechanicalStream(self.root,self.output/'native',environment=environment,target_mass_kg=target,augmented_registration=augmented_registration,surface_contact_manifest=surface_contact_manifest,surface_sensor_indices=surface_sensor_indices,bed_material=bed_material,instance_mass_variant=instance_mass_variant,**fidelity_kwargs,**({'initial_pose':initial_pose} if initial_pose is not None else {}))
         try:
             self.anatomy_plant,registration_payload,self.registration_extension=self._registration_for_native(payload)
+            # Segment contact bundles are cut per segment of the plant they were built for.
+            # The skin bundle's skin_torso.obj is the whole trunk, neck and head; on the
+            # spine variant `torso` is only the lumbar spine, so loading it there would put
+            # the head's skin on the lower back. A wrong contact surface is worse than none.
+            contact=self.mechanical_fidelity.get('segment_contact')
+            if contact:
+                from .plant_options import SEGMENT_CONTACT_BUNDLES
+                built_for=SEGMENT_CONTACT_BUNDLES[contact['id']]['plant']
+                if built_for!=self.anatomy_plant:
+                    raise ValueError(f"Segment contact bundle '{contact['id']}' was built for {built_for}, not {self.anatomy_plant}")
             self.registration=CanonicalRegistration(registration_payload,self.native.snapshot());self.muscle_catalog=self.native.muscle_catalog or native_muscle_catalog(self.root)
             # registration.json is written BEFORE the skin blend is loaded: it is the input the
             # blend's builder takes, so a plant whose blend does not exist yet still leaves

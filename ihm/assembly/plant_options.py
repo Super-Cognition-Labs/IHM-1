@@ -102,6 +102,7 @@ DEFAULT_JOINT_STOP_PROFILE = 'measured_soft'
 # cost of a plant that is collapsing -- two things one number would mix).
 SEGMENT_CONTACT_BUNDLES = {
     'skin': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
         'path': 'data/derived/segment-contact-meshes/skin',
         'layer': 'skin',
         'label': 'Skin exterior, replacing the source feet',
@@ -111,6 +112,7 @@ SEGMENT_CONTACT_BUNDLES = {
                   'Use skin_carried to separate the cost of the geometry from that.',
     },
     'skin_carried': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
         'path': 'data/derived/segment-contact-meshes/skin',
         'layer': 'skin',
         'label': 'Skin exterior, source feet kept',
@@ -120,6 +122,7 @@ SEGMENT_CONTACT_BUNDLES = {
                   'geometry, NOT the skin holding the body up.',
     },
     'skin_layer_map': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
         'path': 'data/derived/segment-contact-meshes/skin-layer-map-v1',
         'layer': 'skin',
         'label': 'Skin exterior with per-patch measured depth, replacing the source feet',
@@ -127,12 +130,14 @@ SEGMENT_CONTACT_BUNDLES = {
         'caveat': 'Same caveat as skin: it does not reach the floor in the stance pose.',
     },
     'bone_all': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
         'path': 'data/derived/segment-contact-meshes/stance-bone-all',
         'layer': 'bone',
         'label': 'Every bone surface',
         'replaces_source_feet': False,
     },
     'bone_proxy': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
         'path': 'data/derived/segment-contact-meshes/stance-bone-proxy',
         'layer': 'bone',
         'label': 'Bone surfaces, proxy subset',

@@ -86,6 +86,15 @@ PLANTS = {
 }
 DEFAULT_PLANT = 'engineering_stance_v1'
 SKIN_BINDING = 'data/derived/canonical/continuous_surface_binding.json.gz'
+# The skin's graph-diffused linear blend, one per plant, each solved over that plant's OWN
+# segments (scripts/build_continuous_surface_binding.py --plant). The single source of truth:
+# articulated.SURFACE_BINDINGS is this dict. skin_vertices used to read SKIN_BINDING for every
+# plant, so on the 25-body variant the displayed head skin followed torso while the skull and
+# the physics skin followed head.
+SKIN_BINDINGS = {
+    'engineering_stance_v1': SKIN_BINDING,
+    'articulated_spine_v1': 'data/derived/continuous-surface-binding-articulated-spine-v1/continuous_surface_binding.json.gz',
+}
 SKIN_ID = 'body-bp3d-FJ2810'
 SKIN_LAYERS = ('body-skin-epidermis', 'body-skin-dermis', 'body-skin-hypodermis')
 JOINT_TOLERANCE_M = 1e-4
@@ -597,7 +606,9 @@ class AnatomyPoser:
         """the FJ2810 skin, every vertex, by its graph-regularised linear blend over the same
         segment motions (`continuous_surface_binding.json.gz`)."""
         if self._skin is None:
-            p = json.loads(gzip.decompress((self.root / SKIN_BINDING).read_bytes()))
+            plant = [n for n, (m, _) in PLANTS.items() if m == self.model_path]
+            asset = SKIN_BINDINGS[plant[0]] if len(plant) == 1 else SKIN_BINDING
+            p = json.loads(gzip.decompress((self.root / asset).read_bytes()))
             order = [self.seg_index[s['id']] for s in p['segments']]
             self._skin = (np.asarray(p['reference_positions_m'], float), np.asarray(p['weights'], float),
                           np.array(order))

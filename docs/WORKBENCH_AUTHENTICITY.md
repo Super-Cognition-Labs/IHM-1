@@ -616,7 +616,7 @@ in would move the frame forces are applied in. `ArticulatedBodyPlant(display_pos
 **The frame ships 22 segment motions, not 3,995 entity poses.** A rigid binding
 gives every entity on a segment the same motion, so the per-entity form was 3,995
 copies of 18 distinct matrices — **1,159,032 bytes a frame**, which is not a
-per-frame payload. The compact form is **8,077 bytes**, a 143× reduction, and the
+per-frame payload. The compact form is **8,111 bytes** (8,077 before 7ded91b added the `plant` field), a 143× reduction, and the
 static entity→segment map goes once as `display_pose_map.json`.
 
 `scripts/verify_display_pose.py`, all passing: reconstruction from the 22 motions
@@ -863,7 +863,7 @@ what remains, with what each one now actually requires.
    declared material and a disclosure on every frame.
    `scripts/verify_plant_fidelity.py`.
 2. ~~Call `AnatomyPoser`~~ — **done** (§4.1). The frame carries 22 segment motions
-   that reconstruct 3,995 entity poses exactly, at 8,077 bytes against 1,159,032.
+   that reconstruct 3,995 entity poses exactly, at 8,111 bytes against 1,159,032.
    `scripts/verify_display_pose.py`.
 3. ~~Delete or rename the reduced engine~~ — **done** (§6.1). It is
    `/api/reduced-kinematics/sessions`, the old path is a 410 naming the body, and
