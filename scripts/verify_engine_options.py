@@ -20,7 +20,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-MANIFEST = 'data/derived/supine-surface-contact-xexhch9l/manifest.json'
+MANIFEST = 'data/derived/supine-surface-contact-5jqy1juo/manifest.json'
 MASS = 77.6122029
 REGISTRATION = 'data/derived/mechanics/whole_body_arm26_v2/registration.json'
 

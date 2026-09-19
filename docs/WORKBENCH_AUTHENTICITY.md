@@ -495,9 +495,18 @@ hashes no longer match: `canonical/mechanics.json` (last written 8 Sep) and
 `NativeMechanicalStream` refuses it with `Surface foundation source identity
 mismatch`. **This predates all of today's work by ten days** — the single most
 authentic contact in the workbench, the bed foundation, has been unselectable. The
-artefact regenerates in **3.1 s** (`scripts/build_supine_surface_contact.py`) and the
-fresh one loads; what still points at the stale path is the catalogue, which is
-rebuilt by `scripts/build_environment_catalogue.py`.
+artefact regenerates in **3.1 s** (`scripts/build_supine_surface_contact.py`).
+
+**Fixed the same day.** Of the five supine artefacts on disk, exactly two validate
+against current sources, and the regenerated one is byte-identical to the existing
+valid one in the data that matters (`quadrature.npz` and the foundation file; only
+manifest metadata differs), so no new artefact was kept. The catalogue builder's
+three pinned paths now point at the valid `supine-surface-contact-5jqy1juo` — the one
+the nociception work already binds to — and the catalogue was rebuilt (90 artefacts,
+its own checks passing). Verified end to end: `resolve_selection(... 'bed-support-skin-quadrature')`
+returns the valid manifest, and a plant built from it **loads and steps**, on the
+foundation's own support plane (−0.269 m) with 20 contact elements, where it
+previously refused to start.
 
 *To close:* Tier 1's wiring gives upright the skin layer. Beyond that: a
 deformable skin with self-contact, and an afferent allocation that is not capped
