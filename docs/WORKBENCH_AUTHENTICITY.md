@@ -458,7 +458,7 @@ What a live body can now be asked for, measured by constructing each plant:
 | nothing (default) | 28 `fall_support_*` / `contact*` spheres — the historical body |
 | `segment_contact: skin` | 20 `mesh_support_skin_*` elements, **source feet replaced** |
 | `segment_contact: skin_carried` | the same 20, **source feet kept** |
-| `segment_contact: skin_layer_map` | the per-patch measured-depth variant |
+| `segment_contact: skin_layer_map` | the per-patch measured-depth variant — **and it never worked until 18 Sep** (below) |
 | `segment_contact: bone_all` / `bone_proxy` | real bone surfaces, declared as a collider layer |
 | `joint_stops: true` | 22 coordinate limits, 8 coordinates left free |
 | `tissue_ligaments: admissible` | **66 of 117 elements**, the kinematically admissible subset |
@@ -498,6 +498,19 @@ So the arms are offered and none is called the truth: `skin` replaces the feet (
 intended end state), `skin_carried` keeps them — and in that arm the **heel** skin cannot
 load however well it is seated, because the spheres stand the calcaneus 15.4 mm off the
 floor — and `skin_per_segment` is the seat repair.
+
+**A defect in this very wiring, found by using it.** `{'segment_contact':
+'skin_layer_map'}` **raised at plant construction from the day it was listed here.**
+`resolve_fidelity` decided "does this bundle carry a per-record layer map?" from a
+top-level manifest key the bundle does not have, while `NativeMechanicalStream` reads
+the same question from the records — so the resolver passed the uniform E/ν/h triple
+into a bundle that declares its own per-record materials, and the plant refused it.
+**This body's own measured per-segment skin stiffness had never once been reachable
+through the resolver**, while this register listed it as a selection. Both sides now
+read the records, gated from both directions. Verified here: `skin_layer_map` and
+`skin_layer_fitted` each build a plant with 20 mesh contact elements, and the resolver
+passes no material override for either, which is the correct behaviour for a bundle
+that carries its own.
 
 The bundle's **own declared skin material** now travels with it — E = 3000 Pa,
 ν = 0.45, thickness 6.6 mm, from this body's canonical skin-layer entities — so the
