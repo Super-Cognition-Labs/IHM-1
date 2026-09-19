@@ -172,7 +172,15 @@ def limb_pd(state, targets):
 # plant 6.6x closer to its declared range, because a plant kept out of absurd
 # configurations is a plant the error controller can integrate.  Only 300, which
 # is genuinely stiff, costs anything.
-JOINT_STOP = {'stiffness_nm_per_rad': 30.0, 'damping_nm_s_per_rad': 1.5,
+# damping is 1.5 * 180/pi = 85.94 N.m.s/rad. It was written as 1.5 because the engine
+# used to pass it to CoordinateLimitForce unconverted, and that property reads
+# Nm/(degree/s): so 1.5 was APPLIED as 85.94 all along, and every number above was
+# measured at 85.94. The engine now converts it; the constant is re-declared at the
+# value the plant actually ran, so this change moves no result (bit-identical).
+# (Against a critical damping of roughly 2*sqrt(k*I) ~ 6 N.m.s/rad for a limb
+# segment at k=30, 85.94 is heavily overdamped -- which is likely part of why the
+# stopped plant integrates faster. An observation, not a retuning.)
+JOINT_STOP = {'stiffness_nm_per_rad': 30.0, 'damping_nm_s_per_rad': 1.5 * 180.0 / math.pi,
               'transition_rad': 0.35}
 
 

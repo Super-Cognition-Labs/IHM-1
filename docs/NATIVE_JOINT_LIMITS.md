@@ -148,3 +148,21 @@ admissibility at roughly 95% by −10°, so nearly all of the failure does rest 
 this one number. But the pre-registered G2 threshold is **not** moved, and the
 recorded verdict stands at FAIL until the bound is re-derived against measurement
 rather than adjusted to pass.
+
+## 18 Sep 2026 — the stop damping was 57.3× its declared value, and now isn't
+
+Every stop in this document was built by `scripts/native_mechanical_stream.cpp`,
+which converted limits, stiffness and transition from radians to degrees for
+`CoordinateLimitForce` and passed `damping` through unconverted. OpenSim reads that
+property in Nm/(degree/s), so `crawl.py`'s declared `1.5` was applied as
+**85.94 N·m·s/rad**. Every stopped number above — including the stiffness sweep that
+chose 30 N·m/rad — was measured at 85.94.
+
+The engine now converts it, and the declared constant is 85.94, so the plant is
+unchanged: a 50-step stopped trajectory is **bit-identical** across the fix, and the
+same new engine fed the old raw 1.5 moves by 0.444 rad, which shows the damping
+engages. Nothing above needs re-running. What does change is how the constant should
+be read: at ~14× critical damping for a limb segment, these stops are heavily
+overdamped, which plausibly contributes to the stopped plant integrating faster than
+the unstopped one. That is an observation, not a retuning. See
+`docs/WORKBENCH_AUTHENTICITY.md` §1.3.

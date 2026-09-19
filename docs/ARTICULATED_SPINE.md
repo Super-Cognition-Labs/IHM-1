@@ -117,7 +117,10 @@ source, or a thoracic coordinate measured from recorded motion — and the pose
 corpus cannot supply the second, because it is in gait2392 space and gait2392 has
 no thoracic degree of freedom either.
 
-Stop constants are `scripts/crawl.py`'s: 30 N·m/rad, damping 1.5, transition
+Stop constants are `scripts/crawl.py`'s: 30 N·m/rad, damping 1.5 **written into the
+`.osim` in OpenSim's own Nm/(degree/s)** — i.e. 85.94 N·m·s/rad, the same physical
+damping the base plant's engine-built stops apply (see `NATIVE_JOINT_LIMITS.md`,
+18 Sep) — transition
 0.35 rad — the only stiffness this repository has swept
 (`docs/NATIVE_JOINT_LIMITS.md`). Viscous damping is transferred from the source
 model's own `ExpressionBasedCoordinateForceSet` by limb: every upper-body

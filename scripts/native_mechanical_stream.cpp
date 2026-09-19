@@ -288,9 +288,15 @@ int main(int argc,char** argv){try{
    if(!limits||!std::isfinite(lower)||!std::isfinite(upper)||upper<=lower||!(stiffness>0)||!(damping>=0)||!(transition>0))throw std::runtime_error("invalid coordinate limit record");
    const auto& c=model.getCoordinateSet().get(name);
    if(c.isDependent(initial)||c.getMotionType()!=Coordinate::Rotational)throw std::runtime_error("coordinate limits require independent rotational coordinates");
-   // CoordinateLimitForce takes rotational limits and transition in DEGREES and
-   // its stiffness per degree; the caller states everything in radians.
-   auto* stop=new CoordinateLimitForce(name,upper*to_degrees,stiffness/to_degrees,lower*to_degrees,stiffness/to_degrees,damping,transition*to_degrees,true);
+   // CoordinateLimitForce takes rotational limits and transition in DEGREES, and
+   // its stiffness AND ITS DAMPING per degree (OpenSim's CoordinateLimitForce.h
+   // declares damping as Nm/(degree/s) for a rotational coordinate). The caller
+   // states everything in radians. Until 18 Sep 2026 damping was passed through
+   // unconverted, so every stopped run received 180/pi = 57.3x the damping its
+   // caller declared; the callers' constants were re-declared at the value the
+   // plant had actually been running (docs/NATIVE_JOINT_LIMITS.md), so this fix
+   // changes no plant -- verified bit-identical on a 50-step stopped trajectory.
+   auto* stop=new CoordinateLimitForce(name,upper*to_degrees,stiffness/to_degrees,lower*to_degrees,stiffness/to_degrees,damping/to_degrees,transition*to_degrees,true);
    stop->setName("declared_range_stop_"+name);model.addForce(stop);
   }
   std::string extra;if(limits>>extra)throw std::runtime_error("trailing coordinate limit data");

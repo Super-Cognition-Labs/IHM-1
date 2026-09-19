@@ -363,40 +363,50 @@ Verification: `scripts/verify_plant_fidelity.py`.
 colliders remain reachable only from `scripts/scene_object_contact.py`. The
 workbench's draggable objects are display geometry to the embodied path.
 
-### 1.3 A unit defect found by wiring this, in the shared engine
+### 1.3 ~~A unit defect in the shared engine~~ — FIXED 18 Sep 2026, and no plant moved
 
-`scripts/native_mechanical_stream.cpp` builds each `CoordinateLimitForce` by
-converting the limits, the stiffness and the transition width from radians to
-degrees — and passing `damping` straight through. OpenSim's own header declares
-that property as **`Nm/(degree/s)`** for a rotational coordinate
-(`CoordinateLimitForce.h`, the `damping` property). So the 1.5 every stopped run in
-this repo declares is applied as **1.5 × 180/π = 85.94 N·m·s/rad, 57.3× the
-number**.
+`scripts/native_mechanical_stream.cpp` converted a joint stop's limits, stiffness
+and transition from radians to degrees for `CoordinateLimitForce`, and passed
+`damping` straight through. OpenSim's header declares that property
+**`Nm/(degree/s)`** for a rotational coordinate, so a declared 1.5 was applied as
+**1.5 × 180/π = 85.94 N·m·s/rad — 57.3× the number**, on every stopped run.
 
-**The value has deliberately NOT been changed.** `scripts/crawl.py`'s measured
-stiffness sweep, every stopped crawl, and the tissue-mechanics arms were all run
-with this damping; changing the constant to "fix" the units would silently make a
-stopped live body a different object from every stopped run already recorded, and
-would invalidate the table this register quotes. What changed is that the field is
-now named for what the engine actually consumes
-(`damping_nm_per_deg_per_s`), and every resolution carries the effective radian
-value and a note saying where the conversion is missing. The wire format is
-byte-identical — `plant_options.joint_stops()` still reproduces
-`crawl.joint_stops()` exactly.
+**The fix, and why it changes no result.** The engine now divides damping by 180/π
+like the stiffness. The constants in `scripts/crawl.py` and
+`ihm/assembly/plant_options.py` are re-declared at **85.94 N·m·s/rad — the value the
+plant has actually been running** — so the engine receives exactly what it always
+did. `(1.5·180/π)/(180/π) == 1.5` holds exactly in IEEE-754, so this is not
+"approximately the same plant", it is the same bits. Measured:
 
-Fixing the conversion is an engine change that invalidates every prior stopped run.
-It should be done deliberately, with those runs redone, not as a side effect of
-this work.
+| check | result |
+|---|---|
+| same pre-fix build run twice (is identity even testable?) | max \|Δq\| **0.0** — deterministic |
+| pre-fix build, 1.5 declared vs post-fix build, 85.94 declared, 50 steps × 33 coordinates | max \|Δq\| **0.0 — bit-identical** |
+| **control that must fail:** post-fix build fed the OLD raw 1.5 (57.3× less damping) | max \|Δq\| **0.444 rad** (`hip_flexion_r`) — the damping engages, so the identity is informative |
+| `plant_options.joint_stops()` vs `crawl.joint_stops()` | identical |
+| intake-mass variant engine, rebuilt | loads and steps |
 
-**And it cannot be done concurrently with anything else.** The engine build's
-`manifest.json` hash-verifies `scripts/native_mechanical_stream.cpp` on every
-single load — `raise ValueError('Stale native mechanical build: ' + path)`. So
-editing that file does not just change the next build; it **immediately makes
-every existing build stale and refuses to start any engine at all**, including
-ones already relied on by work in flight. The fix therefore has to be sequenced
-alone: edit, rebuild, verify the new build, flip
-`data/runtime/mechanical-stream/latest.json`, then redo the stopped runs. Doing it
-beside other work takes the plant away from that work without warning.
+So no stopped run has to be redone: every recorded number was measured at 85.94 and
+the plant still delivers 85.94. The build is `data/runtime/mechanical-stream/build-cx6s8y89`
+(variant `build-o25sa609`); the pre-fix build is stale by design and reproducible
+from git history.
+
+**What the corrected number says.** Against a critical damping of roughly
+2√(kI) ≈ 6 N·m·s/rad for a limb segment at k = 30 N·m/rad, 85.94 is about 14×
+overdamped. That is likely part of why a stopped plant integrates *faster* than an
+unstopped one (`crawl.py`'s sweep). It is an engineering constant, declared as
+such, and it has not been retuned — retuning would move every result.
+
+**A second provenance defect, in this register's own resolver, fixed in the same
+change.** `plant_options.py`'s `firm` and `stiff` profiles carried damping 2.0/3.0
+and transitions 0.25/0.20 that no measurement supported — they had been typed. The
+only sweep in the repo varied stiffness alone at the damping and transition above,
+so both profiles now use those, and a resolution says which profile was adopted from
+the sweep and which was only swept.
+
+The spine variant's 15 in-model stops (`data/models/articulated_spine_v1`) write
+damping 1.5 directly into the `.osim`, in OpenSim's own Nm/(degree/s) — also
+85.94 N·m·s/rad. Unaffected by the engine change, and consistent with the base plant.
 
 ---
 
@@ -794,9 +804,9 @@ what remains, with what each one now actually requires.
    girdle bodies, a one-time torso mass partition, a coordinate map and an
    **unresolved licence** that should be settled first
    (`docs/UPPER_BODY_ACTUATION.md`).
-6. **Fix the `CoordinateLimitForce` damping conversion** (§1.3) and redo every
-   stopped run. 57.3× is not a rounding error, and it is load-bearing for every
-   result that used a stop.
+6. ~~Fix the `CoordinateLimitForce` damping conversion~~ — **done** (§1.3), and no
+   stopped run needs redoing: the constants were re-declared at the value the plant
+   ran, and the stopped plant is bit-identical across the fix.
 7. **Extend the segment binding past 22 segments** so the display can follow the
    spine variant's new bodies; today the anatomy still rides `torso`.
 8. **One stature and one mass** (§0.3).

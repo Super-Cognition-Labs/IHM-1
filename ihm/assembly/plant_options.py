@@ -49,37 +49,39 @@ _TRANSLATIONS = ('pelvis_tx', 'pelvis_ty', 'pelvis_tz')
 # the error controller can integrate.  These are engineering constants stated by
 # the caller, NOT measured ligament properties, and the resolution says so.
 #
-# THE DAMPING FIELD IS NOT IN THE UNITS ITS OLD NAME CLAIMED, and the defect is in
-# the shared engine, not here.  `scripts/native_mechanical_stream.cpp` converts the
-# limits, the stiffness and the transition width from radians to degrees for
-# `CoordinateLimitForce` and passes `damping` THROUGH.  OpenSim's own header
-# declares that property as `Nm/(degree/s)` for a rotational coordinate
-# (`CoordinateLimitForce.h`, the `damping` property), so a caller's 1.5 is applied
-# as 1.5 * 180/pi = 85.94 N.m.s/rad -- 57.3x what the name said.
+# DAMPING, and a defect that is now fixed. Until 18 Sep 2026 the engine
+# (scripts/native_mechanical_stream.cpp) converted a stop's limits, stiffness and
+# transition from radians to degrees for CoordinateLimitForce and passed damping
+# THROUGH, while OpenSim declares that property Nm/(degree/s). A declared 1.5 was
+# applied as 1.5 * 180/pi = 85.94 N.m.s/rad. The engine now converts it, and the
+# constant is re-declared at 85.94 -- the value every stopped run in this repo was
+# actually measured at -- so the fix moves no plant: a 50-step stopped trajectory
+# reproduces bit-for-bit across the fix.
 #
-# The value is LEFT AS IT IS on purpose.  Every measurement behind the table above,
-# and every stopped run in this repo, was made with this damping; changing the
-# number to "fix" the units would silently alter the plant those results describe
-# and make a stopped live body a different object from a stopped offline crawl. So
-# the field is named for what the engine actually consumes and the effective value
-# is stated beside it. Fixing the conversion is an engine change that invalidates
-# every prior stopped run and must be done deliberately, with the runs redone.
+# The profiles are the stiffnesses crawl.py actually swept, at the damping and
+# transition that sweep held fixed. An earlier version of this module gave `firm`
+# and `stiff` damping 2.0/3.0 and transitions 0.25/0.20 that no measurement
+# supported; they were typed, and are withdrawn.
+_SWEPT_DAMPING = 1.5 * 180.0 / 3.141592653589793       # 85.94 N.m.s/rad, as measured
+_SWEPT_TRANSITION = 0.35
 JOINT_STOP_PROFILES = {
-    'measured_soft': {'stiffness_nm_per_rad': 30.0, 'damping_nm_per_deg_per_s': 1.5,
-                      'transition_rad': 0.35},
-    'firm': {'stiffness_nm_per_rad': 100.0, 'damping_nm_per_deg_per_s': 2.0,
-             'transition_rad': 0.25},
-    'stiff': {'stiffness_nm_per_rad': 300.0, 'damping_nm_per_deg_per_s': 3.0,
-              'transition_rad': 0.20},
+    'measured_soft': {'stiffness_nm_per_rad': 30.0, 'damping_nm_s_per_rad': _SWEPT_DAMPING,
+                      'transition_rad': _SWEPT_TRANSITION},
+    'firm': {'stiffness_nm_per_rad': 100.0, 'damping_nm_s_per_rad': _SWEPT_DAMPING,
+             'transition_rad': _SWEPT_TRANSITION},
+    'stiff': {'stiffness_nm_per_rad': 300.0, 'damping_nm_s_per_rad': _SWEPT_DAMPING,
+              'transition_rad': _SWEPT_TRANSITION},
 }
-DEG_PER_RAD = 180.0 / 3.141592653589793
 JOINT_STOP_DAMPING_NOTE = (
-    'The engine passes this value to OpenSim CoordinateLimitForce unconverted, and that '
-    'property is Nm/(degree/s) for a rotational coordinate, so the effective damping is '
-    '{:.2f} N.m.s/rad -- 57.3x the number. Left as measured: every stopped run in this '
-    'repo was made with it. scripts/native_mechanical_stream.cpp is where the conversion '
-    'is missing.')
+    'Damping 85.94 N.m.s/rad is the value every stopped run in this repo was measured at. '
+    'It was historically declared as 1.5 because the engine passed damping to OpenSim '
+    'CoordinateLimitForce (which reads Nm/(degree/s)) unconverted; the conversion is '
+    'fixed and the constant re-declared so no plant moved. It is roughly 14x critical '
+    'damping for a limb segment at k=30 N.m/rad: an engineering constant, not a '
+    'measured ligament property.')
 DEFAULT_JOINT_STOP_PROFILE = 'measured_soft'
+
+
 
 # The real segment surfaces, in place of the upright environment's COM spheres.
 # `skin` is the one the programme is actually about: docs/ACTUATION_STAGES.md says
@@ -263,13 +265,7 @@ def joint_stops(root, profile=DEFAULT_JOINT_STOP_PROFILE, model=MODEL):
     ranged, unranged = declared_ranges(root, model)
     if not ranged:
         raise ValueError('Model declares no usable rotational ranges')
-    # the wire field the engine reads is still called damping_nm_s_per_rad; only the
-    # name in this module is corrected, because renaming the wire would change the
-    # plant's input format and every offline caller with it.
-    wire = {'stiffness_nm_per_rad': constants['stiffness_nm_per_rad'],
-            'damping_nm_s_per_rad': constants['damping_nm_per_deg_per_s'],
-            'transition_rad': constants['transition_rad']}
-    rows = [dict(coordinate=name, lower_rad=low, upper_rad=high, **wire)
+    rows = [dict(coordinate=name, lower_rad=low, upper_rad=high, **constants)
             for name, (low, high) in sorted(ranged.items())]
     return rows, unranged
 
@@ -317,10 +313,9 @@ def resolve_fidelity(root, value=None, *, environment='supine'):
         kwargs['coordinate_limits'] = rows
         selection['joint_stops'] = {
             'profile': profile, 'constants': JOINT_STOP_PROFILES[profile],
-            'effective_damping_nm_s_per_rad':
-                round(JOINT_STOP_PROFILES[profile]['damping_nm_per_deg_per_s'] * DEG_PER_RAD, 4),
-            'damping_units_note': JOINT_STOP_DAMPING_NOTE.format(
-                JOINT_STOP_PROFILES[profile]['damping_nm_per_deg_per_s'] * DEG_PER_RAD),
+            'damping_note': JOINT_STOP_DAMPING_NOTE,
+            'swept': profile == 'measured_soft' or 'stiffness swept in scripts/crawl.py at this '
+                     'damping and transition; only measured_soft was adopted from that sweep',
             'coordinates': [r['coordinate'] for r in rows],
             'unranged_coordinates': unranged,
             'unranged_basis': 'Declared +-10 rad, which is the absence of a range; left free '
