@@ -476,12 +476,22 @@ Wall clock: the machine was under shifting load, and the same plant ranged from
    `initial_pose.json`, and a weld at 0 changes that posture. `linearization.npz`
    was solved with mtp free. **In `engineering_stance_v1` it would therefore be a
    re-identification, not an edit.**
-2. **Give the toe muscles GeometryPaths (the 1e29ee3 route).** **Not viable as
-   is.** The arms it installs have the wrong pattern, because the via points
+2. **Give the toe muscles GeometryPaths (the 1e29ee3 route).** ~~**Not viable as
+   is.**~~ The arms it installs have the wrong pattern, because the via points
    were scaled and the mtp offset was not. It also shifts the ankle by up to
    0.078 rad through changed extensor tension. It needs the foot geometry
    reconciled first: the mtp offset scaled with the calcn, and ideally
-   Rajagopal's oblique mtp axis.
+   Rajagopal's oblique mtp axis. **DONE, 18 Sep 2026 —
+   `docs/FOOT_GEOMETRY.md`.** The mtp calcaneal offset is the ONE joint offset in
+   `subject_walk_scaled.osim` the scaling step missed (19 of 19 comparable
+   non-zero offsets obey the rule; this one is the unscaled generic value), and
+   the same two joints are the only ones whose orientation was dropped. Scaled to
+   0.20662282894439998 m and given Rajagopal's oblique axis back, in the new
+   variant `data/models/corrected_foot_v1`, the pattern becomes **possible** —
+   edl −6.05, ehl −7.55, fdl +6.83, fhl +7.13 mm, extensors together against
+   flexors together — and the supine ankle shift drops from +0.078 to −0.017 rad.
+   **The route is viable on the corrected geometry**, and still not viable on this
+   plant's, which is unchanged.
 3. **Leave it.** Measured cost in these protocols: the toes stay within 0.15 rad
    of neutral, held by a passive spring. They behave as nearly welded, and
    welding them changes nothing measured.
@@ -489,7 +499,13 @@ Wall clock: the machine was under shifting load, and the same plant ranged from
 **Recommendation from this evidence:** leave `engineering_stance_v1` as it is,
 because its cost is below everything measured here. Weld mtp in any NEW plant,
 where it costs nothing and removes a dishonest degree of freedom. Do not install
-toe GeometryPaths until the mtp axis and offset are fixed.
+toe GeometryPaths until the mtp axis and offset are fixed. *(Both amended 18 Sep
+2026, `docs/FOOT_GEOMETRY.md`: mtp is now welded in `articulated_spine_v1` as a
+separate registration — largest change to any of its 46 coordinates 0.0061 rad,
+F2 not rescored and still FAILED — and the mtp axis and offset are fixed in
+`corrected_foot_v1`. The recommendation to leave `engineering_stance_v1` alone is
+unchanged and is reinforced: the corrected foot is 27.8 mm longer at the
+forefoot, so adopting it there is a re-identification, not an edit.)*
 
 *Not measured, so this recommendation does not reach it:* upright stance and
 walking push-off. That is where toe loading is largest, and where "toes that no

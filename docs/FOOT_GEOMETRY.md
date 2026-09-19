@@ -271,3 +271,223 @@ checks: the bar reproduces 0.2202 and `spine` reproduces `thoracic_extension`
 
 Reported: every coordinate's worst excursion on all three, the per-coordinate
 difference the weld makes, and which coordinates are over the bar on each.
+
+## Results — run 18 Sep 2026, after the pre-registration commit (`fb9b90d`)
+
+Raw: `data/models/corrected_foot_v1/corrected_foot_report.json` (every arm's
+model sha256, the sha256 of the protocol module, and the scored result); per-step
+traces under `data/derived/corrected-foot-arms/` (gitignored, regenerable).
+Every number below is the scaffold's.
+
+### Instrument checks: all nine pass
+
+| | check | result |
+|---|---|---|
+| I1 | `moment_arms` called twice, bit-equal, every arm | pass (asserted in the runner) |
+| I2 | `base` reads exactly 0 about mtp, all 8 | pass — the §0.2a known answer |
+| I3 | `base_toe_paths` reproduces the recorded shipped-geometry arms | pass, ≤1e−6 m |
+| I4 | `soleus_r` −0.0497 m about `ankle_angle_r`, every arm | pass, −0.049708 on all four |
+| I5 | `corrected_fitted` still reads exactly 0 about mtp | pass |
+| I6 | the corrected arms reproduce the offline prediction | pass, worst disagreement **0.0004 mm** |
+| I7 | lumbar 42.69 / −52.82 / −62.79 mm (non-voiding) | pass: 42.6898 / −52.8238 / −62.7912 |
+| I8 | `base` reproduces 0.122880 / 0.117805 / 1.449794 / 0.219587 | pass, all four |
+| I9 | `base_toe_paths` reproduces ΔA +0.0784 / +0.0106 / −0.0574 / −0.0137 | pass, all four |
+
+Not pre-registered, and reported because it happened: part A was run twice, in
+two separate processes hours apart, and the two `moment_arms` dictionaries are
+**identical for all four arms** — not just the repeat call inside one session.
+(The second run happened because `--check`'s own digest had to be narrowed to the
+files the builder writes; it was scanning the whole output directory and so began
+failing once the runner's report landed there. The model bytes never changed —
+`model.osim`'s sha256 is the same before and after — but the builder's own sha256
+is recorded in each registration's `sources`, so the report was refreshed rather
+than left quoting a builder that no longer exists.)
+
+I6 is the load-bearing one. The engine and a fifteen-line piece of axis algebra
+that never loads OpenSim agree on all eight corrected arms **to four ten-thousandths
+of a millimetre**, and the prediction was written into
+`scripts/run_corrected_foot_arms.py` and committed before the engine saw the model.
+
+### A — the sign pattern is anatomically possible. GATE S1 PASSES.
+
+Engine moment arms about `mtp_angle` at the rest pose, mm, right side (the left is
+equal to 1e−14 on every arm):
+
+| muscle | side | `base` | `base_toe_paths` | `corrected_fitted` | **`corrected_toe_paths`** | predicted |
+|---|---|---:|---:|---:|---:|---:|
+| edl | dorsal, extensor | 0 | **−4.780** | 0 | **−6.052** | −6.052 |
+| ehl | dorsal, extensor | 0 | **+24.142** | 0 | **−7.551** | −7.551 |
+| fdl | plantar, flexor | 0 | **+8.373** | 0 | **+6.834** | +6.834 |
+| fhl | plantar, flexor | 0 | **+10.358** | 0 | **+7.129** | +7.129 |
+
+| arm | extensors agree | flexors agree | extensors oppose flexors | min \|arm\| | verdict |
+|---|---|---|---|---:|---|
+| `base_toe_paths` | **no** (− vs +) | yes | — | 4.78 mm | **IMPOSSIBLE** |
+| `corrected_toe_paths` | yes (both −) | yes (both +) | **yes** | 6.05 mm | **POSSIBLE** |
+
+`base_toe_paths` reproduces `FOOT_JOINTS.md`'s impossible pattern to 1e−6 m, on a
+rebuilt arm, which is the control that the two runs are measuring the same thing.
+The correction turns it into two extensors together and two flexors together,
+opposing, every arm well clear of the 1 mm floor. **The toe GeometryPaths now
+encode toe flexion and extension.**
+
+The magnitudes are Rajagopal's own, scaled: the generic model's arms at the same
+construction are +5.64 / +6.59 / −6.47 / −5.79 mm and the corrected ones are
++6.05 / +7.55 / −6.83 / −7.13 in the opposite sign convention, i.e. 1.07–1.23× the
+generic, which is the calcn scaling in those directions.
+
+**It was the offset, not the axis, that carried the sign error.** The same algebra
+on the two half-fixes: scaling the offset and leaving the axis pure-z gives
+−5.27 / −14.49 / +8.81 / +4.51 mm, which is already a possible pattern; restoring
+the oblique axis and leaving the offset unscaled gives +0.08 / +10.75 / +7.07 /
+−2.33, which is still impossible and puts edl at 0.08 mm. Both halves are
+restored here because both are equally derived from the parent, but the
+attribution is the offset's.
+
+**A consequence that could not have gone the other way, and the engine agrees.**
+`corrected_toe_paths`'s ankle arms are **bit-identical** to `base_toe_paths`'s
+(+39.52996182446783 mm for edl_r on both, and the same for the other seven).
+Everything distal of the ankle rotates rigidly with it, so only the tibia→calcn
+crossing segment sets the ankle arm, and moving the mtp axis cannot touch it.
+`corrected_fitted`'s ankle arms are likewise bit-identical to `base`'s. So the
+geometry correction moves the mtp arm and **nothing else in the moment-arm table.**
+
+### B — what the toe hinge costs now
+
+A = max(ankle_r, ankle_l) excursion past the declared range, rad. Reporting line
+0.022 rad, declared before the data.
+
+| protocol | `base` | `base_toe_paths` | `corrected_fitted` | **`corrected_toe_paths`** |
+|---|---:|---:|---:|---:|
+| supine unstopped | **0.1229** | 0.2012 (+0.0784 **over**) | 0.1260 (+0.0031) | **0.1094 (−0.0134)** |
+| supine stopped | **0.1178** | 0.1284 (+0.0106) | 0.1182 (+0.0004) | **0.1136 (−0.0043)** |
+| crawl 3 s unstopped | **1.4498** | 1.3924 (−0.0574 **over**) | 1.4435 (−0.0063) | **1.3738 (−0.0760 over)** |
+| crawl 3 s stopped | **0.2196** | 0.2059 (−0.0137) | 0.2261 (+0.0065) | **0.2004 (−0.0192)** |
+
+The 2×2, on A:
+
+| protocol | G at P=0 | G at P=1 | P at G=0 | P at G=1 |
+|---|---:|---:|---:|---:|
+| supine unstopped | +0.0031 | −0.0918 | **+0.0784** | −0.0166 |
+| supine stopped | +0.0004 | −0.0149 | +0.0106 | −0.0046 |
+| crawl unstopped | −0.0063 | −0.0186 | **−0.0574** | **−0.0697** |
+| crawl stopped | +0.0065 | −0.0055 | −0.0137 | **−0.0257** |
+
+**The 27.8 mm of extra forefoot does almost nothing to the ankle.** G alone
+(`corrected_fitted` − `base`) is +0.0031 / +0.0004 / −0.0063 / +0.0065 rad — every
+one inside the reporting line, in a plant where `FOOT_JOINTS.md` Q1 found a 48.5 mm
+plane shift worth more than a radian. The confound the pre-registration was built
+around is real in principle and small in fact, and it is small **because it was
+measured**, not because it was assumed. The supine plane sits at −0.403499 m on
+every arm here, unchanged: the toes' contact spheres moved forward, not down, and
+the plane is set by the torso ball.
+
+**The toe arms' effect reverses sign and shrinks.** Installing toe GeometryPaths
+on the *wrong* geometry pushed the supine ankle **+0.0784 rad**, over the line —
+`FOOT_JOINTS.md`'s reason for listing option 2 as shifting the ankle "by up to
+0.078 rad through changed extensor tension". On the corrected geometry the same
+installation moves it **−0.0166 rad**, 4.7× smaller and the other way. The one
+arm still over the line is the unstopped crawl, where the toe extensors' passive
+tension reduces the ankle excursion from 1.4498 to 1.3738 rad (−5.2%). It remains
+a 1.37 rad excursion past a declared range: **the corrected foot does not repair
+the unstopped crawl's ankle, and nothing here claims it does.**
+
+**mtp travel** (declared ±0.5236 rad):
+
+| protocol | `base` mtp_r | **`corrected_toe_paths`** mtp_r | closest approach, corrected |
+|---|---|---|---:|
+| supine unstopped | −0.005 … +0.008 | **−0.029 … −0.004** | 0.494 rad |
+| supine stopped | −0.004 … +0.008 | −0.034 … −0.004 | 0.490 |
+| crawl unstopped | −0.027 … +0.092 | **−0.109 … +0.000** | 0.415 |
+| crawl stopped | −0.144 … +0.076 | −0.073 … +0.040 | 0.449 |
+
+The toes are now *driven*: in supine the whole range sits on the flexed side
+instead of straddling zero, which is what a muscle with a real arm does to a joint
+held otherwise by a −25·q spring. The travel is still nowhere near the bound in
+any protocol, and the largest excursion of any arm is still a fifth of a radian
+inside it.
+
+**Crawl travel and divergence.** Pelvis forward travel over 3 s, stopped:
+0.0729 (base) → 0.0762 (`corrected_fitted`) → **0.0781 m** (`corrected_toe_paths`),
++5.2 mm, +7.2%; unstopped 0.0678 → 0.0690 → 0.0702 m. Most of that is G, not P.
+One trajectory per arm and no bar, so this is reported and not claimed. The first
+divergence event is the same in every unstopped arm (`hip_rotation_l` past 0.35–0.36
+rad), and the stopped crawl never diverges in any arm. Peak normalised fibre
+velocity in the unstopped crawl falls 13.45 → 7.08 ofl/s, both under the 15 guard.
+
+**Gates.** F2's bar, remeasured on each arm in the same protocol, is 0.2202
+(`base`), 0.2191, 0.2199, 0.2199 — it moves by at most 0.0011 rad. **Neither F2
+(`thoracic_extension` 0.3940) nor G-S (ankles 1.1399 / 0.8709) flips on any arm.**
+Wall clock ranged 0.08–0.12 s per advance under shifting machine load; no
+wall-clock difference is claimed.
+
+### C — welding mtp in the articulated spine variant costs nothing measurable
+
+`registration_mtp_welded.json`, F2's protocol, bar measured on the base model in
+the same run: **0.220193** on `knee_angle_r`, reproducing F2's 0.2202, and `spine`
+reproduces F2's `thoracic_extension` 0.3940.
+
+| coordinate | `spine` | `spine_mtp_welded` | Δ |
+|---|---:|---:|---:|
+| `ankle_angle_r` | 1.3563 | 1.3562 | −0.00003 |
+| `ankle_angle_l` | 1.3522 | 1.3513 | −0.00095 |
+| `thoracic_extension` | 0.3940 | 0.3940 | −0.00001 |
+| `pro_sup_l` | 0.2535 | 0.2535 | +0.00003 |
+| `knee_angle_{l,r}` | 0.2249 / 0.2244 | 0.2249 / 0.2244 | <1e−5 |
+| `subtalar_angle_r` | 0.1263 | 0.1284 | +0.00203 |
+| `hip_rotation_r` | — | — | **−0.00606** (the largest of all 46) |
+
+The same seven coordinates are over the bar on both plants: both ankles, both
+knees, both `pro_sup`, `thoracic_extension`. The largest change the weld makes to
+any coordinate is **0.0061 rad**, on `hip_rotation_r` — 2.8% of the bar and a
+quarter of the reporting line.
+
+Before the weld, `mtp_angle_{l,r}` in that plant came no closer than **0.448 rad**
+to its ±0.5236 bound, held by the same passive spring as in the base plant and by
+no muscle at all. Welding it removes two coordinates nothing could drive and costs
+nothing measurable in this protocol, which is what `FOOT_JOINTS.md` predicted for a
+new plant.
+
+**GATE F2 IS NOT RESCORED.** F2 FAILED on
+`data/models/articulated_spine_v1/registration.json` — `thoracic_extension` 0.3940
+against a 0.2202 bar — and it is still FAILED. `model.osim` there is byte-identical
+to the file F2 ran on (check W2). The welded model is a separate plant, its numbers
+above are a new measurement of that plant, and they are not a new score for
+anything.
+
+## What this changes, and what it does not
+
+* **`FOOT_JOINTS.md`'s option 2 — "give the toe muscles GeometryPaths" — is no
+  longer "not viable as is".** Its two stated blockers are gone: the sign pattern
+  is possible (S1), and the ankle shift it caused (+0.078 rad supine) is down to
+  −0.017. It is viable **on the corrected geometry**, in `corrected_foot_v1`, and
+  it remains not viable on `engineering_stance_v1`'s geometry, where nothing here
+  has changed.
+* **`FOOT_JOINTS.md`'s recommendation for `engineering_stance_v1` stands
+  unchanged.** Leave it alone. Its `linearization.npz` was solved with mtp free at
+  its shipped offset, and the corrected model has a foot 27.8 mm longer with
+  different forefoot contact: adopting it there is a re-identification, not an
+  edit. Nothing in this document is a reason to touch that plant.
+* **The defect is upstream's, and it is still in `subject_walk_scaled.osim`.**
+  Everything derived from that file — every plant in `data/models/` that is not
+  `corrected_foot_v1` — carries a foot whose mtp axis is 27.8 mm proximal of where
+  its own scaling put the muscles, and a metatarsal break that is a pure calcn-z
+  hinge instead of Rajagopal's oblique one.
+* **Not measured, so none of this reaches it:** upright stance and walking
+  push-off, which is where toe loading is largest and where `WORKBENCH_AUTHENTICITY.md`
+  §0.2a says a wrong toe would matter most. Also not measured: whether the longer
+  forefoot is *better* against any external reference. It is what Rajagopal's
+  proportions times this subject's own scale factors give, which is an argument
+  about internal consistency and not about this subject's foot.
+
+## Needs correcting elsewhere, and not edited here
+
+* **`docs/WORKBENCH_AUTHENTICITY.md` §0.2a** says the geometry-path route is *"not
+  viable as is"* and *"fix the foot geometry … before giving the toes geometry
+  paths"*. The fix exists now, and §0.2a should point at this document. That file
+  is outside this work's territory: **flagged, not edited.**
+* **`docs/ARTICULATED_SPINE.md`** lists the variant's registrations
+  (`registration_foot_paths.json`, `registration_muscled.json`) and does not yet
+  know about `registration_mtp_welded.json`. Same: flagged, not edited.
+* **`data/models/engineering_stance_v1` is deliberately NOT corrected**, and this
+  is not an oversight to be tidied later. See the section above.

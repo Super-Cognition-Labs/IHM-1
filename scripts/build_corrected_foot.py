@@ -245,23 +245,26 @@ def build(root: Path, out: Path):
 def check(root: Path):
     """Static known answers.  Each can fail for the reason it exists."""
     out = root / OUT
-    build(root, out)
+    written = build(root, out)
 
-    def digest(where: Path):
+    def digest(where: Path, names):
+        """Only the files the BUILDER writes.  The output directory also holds the
+        runner's report, which the builder neither reads nor writes, and a digest
+        over the whole directory would make this check fail on that."""
         prefix = str(where.relative_to(root))
         found = {}
-        for p in sorted(where.rglob('*')):
-            if p.is_file():
-                data = p.read_bytes()
-                if p.name.startswith('registration'):
-                    data = data.replace(prefix.encode(), b'<OUT>')
-                found[str(p.relative_to(where))] = hashlib.sha256(data).hexdigest()
+        for n in names:
+            data = (where / n).read_bytes()
+            if n.startswith('registration'):
+                data = data.replace(prefix.encode(), b'<OUT>')
+            found[n] = hashlib.sha256(data).hexdigest()
         return found
 
-    first = digest(out)
+    names = sorted(Path(p).name for p in written.values()) + ['muscle_paths.xml']
+    first = digest(out, names)
     with tempfile.TemporaryDirectory(dir=root / 'data/derived') as scratch:
         build(root, Path(scratch) / 'again')
-        again = digest(Path(scratch) / 'again')
+        again = digest(Path(scratch) / 'again', names)
     assert first == again, 'C1 the builder is not a function of its inputs'
 
     base = ET.parse(root / BASE / 'model.osim').getroot().find('Model')
