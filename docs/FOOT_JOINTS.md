@@ -377,6 +377,15 @@ position is computed inside the engine, which this work may not edit. The run th
 would separate them needs an engine option for the supine plane offset: `t0w0s0`
 with the plane lowered 48.5 mm, and `tweld` with it raised 48.5 mm.
 
+> **SEPARATED, Q3 below (18 Sep 2026): it is NOT the plane.** Holding the floor up
+> under the repartitioned trunk leaves the ankle at 1.3961 / 1.2820; dropping the
+> floor 48.5 mm under the base trunk leaves it at 0.1532 / 0.1504, inside the bar.
+> The plane's position is worth ≤0.03 rad in either direction. **The "leading
+> candidate mechanism" named in this section and in the paragraph above it is
+> withdrawn**; the factorial it sits under is unaffected. The talus-impact table
+> below reproduces, but `base@PT` reproduces that impact (992 N) without the fold,
+> so it is a co-symptom.
+
 **What this does to earlier claims.**
 
 * `ARTICULATED_SPINE.md`'s "un-welding the subtalar makes the ankle far worse"
@@ -485,3 +494,183 @@ toe GeometryPaths until the mtp axis and offset are fixed.
 *Not measured, so this recommendation does not reach it:* upright stance and
 walking push-off. That is where toe loading is largest, and where "toes that no
 muscle could move" (§0.2a) would matter most.
+
+## Q3 Results — run 18 Sep 2026, after the pre-registration commit (`e8d25d8`)
+
+Raw: `data/models/articulated_spine_v1/plane_arms_report.json` (every arm's plane,
+override, basis string, worst excursions and reconstructed proxy spheres);
+scored copy and per-step traces under `data/derived/foot-joint-arms/results/`
+(gitignored, regenerable). Engine build `build-8crm1_k9`; tree at `8e8f8c6`,
+which has the pre-registration `e8d25d8` as an ancestor and differs from it only
+in another worker's bed-catalogue fix. 15 arms, 268 s. Every number is the
+scaffold's.
+
+### Instrument checks: all sixteen pass
+
+Q1's seven, re-run because the engine was rebuilt after Q1:
+
+| check | result |
+|---|---|
+| `base` run twice, every worst excursion bit-equal | pass |
+| round trip `t0w0s0` == `base`, bit-equal | pass |
+| bar reproduces F2's 0.2202 | 0.220193, `knee_angle_r` |
+| `t1w1s1` reproduces 1.3563 / 1.3522 | pass |
+| `foot_paths` reproduces G-S's 1.1399 / 0.8709 | pass |
+
+**So the rebuilt engine reprints every Q1 number**, and `tweld` and `t1w0s0`
+reprint 1.4014 / 1.2876 and 1.3851 / 1.2663 as well (reported separately, as
+pre-registered). The two planes reproduce at full precision:
+**P0 = −0.403498987616 m**, **PT = −0.452012769824 m**, drop **48.5138 mm**.
+
+The three new ones, each of which could have failed for the reason it exists:
+
+| check | result |
+|---|---|
+| 8a `base@P0` bit-equal to `base`; 8b `tweld@PT` bit-equal to `tweld` | pass — pinning at the default is a no-op |
+| 9a-c every pinned arm reports the pinned plane exactly, records `support_plane_override_x_m` and the PINNED basis in its own `execution.json`, and no derived arm records one | pass |
+| 9d the pin bites: `tweld@P0`'s plane is 48.5138 mm from `tweld`'s | pass |
+| 10a-c the plane rule reconstructed from the engine's own emitted mass properties puts the plane exactly under the lowest sphere (residual **0.0**, all seven derived arms), the lowest body is `torso` every time, and the torso radius reads **0.2577 m** (base) and **0.3090 m** (repartitioned) | pass |
+
+Nothing is void. The separation stands.
+
+### The answer: the MASS, not the plane
+
+| arm | plant | plane (m) | ankle r | ankle l | verdict |
+|---|---|---:|---:|---:|---|
+| `base` | base | −0.403499 | 0.1229 | 0.1207 | recovered |
+| `base@P0` | base | −0.403499 *pinned* | 0.1229 | 0.1207 | recovered (control) |
+| **`base@PT`** | **base** | **−0.452013 *pinned*** | **0.1532** | **0.1504** | **RECOVERED** |
+| `tweld` | repartitioned | −0.452013 | 1.4014 | 1.2876 | COLLAPSES |
+| `tweld@PT` | repartitioned | −0.452013 *pinned* | 1.4014 | 1.2876 | COLLAPSES (control) |
+| **`tweld@P0`** | **repartitioned** | **−0.403499 *pinned*** | **1.3961** | **1.2820** | **COLLAPSES** |
+| `t1w0s0` | T alone | −0.452013 | 1.3851 | 1.2663 | COLLAPSES |
+| `t1w0s0@P0` | T alone | −0.403499 *pinned* | 1.3846 | 1.2610 | COLLAPSES |
+
+Bar 0.2202, as in Q1.
+
+The pre-registered quadrant is **(A collapses, B recovers) → THE MASS**:
+
+* **Holding the floor up does not rescue the repartition.** `tweld@P0` gives
+  **1.3961 / 1.2820** against `tweld`'s 1.4014 / 1.2876 — moving the floor 48.5 mm
+  is worth **−0.0054 rad** on a 1.40 rad collapse. `t1w0s0@P0` repeats it at
+  **−0.0005 rad**.
+* **Dropping the floor does not collapse the base plant.** `base@PT` gives
+  **0.1532 / 0.1504**, +0.0303 rad, comfortably inside the bar.
+* **The trunk repartition is worth the same at either floor**: +1.2732 rad
+  measured at P0 and +1.2482 rad at PT, against Q1's main effect of +1.254 rad
+  measured with the floor free to move. The factor and the floor are not
+  interacting.
+
+**`docs/FOOT_JOINTS.md`'s leading candidate — "the plane drop is the mechanism" —
+is WITHDRAWN.** The plane's position is worth at most 0.03 rad in either plant
+and in either direction. The collapse is carried by what the repartition does
+besides moving the floor.
+
+### The ladder: graded, monotone, and two orders of magnitude too small
+
+Base plant, floor lowered in equal steps, nothing else changed. Every point is a
+clean drop with no penetration.
+
+| drop below P0 | plane (m) | ankle r | ankle l | A | verdict |
+|---:|---:|---:|---:|---:|---|
+| 0 mm | −0.403499 | 0.1229 | 0.1207 | 0.1229 | recovered |
+| 12.125 | −0.415624 | 0.1306 | 0.1285 | 0.1306 | recovered |
+| 24.25 | −0.427749 | 0.1392 | 0.1367 | 0.1392 | recovered |
+| 36.375 | −0.439874 | 0.1461 | 0.1434 | 0.1461 | recovered |
+| 48.5 | −0.452013 | 0.1532 | 0.1504 | 0.1532 | recovered |
+
+**Monotone increasing, no threshold, no collapse at any depth.** The fold tracks
+plane depth continuously at **6.26e-4 rad/mm**, with a span of 0.0303 rad over the
+whole 48.5 mm. At that slope the floor would have to drop **156 mm** to put the
+ankle on F2's bar and about **2.0 m** to reach the 1.40 rad the repartition
+produces — linear extrapolation that far outside the measured range is not
+evidence, but the order is the point.
+
+### Q1's proposed mechanism is falsified too, by the impact it named
+
+Q1 wrote: *"the legs therefore fall 48.5 mm further before the talus ball lands
+… a 3.1× larger heel impact comes 0.14 s before the ankle crosses the bar."*
+The pinned arms reproduce that impact **without** the fold, and reproduce the
+fold **without** the extra fall. The initial gap from each foot proxy to the
+plane is identical between the arms that share a plane — `base` and `tweld@P0`
+both start with the talus ball 173.70 mm above the floor, `base@PT` and `tweld`
+both at 222.21 mm — so the fall geometry is matched exactly:
+
+| arm | talus ball starts | talus contact peak | ankle A |
+|---|---:|---:|---:|
+| `base` | 173.70 mm up | 363 / 374 N | 0.1229 |
+| `tweld@P0` | **173.70 mm up (same fall)** | 815 / 779 N | **1.3961** |
+| `base@PT` | 222.21 mm up (48.5 mm further) | **992 / 925 N** | **0.1532** |
+| `tweld` | 222.21 mm up | 1,026 / 1,066 N | 1.4014 |
+
+`base@PT` lands its heels **2.7× harder than `base`** — as hard as the collapsed
+arms — and its ankle moves 0.03 rad. `tweld@P0` lands them *softer* than `tweld`
+and folds anyway. **Heel impact magnitude is not the driver.** Neither is the
+fall distance. The ankle's direction and the muscle picture are unchanged from
+Q1's: plantarflexion to −2.27 rad, and at the crossing 33 N of plantarflexor
+against 468 N of dorsiflexor in `tweld@P0`, against 171 N / 221 N in the base.
+
+### The declared hazard, measured
+
+It behaved as declared and it did not decide anything. `tweld@P0` and
+`t1w0s0@P0` start with the torso proxy **48.51 mm inside the floor** and
+**2,809 N** of torso contact at t = 0 — by far the largest force anywhere in the
+run. Their ankles still land within **0.0054 rad** of their own unpinned
+versions. So the penetration transient is a large force on the trunk that does
+essentially nothing to the ankle, and the arm that carries no penetration at all
+(`base@PT`, and every rung of the ladder) gives the same verdict from the other
+side. Both directions agree; the asymmetry did not matter.
+
+*Also recorded, because it is over a bar:* on `base@PT` the **worst** coordinate
+is `knee_angle_l` at **0.2204**, 0.0002 rad above F2's 0.2202 — and the ladder's
+worst coordinate is **not** monotone (0.2202, 0.2194, 0.2143, 0.2226, 0.2204)
+even though the ankle is. The ankle verdict is defined on the ankles and is
+unaffected. **F2 is not rescored and stays FAILED**; this is noted because a bar
+measured on a plant whose floor can move is a bar with a term in it, which is
+what F2's own confound note already says.
+
+### What this leaves, and it is still the contact proxy — just not the plane
+
+**Exonerated:** the plane's *position*. It is a graded, small term.
+
+**Not exonerated, and not separated by this run:** the proxy **sphere** itself.
+Pinning the plane does not pin the ball. The repartitioned torso's ball is
+0.3090 m against the base's 0.2577 m at every arm, so wherever the floor is, that
+trunk's contact point sits **51.3 mm further from its own mass centre** — the
+trunk is propped that much higher off the surface relative to the hips and heels.
+That geometric difference is present in `tweld@P0` exactly as it is in `tweld`,
+which is consistent with the two scoring the same, and it is a property of the
+*inertia-inscribed sphere*, not of any anatomy.
+
+So the surviving candidates are two, and this run does not choose between them:
+
+1. the **proxy sphere radius** — a contact artefact, `r² = 5(I₁+I₂−I₀)/2m` on a
+   body whose inertia the repartition changed;
+2. the **repartitioned inertia itself**, acting through the dynamics rather than
+   through contact.
+
+**What would separate them:** an engine option for the per-body proxy radius, the
+exact analogue of the plane option used here — run `tweld` with the torso ball
+pinned at the base's 0.2577 m. That is the next arm, and it is named here so it
+is not re-derived. Until it is run, "the contact proxy is the leading candidate"
+remains true of the *sphere*; it is false of the *plane*, and the plane is what
+Q1 named.
+
+### What this does to earlier claims
+
+* **`docs/FOOT_JOINTS.md` Q1's "the supine contact proxy's plane drop is the
+  leading candidate mechanism" is WITHDRAWN.** The plane drop is worth ≤0.03 rad;
+  the collapse is 1.25 rad. Q1's *factorial* stands unchanged — the collapse is
+  the trunk repartition — and so does every number in it. Only the mechanism
+  attributed to it is withdrawn, for the second time on this line: first the
+  subtalar, now the plane.
+* **The talus-impact table in Q1 is not withdrawn but no longer supports what it
+  was cited for.** Its measurements reproduce; the impact is now known to be a
+  co-symptom, not the cause.
+* **`docs/ARTICULATED_SPINE.md` and `docs/WORKBENCH_AUTHENTICITY.md` §0.2 both
+  carry the withdrawn sentence** and need the same correction. ARTICULATED_SPINE
+  is corrected in this commit; WORKBENCH_AUTHENTICITY is outside this work's
+  territory and is flagged, not edited.
+* **G-S and F2 stay FAILED.** Neither is rescored, here or anywhere.
+* **This is still the scaffold.** Nothing here is a statement about a human foot,
+  ankle or trunk, and a pinned plane is an instrument, not a better bed.

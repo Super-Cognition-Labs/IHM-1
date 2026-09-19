@@ -191,9 +191,14 @@ spectacularly wrong one: see the next section.
 opposite. With only the subtalar re-welded, the ankle still collapses (1.385 /
 1.267). With only the subtalar freed on the base trunk, it does not (0.113 /
 0.108). The regression comes with the **torso partition**, and it persists with
-every new joint welded. Its bigger supine contact ball puts the plane 48.5 mm
+every new joint welded. ~~Its bigger supine contact ball puts the plane 48.5 mm
 lower, which is the leading candidate but has not been separated from the mass
-change. The table below is still a correct
+change.~~ **The plane is excluded too, 18 Sep 2026 (`FOOT_JOINTS.md` Q3): pinning
+the floor at the base plant's height under the repartitioned trunk still gives
+1.3961 / 1.2820, and dropping it 48.5 mm under the base trunk gives 0.1532 /
+0.1504 — inside the bar. The plane's position is worth ≤0.03 rad.** What remains
+is the repartitioned inertia itself, or the ball RADIUS it induces (0.2577 →
+0.3090 m), which pinning the plane does not pin. The table below is still a correct
 measurement of base against variant. Only its attribution to the subtalar is
 withdrawn. Same protocol, same excitation, base against variant:
 
@@ -225,8 +230,8 @@ and the foot folds, and the ankle follows it.~~ *(Withdrawn 18 Sep, in two steps
 First G-S: with real subtalar arms the ankle still leaves its range. Then the
 factorial in `docs/FOOT_JOINTS.md`: re-welding the subtalar does not recover the
 ankle, and at the moment of collapse the plantarflexors carry 25–31 N against the
-dorsiflexors' 468–476 N. The cause is the torso partition's mass/contact redistribution; the supine
-plane it lowers by 48.5 mm is the leading candidate, not yet separated from mass.)* The nine spine coordinates are the
+dorsiflexors' 468–476 N. The cause is the torso partition's mass/contact redistribution, and Q3
+has since excluded the 48.5 mm plane drop as the mechanism as well.)* The nine spine coordinates are the
 same: a 4.39 kg head on a joint with a soft stop, viscous damping and nothing
 else. **This variant gives the body joints, not the ability to use them.** The
 muscles that would use them are `docs/UPPER_BODY_ACTUATION.md`'s subject, not a
@@ -463,10 +468,14 @@ was set, because none has provenance here.
   and 27 more). This needs the full C1–C7 chain, which is the recipe's own
   `required_before_native_acceptance`.
 * **The ankle regression**: ~~cause open~~ traced to the torso partition, NOT
-  the subtalar (`docs/FOOT_JOINTS.md`). The repartitioned torso's supine ball grew
-  0.258 → 0.309 m, which lowered the plane 48.5 mm; heel impact rose 3.1×. It
-  reproduces with every new joint welded (`tweld`). Contact vs mass is not
-  separated. That needs an engine option for the plane offset.
+  the subtalar (`docs/FOOT_JOINTS.md`). It reproduces with every new joint welded
+  (`tweld`). ~~The repartitioned torso's supine ball grew 0.258 → 0.309 m, which
+  lowered the plane 48.5 mm; heel impact rose 3.1×.~~ **Q3 pinned the plane and
+  excluded it**: the floor's position is worth ≤0.03 rad in either plant and
+  either direction, and the base plant reproduces the harder heel landing (992 N)
+  with no fold at all. Still open: the repartitioned inertia against the proxy
+  SPHERE radius it induces. That needs an engine option for the per-body proxy
+  radius, the analogue of the plane option Q3 used.
 
 ## What I could not build, and why
 

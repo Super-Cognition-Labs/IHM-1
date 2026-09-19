@@ -1,0 +1,4436 @@
+{
+ "schema": "ihm.plane-arms-report.v1",
+ "preregistration": "docs/FOOT_JOINTS.md, section \"PRE-REGISTRATION -- Q3\"",
+ "question": "Does the supine support PLANE's 48.5 mm drop, or the trunk mass repartition that moved it, drive the ankle collapse of articulated_spine_v1? The scaffold throughout; not a statement about a human foot.",
+ "git_sha": "8e8f8c678a699851fc56b03ca55772cf9bb59f41",
+ "engine_build": "data/runtime/mechanical-stream/build-8crm1_k9",
+ "wall_s": 268.269615650177,
+ "arms": {
+  "base": {
+   "registration": "data/models/engineering_stance_v1/registration.json",
+   "model": "data/models/engineering_stance_v1/model.osim",
+   "support_plane_source_x_m": -0.40349898761606706,
+   "support_plane_override_x_m": null,
+   "support_plane_basis": "Plane hung under the lowest proxy sphere, whose radius is inscribed in that segment's inertia ellipsoid -- so segment mass/inertia determines the floor position.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.687992992287271,
+    "pelvis_list": -3.1381324390613723,
+    "pelvis_rotation": -3.1389121013272385,
+    "pelvis_tx": -49.74437270914902,
+    "pelvis_ty": -1.070069113855737,
+    "pelvis_tz": -2.9994035668447347,
+    "hip_flexion_r": -0.33704972585907006,
+    "hip_adduction_r": -0.45952989960919516,
+    "hip_rotation_r": -0.3124125721125474,
+    "knee_angle_r": 0.22019297510531669,
+    "knee_angle_r_beta": -9.779807024894684,
+    "ankle_angle_r": 0.12288047711162375,
+    "hip_flexion_l": -0.3379865009874598,
+    "hip_adduction_l": -0.4581586088577558,
+    "hip_rotation_l": -0.29468774310482626,
+    "knee_angle_l": 0.21954297763704272,
+    "knee_angle_l_beta": -9.780457022362958,
+    "ankle_angle_l": 0.12069603904863024,
+    "lumbar_extension": -0.4835792500934517,
+    "lumbar_bending": -1.569921375157259,
+    "lumbar_rotation": -1.5664596687722019,
+    "arm_flex_r": -9.434901342374841,
+    "arm_add_r": -9.88552224746656,
+    "arm_rot_r": -9.832568927133876,
+    "elbow_flex_r": -0.10463265962265875,
+    "pro_sup_r": 0.18091271959440766,
+    "arm_flex_l": -9.434765144729264,
+    "arm_add_l": -9.885001528847717,
+    "arm_rot_l": -9.832413916059894,
+    "elbow_flex_l": -0.10463317656039263,
+    "pro_sup_l": 0.1809132133052754,
+    "mtp_angle_r": -0.5154002156355456,
+    "mtp_angle_l": -0.5152722919882979
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731924,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2381515431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.1736955366290875
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.3726344894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.1736955366290875
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.37263448784360204
+    },
+    "torso": {
+     "radius_m": 0.25766126988396704,
+     "mass_center_ground_x_m": -0.1458377177321,
+     "lowest_point_x_m": -0.40349898761606706,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.20887223067016797
+    },
+    "ulna_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2463150301367811
+    },
+    "radius_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2391215555875509
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.21577821719580012
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.20887223067016797
+    },
+    "ulna_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2463150301367811
+    },
+    "radius_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2391215555875509
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.21577821719580012
+    }
+   }
+  },
+  "base_repeat": {
+   "registration": "data/models/engineering_stance_v1/registration.json",
+   "model": "data/models/engineering_stance_v1/model.osim",
+   "support_plane_source_x_m": -0.40349898761606706,
+   "support_plane_override_x_m": null,
+   "support_plane_basis": "Plane hung under the lowest proxy sphere, whose radius is inscribed in that segment's inertia ellipsoid -- so segment mass/inertia determines the floor position.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.687992992287271,
+    "pelvis_list": -3.1381324390613723,
+    "pelvis_rotation": -3.1389121013272385,
+    "pelvis_tx": -49.74437270914902,
+    "pelvis_ty": -1.070069113855737,
+    "pelvis_tz": -2.9994035668447347,
+    "hip_flexion_r": -0.33704972585907006,
+    "hip_adduction_r": -0.45952989960919516,
+    "hip_rotation_r": -0.3124125721125474,
+    "knee_angle_r": 0.22019297510531669,
+    "knee_angle_r_beta": -9.779807024894684,
+    "ankle_angle_r": 0.12288047711162375,
+    "hip_flexion_l": -0.3379865009874598,
+    "hip_adduction_l": -0.4581586088577558,
+    "hip_rotation_l": -0.29468774310482626,
+    "knee_angle_l": 0.21954297763704272,
+    "knee_angle_l_beta": -9.780457022362958,
+    "ankle_angle_l": 0.12069603904863024,
+    "lumbar_extension": -0.4835792500934517,
+    "lumbar_bending": -1.569921375157259,
+    "lumbar_rotation": -1.5664596687722019,
+    "arm_flex_r": -9.434901342374841,
+    "arm_add_r": -9.88552224746656,
+    "arm_rot_r": -9.832568927133876,
+    "elbow_flex_r": -0.10463265962265875,
+    "pro_sup_r": 0.18091271959440766,
+    "arm_flex_l": -9.434765144729264,
+    "arm_add_l": -9.885001528847717,
+    "arm_rot_l": -9.832413916059894,
+    "elbow_flex_l": -0.10463317656039263,
+    "pro_sup_l": 0.1809132133052754,
+    "mtp_angle_r": -0.5154002156355456,
+    "mtp_angle_l": -0.5152722919882979
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731924,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2381515431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.1736955366290875
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.3726344894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.1736955366290875
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.37263448784360204
+    },
+    "torso": {
+     "radius_m": 0.25766126988396704,
+     "mass_center_ground_x_m": -0.1458377177321,
+     "lowest_point_x_m": -0.40349898761606706,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.20887223067016797
+    },
+    "ulna_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2463150301367811
+    },
+    "radius_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2391215555875509
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.21577821719580012
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.20887223067016797
+    },
+    "ulna_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2463150301367811
+    },
+    "radius_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2391215555875509
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.21577821719580012
+    }
+   }
+  },
+  "t0w0s0": {
+   "registration": "data/derived/foot-joint-arms/t0w0s0/registration.json",
+   "model": "data/derived/foot-joint-arms/t0w0s0/model.osim",
+   "support_plane_source_x_m": -0.40349898761606706,
+   "support_plane_override_x_m": null,
+   "support_plane_basis": "Plane hung under the lowest proxy sphere, whose radius is inscribed in that segment's inertia ellipsoid -- so segment mass/inertia determines the floor position.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.687992992287271,
+    "pelvis_list": -3.1381324390613723,
+    "pelvis_rotation": -3.1389121013272385,
+    "pelvis_tx": -49.74437270914902,
+    "pelvis_ty": -1.070069113855737,
+    "pelvis_tz": -2.9994035668447347,
+    "hip_flexion_r": -0.33704972585907006,
+    "hip_adduction_r": -0.45952989960919516,
+    "hip_rotation_r": -0.3124125721125474,
+    "knee_angle_r": 0.22019297510531669,
+    "knee_angle_r_beta": -9.779807024894684,
+    "ankle_angle_r": 0.12288047711162375,
+    "hip_flexion_l": -0.3379865009874598,
+    "hip_adduction_l": -0.4581586088577558,
+    "hip_rotation_l": -0.29468774310482626,
+    "knee_angle_l": 0.21954297763704272,
+    "knee_angle_l_beta": -9.780457022362958,
+    "ankle_angle_l": 0.12069603904863024,
+    "lumbar_extension": -0.4835792500934517,
+    "lumbar_bending": -1.569921375157259,
+    "lumbar_rotation": -1.5664596687722019,
+    "arm_flex_r": -9.434901342374841,
+    "arm_add_r": -9.88552224746656,
+    "arm_rot_r": -9.832568927133876,
+    "elbow_flex_r": -0.10463265962265875,
+    "pro_sup_r": 0.18091271959440766,
+    "arm_flex_l": -9.434765144729264,
+    "arm_add_l": -9.885001528847717,
+    "arm_rot_l": -9.832413916059894,
+    "elbow_flex_l": -0.10463317656039263,
+    "pro_sup_l": 0.1809132133052754,
+    "mtp_angle_r": -0.5154002156355456,
+    "mtp_angle_l": -0.5152722919882979
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731924,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2381515431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.1736955366290875
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.3726344894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.1736955366290875
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.37263448784360204
+    },
+    "torso": {
+     "radius_m": 0.25766126988396704,
+     "mass_center_ground_x_m": -0.1458377177321,
+     "lowest_point_x_m": -0.40349898761606706,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.20887223067016797
+    },
+    "ulna_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2463150301367811
+    },
+    "radius_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2391215555875509
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.21577821719580012
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.20887223067016797
+    },
+    "ulna_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2463150301367811
+    },
+    "radius_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2391215555875509
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.21577821719580012
+    }
+   }
+  },
+  "t1w1s1": {
+   "registration": "data/models/articulated_spine_v1/registration.json",
+   "model": "data/models/articulated_spine_v1/model.osim",
+   "support_plane_source_x_m": -0.4520127698239038,
+   "support_plane_override_x_m": null,
+   "support_plane_basis": "Plane hung under the lowest proxy sphere, whose radius is inscribed in that segment's inertia ellipsoid -- so segment mass/inertia determines the floor position.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.547271993084533,
+    "pelvis_list": -3.097199289899237,
+    "pelvis_rotation": -3.0368770357525547,
+    "pelvis_tx": -49.707859270650765,
+    "pelvis_ty": -1.0700892990065112,
+    "pelvis_tz": -2.964895140057425,
+    "hip_flexion_r": -0.5262034161563235,
+    "hip_adduction_r": -0.3182454545767865,
+    "hip_rotation_r": -0.21819977549588765,
+    "knee_angle_r": 0.22437263166839827,
+    "knee_angle_r_beta": -9.775627368331602,
+    "ankle_angle_r": 1.3562670820958647,
+    "hip_flexion_l": -0.5122195145237286,
+    "hip_adduction_l": -0.32741091042864934,
+    "hip_rotation_l": -0.4394215139707561,
+    "knee_angle_l": 0.2248586833886154,
+    "knee_angle_l_beta": -9.775141316611384,
+    "ankle_angle_l": 1.3522301109878478,
+    "lumbar_extension": -0.08343909370652947,
+    "lumbar_bending": -1.4670166416325023,
+    "lumbar_rotation": -1.4829600964674179,
+    "arm_flex_r": -9.312535686164882,
+    "arm_add_r": -9.924829715334608,
+    "arm_rot_r": -9.88235053836224,
+    "elbow_flex_r": -0.11335064918937017,
+    "pro_sup_r": 0.25233851592688133,
+    "wrist_flex_r": -1.0510827195582317,
+    "wrist_dev_r": -0.3257331878868808,
+    "arm_flex_l": -9.31083301597011,
+    "arm_add_l": -9.923128641373543,
+    "arm_rot_l": -9.842063061787286,
+    "elbow_flex_l": -0.11329984608723126,
+    "pro_sup_l": 0.2535099430406965,
+    "wrist_flex_l": -1.1474345377151125,
+    "wrist_dev_l": -0.3859398196769084,
+    "subtalar_angle_r": 0.12633367419375352,
+    "mtp_angle_r": -0.44942158854147674,
+    "subtalar_angle_l": 0.17162670921852063,
+    "mtp_angle_l": -0.44808976161940706,
+    "thoracic_extension": 0.39400657364815656,
+    "thoracic_bending": 0.20989542362996744,
+    "thoracic_rotation": -0.19254365703779586,
+    "neck_extension": 0.2083608370303558,
+    "neck_bending": 0.08288191473745776,
+    "neck_rotation": -0.43898670513707244,
+    "head_extension": 0.12612995052719117,
+    "head_bending": -0.020971825221956203,
+    "head_rotation": -0.6365148596190979
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731927,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.28666532532658456
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.42114827164985347
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.4211482700514388
+    },
+    "torso": {
+     "radius_m": 0.3090014978960673,
+     "mass_center_ground_x_m": -0.14301127192783653,
+     "lowest_point_x_m": -0.4520127698239038,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "thorax": {
+     "radius_m": 0.1356467738146379,
+     "mass_center_ground_x_m": -0.11446289823029597,
+     "lowest_point_x_m": -0.2501096720449339,
+     "gap_to_plane_m": 0.20190309777896992
+    },
+    "cervical": {
+     "radius_m": 0.05992238021457577,
+     "mass_center_ground_x_m": -0.1669251974475725,
+     "lowest_point_x_m": -0.22684757766214828,
+     "gap_to_plane_m": 0.22516519216175554
+    },
+    "head": {
+     "radius_m": 0.10705806752338487,
+     "mass_center_ground_x_m": -0.15851385538720306,
+     "lowest_point_x_m": -0.26557192291058795,
+     "gap_to_plane_m": 0.18644084691331586
+    }
+   }
+  },
+  "foot_paths": {
+   "registration": "data/models/articulated_spine_v1/registration_foot_paths.json",
+   "model": "data/models/articulated_spine_v1/model.osim",
+   "support_plane_source_x_m": -0.4520127698239038,
+   "support_plane_override_x_m": null,
+   "support_plane_basis": "Plane hung under the lowest proxy sphere, whose radius is inscribed in that segment's inertia ellipsoid -- so segment mass/inertia determines the floor position.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.5547839189918116,
+    "pelvis_list": -3.1119556596537814,
+    "pelvis_rotation": -3.1063990489543842,
+    "pelvis_tx": -49.71015688826215,
+    "pelvis_ty": -1.0700843039077368,
+    "pelvis_tz": -2.9847135040172574,
+    "hip_flexion_r": -0.4892393650364338,
+    "hip_adduction_r": -0.40592750173217973,
+    "hip_rotation_r": -0.41042954484778965,
+    "knee_angle_r": 0.22582185217636822,
+    "knee_angle_r_beta": -9.774178147823632,
+    "ankle_angle_r": 1.1398955321673525,
+    "hip_flexion_l": -0.4887041126395618,
+    "hip_adduction_l": -0.38709838520349016,
+    "hip_rotation_l": -0.413902075447061,
+    "knee_angle_l": 0.22603353854615987,
+    "knee_angle_l_beta": -9.77396646145384,
+    "ankle_angle_l": 0.8709298409294982,
+    "lumbar_extension": -0.09870447879731281,
+    "lumbar_bending": -1.4260486668188528,
+    "lumbar_rotation": -1.4628309771611732,
+    "arm_flex_r": -9.310337903364994,
+    "arm_add_r": -9.924751302396132,
+    "arm_rot_r": -9.89025244495101,
+    "elbow_flex_r": -0.11335126935493738,
+    "pro_sup_r": 0.24992271433439311,
+    "wrist_flex_r": -1.0084498134168445,
+    "wrist_dev_r": -0.35016749279261367,
+    "arm_flex_l": -9.308818948350577,
+    "arm_add_l": -9.923100913614467,
+    "arm_rot_l": -9.842557115370978,
+    "elbow_flex_l": -0.11330100882185953,
+    "pro_sup_l": 0.25102594017994434,
+    "wrist_flex_l": -1.1016508356895345,
+    "wrist_dev_l": -0.3899622242466275,
+    "subtalar_angle_r": 0.18646383454963866,
+    "mtp_angle_r": -0.46965743120509174,
+    "subtalar_angle_l": 0.1889013564525217,
+    "mtp_angle_l": -0.44148005210853736,
+    "thoracic_extension": 0.3969599848001562,
+    "thoracic_bending": 0.19958686720104274,
+    "thoracic_rotation": -0.15192119933979636,
+    "neck_extension": 0.209469730497172,
+    "neck_bending": 0.07359618464319928,
+    "neck_rotation": -0.44170665184091273,
+    "head_extension": 0.12617141741888765,
+    "head_bending": -0.026087650403505233,
+    "head_rotation": -0.623195113331132
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731927,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.28666532532658456
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.42114827164985347
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.4211482700514388
+    },
+    "torso": {
+     "radius_m": 0.3090014978960673,
+     "mass_center_ground_x_m": -0.14301127192783653,
+     "lowest_point_x_m": -0.4520127698239038,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "thorax": {
+     "radius_m": 0.1356467738146379,
+     "mass_center_ground_x_m": -0.11446289823029597,
+     "lowest_point_x_m": -0.2501096720449339,
+     "gap_to_plane_m": 0.20190309777896992
+    },
+    "cervical": {
+     "radius_m": 0.05992238021457577,
+     "mass_center_ground_x_m": -0.1669251974475725,
+     "lowest_point_x_m": -0.22684757766214828,
+     "gap_to_plane_m": 0.22516519216175554
+    },
+    "head": {
+     "radius_m": 0.10705806752338487,
+     "mass_center_ground_x_m": -0.15851385538720306,
+     "lowest_point_x_m": -0.26557192291058795,
+     "gap_to_plane_m": 0.18644084691331586
+    }
+   }
+  },
+  "tweld": {
+   "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+   "model": "data/derived/foot-joint-arms/tweld/model.osim",
+   "support_plane_source_x_m": -0.4520127698239038,
+   "support_plane_override_x_m": null,
+   "support_plane_basis": "Plane hung under the lowest proxy sphere, whose radius is inscribed in that segment's inertia ellipsoid -- so segment mass/inertia determines the floor position.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.5290620470539493,
+    "pelvis_list": -3.110664742203391,
+    "pelvis_rotation": -3.1280057971253465,
+    "pelvis_tx": -49.70445059517293,
+    "pelvis_ty": -1.0700745746163016,
+    "pelvis_tz": -2.977082678374827,
+    "hip_flexion_r": -0.5202421674305663,
+    "hip_adduction_r": -0.3828984709551442,
+    "hip_rotation_r": 0.09612403171307615,
+    "knee_angle_r": 0.22182627000531324,
+    "knee_angle_r_beta": -9.778173729994688,
+    "ankle_angle_r": 1.4014362998807766,
+    "hip_flexion_l": -0.526064259029611,
+    "hip_adduction_l": -0.3895826547333905,
+    "hip_rotation_l": 0.10399036768128078,
+    "knee_angle_l": 0.22269902890061694,
+    "knee_angle_l_beta": -9.777300971099383,
+    "ankle_angle_l": 1.2875612095350912,
+    "lumbar_extension": 0.5112045402889132,
+    "lumbar_bending": -1.5202078769129994,
+    "lumbar_rotation": -1.4743713033677441,
+    "arm_flex_r": -9.30776897730882,
+    "arm_add_r": -9.924690820514584,
+    "arm_rot_r": -9.902024645463364,
+    "elbow_flex_r": -0.10462388400352812,
+    "pro_sup_r": 0.2781920845374941,
+    "arm_flex_l": -9.305709214610841,
+    "arm_add_l": -9.923185362967724,
+    "arm_rot_l": -9.921052769981301,
+    "elbow_flex_l": -0.10462717096172247,
+    "pro_sup_l": 0.2789434115294638,
+    "mtp_angle_r": -0.4140090793271577,
+    "mtp_angle_l": -0.43170206927316607
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731927,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.28666532532658456
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.42114827164985347
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.4211482700514388
+    },
+    "torso": {
+     "radius_m": 0.3090014978960673,
+     "mass_center_ground_x_m": -0.14301127192783653,
+     "lowest_point_x_m": -0.4520127698239038,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "thorax": {
+     "radius_m": 0.1356467738146379,
+     "mass_center_ground_x_m": -0.11446289823029597,
+     "lowest_point_x_m": -0.2501096720449339,
+     "gap_to_plane_m": 0.20190309777896992
+    },
+    "cervical": {
+     "radius_m": 0.05992238021457577,
+     "mass_center_ground_x_m": -0.1669251974475725,
+     "lowest_point_x_m": -0.22684757766214828,
+     "gap_to_plane_m": 0.22516519216175554
+    },
+    "head": {
+     "radius_m": 0.10705806752338487,
+     "mass_center_ground_x_m": -0.15851385538720306,
+     "lowest_point_x_m": -0.26557192291058795,
+     "gap_to_plane_m": 0.18644084691331586
+    }
+   }
+  },
+  "t1w0s0": {
+   "registration": "data/derived/foot-joint-arms/t1w0s0/registration.json",
+   "model": "data/derived/foot-joint-arms/t1w0s0/model.osim",
+   "support_plane_source_x_m": -0.4520127698239038,
+   "support_plane_override_x_m": null,
+   "support_plane_basis": "Plane hung under the lowest proxy sphere, whose radius is inscribed in that segment's inertia ellipsoid -- so segment mass/inertia determines the floor position.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.547136279315379,
+    "pelvis_list": -3.1170086798772734,
+    "pelvis_rotation": -3.117731434691552,
+    "pelvis_tx": -49.707085162701716,
+    "pelvis_ty": -1.0700827935628556,
+    "pelvis_tz": -2.97914261531875,
+    "hip_flexion_r": -0.5260539920966604,
+    "hip_adduction_r": -0.38910802328385596,
+    "hip_rotation_r": 0.05856005955172283,
+    "knee_angle_r": 0.22464086971974237,
+    "knee_angle_r_beta": -9.775359130280258,
+    "ankle_angle_r": 1.3851096096923792,
+    "hip_flexion_l": -0.5260686274111136,
+    "hip_adduction_l": -0.39191281396854655,
+    "hip_rotation_l": 0.03572000503007078,
+    "knee_angle_l": 0.225113696496969,
+    "knee_angle_l_beta": -9.774886303503031,
+    "ankle_angle_l": 1.2663103725197518,
+    "lumbar_extension": -0.13982103834908632,
+    "lumbar_bending": -1.3958795048174983,
+    "lumbar_rotation": -1.4302147234754798,
+    "arm_flex_r": -9.32498013159924,
+    "arm_add_r": -9.92509693774468,
+    "arm_rot_r": -9.944410243631042,
+    "elbow_flex_r": -0.1064195989317369,
+    "pro_sup_r": 0.26742946334271833,
+    "arm_flex_l": -9.323301581509188,
+    "arm_add_l": -9.923553071919438,
+    "arm_rot_l": -9.872540567687409,
+    "elbow_flex_l": -0.10636677383384067,
+    "pro_sup_l": 0.2684855149015605,
+    "mtp_angle_r": -0.41468557086904445,
+    "mtp_angle_l": -0.42903918585198164,
+    "thoracic_extension": 0.39977075659958466,
+    "thoracic_bending": 0.219989592579593,
+    "thoracic_rotation": -0.15244390412922076,
+    "neck_extension": 0.2080144648462321,
+    "neck_bending": 0.08990478444230476,
+    "neck_rotation": -0.4397317835333419,
+    "head_extension": 0.12225585169687553,
+    "head_bending": -0.020840513094379856,
+    "head_rotation": -0.6228960359725992
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731927,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.28666532532658456
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.42114827164985347
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.4211482700514388
+    },
+    "torso": {
+     "radius_m": 0.3090014978960673,
+     "mass_center_ground_x_m": -0.14301127192783653,
+     "lowest_point_x_m": -0.4520127698239038,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "thorax": {
+     "radius_m": 0.1356467738146379,
+     "mass_center_ground_x_m": -0.11446289823029597,
+     "lowest_point_x_m": -0.2501096720449339,
+     "gap_to_plane_m": 0.20190309777896992
+    },
+    "cervical": {
+     "radius_m": 0.05992238021457577,
+     "mass_center_ground_x_m": -0.1669251974475725,
+     "lowest_point_x_m": -0.22684757766214828,
+     "gap_to_plane_m": 0.22516519216175554
+    },
+    "head": {
+     "radius_m": 0.10705806752338487,
+     "mass_center_ground_x_m": -0.15851385538720306,
+     "lowest_point_x_m": -0.26557192291058795,
+     "gap_to_plane_m": 0.18644084691331586
+    }
+   }
+  },
+  "base@P0": {
+   "registration": "data/models/engineering_stance_v1/registration.json",
+   "model": "data/models/engineering_stance_v1/model.osim",
+   "support_plane_source_x_m": -0.40349898761606706,
+   "support_plane_override_x_m": -0.40349898761606706,
+   "support_plane_basis": "Plane PINNED by the caller; it is not derived from this body's inertia, so a mass change does not move the floor. Use only to separate those two.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.687992992287271,
+    "pelvis_list": -3.1381324390613723,
+    "pelvis_rotation": -3.1389121013272385,
+    "pelvis_tx": -49.74437270914902,
+    "pelvis_ty": -1.070069113855737,
+    "pelvis_tz": -2.9994035668447347,
+    "hip_flexion_r": -0.33704972585907006,
+    "hip_adduction_r": -0.45952989960919516,
+    "hip_rotation_r": -0.3124125721125474,
+    "knee_angle_r": 0.22019297510531669,
+    "knee_angle_r_beta": -9.779807024894684,
+    "ankle_angle_r": 0.12288047711162375,
+    "hip_flexion_l": -0.3379865009874598,
+    "hip_adduction_l": -0.4581586088577558,
+    "hip_rotation_l": -0.29468774310482626,
+    "knee_angle_l": 0.21954297763704272,
+    "knee_angle_l_beta": -9.780457022362958,
+    "ankle_angle_l": 0.12069603904863024,
+    "lumbar_extension": -0.4835792500934517,
+    "lumbar_bending": -1.569921375157259,
+    "lumbar_rotation": -1.5664596687722019,
+    "arm_flex_r": -9.434901342374841,
+    "arm_add_r": -9.88552224746656,
+    "arm_rot_r": -9.832568927133876,
+    "elbow_flex_r": -0.10463265962265875,
+    "pro_sup_r": 0.18091271959440766,
+    "arm_flex_l": -9.434765144729264,
+    "arm_add_l": -9.885001528847717,
+    "arm_rot_l": -9.832413916059894,
+    "elbow_flex_l": -0.10463317656039263,
+    "pro_sup_l": 0.1809132133052754,
+    "mtp_angle_r": -0.5154002156355456,
+    "mtp_angle_l": -0.5152722919882979
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731924,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2381515431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.1736955366290875
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.3726344894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.1736955366290875
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.37263448784360204
+    },
+    "torso": {
+     "radius_m": 0.25766126988396704,
+     "mass_center_ground_x_m": -0.1458377177321,
+     "lowest_point_x_m": -0.40349898761606706,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.20887223067016797
+    },
+    "ulna_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2463150301367811
+    },
+    "radius_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2391215555875509
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.21577821719580012
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.20887223067016797
+    },
+    "ulna_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2463150301367811
+    },
+    "radius_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2391215555875509
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.21577821719580012
+    }
+   }
+  },
+  "tweld@PT": {
+   "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+   "model": "data/derived/foot-joint-arms/tweld/model.osim",
+   "support_plane_source_x_m": -0.4520127698239038,
+   "support_plane_override_x_m": -0.4520127698239038,
+   "support_plane_basis": "Plane PINNED by the caller; it is not derived from this body's inertia, so a mass change does not move the floor. Use only to separate those two.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.5290620470539493,
+    "pelvis_list": -3.110664742203391,
+    "pelvis_rotation": -3.1280057971253465,
+    "pelvis_tx": -49.70445059517293,
+    "pelvis_ty": -1.0700745746163016,
+    "pelvis_tz": -2.977082678374827,
+    "hip_flexion_r": -0.5202421674305663,
+    "hip_adduction_r": -0.3828984709551442,
+    "hip_rotation_r": 0.09612403171307615,
+    "knee_angle_r": 0.22182627000531324,
+    "knee_angle_r_beta": -9.778173729994688,
+    "ankle_angle_r": 1.4014362998807766,
+    "hip_flexion_l": -0.526064259029611,
+    "hip_adduction_l": -0.3895826547333905,
+    "hip_rotation_l": 0.10399036768128078,
+    "knee_angle_l": 0.22269902890061694,
+    "knee_angle_l_beta": -9.777300971099383,
+    "ankle_angle_l": 1.2875612095350912,
+    "lumbar_extension": 0.5112045402889132,
+    "lumbar_bending": -1.5202078769129994,
+    "lumbar_rotation": -1.4743713033677441,
+    "arm_flex_r": -9.30776897730882,
+    "arm_add_r": -9.924690820514584,
+    "arm_rot_r": -9.902024645463364,
+    "elbow_flex_r": -0.10462388400352812,
+    "pro_sup_r": 0.2781920845374941,
+    "arm_flex_l": -9.305709214610841,
+    "arm_add_l": -9.923185362967724,
+    "arm_rot_l": -9.921052769981301,
+    "elbow_flex_l": -0.10462717096172247,
+    "pro_sup_l": 0.2789434115294638,
+    "mtp_angle_r": -0.4140090793271577,
+    "mtp_angle_l": -0.43170206927316607
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731927,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.28666532532658456
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.42114827164985347
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.2222093188369242
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.4211482700514388
+    },
+    "torso": {
+     "radius_m": 0.3090014978960673,
+     "mass_center_ground_x_m": -0.14301127192783653,
+     "lowest_point_x_m": -0.4520127698239038,
+     "gap_to_plane_m": 0.0
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.2573860128780048
+    },
+    "ulna_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.2876353377953877
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.26429199940363685
+    },
+    "thorax": {
+     "radius_m": 0.1356467738146379,
+     "mass_center_ground_x_m": -0.11446289823029597,
+     "lowest_point_x_m": -0.2501096720449339,
+     "gap_to_plane_m": 0.20190309777896992
+    },
+    "cervical": {
+     "radius_m": 0.05992238021457577,
+     "mass_center_ground_x_m": -0.1669251974475725,
+     "lowest_point_x_m": -0.22684757766214828,
+     "gap_to_plane_m": 0.22516519216175554
+    },
+    "head": {
+     "radius_m": 0.10705806752338487,
+     "mass_center_ground_x_m": -0.15851385538720306,
+     "lowest_point_x_m": -0.26557192291058795,
+     "gap_to_plane_m": 0.18644084691331586
+    }
+   }
+  },
+  "tweld@P0": {
+   "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+   "model": "data/derived/foot-joint-arms/tweld/model.osim",
+   "support_plane_source_x_m": -0.40349898761606706,
+   "support_plane_override_x_m": -0.40349898761606706,
+   "support_plane_basis": "Plane PINNED by the caller; it is not derived from this body's inertia, so a mass change does not move the floor. Use only to separate those two.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.5868171335693964,
+    "pelvis_list": -3.111644569994016,
+    "pelvis_rotation": -3.128827119991282,
+    "pelvis_tx": -49.753057092572256,
+    "pelvis_ty": -1.071076531486578,
+    "pelvis_tz": -2.978675521584696,
+    "hip_flexion_r": -0.5187532208536877,
+    "hip_adduction_r": -0.40480250947324387,
+    "hip_rotation_r": 0.0905147525610972,
+    "knee_angle_r": 0.2207010434725888,
+    "knee_angle_r_beta": -9.77929895652741,
+    "ankle_angle_r": 1.3960671763687418,
+    "hip_flexion_l": -0.5301017094826594,
+    "hip_adduction_l": -0.4117485096489949,
+    "hip_rotation_l": 0.08958400020510116,
+    "knee_angle_l": 0.22036877059091814,
+    "knee_angle_l_beta": -9.779631229409082,
+    "ankle_angle_l": 1.2819914352412636,
+    "lumbar_extension": 0.5074182758443169,
+    "lumbar_bending": -1.521618081580348,
+    "lumbar_rotation": -1.477383976107731,
+    "arm_flex_r": -9.323362970641032,
+    "arm_add_r": -9.924660235392352,
+    "arm_rot_r": -9.929843891498239,
+    "elbow_flex_r": -0.11094948797493867,
+    "pro_sup_r": 0.22833385605716391,
+    "arm_flex_l": -9.321063563386431,
+    "arm_add_l": -9.923493725922318,
+    "arm_rot_l": -9.903986273413429,
+    "elbow_flex_l": -0.11102093111797716,
+    "pro_sup_l": 0.2291099556361544,
+    "mtp_angle_r": -0.41289310435653837,
+    "mtp_angle_l": -0.4283447562052276
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731927,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2381515431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.17369553662908746
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.3726344894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.17369553662908746
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.37263448784360204
+    },
+    "torso": {
+     "radius_m": 0.3090014978960673,
+     "mass_center_ground_x_m": -0.14301127192783653,
+     "lowest_point_x_m": -0.4520127698239038,
+     "gap_to_plane_m": -0.04851378220783675
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.20887223067016802
+    },
+    "ulna_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.24631503013678113
+    },
+    "radius_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.23912155558755094
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.2157782171958001
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.20887223067016802
+    },
+    "ulna_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.24631503013678113
+    },
+    "radius_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.23912155558755094
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.2157782171958001
+    },
+    "thorax": {
+     "radius_m": 0.1356467738146379,
+     "mass_center_ground_x_m": -0.11446289823029597,
+     "lowest_point_x_m": -0.2501096720449339,
+     "gap_to_plane_m": 0.15338931557113317
+    },
+    "cervical": {
+     "radius_m": 0.05992238021457577,
+     "mass_center_ground_x_m": -0.1669251974475725,
+     "lowest_point_x_m": -0.22684757766214828,
+     "gap_to_plane_m": 0.1766514099539188
+    },
+    "head": {
+     "radius_m": 0.10705806752338487,
+     "mass_center_ground_x_m": -0.15851385538720306,
+     "lowest_point_x_m": -0.26557192291058795,
+     "gap_to_plane_m": 0.1379270647054791
+    }
+   }
+  },
+  "base@PT": {
+   "registration": "data/models/engineering_stance_v1/registration.json",
+   "model": "data/models/engineering_stance_v1/model.osim",
+   "support_plane_source_x_m": -0.4520127698239038,
+   "support_plane_override_x_m": -0.4520127698239038,
+   "support_plane_basis": "Plane PINNED by the caller; it is not derived from this body's inertia, so a mass change does not move the floor. Use only to separate those two.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.6312793473483906,
+    "pelvis_list": -3.1379619534138685,
+    "pelvis_rotation": -3.1387536718010463,
+    "pelvis_tx": -49.69441479507682,
+    "pelvis_ty": -1.0696173003497278,
+    "pelvis_tz": -2.9993542517720844,
+    "hip_flexion_r": -0.30501389809347024,
+    "hip_adduction_r": -0.4403752529132859,
+    "hip_rotation_r": -0.2990476343197476,
+    "knee_angle_r": 0.21952715517195692,
+    "knee_angle_r_beta": -9.780472844828044,
+    "ankle_angle_r": 0.1532283109535303,
+    "hip_flexion_l": -0.3057308599666815,
+    "hip_adduction_l": -0.43895244213171414,
+    "hip_rotation_l": -0.2790330931519643,
+    "knee_angle_l": 0.22041367438573858,
+    "knee_angle_l_beta": -9.779586325614261,
+    "ankle_angle_l": 0.15040158295834927,
+    "lumbar_extension": -0.4290172994657224,
+    "lumbar_bending": -1.5696906662176107,
+    "lumbar_rotation": -1.5663691813444884,
+    "arm_flex_r": -9.414529494305182,
+    "arm_add_r": -9.88857941964364,
+    "arm_rot_r": -9.835928130314285,
+    "elbow_flex_r": -0.104525081017892,
+    "pro_sup_r": 0.19467609768809407,
+    "arm_flex_l": -9.414472775535991,
+    "arm_add_l": -9.888141612674206,
+    "arm_rot_l": -9.83577893622047,
+    "elbow_flex_l": -0.10452553213099977,
+    "pro_sup_l": 0.19415030224239513,
+    "mtp_angle_r": -0.5154000618005077,
+    "mtp_angle_l": -0.5152720022423234
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731924,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.28666532532658456
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.22220931883692424
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.42114827164985347
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.280524409130241
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3294203669319704
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.40949150659668
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.22220931883692424
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.3055344966459817
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.4211482700514388
+    },
+    "torso": {
+     "radius_m": 0.25766126988396704,
+     "mass_center_ground_x_m": -0.1458377177321,
+     "lowest_point_x_m": -0.40349898761606706,
+     "gap_to_plane_m": 0.04851378220783675
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.2573860128780047
+    },
+    "ulna_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.28763533779538764
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.2642919994036369
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.2573860128780047
+    },
+    "ulna_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2948288123446179
+    },
+    "radius_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.28763533779538764
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.2642919994036369
+    }
+   }
+  },
+  "t1w0s0@P0": {
+   "registration": "data/derived/foot-joint-arms/t1w0s0/registration.json",
+   "model": "data/derived/foot-joint-arms/t1w0s0/model.osim",
+   "support_plane_source_x_m": -0.40349898761606706,
+   "support_plane_override_x_m": -0.40349898761606706,
+   "support_plane_basis": "Plane PINNED by the caller; it is not derived from this body's inertia, so a mass change does not move the floor. Use only to separate those two.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.601078964288896,
+    "pelvis_list": -3.1199683702821432,
+    "pelvis_rotation": -3.1170532553841594,
+    "pelvis_tx": -49.756712275466086,
+    "pelvis_ty": -1.0710504256352484,
+    "pelvis_tz": -2.9783452509067563,
+    "hip_flexion_r": -0.5334844235876504,
+    "hip_adduction_r": -0.411282542368391,
+    "hip_rotation_r": 0.05610961815133553,
+    "knee_angle_r": 0.21779135711536993,
+    "knee_angle_r_beta": -9.78220864288463,
+    "ankle_angle_r": 1.3845823857990207,
+    "hip_flexion_l": -0.5335069757841208,
+    "hip_adduction_l": -0.4118465234471699,
+    "hip_rotation_l": 0.008812934911074155,
+    "knee_angle_l": 0.2169157145076917,
+    "knee_angle_l_beta": -9.783084285492308,
+    "ankle_angle_l": 1.2609751143429433,
+    "lumbar_extension": -0.19094074620536183,
+    "lumbar_bending": -1.395206778694516,
+    "lumbar_rotation": -1.4326924240334833,
+    "arm_flex_r": -9.3415433410471,
+    "arm_add_r": -9.925168516108709,
+    "arm_rot_r": -9.944387335279435,
+    "elbow_flex_r": -0.11291903428125265,
+    "pro_sup_r": 0.20074635331985896,
+    "arm_flex_l": -9.339801397381665,
+    "arm_add_l": -9.923907971181247,
+    "arm_rot_l": -9.854569445230611,
+    "elbow_flex_l": -0.11291213642585504,
+    "pro_sup_l": 0.20177946528079993,
+    "mtp_angle_r": -0.4128875544567322,
+    "mtp_angle_l": -0.4251806481131878,
+    "thoracic_extension": 0.4042291435126392,
+    "thoracic_bending": 0.22022234722574513,
+    "thoracic_rotation": -0.1497082980922328,
+    "neck_extension": 0.20685493071872751,
+    "neck_bending": 0.08753092441634547,
+    "neck_rotation": -0.4425601948425274,
+    "head_extension": 0.11928486480020667,
+    "head_bending": -0.030767654991170512,
+    "head_rotation": -0.608223239785387
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731927,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2381515431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.17369553662908746
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.3726344894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243482,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.23201062692240426
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.28090658472413366
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.36097772438884324
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315668,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.2298034509869796,
+     "gap_to_plane_m": 0.17369553662908746
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.25702071443814495
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.37263448784360204
+    },
+    "torso": {
+     "radius_m": 0.3090014978960673,
+     "mass_center_ground_x_m": -0.14301127192783653,
+     "lowest_point_x_m": -0.4520127698239038,
+     "gap_to_plane_m": -0.04851378220783675
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.20887223067016802
+    },
+    "ulna_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.24631503013678113
+    },
+    "radius_r": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.23912155558755094
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.2157782171958001
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957306,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.19462675694589904,
+     "gap_to_plane_m": 0.20887223067016802
+    },
+    "ulna_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928593,
+     "gap_to_plane_m": 0.24631503013678113
+    },
+    "radius_l": {
+     "radius_m": 0.059800766669018325,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851612,
+     "gap_to_plane_m": 0.23912155558755094
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275697,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026697,
+     "gap_to_plane_m": 0.2157782171958001
+    },
+    "thorax": {
+     "radius_m": 0.1356467738146379,
+     "mass_center_ground_x_m": -0.11446289823029597,
+     "lowest_point_x_m": -0.2501096720449339,
+     "gap_to_plane_m": 0.15338931557113317
+    },
+    "cervical": {
+     "radius_m": 0.05992238021457577,
+     "mass_center_ground_x_m": -0.1669251974475725,
+     "lowest_point_x_m": -0.22684757766214828,
+     "gap_to_plane_m": 0.1766514099539188
+    },
+    "head": {
+     "radius_m": 0.10705806752338487,
+     "mass_center_ground_x_m": -0.15851385538720306,
+     "lowest_point_x_m": -0.26557192291058795,
+     "gap_to_plane_m": 0.1379270647054791
+    }
+   }
+  },
+  "base@P0-12.125mm": {
+   "registration": "data/models/engineering_stance_v1/registration.json",
+   "model": "data/models/engineering_stance_v1/model.osim",
+   "support_plane_source_x_m": -0.41562398761606706,
+   "support_plane_override_x_m": -0.41562398761606706,
+   "support_plane_basis": "Plane PINNED by the caller; it is not derived from this body's inertia, so a mass change does not move the floor. Use only to separate those two.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.6752107352938883,
+    "pelvis_list": -3.138081169346262,
+    "pelvis_rotation": -3.13888166234091,
+    "pelvis_tx": -49.731927953991914,
+    "pelvis_ty": -1.0700569811941076,
+    "pelvis_tz": -2.999397438913065,
+    "hip_flexion_r": -0.32863406171919474,
+    "hip_adduction_r": -0.4550521461716028,
+    "hip_rotation_r": -0.308863031244017,
+    "knee_angle_r": 0.2190651957111647,
+    "knee_angle_r_beta": -9.780934804288835,
+    "ankle_angle_r": 0.1306228178223684,
+    "hip_flexion_l": -0.32948491879929687,
+    "hip_adduction_l": -0.45363668317176103,
+    "hip_rotation_l": -0.29053830944142967,
+    "knee_angle_l": 0.21942936921461703,
+    "knee_angle_l_beta": -9.780570630785382,
+    "ankle_angle_l": 0.12847205407258533,
+    "lumbar_extension": -0.4689428844476877,
+    "lumbar_bending": -1.5698958693090235,
+    "lumbar_rotation": -1.566364350383402,
+    "arm_flex_r": -9.429028312004382,
+    "arm_add_r": -9.886466488250862,
+    "arm_rot_r": -9.833595169776725,
+    "elbow_flex_r": -0.10452625392539457,
+    "pro_sup_r": 0.18125704206162196,
+    "arm_flex_l": -9.428916958355806,
+    "arm_add_l": -9.885931588722428,
+    "arm_rot_l": -9.833413858021192,
+    "elbow_flex_l": -0.1045267057910921,
+    "pro_sup_l": 0.18125681586686013,
+    "mtp_angle_r": -0.5154000635373922,
+    "mtp_angle_l": -0.5152720054738938
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731924,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2502765431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.24413562692240426
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.2930315847241336
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.37310272438884323
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.18582053662908748
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.26914571443814495
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.3847594894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.24413562692240426
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.2930315847241336
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.37310272438884323
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.18582053662908748
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.26914571443814495
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.38475948784360203
+    },
+    "torso": {
+     "radius_m": 0.25766126988396704,
+     "mass_center_ground_x_m": -0.1458377177321,
+     "lowest_point_x_m": -0.40349898761606706,
+     "gap_to_plane_m": 0.012124999999999997
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.22099723067016797
+    },
+    "ulna_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2584400301367811
+    },
+    "radius_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.25124655558755093
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.22790321719580012
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.22099723067016797
+    },
+    "ulna_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2584400301367811
+    },
+    "radius_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.25124655558755093
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.22790321719580012
+    }
+   }
+  },
+  "base@P0-24.25mm": {
+   "registration": "data/models/engineering_stance_v1/registration.json",
+   "model": "data/models/engineering_stance_v1/model.osim",
+   "support_plane_source_x_m": -0.42774898761606706,
+   "support_plane_override_x_m": -0.42774898761606706,
+   "support_plane_basis": "Plane PINNED by the caller; it is not derived from this body's inertia, so a mass change does not move the floor. Use only to separate those two.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.6606608711592177,
+    "pelvis_list": -3.138035319758457,
+    "pelvis_rotation": -3.138848520065193,
+    "pelvis_tx": -49.71948369100345,
+    "pelvis_ty": -1.0700568467254035,
+    "pelvis_tz": -2.999386083584311,
+    "hip_flexion_r": -0.3203416434512042,
+    "hip_adduction_r": -0.4503596261569687,
+    "hip_rotation_r": -0.3054645973008493,
+    "knee_angle_r": 0.2143011902938719,
+    "knee_angle_r_beta": -9.785698809706128,
+    "ankle_angle_r": 0.13921936581644523,
+    "hip_flexion_l": -0.3211900819557567,
+    "hip_adduction_l": -0.4489169173031428,
+    "hip_rotation_l": -0.28656048886202456,
+    "knee_angle_l": 0.21269291699681037,
+    "knee_angle_l_beta": -9.78730708300319,
+    "ankle_angle_l": 0.13673190139760527,
+    "lumbar_extension": -0.45502319203949804,
+    "lumbar_bending": -1.5698528949428343,
+    "lumbar_rotation": -1.5663141534260925,
+    "arm_flex_r": -9.42355809706135,
+    "arm_add_r": -9.887391131797582,
+    "arm_rot_r": -9.834490163984022,
+    "elbow_flex_r": -0.10452508322170591,
+    "pro_sup_r": 0.1812609806355341,
+    "arm_flex_l": -9.423443722350449,
+    "arm_add_l": -9.886874628062701,
+    "arm_rot_l": -9.83431575332003,
+    "elbow_flex_l": -0.10452553433625703,
+    "pro_sup_l": 0.18126074516936455,
+    "mtp_angle_r": -0.5154000618038236,
+    "mtp_angle_l": -0.5152720022484797
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731924,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2624015431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.25626062692240426
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.30515658472413365
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.38522772438884323
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.19794553662908748
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.28127071443814494
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.3968844894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.25626062692240426
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.30515658472413365
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.38522772438884323
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.19794553662908748
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.28127071443814494
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.39688448784360203
+    },
+    "torso": {
+     "radius_m": 0.25766126988396704,
+     "mass_center_ground_x_m": -0.1458377177321,
+     "lowest_point_x_m": -0.40349898761606706,
+     "gap_to_plane_m": 0.024249999999999994
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.23312223067016796
+    },
+    "ulna_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2705650301367811
+    },
+    "radius_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2633715555875509
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.24002821719580011
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.23312223067016796
+    },
+    "ulna_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.2705650301367811
+    },
+    "radius_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.2633715555875509
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.24002821719580011
+    }
+   }
+  },
+  "base@P0-36.375mm": {
+   "registration": "data/models/engineering_stance_v1/registration.json",
+   "model": "data/models/engineering_stance_v1/model.osim",
+   "support_plane_source_x_m": -0.43987398761606705,
+   "support_plane_override_x_m": -0.43987398761606705,
+   "support_plane_basis": "Plane PINNED by the caller; it is not derived from this body's inertia, so a mass change does not move the floor. Use only to separate those two.",
+   "worst_excursion_rad": {
+    "pelvis_tilt": -2.6470516319976714,
+    "pelvis_list": -3.1379952994180855,
+    "pelvis_rotation": -3.1388039239031156,
+    "pelvis_tx": -49.70694193406017,
+    "pelvis_ty": -1.069906076685756,
+    "pelvis_tz": -2.999371573571026,
+    "hip_flexion_r": -0.31234755373798784,
+    "hip_adduction_r": -0.44547341055606227,
+    "hip_rotation_r": -0.3022041653568606,
+    "knee_angle_r": 0.22258998875289224,
+    "knee_angle_r_beta": -9.777410011247108,
+    "ankle_angle_r": 0.14610386089334126,
+    "hip_flexion_l": -0.31312166998655483,
+    "hip_adduction_l": -0.444004639761931,
+    "hip_rotation_l": -0.28273800161382967,
+    "knee_angle_l": 0.2221407577474592,
+    "knee_angle_l_beta": -9.777859242252541,
+    "ankle_angle_l": 0.14337098521881864,
+    "lumbar_extension": -0.44141802811218356,
+    "lumbar_bending": -1.569782119853041,
+    "lumbar_rotation": -1.5663151916882023,
+    "arm_flex_r": -9.418689702039686,
+    "arm_add_r": -9.888124202999903,
+    "arm_rot_r": -9.835312956279221,
+    "elbow_flex_r": -0.10452508102066115,
+    "pro_sup_r": 0.18670796120754932,
+    "arm_flex_l": -9.418605968695044,
+    "arm_add_l": -9.887622264842873,
+    "arm_rot_l": -9.835143583675475,
+    "elbow_flex_l": -0.10452553213377071,
+    "pro_sup_l": 0.18619173335720687,
+    "mtp_angle_r": -0.5154000618005119,
+    "mtp_angle_l": -0.5152720022423313
+   },
+   "proxy_spheres": {
+    "pelvis": {
+     "radius_m": 0.09464744449731924,
+     "mass_center_ground_x_m": -0.0707,
+     "lowest_point_x_m": -0.16534744449731925,
+     "gap_to_plane_m": 0.2745265431187478
+    },
+    "femur_r": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.26838562692240425
+    },
+    "tibia_r": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3172815847241336
+    },
+    "patella_r": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.3973527243888432
+    },
+    "talus_r": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.21007053662908748
+    },
+    "calcn_r": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.29339571443814494
+    },
+    "toes_r": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181298029179121,
+     "lowest_point_x_m": -0.030864498174050334,
+     "gap_to_plane_m": 0.4090094894420167
+    },
+    "femur_l": {
+     "radius_m": 0.10675267645243479,
+     "mass_center_ground_x_m": -0.064735684241228,
+     "lowest_point_x_m": -0.1714883606936628,
+     "gap_to_plane_m": 0.26838562692240425
+    },
+    "tibia_l": {
+     "radius_m": 0.06253791846757609,
+     "mass_center_ground_x_m": -0.060054484424357346,
+     "lowest_point_x_m": -0.12259240289193343,
+     "gap_to_plane_m": 0.3172815847241336
+    },
+    "patella_l": {
+     "radius_m": 0.026023146933722423,
+     "mass_center_ground_x_m": -0.016498116293501397,
+     "lowest_point_x_m": -0.04252126322722382,
+     "gap_to_plane_m": 0.3973527243888432
+    },
+    "talus_l": {
+     "radius_m": 0.15811388133315665,
+     "mass_center_ground_x_m": -0.07168956965382292,
+     "lowest_point_x_m": -0.22980345098697957,
+     "gap_to_plane_m": 0.21007053662908748
+    },
+    "calcn_l": {
+     "radius_m": 0.11489125263565608,
+     "mass_center_ground_x_m": -0.031587020542266045,
+     "lowest_point_x_m": -0.1464782731779221,
+     "gap_to_plane_m": 0.29339571443814494
+    },
+    "toes_l": {
+     "radius_m": 0.11267747846584154,
+     "mass_center_ground_x_m": 0.08181297869337652,
+     "lowest_point_x_m": -0.030864499772465026,
+     "gap_to_plane_m": 0.409009487843602
+    },
+    "torso": {
+     "radius_m": 0.25766126988396704,
+     "mass_center_ground_x_m": -0.1458377177321,
+     "lowest_point_x_m": -0.40349898761606706,
+     "gap_to_plane_m": 0.03637499999999999
+    },
+    "humerus_r": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.24524723067016796
+    },
+    "ulna_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.28269003013678107
+    },
+    "radius_r": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.27549655558755093
+    },
+    "hand_r": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.2521532171958001
+    },
+    "humerus_l": {
+     "radius_m": 0.08287574273957309,
+     "mass_center_ground_x_m": -0.111751014206326,
+     "lowest_point_x_m": -0.1946267569458991,
+     "gap_to_plane_m": 0.24524723067016796
+    },
+    "ulna_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.0973831908102676,
+     "lowest_point_x_m": -0.15718395747928596,
+     "gap_to_plane_m": 0.28269003013678107
+    },
+    "radius_l": {
+     "radius_m": 0.05980076666901835,
+     "mass_center_ground_x_m": -0.10457666535949779,
+     "lowest_point_x_m": -0.16437743202851615,
+     "gap_to_plane_m": 0.27549655558755093
+    },
+    "hand_l": {
+     "radius_m": 0.07373708921275696,
+     "mass_center_ground_x_m": -0.11398368120750998,
+     "lowest_point_x_m": -0.18772077042026694,
+     "gap_to_plane_m": 0.2521532171958001
+    }
+   }
+  }
+ },
+ "scored": {
+  "bar_rad": 0.22019297510531669,
+  "bar_coordinate": "knee_angle_r",
+  "planes_m": {
+   "P0": -0.40349898761606706,
+   "PT": -0.4520127698239038
+  },
+  "plane_reproduction": {
+   "P0": {
+    "measured_m": -0.40349898761606706,
+    "printed_m": -0.4035,
+    "ok": true
+   },
+   "PT": {
+    "measured_m": -0.4520127698239038,
+    "printed_m": -0.45201,
+    "ok": true
+   }
+  },
+  "instrument_checks_q1_seven": {
+   "1 base == base_repeat, exact": true,
+   "2 round trip t0w0s0 == base, exact": true,
+   "3 bar reproduces F2 0.2202": true,
+   "t1w1s1 ankle_angle_r reproduces 1.3563": true,
+   "t1w1s1 ankle_angle_l reproduces 1.3522": true,
+   "foot_paths ankle_angle_r reproduces 1.1399": true,
+   "foot_paths ankle_angle_l reproduces 0.8709": true
+  },
+  "instrument_checks_q1_seven_ok": true,
+  "instrument_checks_new": {
+   "8a base@P0 bit-equal to base": true,
+   "8b tweld@PT bit-equal to tweld": true,
+   "9a every pinned arm reports the pinned plane exactly": true,
+   "9b every pinned arm records the override in its own execution.json": true,
+   "9c no derived arm records an override": true,
+   "9d the pin bites: tweld@P0 plane differs from tweld by 48.5 mm": true,
+   "10a derived plane == lowest reconstructed sphere, every arm": true,
+   "10b the lowest body is torso, every derived arm": true,
+   "10c torso radius reproduces 0.2577 (base) and 0.3090 (tweld)": true
+  },
+  "instrument_checks_new_ok": true,
+  "plane_rule_reconstruction": {
+   "base": {
+    "lowest_body": "torso",
+    "residual_m": 0.0,
+    "ok": true
+   },
+   "base_repeat": {
+    "lowest_body": "torso",
+    "residual_m": 0.0,
+    "ok": true
+   },
+   "t0w0s0": {
+    "lowest_body": "torso",
+    "residual_m": 0.0,
+    "ok": true
+   },
+   "t1w1s1": {
+    "lowest_body": "torso",
+    "residual_m": 0.0,
+    "ok": true
+   },
+   "foot_paths": {
+    "lowest_body": "torso",
+    "residual_m": 0.0,
+    "ok": true
+   },
+   "tweld": {
+    "lowest_body": "torso",
+    "residual_m": 0.0,
+    "ok": true
+   },
+   "t1w0s0": {
+    "lowest_body": "torso",
+    "residual_m": 0.0,
+    "ok": true
+   }
+  },
+  "derived_arm_reproduction": {
+   "tweld ankle_angle_r reproduces 1.4014": true,
+   "tweld ankle_angle_l reproduces 1.2876": true,
+   "t1w0s0 ankle_angle_r reproduces 1.3851": true,
+   "t1w0s0 ankle_angle_l reproduces 1.2663": true
+  },
+  "table": {
+   "base": {
+    "registration": "data/models/engineering_stance_v1/registration.json",
+    "ankle_angle_r": 0.12288047711162375,
+    "ankle_angle_l": 0.12069603904863024,
+    "A": 0.12288047711162375,
+    "recovered": true,
+    "worst_rad": 0.22019297510531669,
+    "worst_coordinate": "knee_angle_r",
+    "plane_m": -0.40349898761606706,
+    "plane_pinned": false,
+    "plane_vs_P0_mm": 0.0,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.25766126988396704,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.2381515431187478,
+      "tibia_r": 0.28090658472413366,
+      "talus_r": 0.1736955366290875,
+      "calcn_r": 0.25702071443814495,
+      "toes_r": 0.3726344894420167,
+      "tibia_l": 0.28090658472413366,
+      "talus_l": 0.1736955366290875,
+      "calcn_l": 0.25702071443814495,
+      "toes_l": 0.37263448784360204
+     },
+     "contact_n_at_t0": {
+      "torso": 21.275918541925016,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 851.3208730957155,
+      "pelvis": 413.20548588527777,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 1.487779156813922e-11,
+      "talus_r": 363.14840466646893,
+      "calcn_r": 1.451574408703e-08,
+      "toes_r": 0.0,
+      "tibia_l": 1.4312218161445555e-11,
+      "talus_l": 374.0954003053721,
+      "calcn_l": 1.3479398169864085e-08,
+      "toes_l": 0.0
+     },
+     "peak_contact_n_all_max": 851.3208730957155,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.08147257328033447
+   },
+   "base_repeat": {
+    "registration": "data/models/engineering_stance_v1/registration.json",
+    "ankle_angle_r": 0.12288047711162375,
+    "ankle_angle_l": 0.12069603904863024,
+    "A": 0.12288047711162375,
+    "recovered": true,
+    "worst_rad": 0.22019297510531669,
+    "worst_coordinate": "knee_angle_r",
+    "plane_m": -0.40349898761606706,
+    "plane_pinned": false,
+    "plane_vs_P0_mm": 0.0,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.25766126988396704,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.2381515431187478,
+      "tibia_r": 0.28090658472413366,
+      "talus_r": 0.1736955366290875,
+      "calcn_r": 0.25702071443814495,
+      "toes_r": 0.3726344894420167,
+      "tibia_l": 0.28090658472413366,
+      "talus_l": 0.1736955366290875,
+      "calcn_l": 0.25702071443814495,
+      "toes_l": 0.37263448784360204
+     },
+     "contact_n_at_t0": {
+      "torso": 21.275918541925016,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 851.3208730957155,
+      "pelvis": 413.20548588527777,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 1.487779156813922e-11,
+      "talus_r": 363.14840466646893,
+      "calcn_r": 1.451574408703e-08,
+      "toes_r": 0.0,
+      "tibia_l": 1.4312218161445555e-11,
+      "talus_l": 374.0954003053721,
+      "calcn_l": 1.3479398169864085e-08,
+      "toes_l": 0.0
+     },
+     "peak_contact_n_all_max": 851.3208730957155,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.08079244613647461
+   },
+   "t0w0s0": {
+    "registration": "data/derived/foot-joint-arms/t0w0s0/registration.json",
+    "ankle_angle_r": 0.12288047711162375,
+    "ankle_angle_l": 0.12069603904863024,
+    "A": 0.12288047711162375,
+    "recovered": true,
+    "worst_rad": 0.22019297510531669,
+    "worst_coordinate": "knee_angle_r",
+    "plane_m": -0.40349898761606706,
+    "plane_pinned": false,
+    "plane_vs_P0_mm": 0.0,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.25766126988396704,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.2381515431187478,
+      "tibia_r": 0.28090658472413366,
+      "talus_r": 0.1736955366290875,
+      "calcn_r": 0.25702071443814495,
+      "toes_r": 0.3726344894420167,
+      "tibia_l": 0.28090658472413366,
+      "talus_l": 0.1736955366290875,
+      "calcn_l": 0.25702071443814495,
+      "toes_l": 0.37263448784360204
+     },
+     "contact_n_at_t0": {
+      "torso": 21.275918541925016,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 851.3208730957155,
+      "pelvis": 413.20548588527777,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 1.487779156813922e-11,
+      "talus_r": 363.14840466646893,
+      "calcn_r": 1.451574408703e-08,
+      "toes_r": 0.0,
+      "tibia_l": 1.4312218161445555e-11,
+      "talus_l": 374.0954003053721,
+      "calcn_l": 1.3479398169864085e-08,
+      "toes_l": 0.0
+     },
+     "peak_contact_n_all_max": 851.3208730957155,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.08050982236862182
+   },
+   "t1w1s1": {
+    "registration": "data/models/articulated_spine_v1/registration.json",
+    "ankle_angle_r": 1.3562670820958647,
+    "ankle_angle_l": 1.3522301109878478,
+    "A": 1.3562670820958647,
+    "recovered": false,
+    "worst_rad": 1.3562670820958647,
+    "worst_coordinate": "ankle_angle_r",
+    "plane_m": -0.4520127698239038,
+    "plane_pinned": false,
+    "plane_vs_P0_mm": -48.513782207836755,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.3090014978960673,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.28666532532658456,
+      "thorax": 0.20190309777896992,
+      "cervical": 0.22516519216175554,
+      "head": 0.18644084691331586,
+      "tibia_r": 0.3294203669319704,
+      "talus_r": 0.2222093188369242,
+      "calcn_r": 0.3055344966459817,
+      "toes_r": 0.42114827164985347,
+      "tibia_l": 0.3294203669319704,
+      "talus_l": 0.2222093188369242,
+      "calcn_l": 0.3055344966459817,
+      "toes_l": 0.4211482700514388
+     },
+     "contact_n_at_t0": {
+      "torso": 23.29936257777822,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 941.0210490375717,
+      "pelvis": 69.25287189057784,
+      "thorax": 3.034148783333368e-13,
+      "cervical": 0.0,
+      "head": 602.3916782473992,
+      "tibia_r": 1.2044881352004512e-12,
+      "talus_r": 1142.6547401651587,
+      "calcn_r": 0.00659406953587466,
+      "toes_r": 55.32839037766923,
+      "tibia_l": 1.1744609040502763e-12,
+      "talus_l": 1139.4518520731172,
+      "calcn_l": 0.04762580522267141,
+      "toes_l": 40.95108329805725
+     },
+     "peak_contact_n_all_max": 1142.6547401651587,
+     "peak_contact_n_all_max_body": "talus_r"
+    },
+    "wall_s_per_advance": 0.10105395317077637
+   },
+   "foot_paths": {
+    "registration": "data/models/articulated_spine_v1/registration_foot_paths.json",
+    "ankle_angle_r": 1.1398955321673525,
+    "ankle_angle_l": 0.8709298409294982,
+    "A": 1.1398955321673525,
+    "recovered": false,
+    "worst_rad": 1.1398955321673525,
+    "worst_coordinate": "ankle_angle_r",
+    "plane_m": -0.4520127698239038,
+    "plane_pinned": false,
+    "plane_vs_P0_mm": -48.513782207836755,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.3090014978960673,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.28666532532658456,
+      "thorax": 0.20190309777896992,
+      "cervical": 0.22516519216175554,
+      "head": 0.18644084691331586,
+      "tibia_r": 0.3294203669319704,
+      "talus_r": 0.2222093188369242,
+      "calcn_r": 0.3055344966459817,
+      "toes_r": 0.42114827164985347,
+      "tibia_l": 0.3294203669319704,
+      "talus_l": 0.2222093188369242,
+      "calcn_l": 0.3055344966459817,
+      "toes_l": 0.4211482700514388
+     },
+     "contact_n_at_t0": {
+      "torso": 23.29936257777822,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 941.6801864657156,
+      "pelvis": 37.6455256212631,
+      "thorax": 1.5985659262158783e-13,
+      "cervical": 0.0,
+      "head": 602.4830923361691,
+      "tibia_r": 1.3613780249313997e-13,
+      "talus_r": 1162.5503365674062,
+      "calcn_r": 0.4584898990975569,
+      "toes_r": 112.05418901861542,
+      "tibia_l": 0.0,
+      "talus_l": 1139.934568497363,
+      "calcn_l": 0.05682536395497853,
+      "toes_l": 131.30348315038384
+     },
+     "peak_contact_n_all_max": 1162.5503365674062,
+     "peak_contact_n_all_max_body": "talus_r"
+    },
+    "wall_s_per_advance": 0.13794968724250795
+   },
+   "tweld": {
+    "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+    "ankle_angle_r": 1.4014362998807766,
+    "ankle_angle_l": 1.2875612095350912,
+    "A": 1.4014362998807766,
+    "recovered": false,
+    "worst_rad": 1.4014362998807766,
+    "worst_coordinate": "ankle_angle_r",
+    "plane_m": -0.4520127698239038,
+    "plane_pinned": false,
+    "plane_vs_P0_mm": -48.513782207836755,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.3090014978960673,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.28666532532658456,
+      "thorax": 0.20190309777896992,
+      "cervical": 0.22516519216175554,
+      "head": 0.18644084691331586,
+      "tibia_r": 0.3294203669319704,
+      "talus_r": 0.2222093188369242,
+      "calcn_r": 0.3055344966459817,
+      "toes_r": 0.42114827164985347,
+      "tibia_l": 0.3294203669319704,
+      "talus_l": 0.2222093188369242,
+      "calcn_l": 0.3055344966459817,
+      "toes_l": 0.4211482700514388
+     },
+     "contact_n_at_t0": {
+      "torso": 23.29936257777822,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 1024.2469603411987,
+      "pelvis": 135.92864858454485,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 1025.5440175346407,
+      "calcn_r": 0.14435678751324862,
+      "toes_r": 81.52841352819406,
+      "tibia_l": 1.8139549550598339e-13,
+      "talus_l": 1065.739413604535,
+      "calcn_l": 0.02945483654402191,
+      "toes_l": 91.82728674348573
+     },
+     "peak_contact_n_all_max": 1065.739413604535,
+     "peak_contact_n_all_max_body": "talus_l"
+    },
+    "wall_s_per_advance": 0.08481438279151916
+   },
+   "t1w0s0": {
+    "registration": "data/derived/foot-joint-arms/t1w0s0/registration.json",
+    "ankle_angle_r": 1.3851096096923792,
+    "ankle_angle_l": 1.2663103725197518,
+    "A": 1.3851096096923792,
+    "recovered": false,
+    "worst_rad": 1.3851096096923792,
+    "worst_coordinate": "ankle_angle_r",
+    "plane_m": -0.4520127698239038,
+    "plane_pinned": false,
+    "plane_vs_P0_mm": -48.513782207836755,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.3090014978960673,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.28666532532658456,
+      "thorax": 0.20190309777896992,
+      "cervical": 0.22516519216175554,
+      "head": 0.18644084691331586,
+      "tibia_r": 0.3294203669319704,
+      "talus_r": 0.2222093188369242,
+      "calcn_r": 0.3055344966459817,
+      "toes_r": 0.42114827164985347,
+      "tibia_l": 0.3294203669319704,
+      "talus_l": 0.2222093188369242,
+      "calcn_l": 0.3055344966459817,
+      "toes_l": 0.4211482700514388
+     },
+     "contact_n_at_t0": {
+      "torso": 23.29936257777822,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 981.8553620820768,
+      "pelvis": 84.02300025721112,
+      "thorax": 1.1310896197272605e-12,
+      "cervical": 0.0,
+      "head": 601.5527418735747,
+      "tibia_r": 2.120733083303606e-13,
+      "talus_r": 1141.726899887246,
+      "calcn_r": 0.08360393991925297,
+      "toes_r": 86.98802398070966,
+      "tibia_l": 3.560046731638689e-13,
+      "talus_l": 1138.03147249841,
+      "calcn_l": 0.031000697673154064,
+      "toes_l": 85.15821761972157
+     },
+     "peak_contact_n_all_max": 1141.726899887246,
+     "peak_contact_n_all_max_body": "talus_r"
+    },
+    "wall_s_per_advance": 0.0824577784538269
+   },
+   "base@P0": {
+    "registration": "data/models/engineering_stance_v1/registration.json",
+    "ankle_angle_r": 0.12288047711162375,
+    "ankle_angle_l": 0.12069603904863024,
+    "A": 0.12288047711162375,
+    "recovered": true,
+    "worst_rad": 0.22019297510531669,
+    "worst_coordinate": "knee_angle_r",
+    "plane_m": -0.40349898761606706,
+    "plane_pinned": true,
+    "plane_vs_P0_mm": 0.0,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.25766126988396704,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.2381515431187478,
+      "tibia_r": 0.28090658472413366,
+      "talus_r": 0.1736955366290875,
+      "calcn_r": 0.25702071443814495,
+      "toes_r": 0.3726344894420167,
+      "tibia_l": 0.28090658472413366,
+      "talus_l": 0.1736955366290875,
+      "calcn_l": 0.25702071443814495,
+      "toes_l": 0.37263448784360204
+     },
+     "contact_n_at_t0": {
+      "torso": 21.275918541925016,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 851.3208730957155,
+      "pelvis": 413.20548588527777,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 1.487779156813922e-11,
+      "talus_r": 363.14840466646893,
+      "calcn_r": 1.451574408703e-08,
+      "toes_r": 0.0,
+      "tibia_l": 1.4312218161445555e-11,
+      "talus_l": 374.0954003053721,
+      "calcn_l": 1.3479398169864085e-08,
+      "toes_l": 0.0
+     },
+     "peak_contact_n_all_max": 851.3208730957155,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.08601004838943481
+   },
+   "tweld@PT": {
+    "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+    "ankle_angle_r": 1.4014362998807766,
+    "ankle_angle_l": 1.2875612095350912,
+    "A": 1.4014362998807766,
+    "recovered": false,
+    "worst_rad": 1.4014362998807766,
+    "worst_coordinate": "ankle_angle_r",
+    "plane_m": -0.4520127698239038,
+    "plane_pinned": true,
+    "plane_vs_P0_mm": -48.513782207836755,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.0,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.0,
+     "torso_radius_m": 0.3090014978960673,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.0,
+      "pelvis": 0.28666532532658456,
+      "thorax": 0.20190309777896992,
+      "cervical": 0.22516519216175554,
+      "head": 0.18644084691331586,
+      "tibia_r": 0.3294203669319704,
+      "talus_r": 0.2222093188369242,
+      "calcn_r": 0.3055344966459817,
+      "toes_r": 0.42114827164985347,
+      "tibia_l": 0.3294203669319704,
+      "talus_l": 0.2222093188369242,
+      "calcn_l": 0.3055344966459817,
+      "toes_l": 0.4211482700514388
+     },
+     "contact_n_at_t0": {
+      "torso": 23.29936257777822,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 1024.2469603411987,
+      "pelvis": 135.92864858454485,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 1025.5440175346407,
+      "calcn_r": 0.14435678751324862,
+      "toes_r": 81.52841352819406,
+      "tibia_l": 1.8139549550598339e-13,
+      "talus_l": 1065.739413604535,
+      "calcn_l": 0.02945483654402191,
+      "toes_l": 91.82728674348573
+     },
+     "peak_contact_n_all_max": 1065.739413604535,
+     "peak_contact_n_all_max_body": "talus_l"
+    },
+    "wall_s_per_advance": 0.08928609013557434
+   },
+   "tweld@P0": {
+    "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+    "ankle_angle_r": 1.3960671763687418,
+    "ankle_angle_l": 1.2819914352412636,
+    "A": 1.3960671763687418,
+    "recovered": false,
+    "worst_rad": 1.3960671763687418,
+    "worst_coordinate": "ankle_angle_r",
+    "plane_m": -0.40349898761606706,
+    "plane_pinned": true,
+    "plane_vs_P0_mm": 0.0,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": -0.04851378220783675,
+     "initial_penetration_m": 0.04851378220783675,
+     "torso_gap_to_plane_m": -0.04851378220783675,
+     "torso_radius_m": 0.3090014978960673,
+     "foot_gaps_to_plane_m": {
+      "torso": -0.04851378220783675,
+      "pelvis": 0.2381515431187478,
+      "thorax": 0.15338931557113317,
+      "cervical": 0.1766514099539188,
+      "head": 0.1379270647054791,
+      "tibia_r": 0.28090658472413366,
+      "talus_r": 0.17369553662908746,
+      "calcn_r": 0.25702071443814495,
+      "toes_r": 0.3726344894420167,
+      "tibia_l": 0.28090658472413366,
+      "talus_l": 0.17369553662908746,
+      "calcn_l": 0.25702071443814495,
+      "toes_l": 0.37263448784360204
+     },
+     "contact_n_at_t0": {
+      "torso": 2809.0064652077476,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 2809.0064652077476,
+      "pelvis": 133.64202688595194,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 2.737459192511614e-13,
+      "talus_r": 814.6179492098526,
+      "calcn_r": 0.13603119780388226,
+      "toes_r": 77.90528474588208,
+      "tibia_l": 4.0488199262684143e-13,
+      "talus_l": 778.5204288677276,
+      "calcn_l": 0.03502497711938273,
+      "toes_l": 81.97299525703491
+     },
+     "peak_contact_n_all_max": 2809.0064652077476,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.08295625567436218
+   },
+   "base@PT": {
+    "registration": "data/models/engineering_stance_v1/registration.json",
+    "ankle_angle_r": 0.1532283109535303,
+    "ankle_angle_l": 0.15040158295834927,
+    "A": 0.1532283109535303,
+    "recovered": true,
+    "worst_rad": 0.22041367438573858,
+    "worst_coordinate": "knee_angle_l",
+    "plane_m": -0.4520127698239038,
+    "plane_pinned": true,
+    "plane_vs_P0_mm": -48.513782207836755,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.04851378220783675,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.04851378220783675,
+     "torso_radius_m": 0.25766126988396704,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.04851378220783675,
+      "pelvis": 0.28666532532658456,
+      "tibia_r": 0.3294203669319704,
+      "talus_r": 0.22220931883692424,
+      "calcn_r": 0.3055344966459817,
+      "toes_r": 0.42114827164985347,
+      "tibia_l": 0.3294203669319704,
+      "talus_l": 0.22220931883692424,
+      "calcn_l": 0.3055344966459817,
+      "toes_l": 0.4211482700514388
+     },
+     "contact_n_at_t0": {
+      "torso": 5.855046627712339e-10,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 1844.4685674253276,
+      "pelvis": 458.3192565552541,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 1.591861001813437e-11,
+      "talus_r": 992.0386741288921,
+      "calcn_r": 3.4213095695602446e-08,
+      "toes_r": 0.0,
+      "tibia_l": 1.5839325636227808e-11,
+      "talus_l": 925.2476686793361,
+      "calcn_l": 3.1687885669721627e-08,
+      "toes_l": 0.0
+     },
+     "peak_contact_n_all_max": 1844.4685674253276,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.08575824618339539
+   },
+   "t1w0s0@P0": {
+    "registration": "data/derived/foot-joint-arms/t1w0s0/registration.json",
+    "ankle_angle_r": 1.3845823857990207,
+    "ankle_angle_l": 1.2609751143429433,
+    "A": 1.3845823857990207,
+    "recovered": false,
+    "worst_rad": 1.3845823857990207,
+    "worst_coordinate": "ankle_angle_r",
+    "plane_m": -0.40349898761606706,
+    "plane_pinned": true,
+    "plane_vs_P0_mm": 0.0,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": -0.04851378220783675,
+     "initial_penetration_m": 0.04851378220783675,
+     "torso_gap_to_plane_m": -0.04851378220783675,
+     "torso_radius_m": 0.3090014978960673,
+     "foot_gaps_to_plane_m": {
+      "torso": -0.04851378220783675,
+      "pelvis": 0.2381515431187478,
+      "thorax": 0.15338931557113317,
+      "cervical": 0.1766514099539188,
+      "head": 0.1379270647054791,
+      "tibia_r": 0.28090658472413366,
+      "talus_r": 0.17369553662908746,
+      "calcn_r": 0.25702071443814495,
+      "toes_r": 0.3726344894420167,
+      "tibia_l": 0.28090658472413366,
+      "talus_l": 0.17369553662908746,
+      "calcn_l": 0.25702071443814495,
+      "toes_l": 0.37263448784360204
+     },
+     "contact_n_at_t0": {
+      "torso": 2809.0064652077476,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 2809.0064652077476,
+      "pelvis": 65.42686459522419,
+      "thorax": 1.263685978614322e-12,
+      "cervical": 0.0,
+      "head": 348.5391515039975,
+      "tibia_r": 6.930040575362578e-13,
+      "talus_r": 461.7871611246536,
+      "calcn_r": 0.07722240790256185,
+      "toes_r": 66.84976522420219,
+      "tibia_l": 7.829252482612716e-13,
+      "talus_l": 393.408459962403,
+      "calcn_l": 0.04322173225149504,
+      "toes_l": 61.44193650874626
+     },
+     "peak_contact_n_all_max": 2809.0064652077476,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.07959852814674377
+   },
+   "base@P0-12.125mm": {
+    "registration": "data/models/engineering_stance_v1/registration.json",
+    "ankle_angle_r": 0.1306228178223684,
+    "ankle_angle_l": 0.12847205407258533,
+    "A": 0.1306228178223684,
+    "recovered": true,
+    "worst_rad": 0.21942936921461703,
+    "worst_coordinate": "knee_angle_l",
+    "plane_m": -0.41562398761606706,
+    "plane_pinned": true,
+    "plane_vs_P0_mm": -12.124999999999996,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.012124999999999997,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.012124999999999997,
+     "torso_radius_m": 0.25766126988396704,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.012124999999999997,
+      "pelvis": 0.2502765431187478,
+      "tibia_r": 0.2930315847241336,
+      "talus_r": 0.18582053662908748,
+      "calcn_r": 0.26914571443814495,
+      "toes_r": 0.3847594894420167,
+      "tibia_l": 0.2930315847241336,
+      "talus_l": 0.18582053662908748,
+      "calcn_l": 0.26914571443814495,
+      "toes_l": 0.38475948784360203
+     },
+     "contact_n_at_t0": {
+      "torso": 0.23231775767139945,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 1126.8604873004886,
+      "pelvis": 427.4244359430755,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 1.3598336861769119e-11,
+      "talus_r": 819.6207048972701,
+      "calcn_r": 1.6445270395509537e-08,
+      "toes_r": 0.0,
+      "tibia_l": 1.3523102982889365e-11,
+      "talus_l": 773.8125013365109,
+      "calcn_l": 1.509779592846719e-08,
+      "toes_l": 0.0
+     },
+     "peak_contact_n_all_max": 1126.8604873004886,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.082519690990448
+   },
+   "base@P0-24.25mm": {
+    "registration": "data/models/engineering_stance_v1/registration.json",
+    "ankle_angle_r": 0.13921936581644523,
+    "ankle_angle_l": 0.13673190139760527,
+    "A": 0.13921936581644523,
+    "recovered": true,
+    "worst_rad": 0.2143011902938719,
+    "worst_coordinate": "knee_angle_r",
+    "plane_m": -0.42774898761606706,
+    "plane_pinned": true,
+    "plane_vs_P0_mm": -24.249999999999993,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.024249999999999994,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.024249999999999994,
+     "torso_radius_m": 0.25766126988396704,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.024249999999999994,
+      "pelvis": 0.2624015431187478,
+      "tibia_r": 0.30515658472413365,
+      "talus_r": 0.19794553662908748,
+      "calcn_r": 0.28127071443814494,
+      "toes_r": 0.3968844894420167,
+      "tibia_l": 0.30515658472413365,
+      "talus_l": 0.19794553662908748,
+      "calcn_l": 0.28127071443814494,
+      "toes_l": 0.39688448784360203
+     },
+     "contact_n_at_t0": {
+      "torso": 0.00043902911624461855,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 1414.6742625330578,
+      "pelvis": 439.66996696137136,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 1.601599548570116e-11,
+      "talus_r": 964.5926752882647,
+      "calcn_r": 2.2754128856823355e-08,
+      "toes_r": 0.0,
+      "tibia_l": 1.546860974732619e-11,
+      "talus_l": 994.4059424727297,
+      "calcn_l": 2.1056550020072907e-08,
+      "toes_l": 0.0
+     },
+     "peak_contact_n_all_max": 1414.6742625330578,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.08326123714447022
+   },
+   "base@P0-36.375mm": {
+    "registration": "data/models/engineering_stance_v1/registration.json",
+    "ankle_angle_r": 0.14610386089334126,
+    "ankle_angle_l": 0.14337098521881864,
+    "A": 0.14610386089334126,
+    "recovered": true,
+    "worst_rad": 0.22258998875289224,
+    "worst_coordinate": "knee_angle_r",
+    "plane_m": -0.43987398761606705,
+    "plane_pinned": true,
+    "plane_vs_P0_mm": -36.37499999999999,
+    "hazard": {
+     "lowest_sphere_body": "torso",
+     "lowest_sphere_gap_to_plane_m": 0.03637499999999999,
+     "initial_penetration_m": 0.0,
+     "torso_gap_to_plane_m": 0.03637499999999999,
+     "torso_radius_m": 0.25766126988396704,
+     "foot_gaps_to_plane_m": {
+      "torso": 0.03637499999999999,
+      "pelvis": 0.2745265431187478,
+      "tibia_r": 0.3172815847241336,
+      "talus_r": 0.21007053662908748,
+      "calcn_r": 0.29339571443814494,
+      "toes_r": 0.4090094894420167,
+      "tibia_l": 0.3172815847241336,
+      "talus_l": 0.21007053662908748,
+      "calcn_l": 0.29339571443814494,
+      "toes_l": 0.409009487843602
+     },
+     "contact_n_at_t0": {
+      "torso": 5.547512061587356e-07,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 0.0,
+      "talus_r": 0.0,
+      "calcn_r": 0.0,
+      "toes_r": 0.0,
+      "tibia_l": 0.0,
+      "talus_l": 0.0,
+      "calcn_l": 0.0,
+      "toes_l": 0.0
+     },
+     "peak_contact_n": {
+      "torso": 1642.3761498945323,
+      "pelvis": 448.9287798704911,
+      "thorax": 0.0,
+      "cervical": 0.0,
+      "head": 0.0,
+      "tibia_r": 1.3645341345437939e-11,
+      "talus_r": 471.70788516722115,
+      "calcn_r": 2.716831288643005e-08,
+      "toes_r": 0.0,
+      "tibia_l": 1.2942737299623219e-11,
+      "talus_l": 490.54507329090967,
+      "calcn_l": 2.475892096257644e-08,
+      "toes_l": 0.0
+     },
+     "peak_contact_n_all_max": 1642.3761498945323,
+     "peak_contact_n_all_max_body": "torso"
+    },
+    "wall_s_per_advance": 0.08355996608734131
+   }
+  },
+  "verdict": {
+   "tweld@P0 (repartitioned mass, floor held UP)": "collapses",
+   "base@PT (base mass, floor lowered)": "recovers",
+   "reading": "THE MASS. The plane drop is neither sufficient nor necessary; the leading candidate in docs/FOOT_JOINTS.md is WITHDRAWN.",
+   "secondary_t1w0s0@P0": "collapses",
+   "A_rad": {
+    "base": 0.12288047711162375,
+    "base@P0": 0.12288047711162375,
+    "base@PT": 0.1532283109535303,
+    "tweld": 1.4014362998807766,
+    "tweld@PT": 1.4014362998807766,
+    "tweld@P0": 1.3960671763687418,
+    "t1w0s0": 1.3851096096923792,
+    "t1w0s0@P0": 1.3845823857990207
+   }
+  },
+  "ladder": {
+   "points": [
+    {
+     "drop_mm": 0.0,
+     "arm": "base@P0",
+     "A": 0.12288047711162375,
+     "ankle_angle_r": 0.12288047711162375,
+     "ankle_angle_l": 0.12069603904863024,
+     "recovered": true,
+     "plane_m": -0.40349898761606706
+    },
+    {
+     "drop_mm": 12.125,
+     "arm": "base@P0-12.125mm",
+     "A": 0.1306228178223684,
+     "ankle_angle_r": 0.1306228178223684,
+     "ankle_angle_l": 0.12847205407258533,
+     "recovered": true,
+     "plane_m": -0.41562398761606706
+    },
+    {
+     "drop_mm": 24.25,
+     "arm": "base@P0-24.25mm",
+     "A": 0.13921936581644523,
+     "ankle_angle_r": 0.13921936581644523,
+     "ankle_angle_l": 0.13673190139760527,
+     "recovered": true,
+     "plane_m": -0.42774898761606706
+    },
+    {
+     "drop_mm": 36.375,
+     "arm": "base@P0-36.375mm",
+     "A": 0.14610386089334126,
+     "ankle_angle_r": 0.14610386089334126,
+     "ankle_angle_l": 0.14337098521881864,
+     "recovered": true,
+     "plane_m": -0.43987398761606705
+    },
+    {
+     "drop_mm": 48.5,
+     "arm": "base@PT",
+     "A": 0.1532283109535303,
+     "ankle_angle_r": 0.1532283109535303,
+     "ankle_angle_l": 0.15040158295834927,
+     "recovered": true,
+     "plane_m": -0.4520127698239038
+    }
+   ],
+   "shape": "monotone increasing",
+   "first_drop_mm_that_collapses": null,
+   "A_span_rad": 0.030347833841906535
+  },
+  "timing": {
+   "base": {
+    "r": {
+     "ankle_min_rad": -0.9955451031087885,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.223458719010345,
+      "calcn_r": 5.271358465020704e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.72056460169475,
+     "dorsiflexor_tendon_n_at_crossing": 220.99063706415217
+    },
+    "l": {
+     "ankle_min_rad": -0.993360665045795,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 45.9621179961385,
+      "calcn_l": 5.254856090230647e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.03127569710324,
+     "dorsiflexor_tendon_n_at_crossing": 219.95463866418623
+    }
+   },
+   "base_repeat": {
+    "r": {
+     "ankle_min_rad": -0.9955451031087885,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.223458719010345,
+      "calcn_r": 5.271358465020704e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.72056460169475,
+     "dorsiflexor_tendon_n_at_crossing": 220.99063706415217
+    },
+    "l": {
+     "ankle_min_rad": -0.993360665045795,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 45.9621179961385,
+      "calcn_l": 5.254856090230647e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.03127569710324,
+     "dorsiflexor_tendon_n_at_crossing": 219.95463866418623
+    }
+   },
+   "t0w0s0": {
+    "r": {
+     "ankle_min_rad": -0.9955451031087885,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.223458719010345,
+      "calcn_r": 5.271358465020704e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.72056460169475,
+     "dorsiflexor_tendon_n_at_crossing": 220.99063706415217
+    },
+    "l": {
+     "ankle_min_rad": -0.993360665045795,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 45.9621179961385,
+      "calcn_l": 5.254856090230647e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.03127569710324,
+     "dorsiflexor_tendon_n_at_crossing": 219.95463866418623
+    }
+   },
+   "t1w1s1": {
+    "r": {
+     "ankle_min_rad": -2.2289317080930293,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "t_subtalar_at_bound_s": 0.35000000000000014,
+     "subtalar_at_ankle_crossing_rad": -0.6050855517781757,
+     "pearson_ankle_subtalar": 0.9417507838263396,
+     "subtalar_min_rad": -0.7371989123917685,
+     "subtalar_max_rad": 0.0,
+     "reading": "ankle crossed the bar BEFORE (or without) the subtalar reaching its bound: the hinge is not the onset driver",
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 103.2963882996576,
+      "calcn_r": 1.0799479349866109e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 25.569179987539197,
+     "dorsiflexor_tendon_n_at_crossing": 467.90629908481253
+    },
+    "l": {
+     "ankle_min_rad": -2.2248947369850125,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "t_subtalar_at_bound_s": 0.36000000000000015,
+     "subtalar_at_ankle_crossing_rad": -0.5721366186188015,
+     "pearson_ankle_subtalar": 0.920061318479598,
+     "subtalar_min_rad": -0.7824919474165356,
+     "subtalar_max_rad": 0.0,
+     "reading": "ankle crossed the bar BEFORE (or without) the subtalar reaching its bound: the hinge is not the onset driver",
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 106.58392882865576,
+      "calcn_l": 1.4180431662382478e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 26.66118318472786,
+     "dorsiflexor_tendon_n_at_crossing": 470.8333804251965
+    }
+   },
+   "foot_paths": {
+    "r": {
+     "ankle_min_rad": -2.012560158164517,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.3000000000000001,
+     "t_subtalar_at_bound_s": 0.2800000000000001,
+     "subtalar_at_ankle_crossing_rad": 0.6813604881115541,
+     "pearson_ankle_subtalar": -0.9704804582919209,
+     "subtalar_min_rad": -0.03060078474660001,
+     "subtalar_max_rad": 0.7973290727476536,
+     "reading": "subtalar at its bound BEFORE the ankle crossed the bar: consistent with a loaded hinge",
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 143.37946928871298,
+      "calcn_r": 3.3861706891618324e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 37.720209036258034,
+     "dorsiflexor_tendon_n_at_crossing": 172.18777588601645
+    },
+    "l": {
+     "ankle_min_rad": -1.743594466926663,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.3000000000000001,
+     "t_subtalar_at_bound_s": 0.2800000000000001,
+     "subtalar_at_ankle_crossing_rad": 0.6807823284870765,
+     "pearson_ankle_subtalar": -0.9790830563472372,
+     "subtalar_min_rad": -0.040849657523271986,
+     "subtalar_max_rad": 0.7997665946505367,
+     "reading": "subtalar at its bound BEFORE the ankle crossed the bar: consistent with a loaded hinge",
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 142.40741368759294,
+      "calcn_l": 2.8144503475177007e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 37.75706105222945,
+     "dorsiflexor_tendon_n_at_crossing": 171.68639527003737
+    }
+   },
+   "tweld": {
+    "r": {
+     "ankle_min_rad": -2.274100925877941,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.37000000000000016,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 77.10855760284602,
+      "calcn_r": 8.567797218585142e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 30.09263694092678,
+     "dorsiflexor_tendon_n_at_crossing": 472.47003008024666
+    },
+    "l": {
+     "ankle_min_rad": -2.160225835532256,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.37000000000000016,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 78.50174172987761,
+      "calcn_l": 7.910114769870093e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 31.40724156167595,
+     "dorsiflexor_tendon_n_at_crossing": 475.87237615477756
+    }
+   },
+   "t1w0s0": {
+    "r": {
+     "ankle_min_rad": -2.257774235689544,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 103.14123980172967,
+      "calcn_r": 1.8639585692045557e-06,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 24.70865693014998,
+     "dorsiflexor_tendon_n_at_crossing": 469.4039845992986
+    },
+    "l": {
+     "ankle_min_rad": -2.1389749985169164,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 106.05670357146434,
+      "calcn_l": 1.718130171025247e-06,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 25.677177963089456,
+     "dorsiflexor_tendon_n_at_crossing": 472.79916433032133
+    }
+   },
+   "base@P0": {
+    "r": {
+     "ankle_min_rad": -0.9955451031087885,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.223458719010345,
+      "calcn_r": 5.271358465020704e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.72056460169475,
+     "dorsiflexor_tendon_n_at_crossing": 220.99063706415217
+    },
+    "l": {
+     "ankle_min_rad": -0.993360665045795,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 45.9621179961385,
+      "calcn_l": 5.254856090230647e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.03127569710324,
+     "dorsiflexor_tendon_n_at_crossing": 219.95463866418623
+    }
+   },
+   "tweld@PT": {
+    "r": {
+     "ankle_min_rad": -2.274100925877941,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.37000000000000016,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 77.10855760284602,
+      "calcn_r": 8.567797218585142e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 30.09263694092678,
+     "dorsiflexor_tendon_n_at_crossing": 472.47003008024666
+    },
+    "l": {
+     "ankle_min_rad": -2.160225835532256,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.37000000000000016,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 78.50174172987761,
+      "calcn_l": 7.910114769870093e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 31.40724156167595,
+     "dorsiflexor_tendon_n_at_crossing": 475.87237615477756
+    }
+   },
+   "tweld@P0": {
+    "r": {
+     "ankle_min_rad": -2.2687318023659064,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.36000000000000015,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 87.44008845901834,
+      "calcn_r": 5.932721181849886e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 32.91384449088169,
+     "dorsiflexor_tendon_n_at_crossing": 468.41946258211556
+    },
+    "l": {
+     "ankle_min_rad": -2.1546560612384282,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.36000000000000015,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 88.35287594557296,
+      "calcn_l": 5.517919768470723e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 34.23701201478286,
+     "dorsiflexor_tendon_n_at_crossing": 471.696948294358
+    }
+   },
+   "base@PT": {
+    "r": {
+     "ankle_min_rad": -1.025892936950695,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.531898594374745,
+      "calcn_r": 5.247631304527067e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.92118782844497,
+     "dorsiflexor_tendon_n_at_crossing": 220.64750318627355
+    },
+    "l": {
+     "ankle_min_rad": -1.023066208955514,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 46.28643196614644,
+      "calcn_l": 5.226619883841109e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.25530410062083,
+     "dorsiflexor_tendon_n_at_crossing": 219.55300891002952
+    }
+   },
+   "t1w0s0@P0": {
+    "r": {
+     "ankle_min_rad": -2.2572470117961854,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.3300000000000001,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 92.97868461697182,
+      "calcn_r": 7.116589947884416e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 28.42591044072287,
+     "dorsiflexor_tendon_n_at_crossing": 465.76393072660494
+    },
+    "l": {
+     "ankle_min_rad": -2.133639740340108,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.3300000000000001,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 95.32788448430428,
+      "calcn_l": 6.765908504420928e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 29.486943928821226,
+     "dorsiflexor_tendon_n_at_crossing": 469.16472794793606
+    }
+   },
+   "base@P0-12.125mm": {
+    "r": {
+     "ankle_min_rad": -1.0032874438195332,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.3027948363016,
+      "calcn_r": 5.265099488495209e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.77352442031022,
+     "dorsiflexor_tendon_n_at_crossing": 220.8990976673661
+    },
+    "l": {
+     "ankle_min_rad": -1.00113668006975,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 46.046434682566854,
+      "calcn_l": 5.247385774414074e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.08903623042985,
+     "dorsiflexor_tendon_n_at_crossing": 219.851033230918
+    }
+   },
+   "base@P0-24.25mm": {
+    "r": {
+     "ankle_min_rad": -1.01188399181361,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.38037600842537,
+      "calcn_r": 5.259073219516796e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.82436002606633,
+     "dorsiflexor_tendon_n_at_crossing": 220.81195209933358
+    },
+    "l": {
+     "ankle_min_rad": -1.00939652739477,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 46.12879991728641,
+      "calcn_l": 5.240208490052918e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.1454683639814,
+     "dorsiflexor_tendon_n_at_crossing": 219.7499411065697
+    }
+   },
+   "base@P0-36.375mm": {
+    "r": {
+     "ankle_min_rad": -1.018768486890506,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.45668834984729,
+      "calcn_r": 5.253266748929055e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.87342352868808,
+     "dorsiflexor_tendon_n_at_crossing": 220.72848032214333
+    },
+    "l": {
+     "ankle_min_rad": -1.0160356112159834,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 46.20856662662447,
+      "calcn_l": 5.233305121226306e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.20069768485752,
+     "dorsiflexor_tendon_n_at_crossing": 219.65102801135745
+    }
+   }
+  }
+ }
+}
