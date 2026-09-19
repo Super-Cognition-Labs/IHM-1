@@ -186,8 +186,16 @@ spectacularly wrong one: see the next section.
 
 ## What this variant costs, measured
 
-**Un-welding the subtalar makes the ankle far worse.** Same protocol, same
-excitation, base against variant:
+~~**Un-welding the subtalar makes the ankle far worse.**~~ **WITHDRAWN 18 Sep
+2026 (`docs/FOOT_JOINTS.md`).** A pre-registered 2×2×2 factorial showed the
+opposite. With only the subtalar re-welded, the ankle still collapses (1.385 /
+1.267). With only the subtalar freed on the base trunk, it does not (0.113 /
+0.108). The regression comes with the **torso partition**, and it persists with
+every new joint welded. Its bigger supine contact ball puts the plane 48.5 mm
+lower, which is the leading candidate but has not been separated from the mass
+change. The table below is still a correct
+measurement of base against variant. Only its attribution to the subtalar is
+withdrawn. Same protocol, same excitation, base against variant:
 
 | coordinate | base excursion | variant | change |
 |---|---:|---:|---:|
@@ -197,8 +205,9 @@ excitation, base against variant:
 | `hip_adduction_r` | — | — | +0.1413 |
 | `pelvis_tilt` | — | — | +0.1407 |
 
-Sixteen existing coordinates get worse by more than 0.05 rad. The cause is the
-next finding, and it is the most important sentence in this document.
+Sixteen existing coordinates get worse by more than 0.05 rad. ~~The cause is the
+next finding~~ (the finding below is true, but it is not the cause of the ankle:
+see `docs/FOOT_JOINTS.md`).
 
 **No muscle in this plant has a moment arm about any of the fifteen new
 coordinates. Measured, exactly zero.** The 80 source muscle paths are fitted
@@ -211,10 +220,13 @@ about `ankle_angle_r`, and 0 — the integer, in the engine's own JSON — about
 none of them spans a new joint either: `gait2392_ercspn_r` has +0.0427 m about
 `lumbar_extension` and 0 about `thoracic_extension`.
 
-So the subtalar is a free hinge that the plantarflexors load and cannot control,
-and the foot folds, and the ankle follows it. *(Partly withdrawn 18 Sep: with
-real subtalar arms the ankle still leaves its range by 1.14 and 0.87 rad —
-gate G-S below. The missing arm is at most part of the cause.)* The nine spine coordinates are the
+~~So the subtalar is a free hinge that the plantarflexors load and cannot control,
+and the foot folds, and the ankle follows it.~~ *(Withdrawn 18 Sep, in two steps.
+First G-S: with real subtalar arms the ankle still leaves its range. Then the
+factorial in `docs/FOOT_JOINTS.md`: re-welding the subtalar does not recover the
+ankle, and at the moment of collapse the plantarflexors carry 25–31 N against the
+dorsiflexors' 468–476 N. The cause is the torso partition's mass/contact redistribution; the supine
+plane it lowers by 48.5 mm is the leading candidate, not yet separated from mass.)* The nine spine coordinates are the
 same: a 4.39 kg head on a joint with a soft stop, viscous damping and nothing
 else. **This variant gives the body joints, not the ability to use them.** The
 muscles that would use them are `docs/UPPER_BODY_ACTUATION.md`'s subject, not a
@@ -416,7 +428,9 @@ that is now withdrawn as a sole explanation, and what else causes it is **not
 measured**. The separating control not yet run is the kinematic variant with *only*
 the subtalar re-welded: if the ankle recovers, the cause is the subtalar's freedom
 itself (for example, contact geometry about a new axis). If it does not, the cause
-is elsewhere in the variant. The neck muscles at 0.02 tonic do not reduce supine
+is elsewhere in the variant. **Run 18 Sep (`docs/FOOT_JOINTS.md`): it does NOT
+recover — the cause is the torso partition (mass/contact redistribution), and the
+subtalar is excluded as necessary.** The neck muscles at 0.02 tonic do not reduce supine
 neck excursion either. That is expected, since a tonic 2% drive is not posture
 control, and it is reported rather than read as a finding.
 
@@ -448,7 +462,11 @@ was set, because none has provenance here.
 * **Lower-neck extension lost to lumping** (splenius capitis 40 mm about `pitch2`,
   and 27 more). This needs the full C1–C7 chain, which is the recipe's own
   `required_before_native_acceptance`.
-* **The ankle regression**: cause open (G-S above).
+* **The ankle regression**: ~~cause open~~ traced to the torso partition, NOT
+  the subtalar (`docs/FOOT_JOINTS.md`). The repartitioned torso's supine ball grew
+  0.258 → 0.309 m, which lowered the plane 48.5 mm; heel impact rose 3.1×. It
+  reproduces with every new joint welded (`tweld`). Contact vs mass is not
+  separated. That needs an engine option for the plane offset.
 
 ## What I could not build, and why
 

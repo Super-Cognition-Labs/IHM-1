@@ -854,7 +854,14 @@ class Native(unittest.TestCase):
         removes 16% and 36% of the ankle excursion, not the regression: the
         cause of the ankle collapse is NOT only that subtalar had no arm, and
         what else it is was not measured here.  The separating control not yet
-        run: the kinematic variant with ONLY the subtalar re-welded."""
+        run: the kinematic variant with ONLY the subtalar re-welded.
+
+        RUN 2026-09-18 (docs/FOOT_JOINTS.md, pre-registered in e00844d): it does
+        NOT recover (1.3847 / 1.2665), subtalar freedom alone on the base trunk
+        does not collapse it (0.1129 / 0.1080), and the variant with all seven
+        new joints welded still collapses (1.4014 / 1.2876).  The cause is the
+        torso partition's mass/contact redistribution, not the subtalar; the
+        supine plane 48.5 mm lower is the leading candidate, not separated.  This gate's verdict is unchanged; its premise is withdrawn."""
         base, base_s = self.timed_tonic_excursions(BASE + '/registration.json',
                                                    ROOT / BASE / 'model.osim')
         foot, foot_s = self.timed_tonic_excursions(FOOT_REGISTRATION, MODEL)

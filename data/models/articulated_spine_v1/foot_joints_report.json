@@ -1,0 +1,1164 @@
+{
+ "schema": "ihm.foot-joints-report.v1",
+ "preregistration_commit": "e00844d",
+ "preregistration": "docs/FOOT_JOINTS.md",
+ "engine_build": "data/runtime/mechanical-stream/build-cx6s8y89",
+ "arms": {
+  "base_mtp_welded": {
+   "model_sha256": "02f10c72144a50c30aa54d2be3e52605653831d773bae3c3431cd3edbcba81d6",
+   "derived_from": "engineering_stance_v1 with mtp_{r,l} welded at q=0",
+   "source_overrides": {
+    "subject_walk_scaled_ExpressionBasedCoordinateForceSet.xml": {
+     "path": "data/derived/foot-joint-arms/base_mtp_welded/passive.xml",
+     "sha256": "1bd22409e093dfc22ef623d0f3ef7a9473d9d9cf352a1aeb7c58c4193c76d856"
+    }
+   }
+  },
+  "base_toe_geometry_paths": {
+   "model_sha256": "be3baf542b44425c2802095439cabf976eccaad42406564338d20c2deb421d68",
+   "derived_from": "engineering_stance_v1 model unchanged; shipped path set minus the 8 mtp-crossing muscles, which run on their own GeometryPaths",
+   "source_overrides": {
+    "subject_walk_scaled_FunctionBasedPathSet.xml": {
+     "path": "data/derived/foot-joint-arms/base_toe_geometry_paths/muscle_paths.xml",
+     "sha256": "e9c8428aad126ec5ed680987ee05cff29ac1247fec0e2f1817893b35eb5131b5"
+    }
+   }
+  },
+  "t0w0s0": {
+   "model_sha256": "9e2146bc271d536a50367b59272736ab338e6cc9f338eadcd0fcfd6e89f7e2f8",
+   "derived_from": "engineering_stance_v1 via unweld(S,W) then reweld(S,W)",
+   "source_overrides": null
+  },
+  "t0w0s1": {
+   "model_sha256": "2d3d5c9e07885f6543e960fbdd0b6b7ec4d7988efc427cc34ae823bc8fbf0bc7",
+   "derived_from": "engineering_stance_v1 + the variant builder's unweld",
+   "source_overrides": null
+  },
+  "t0w1s0": {
+   "model_sha256": "d28dec3f5c8ddefa648c89b3fe1154e5ef880507afc22435b3477d40c52b7853",
+   "derived_from": "engineering_stance_v1 + the variant builder's unweld",
+   "source_overrides": null
+  },
+  "t0w1s1": {
+   "model_sha256": "3486b3dfcd6314563b4d9a78a920a97589cabe1b72a0ef8fbc5793d4ad19feb6",
+   "derived_from": "engineering_stance_v1 + the variant builder's unweld",
+   "source_overrides": null
+  },
+  "t1w0s0": {
+   "model_sha256": "acae04e3a1e04e27cb25e5be272200908c066b92229a9e03a30f79df987219a5",
+   "derived_from": "articulated_spine_v1/model.osim with re-welds",
+   "source_overrides": null
+  },
+  "t1w0s1": {
+   "model_sha256": "47bd0a6a8f5d3f57b5342bf10cdfe8b5e94643d7ff608ee5a4255ae5b3325092",
+   "derived_from": "articulated_spine_v1/model.osim with re-welds",
+   "source_overrides": null
+  },
+  "t1w1s0": {
+   "model_sha256": "494371a3f8f0ae426c8f0b8ce42f6fcd299e7f295149bd0270699c63cbd8b1ce",
+   "derived_from": "articulated_spine_v1/model.osim with re-welds",
+   "source_overrides": null
+  },
+  "tweld": {
+   "model_sha256": "62b0022299b51ea561830a62c66a2c99fdee1e12198b28c3c25d5905e9407037",
+   "derived_from": "articulated_spine_v1/model.osim with all 7 new joints re-welded",
+   "source_overrides": null
+  }
+ },
+ "q1": {
+  "bar_rad": 0.22019297510531669,
+  "bar_coordinate": "knee_angle_r",
+  "instrument_checks": {
+   "base_is_a_function (base == base_repeat, exact)": true,
+   "round_trip t0w0s0 == base (exact)": true,
+   "bar reproduces F2 0.2202": true,
+   "t1w1s1 ankle_angle_r reproduces 1.3563": true,
+   "t1w1s1 ankle_angle_l reproduces 1.3522": true,
+   "foot_paths ankle_angle_r reproduces 1.1399": true,
+   "foot_paths ankle_angle_l reproduces 0.8709": true
+  },
+  "instrument_ok": true,
+  "table": {
+   "base": {
+    "ankle_angle_r": 0.12288047711162375,
+    "ankle_angle_l": 0.12069603904863024,
+    "A": 0.12288047711162375,
+    "recovered": true,
+    "subtalar_angle_r": null,
+    "subtalar_angle_l": null,
+    "support_plane_source_x_m": -0.40349898761606706,
+    "wall_s_per_advance": 0.08024925351142884
+   },
+   "base_repeat": {
+    "ankle_angle_r": 0.12288047711162375,
+    "ankle_angle_l": 0.12069603904863024,
+    "A": 0.12288047711162375,
+    "recovered": true,
+    "subtalar_angle_r": null,
+    "subtalar_angle_l": null,
+    "support_plane_source_x_m": -0.40349898761606706,
+    "wall_s_per_advance": 0.13461821794509887
+   },
+   "t0w0s0": {
+    "ankle_angle_r": 0.12288047711162375,
+    "ankle_angle_l": 0.12069603904863024,
+    "A": 0.12288047711162375,
+    "recovered": true,
+    "subtalar_angle_r": null,
+    "subtalar_angle_l": null,
+    "support_plane_source_x_m": -0.40349898761606706,
+    "wall_s_per_advance": 0.11060832977294922
+   },
+   "t0w0s1": {
+    "ankle_angle_r": 0.11290899061113924,
+    "ankle_angle_l": 0.10799530392699963,
+    "A": 0.11290899061113924,
+    "recovered": true,
+    "subtalar_angle_r": 0.07654923597899699,
+    "subtalar_angle_l": 0.07794912869566017,
+    "support_plane_source_x_m": -0.40349898761606706,
+    "wall_s_per_advance": 0.10950213670730591
+   },
+   "t0w1s0": {
+    "ankle_angle_r": 0.12040094392191147,
+    "ankle_angle_l": 0.11822964608640485,
+    "A": 0.12040094392191147,
+    "recovered": true,
+    "subtalar_angle_r": null,
+    "subtalar_angle_l": null,
+    "support_plane_source_x_m": -0.40349898761606706,
+    "wall_s_per_advance": 0.10723081588745118
+   },
+   "t0w1s1": {
+    "ankle_angle_r": 0.11018015240734447,
+    "ankle_angle_l": 0.10521419503621698,
+    "A": 0.11018015240734447,
+    "recovered": true,
+    "subtalar_angle_r": 0.07653852863496824,
+    "subtalar_angle_l": 0.07794256111688525,
+    "support_plane_source_x_m": -0.40349898761606706,
+    "wall_s_per_advance": 0.1516954493522644
+   },
+   "t1w0s0": {
+    "ankle_angle_r": 1.3851096096923792,
+    "ankle_angle_l": 1.2663103725197518,
+    "A": 1.3851096096923792,
+    "recovered": false,
+    "subtalar_angle_r": null,
+    "subtalar_angle_l": null,
+    "support_plane_source_x_m": -0.4520127698239038,
+    "wall_s_per_advance": 0.13213964104652404
+   },
+   "t1w0s1": {
+    "ankle_angle_r": 1.3562907222196339,
+    "ankle_angle_l": 1.3522220927786224,
+    "A": 1.3562907222196339,
+    "recovered": false,
+    "subtalar_angle_r": 0.1266879727893957,
+    "subtalar_angle_l": 0.17172474680582872,
+    "support_plane_source_x_m": -0.4520127698239038,
+    "wall_s_per_advance": 0.17371367335319518
+   },
+   "t1w1s0": {
+    "ankle_angle_r": 1.3846997275029649,
+    "ankle_angle_l": 1.2664958445508478,
+    "A": 1.3846997275029649,
+    "recovered": false,
+    "subtalar_angle_r": null,
+    "subtalar_angle_l": null,
+    "support_plane_source_x_m": -0.4520127698239038,
+    "wall_s_per_advance": 0.13615631461143493
+   },
+   "t1w1s1": {
+    "ankle_angle_r": 1.3562670820958647,
+    "ankle_angle_l": 1.3522301109878478,
+    "A": 1.3562670820958647,
+    "recovered": false,
+    "subtalar_angle_r": 0.12633367419375352,
+    "subtalar_angle_l": 0.17162670921852063,
+    "support_plane_source_x_m": -0.4520127698239038,
+    "wall_s_per_advance": 0.16239030480384828
+   },
+   "tweld": {
+    "ankle_angle_r": 1.4014362998807766,
+    "ankle_angle_l": 1.2875612095350912,
+    "A": 1.4014362998807766,
+    "recovered": false,
+    "subtalar_angle_r": null,
+    "subtalar_angle_l": null,
+    "support_plane_source_x_m": -0.4520127698239038,
+    "wall_s_per_advance": 0.1151721441745758
+   },
+   "foot_paths": {
+    "ankle_angle_r": 1.1398955321673525,
+    "ankle_angle_l": 0.8709298409294982,
+    "A": 1.1398955321673525,
+    "recovered": false,
+    "subtalar_angle_r": 0.18646383454963866,
+    "subtalar_angle_l": 0.1889013564525217,
+    "support_plane_source_x_m": -0.4520127698239038,
+    "wall_s_per_advance": 0.19339315772056578
+   }
+  },
+  "effects": {
+   "T": {
+    "mean_delta_A_rad": 1.2539991443647058,
+    "pairs": [
+     {
+      "without": "t0w0s0",
+      "with": "t1w0s0",
+      "delta_A": 1.2622291325807553
+     },
+     {
+      "without": "t0w0s1",
+      "with": "t1w0s1",
+      "delta_A": 1.2433817316084945
+     },
+     {
+      "without": "t0w1s0",
+      "with": "t1w1s0",
+      "delta_A": 1.2642987835810535
+     },
+     {
+      "without": "t0w1s1",
+      "with": "t1w1s1",
+      "delta_A": 1.2460869296885202
+     }
+    ]
+   },
+   "W": {
+    "mean_delta_A_rad": -0.001410473426672637,
+    "pairs": [
+     {
+      "without": "t0w0s0",
+      "with": "t0w1s0",
+      "delta_A": -0.0024795331897122797
+     },
+     {
+      "without": "t0w0s1",
+      "with": "t0w1s1",
+      "delta_A": -0.00272883820379477
+     },
+     {
+      "without": "t1w0s0",
+      "with": "t1w1s0",
+      "delta_A": -0.0004098821894142901
+     },
+     {
+      "without": "t1w0s1",
+      "with": "t1w1s1",
+      "delta_A": -2.3640123769208543e-05
+     }
+    ]
+   },
+   "S": {
+    "mean_delta_A_rad": -0.019360952723724262,
+    "pairs": [
+     {
+      "without": "t0w0s0",
+      "with": "t0w0s1",
+      "delta_A": -0.009971486500484517
+     },
+     {
+      "without": "t0w1s0",
+      "with": "t0w1s1",
+      "delta_A": -0.010220791514567007
+     },
+     {
+      "without": "t1w0s0",
+      "with": "t1w0s1",
+      "delta_A": -0.028818887472745303
+     },
+     {
+      "without": "t1w1s0",
+      "with": "t1w1s1",
+      "delta_A": -0.02843264540710022
+     }
+    ]
+   }
+  },
+  "verdict": {
+   "separating_control_t1w1s0": "DOES NOT RECOVER",
+   "S_alone_t0w0s1": "recovered",
+   "T_alone_t1w0s0": "COLLAPSES",
+   "W_alone_t0w1s0": "recovered",
+   "tweld": "COLLAPSES",
+   "collapsed_arms": [
+    "t1w0s0",
+    "t1w0s1",
+    "t1w1s0",
+    "t1w1s1"
+   ],
+   "factor_present_in_every_collapsed_arm": {
+    "T": true,
+    "W": false,
+    "S": false
+   },
+   "sufficient_alone": {
+    "T": true,
+    "W": false,
+    "S": false
+   }
+  },
+  "timing": {
+   "base": {
+    "r": {
+     "ankle_min_rad": -0.9955451031087885,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.223458719010345,
+      "calcn_r": 5.271358465020704e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.72056460169475,
+     "dorsiflexor_tendon_n_at_crossing": 220.99063706415217
+    },
+    "l": {
+     "ankle_min_rad": -0.993360665045795,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 45.9621179961385,
+      "calcn_l": 5.254856090230647e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.03127569710324,
+     "dorsiflexor_tendon_n_at_crossing": 219.95463866418623
+    }
+   },
+   "t0w0s0": {
+    "r": {
+     "ankle_min_rad": -0.9955451031087885,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.223458719010345,
+      "calcn_r": 5.271358465020704e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.72056460169475,
+     "dorsiflexor_tendon_n_at_crossing": 220.99063706415217
+    },
+    "l": {
+     "ankle_min_rad": -0.993360665045795,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 45.9621179961385,
+      "calcn_l": 5.254856090230647e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.03127569710324,
+     "dorsiflexor_tendon_n_at_crossing": 219.95463866418623
+    }
+   },
+   "t0w0s1": {
+    "r": {
+     "ankle_min_rad": -0.985573616608304,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "t_subtalar_at_bound_s": 1.1200000000000008,
+     "subtalar_at_ankle_crossing_rad": null,
+     "pearson_ankle_subtalar": 0.019317801880894176,
+     "subtalar_min_rad": -0.687414474177012,
+     "subtalar_max_rad": 0.0,
+     "reading": "no collapse on this side",
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.26835740183991,
+      "calcn_r": 9.508695379212468e-11,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 174.06869771657662,
+     "dorsiflexor_tendon_n_at_crossing": 214.90240745257208
+    },
+    "l": {
+     "ankle_min_rad": -0.9806599299241644,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "t_subtalar_at_bound_s": 1.0800000000000007,
+     "subtalar_at_ankle_crossing_rad": null,
+     "pearson_ankle_subtalar": -0.004192583113649498,
+     "subtalar_min_rad": -0.6888143668936751,
+     "subtalar_max_rad": 0.0,
+     "reading": "no collapse on this side",
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 46.045803280837525,
+      "calcn_l": 1.4004442470803092e-10,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 175.7257933281176,
+     "dorsiflexor_tendon_n_at_crossing": 213.2555861647875
+    }
+   },
+   "t0w1s0": {
+    "r": {
+     "ankle_min_rad": -0.9930655699190762,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.2161404373676,
+      "calcn_r": 5.271944475547096e-13,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 170.72471149826433,
+     "dorsiflexor_tendon_n_at_crossing": 220.9798224348434
+    },
+    "l": {
+     "ankle_min_rad": -0.9908942720835696,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 45.95420335266117,
+      "calcn_l": 5.255561430353755e-13,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 172.03553078342054,
+     "dorsiflexor_tendon_n_at_crossing": 219.9439004558522
+    }
+   },
+   "t0w1s1": {
+    "r": {
+     "ankle_min_rad": -0.9828447784045092,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "t_subtalar_at_bound_s": 1.1200000000000008,
+     "subtalar_at_ankle_crossing_rad": null,
+     "pearson_ankle_subtalar": 0.019060647285986852,
+     "subtalar_min_rad": -0.6874037668329832,
+     "subtalar_max_rad": 0.0,
+     "reading": "no collapse on this side",
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 46.26189666858275,
+      "calcn_r": 9.469404573983515e-11,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 174.07360024399335,
+     "dorsiflexor_tendon_n_at_crossing": 214.89020182280382
+    },
+    "l": {
+     "ankle_min_rad": -0.9778788210333818,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": null,
+     "t_subtalar_at_bound_s": 1.0800000000000007,
+     "subtalar_at_ankle_crossing_rad": null,
+     "pearson_ankle_subtalar": -0.004699852748396565,
+     "subtalar_min_rad": -0.6888077993149002,
+     "subtalar_max_rad": 0.0,
+     "reading": "no collapse on this side",
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 46.03917710103582,
+      "calcn_l": 1.393776108127829e-10,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 175.73044705337617,
+     "dorsiflexor_tendon_n_at_crossing": 213.24444572596752
+    }
+   },
+   "t1w0s0": {
+    "r": {
+     "ankle_min_rad": -2.257774235689544,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 103.14123980172967,
+      "calcn_r": 1.8639585692045557e-06,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 24.70865693014998,
+     "dorsiflexor_tendon_n_at_crossing": 469.4039845992986
+    },
+    "l": {
+     "ankle_min_rad": -2.1389749985169164,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 106.05670357146434,
+      "calcn_l": 1.718130171025247e-06,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 25.677177963089456,
+     "dorsiflexor_tendon_n_at_crossing": 472.79916433032133
+    }
+   },
+   "t1w0s1": {
+    "r": {
+     "ankle_min_rad": -2.2289553482167985,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "t_subtalar_at_bound_s": 0.35000000000000014,
+     "subtalar_at_ankle_crossing_rad": -0.6079918242302343,
+     "pearson_ankle_subtalar": 0.9431190446278942,
+     "subtalar_min_rad": -0.7375532109874107,
+     "subtalar_max_rad": 0.0,
+     "reading": "ankle crossed the bar BEFORE (or without) the subtalar reaching its bound: the hinge is not the onset driver",
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 103.35272014740222,
+      "calcn_r": 1.1243365871203342e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 25.023666951657834,
+     "dorsiflexor_tendon_n_at_crossing": 468.81530533462654
+    },
+    "l": {
+     "ankle_min_rad": -2.224886718775787,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "t_subtalar_at_bound_s": 0.36000000000000015,
+     "subtalar_at_ankle_crossing_rad": -0.5753223259720204,
+     "pearson_ankle_subtalar": 0.9218872080669548,
+     "subtalar_min_rad": -0.7825899850038437,
+     "subtalar_max_rad": 0.0,
+     "reading": "ankle crossed the bar BEFORE (or without) the subtalar reaching its bound: the hinge is not the onset driver",
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 106.65218672772467,
+      "calcn_l": 1.47755492254638e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 26.112207423796313,
+     "dorsiflexor_tendon_n_at_crossing": 471.8075783098905
+    }
+   },
+   "t1w1s0": {
+    "r": {
+     "ankle_min_rad": -2.2573643535001295,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 103.08181276303718,
+      "calcn_r": 1.7450271232864132e-06,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 25.248814909152216,
+     "dorsiflexor_tendon_n_at_crossing": 468.5542506711644
+    },
+    "l": {
+     "ankle_min_rad": -2.1391604705480125,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 105.99018145733841,
+      "calcn_l": 1.6104189645101602e-06,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 26.216738721198116,
+     "dorsiflexor_tendon_n_at_crossing": 471.9061992016817
+    }
+   },
+   "t1w1s1": {
+    "r": {
+     "ankle_min_rad": -2.2289317080930293,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "t_subtalar_at_bound_s": 0.35000000000000014,
+     "subtalar_at_ankle_crossing_rad": -0.6050855517781757,
+     "pearson_ankle_subtalar": 0.9417507838263396,
+     "subtalar_min_rad": -0.7371989123917685,
+     "subtalar_max_rad": 0.0,
+     "reading": "ankle crossed the bar BEFORE (or without) the subtalar reaching its bound: the hinge is not the onset driver",
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 103.2963882996576,
+      "calcn_r": 1.0799479349866109e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 25.569179987539197,
+     "dorsiflexor_tendon_n_at_crossing": 467.90629908481253
+    },
+    "l": {
+     "ankle_min_rad": -2.2248947369850125,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.34000000000000014,
+     "t_subtalar_at_bound_s": 0.36000000000000015,
+     "subtalar_at_ankle_crossing_rad": -0.5721366186188015,
+     "pearson_ankle_subtalar": 0.920061318479598,
+     "subtalar_min_rad": -0.7824919474165356,
+     "subtalar_max_rad": 0.0,
+     "reading": "ankle crossed the bar BEFORE (or without) the subtalar reaching its bound: the hinge is not the onset driver",
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 106.58392882865576,
+      "calcn_l": 1.4180431662382478e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 26.66118318472786,
+     "dorsiflexor_tendon_n_at_crossing": 470.8333804251965
+    }
+   },
+   "tweld": {
+    "r": {
+     "ankle_min_rad": -2.274100925877941,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.37000000000000016,
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 77.10855760284602,
+      "calcn_r": 8.567797218585142e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 30.09263694092678,
+     "dorsiflexor_tendon_n_at_crossing": 472.47003008024666
+    },
+    "l": {
+     "ankle_min_rad": -2.160225835532256,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.37000000000000016,
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 78.50174172987761,
+      "calcn_l": 7.910114769870093e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 31.40724156167595,
+     "dorsiflexor_tendon_n_at_crossing": 475.87237615477756
+    }
+   },
+   "foot_paths": {
+    "r": {
+     "ankle_min_rad": -2.012560158164517,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.3000000000000001,
+     "t_subtalar_at_bound_s": 0.2800000000000001,
+     "subtalar_at_ankle_crossing_rad": 0.6813604881115541,
+     "pearson_ankle_subtalar": -0.9704804582919209,
+     "subtalar_min_rad": -0.03060078474660001,
+     "subtalar_max_rad": 0.7973290727476536,
+     "reading": "subtalar at its bound BEFORE the ankle crossed the bar: consistent with a loaded hinge",
+     "foot_contact_at_crossing_n": {
+      "tibia_r": 0.0,
+      "talus_r": 143.37946928871298,
+      "calcn_r": 3.3861706891618324e-07,
+      "toes_r": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 37.720209036258034,
+     "dorsiflexor_tendon_n_at_crossing": 172.18777588601645
+    },
+    "l": {
+     "ankle_min_rad": -1.743594466926663,
+     "ankle_max_rad": 0.0,
+     "direction": "plantarflexion (negative)",
+     "t_ankle_past_bar_s": 0.3000000000000001,
+     "t_subtalar_at_bound_s": 0.2800000000000001,
+     "subtalar_at_ankle_crossing_rad": 0.6807823284870765,
+     "pearson_ankle_subtalar": -0.9790830563472372,
+     "subtalar_min_rad": -0.040849657523271986,
+     "subtalar_max_rad": 0.7997665946505367,
+     "reading": "subtalar at its bound BEFORE the ankle crossed the bar: consistent with a loaded hinge",
+     "foot_contact_at_crossing_n": {
+      "tibia_l": 0.0,
+      "talus_l": 142.40741368759294,
+      "calcn_l": 2.8144503475177007e-07,
+      "toes_l": 0.0
+     },
+     "plantarflexor_tendon_n_at_crossing": 37.75706105222945,
+     "dorsiflexor_tendon_n_at_crossing": 171.68639527003737
+    }
+   }
+  }
+ },
+ "q2": {
+  "scored": {
+   "supine_unstopped": {
+    "base": {
+     "mtp_extrema_rad": {
+      "r": [
+       -0.004897292369782549,
+       0.00819856436445438
+      ],
+      "l": [
+       -0.005036599177423461,
+       0.00832648801170207
+      ]
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": -0.5154002156355456,
+      "l": -0.5152722919882979
+     },
+     "ankle_excursion_rad": {
+      "r": 0.12288047711162375,
+      "l": 0.12069603904863024
+     },
+     "delta_ankle_vs_base_rad": 0.0,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 0.22019297510531669,
+     "worst_excluding_mtp_coordinate": "knee_angle_r",
+     "wall_s_per_advance": 0.1179774796962738
+    },
+    "base_mtp_welded": {
+     "mtp_extrema_rad": {
+      "r": null,
+      "l": null
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": null,
+      "l": null
+     },
+     "ankle_excursion_rad": {
+      "r": 0.12277466006122684,
+      "l": 0.12060017378695875
+     },
+     "delta_ankle_vs_base_rad": -0.00010581705039691691,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 0.22021411196947493,
+     "worst_excluding_mtp_coordinate": "knee_angle_r",
+     "wall_s_per_advance": 0.143851717710495
+    },
+    "base_toe_geometry_paths": {
+     "mtp_extrema_rad": {
+      "r": [
+       0.0026845700904697812,
+       0.008995658373661437
+      ],
+      "l": [
+       0.002595688995051317,
+       0.009125390290414537
+      ]
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": -0.5146031216263386,
+      "l": -0.5144733897095854
+     },
+     "ankle_excursion_rad": {
+      "r": 0.20124961564791544,
+      "l": 0.2007885763255498
+     },
+     "delta_ankle_vs_base_rad": 0.07836913853629168,
+     "ankle_changes_materially": true,
+     "worst_excluding_mtp_rad": 0.2190850473834894,
+     "worst_excluding_mtp_coordinate": "knee_angle_r",
+     "wall_s_per_advance": 0.12641406178474426
+    }
+   },
+   "supine_stopped": {
+    "base": {
+     "mtp_extrema_rad": {
+      "r": [
+       -0.003976938830491057,
+       0.00819849855345045
+      ],
+      "l": [
+       -0.004061701060733736,
+       0.008326418586962644
+      ]
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": -0.5154002814465496,
+      "l": -0.5152723614130374
+     },
+     "ankle_excursion_rad": {
+      "r": 0.11780461495122352,
+      "l": 0.11694054362494388
+     },
+     "delta_ankle_vs_base_rad": 0.0,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 0.16138382275238425,
+     "worst_excluding_mtp_coordinate": "knee_angle_r",
+     "wall_s_per_advance": 0.10948185920715332
+    },
+    "base_mtp_welded": {
+     "mtp_extrema_rad": {
+      "r": null,
+      "l": null
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": null,
+      "l": null
+     },
+     "ankle_excursion_rad": {
+      "r": 0.11784585901836153,
+      "l": 0.11698296006051945
+     },
+     "delta_ankle_vs_base_rad": 4.124406713801321e-05,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 0.16138075841443997,
+     "worst_excluding_mtp_coordinate": "knee_angle_r",
+     "wall_s_per_advance": 0.8512761557102203
+    },
+    "base_toe_geometry_paths": {
+     "mtp_extrema_rad": {
+      "r": [
+       0.002700893530053241,
+       0.008995592794700769
+      ],
+      "l": [
+       0.002583883253640997,
+       0.0091253211120915
+      ]
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": -0.5146031872052993,
+      "l": -0.5144734588879085
+     },
+     "ankle_excursion_rad": {
+      "r": 0.12842355307280473,
+      "l": 0.12809217417252705
+     },
+     "delta_ankle_vs_base_rad": 0.010618938121581212,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 0.16102743664354927,
+     "worst_excluding_mtp_coordinate": "knee_angle_r",
+     "wall_s_per_advance": 0.10402056336402893
+    }
+   },
+   "crawl_unstopped": {
+    "base": {
+     "mtp_extrema_rad": {
+      "r": [
+       -0.02728504732534883,
+       0.09176490486185111
+      ],
+      "l": [
+       -0.004958588754232986,
+       0.09206363246089098
+      ]
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": -0.4318338751381489,
+      "l": -0.43153514753910904
+     },
+     "ankle_excursion_rad": {
+      "r": 1.4497937772102554,
+      "l": 1.3529210285893623
+     },
+     "delta_ankle_vs_base_rad": 0.0,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 1.4497937772102554,
+     "worst_excluding_mtp_coordinate": "ankle_angle_r",
+     "wall_s_per_advance": 1.0302127130826315,
+     "pelvis_forward_travel_m": 0.06780478284863843,
+     "first_crawl_divergence": {
+      "time_s": 0.4200000000000002,
+      "reason": "beyond_declared_range_hip_rotation_l_by_0.36rad"
+     },
+     "stop_reason": "horizon",
+     "failure": null,
+     "simulated_s": 2.99999999999998
+    },
+    "base_mtp_welded": {
+     "mtp_extrema_rad": {
+      "r": null,
+      "l": null
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": null,
+      "l": null
+     },
+     "ankle_excursion_rad": {
+      "r": 1.4505827360534838,
+      "l": 1.3528732907646748
+     },
+     "delta_ankle_vs_base_rad": 0.0007889588432283823,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 1.4505827360534838,
+     "worst_excluding_mtp_coordinate": "ankle_angle_r",
+     "wall_s_per_advance": 0.19013633886973064,
+     "pelvis_forward_travel_m": 0.06798931874462098,
+     "first_crawl_divergence": {
+      "time_s": 0.4200000000000002,
+      "reason": "beyond_declared_range_hip_rotation_l_by_0.36rad"
+     },
+     "stop_reason": "horizon",
+     "failure": null,
+     "simulated_s": 2.99999999999998
+    },
+    "base_toe_geometry_paths": {
+     "mtp_extrema_rad": {
+      "r": [
+       -0.014461350690385077,
+       0.1038522934606391
+      ],
+      "l": [
+       0,
+       0.10423597392772889
+      ]
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": -0.419746486539361,
+      "l": -0.41936280607227117
+     },
+     "ankle_excursion_rad": {
+      "r": 1.3923795985440166,
+      "l": 1.30400267849856
+     },
+     "delta_ankle_vs_base_rad": -0.05741417866623877,
+     "ankle_changes_materially": true,
+     "worst_excluding_mtp_rad": 1.3923795985440166,
+     "worst_excluding_mtp_coordinate": "ankle_angle_r",
+     "wall_s_per_advance": 0.1356906747817993,
+     "pelvis_forward_travel_m": 0.06782469715376534,
+     "first_crawl_divergence": {
+      "time_s": 0.4300000000000002,
+      "reason": "beyond_declared_range_hip_rotation_l_by_0.35rad"
+     },
+     "stop_reason": "horizon",
+     "failure": null,
+     "simulated_s": 2.99999999999998
+    }
+   },
+   "crawl_stopped": {
+    "base": {
+     "mtp_extrema_rad": {
+      "r": [
+       -0.14432129943195948,
+       0.075942018221828
+      ],
+      "l": [
+       -0.10371722757444245,
+       0.07679508627087957
+      ]
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": -0.37927748056804056,
+      "l": -0.4198815524255576
+     },
+     "ankle_excursion_rad": {
+      "r": 0.21958669127417052,
+      "l": 0.21725954193200725
+     },
+     "delta_ankle_vs_base_rad": 0.0,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 0.21958669127417052,
+     "worst_excluding_mtp_coordinate": "ankle_angle_r",
+     "wall_s_per_advance": 0.11105977217356364,
+     "pelvis_forward_travel_m": 0.07288300876374453,
+     "first_crawl_divergence": null,
+     "stop_reason": "horizon",
+     "failure": null,
+     "simulated_s": 2.99999999999998
+    },
+    "base_mtp_welded": {
+     "mtp_extrema_rad": {
+      "r": null,
+      "l": null
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": null,
+      "l": null
+     },
+     "ankle_excursion_rad": {
+      "r": 0.22122439917569736,
+      "l": 0.21711951365740234
+     },
+     "delta_ankle_vs_base_rad": 0.0016377079015268414,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 0.22122439917569736,
+     "worst_excluding_mtp_coordinate": "ankle_angle_r",
+     "wall_s_per_advance": 0.10172279914220174,
+     "pelvis_forward_travel_m": 0.07368057899884553,
+     "first_crawl_divergence": null,
+     "stop_reason": "horizon",
+     "failure": null,
+     "simulated_s": 2.99999999999998
+    },
+    "base_toe_geometry_paths": {
+     "mtp_extrema_rad": {
+      "r": [
+       -0.11815882080899073,
+       0.09103611303624315
+      ],
+      "l": [
+       -0.08079034566657131,
+       0.09200343363682743
+      ]
+     },
+     "mtp_excursion_past_declared_rad": {
+      "r": -0.4054399591910093,
+      "l": -0.4315953463631726
+     },
+     "ankle_excursion_rad": {
+      "r": 0.20585600823372607,
+      "l": 0.20253750174650198
+     },
+     "delta_ankle_vs_base_rad": -0.013730683040444447,
+     "ankle_changes_materially": false,
+     "worst_excluding_mtp_rad": 0.20585600823372607,
+     "worst_excluding_mtp_coordinate": "ankle_angle_r",
+     "wall_s_per_advance": 0.11053707043329875,
+     "pelvis_forward_travel_m": 0.07368891923189193,
+     "first_crawl_divergence": null,
+     "stop_reason": "horizon",
+     "failure": null,
+     "simulated_s": 2.99999999999998
+    }
+   },
+   "gate_flips": {
+    "base_mtp_welded": {
+     "bar_rad": 0.22021411196947493,
+     "bar_delta_vs_base_rad": 2.113686415824989e-05,
+     "F2_thoracic_extension_0.3940_still_over": true,
+     "G-S_ankles_1.1399_0.8709_still_over": true
+    },
+    "base_toe_geometry_paths": {
+     "bar_rad": 0.2190850473834894,
+     "bar_delta_vs_base_rad": -0.0011079277218272732,
+     "F2_thoracic_extension_0.3940_still_over": true,
+     "G-S_ankles_1.1399_0.8709_still_over": true
+    }
+   }
+  },
+  "moment_arms_m_rest_pose": {
+   "base": {
+    "edl_r": {
+     "ankle_angle_r": 0.03927000235435555,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "ehl_r": {
+     "ankle_angle_r": 0.0425930781422151,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "fdl_r": {
+     "ankle_angle_r": -0.011328268108030618,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "fhl_r": {
+     "ankle_angle_r": -0.01796083321790678,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "edl_l": {
+     "ankle_angle_r": 0,
+     "ankle_angle_l": 0.03926353750698059,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "ehl_l": {
+     "ankle_angle_r": 0,
+     "ankle_angle_l": 0.04261553886381521,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "fdl_l": {
+     "ankle_angle_r": 0,
+     "ankle_angle_l": -0.011312291511319435,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "fhl_l": {
+     "ankle_angle_r": 0,
+     "ankle_angle_l": -0.017937721768541748,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "soleus_r": {
+     "ankle_angle_r": -0.04970801926106321,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "tibant_r": {
+     "ankle_angle_r": 0.04827261577082352,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    }
+   },
+   "base_toe_geometry_paths": {
+    "edl_r": {
+     "ankle_angle_r": 0.03952996182446783,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": -0.0047804314685816855,
+     "mtp_angle_l": 0
+    },
+    "ehl_r": {
+     "ankle_angle_r": 0.04248783262113453,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0.024141634365440916,
+     "mtp_angle_l": 0
+    },
+    "fdl_r": {
+     "ankle_angle_r": -0.0114794910545738,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0.008372874673443862,
+     "mtp_angle_l": 0
+    },
+    "fhl_r": {
+     "ankle_angle_r": -0.01818372778309396,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0.010357840979963293,
+     "mtp_angle_l": 0
+    },
+    "edl_l": {
+     "ankle_angle_r": 0,
+     "ankle_angle_l": 0.03952996182446783,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": -0.0047804314685816855
+    },
+    "ehl_l": {
+     "ankle_angle_r": 0,
+     "ankle_angle_l": 0.04248783262113453,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0.024141634365440916
+    },
+    "fdl_l": {
+     "ankle_angle_r": 0,
+     "ankle_angle_l": -0.0114794910545738,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0.008372874673443862
+    },
+    "fhl_l": {
+     "ankle_angle_r": 0,
+     "ankle_angle_l": -0.01818372778309396,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0.010357840979963293
+    },
+    "soleus_r": {
+     "ankle_angle_r": -0.04970801926106321,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    },
+    "tibant_r": {
+     "ankle_angle_r": 0.04827261577082352,
+     "ankle_angle_l": 0,
+     "mtp_angle_r": 0,
+     "mtp_angle_l": 0
+    }
+   }
+  }
+ },
+ "traces": "data/derived/foot-joint-arms/results/*_trace.json (gitignored; regenerate with scripts.run_foot_joint_arms)"
+}
