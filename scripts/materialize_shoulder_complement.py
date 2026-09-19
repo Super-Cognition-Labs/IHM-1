@@ -68,6 +68,14 @@ def generate(root=ROOT):
 
 if __name__=='__main__':
  report,forces,dependencies=generate();base=ROOT/BASE
- (ROOT/'data/sources/shoulder_complement.json').write_text(json.dumps(report,indent=2)+'\n')
+ # Carry forward the licence evidence established from primary sources
+ # (docs/UPPER_BODY_ACTUATION.md s.10). This script rebuilds the record from the
+ # donor, and a rebuild that silently dropped the verbatim licence quotes and their
+ # hashes would erase the one thing that says what the model may be used for.
+ target=ROOT/'data/sources/shoulder_complement.json'
+ if target.exists():
+  previous=json.loads(target.read_text())
+  if 'license_evidence' in previous:report['license_evidence']=previous['license_evidence']
+ target.write_text(json.dumps(report,indent=2)+'\n')
  (base/'shoulder_forces.xml').write_text(forces+'\n');(base/'source_dependencies.xml').write_text(dependencies+'\n')
  print(json.dumps({'selected_muscles':len(report['muscles']),'wraps':len(report['referenced_wrap_names']),'point_types':report['path_point_type_counts'],'source_bytes':report['acquisition_bytes']}))

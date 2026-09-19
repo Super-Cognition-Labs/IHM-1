@@ -1,0 +1,40 @@
+WHICH LICENCE COVERS WHICH FILE IN THIS DIRECTORY
+
+The file LICENSE in this directory is the Apache License 2.0 of the CEINMS-RT
+repository this donor was mirrored from (acquired 2026-09-06). It covers CEINMS-RT's
+own software. It does NOT cover MOBL_ARMS_41.osim, and the mirror never claimed that
+it did: its README scopes Apache-2.0 to CEINMS-RT and quotes the model's own notice.
+
+MOBL_ARMS_41.osim is the MoBL-ARMS upper limb model (Saul, Murray et al.). Its terms
+are those on its SimTK project page (upexdyn), issued in the name of its copyright
+holders -- NCSU, Northwestern, RIC, Valparaiso, Wake Forest, Stanford and VA HCS:
+
+  "The MoBL-ARMS upper limb model has been open sourced solely for non-commercial
+   purposes (including research, academic, evaluation and personal uses) under the
+   BSD 3-Clause License below ... (2) acknowledge that your use of this software is
+   non-commercial and commercial use requires a commercial license, and (3) accept
+   that use of the model software must be acknowledged in all publications,
+   presentations, or documents ... by citing"
+
+  Saul KR, Hu X, Goehler CM, et al. (2015) Benchmarking of dynamic simulation
+    predictions in two software platforms using an upper limb musculoskeletal model.
+    Computer Methods in Biomechanics and Biomedical Engineering 18(13):1445.
+    doi:10.1080/10255842.2014.916698
+  McFarland DC, McCain EM, Poppo MN, Saul KR (2019) Spatial dependency of glenohumeral
+    joint stability during dynamic unimanual and bimanual pushing and pulling.
+    Journal of Biomechanical Engineering 141(5):051006. doi:10.1115/1.4043035
+
+  (Both references are taken from the metadata retained beside this file,
+   saul_2015.html and mcfarland_2019_metadata.json, not typed from memory.)
+
+An older OpenSim wiki catalog entry listing the model as "MIT" (2014) predates this
+release, was written by a catalog editor rather than the rights holders, and is not
+relied upon.
+
+Full evidence, verbatim sources, URLs, capture dates and the open ambiguities:
+docs/UPPER_BODY_ACTUATION.md s.10, and data/sources/shoulder_complement.json
+`license_evidence`.
+
+This NOTICE states facts about the sources. It is not a determination that any use
+of the model by this repository is within those terms; that decision rests with the
+repository's owner.
