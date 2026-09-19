@@ -756,7 +756,7 @@ reach it eventually, not because anything here is hidden.
 | what | status |
 |---|---|
 | **colour, default palette** | `didactic`, **17 of 17 roles synthesized** |
-| **colour, `realistic` palette** | 74 roles: **5 measured, 4 transferred, 65 synthesized** (each cites its source or says it has none) |
+| **colour, `realistic` palette** | 74 roles: **5 measured, 5 transferred, 64 synthesized** — and only **3** of the 5 measured meet the stated bar (§7.1) |
 | skin deformation | linear blend skinning; *"no FEM or cloth"* (`surface-binding.js:3`) |
 | garments | *"a geometric pattern/ease prior, not a cloth contact solve"* (`clothing.js:6`) |
 | tissue relief/grain | procedural fbm; grey only, multiplies the structure's own colour |
@@ -764,9 +764,43 @@ reach it eventually, not because anything here is hidden.
 | upright/supine buttons | **rigid display rotations**, not simulation posture (`docs/APP.md`) |
 | orientation gimbal | decimated from the body's own envelope — authentic |
 
-*To close:* colorimetry for the remaining 65 roles is a literature campaign, not
-a code change. The skin blend closes with 4.2. Garments need a real cloth solve
-or an honest label in the UI rather than only in the source.
+### 7.1 The colorimetry campaign ran, and the literature is mostly not there (18 Sep 2026)
+
+`docs/TISSUE_COLORIMETRY.md`, commit `87fb93d`. A value is `measured` only if it is a
+measurement of that tissue in vivo or fresh, with a stated illuminant and observer,
+converted by a stated transform. Held to that, the campaign moved **one** role:
+`mucosa_pharyngeal` synthesized → transferred (Hosoki 2007 buccal mucosa, n = 62, D55).
+Three more rest on better sources at the same tier (palmoplantar skin now Wang/Luo
+2017 with D65/10° stated; palatal and lingual mucosa off the wrong donor). Adipose,
+skeletal muscle and hair each had a candidate that was **read and rejected** —
+carcass fat altered by a steam cabinet, unbloomed pork spanning 13 L\* units with no
+observer, hair with no observer.
+
+**The conversion is now code with known answers** (`ihm/colorimetry.py`,
+`scripts/test_colorimetry.py`): Pascale 2006's ColorChecker tables reproduce to
+**6/65535 counts at 16 bits and 1/255 (0.50 ΔE\*ab) at 8**; the Bradford matrices match
+Lindbloom's published ones to 4.8e-8. Its first run failed at 204 counts because it
+used Pascale's printed γ = 0.42 where his table was computed with 1/2.4; the
+tolerance was not moved, and the 0.42 version stays in the test as a check that must
+fail.
+
+**Two of the five `measured` roles do not meet the bar.** Gingiva (Ho 2015) and nail
+(Horibata 2025) state neither illuminant nor observer — both full texts re-read.
+They are left at `measured` under the previous build's assumed D65/2°, and every
+entry now records whether its illuminant was stated or assumed. **To the stated bar,
+measured is 3.** Demoting them is a definitional call, not a new measurement, so it
+is left to the owner.
+
+**No usable published colorimetry exists** for the viscera, the glands, the male
+reproductive tract, the heart, vessels and blood, the nervous system, bone,
+cartilage, tendon, ligament, fascia, adipose, or any of the eight eye roles. That is
+a finding about the literature, not a gap in the search. `docs/TISSUE_COLORIMETRY.md`
+lists nine library requests that could move the count, led by a 1993 gallbladder and
+bile-duct spectral study and a 2025 thyroid/parathyroid study whose spectra are
+available from the authors.
+
+*Still to close:* the skin blend closes with 4.2. Garments need a real cloth solve or
+an honest label in the UI rather than only in the source.
 
 ---
 
@@ -814,6 +848,7 @@ what remains, with what each one now actually requires.
 10. **Deformable skin with self-contact; afference past 128 points** (Tier 2, §4.2).
 11. **Metabolic supply as a force limit rather than an exception** (§3.4).
 12. **Posture in physiology; fix the evaporative defect** (Tier 5).
-13. **Colorimetry for the remaining 65 palette roles** (Tier 7).
+13. **Colorimetry:** campaign run (§7.1) — 64 roles remain synthesized because the
+    literature does not measure them; progress now needs the nine library requests.
 
 Items 4–7 are the body. Items 8–13 are the long tail.
