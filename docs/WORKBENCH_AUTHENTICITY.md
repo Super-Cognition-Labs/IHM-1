@@ -137,10 +137,37 @@ apart, and the explanation it gave is **withdrawn**:
   lift the head from supine there.
 
 * **Pre-registered gate G-S — does giving the subtalar its arms repair the
-  ankle? FAILED.** It still leaves its range by 1.140 rad right and 0.871 left,
-  down from 1.356 and 1.352, against a 0.220 bar. So the missing arm was at most
-  part of the cause, and the cause is now **open**. The run that would separate it
-  — re-welding the subtalar alone — has not been made.
+  ankle? FAILED** (1.140 / 0.871 rad against 0.220) — and its premise is now
+  **withdrawn**. A full factorial over the variant's three changes — trunk
+  repartition T, wrists W, subtalar S — pre-registered in `e00844d` before any arm ran,
+  results in `a910288`, `docs/FOOT_JOINTS.md`:
+
+  | arm | ankle r / l (rad) |
+  |---|---|
+  | base with only the subtalar freed | 0.113 / 0.108 — fine |
+  | base with only the trunk repartitioned | 1.385 / 1.266 — **collapses** |
+  | variant with only the subtalar re-welded | 1.385 / 1.267 — does not recover |
+  | repartitioned trunk, **every new joint welded** | 1.401 / 1.288 — **collapses** |
+
+  Effect on the worse ankle: T +1.254 rad, W −0.001, S −0.019. **The collapse is the
+  trunk repartition, and it is not the spine's new articulation** — it persists with
+  all seven new joints welded. "Plantarflexors loading an uncontrollable hinge" is
+  excluded too: at the crossing they carry 25–31 N against 468–476 N in the
+  dorsiflexors, and the ankle crosses before the subtalar reaches its bound.
+
+  **Leading candidate, and it is the contact proxy, not the anatomy.** The engine sizes
+  each body's contact ball from its inertia ellipsoid and puts the support plane under
+  the lowest ball. The repartitioned torso's ball grows 0.258 → 0.309 m, and the plane
+  drops **48.5 mm** — verified here: every arm with the repartition sits at −0.45201 m
+  and every arm without it at −0.40350 m, without exception. The legs then fall
+  further, the heel lands 3.1× harder (1,142 N against 363 N) 0.14 s before the ankle
+  crosses the bar, and the foot folds onto its toes. **Not separated:** whether the
+  plane offset or the mass change itself drives the fold — that needs an engine option
+  for the plane offset. So this is one more reason §1's real skin contact should
+  replace the inertia-ellipsoid spheres: the spheres made a mass repartition look like
+  a joint failure.
+* **F2's bar compares plants lying on planes 48.5 mm apart.** Recorded; F2 stays
+  FAILED and is not rescored.
 * The original gate — no new coordinate may leave its range by more than the base
   model already leaves its own — still **FAILED** on `thoracic_extension` (0.394
   rad against 0.220). Recorded, not rescored.
@@ -181,13 +208,32 @@ joint their paths cannot see. Measured on the base plant through the engine:
 | `fhl_r` | −18.0 mm | **0** |
 | `soleus_r` (control) | −49.7 mm | 0 |
 
-These are the toe extensors and flexors, and their real geometric arm about the
-toe joint reaches 25.3 mm; the fit reads exactly zero, bit-identical on a repeat
-call. Both toe joints are therefore unactuated hinges held only by passive terms.
-Left untouched in the base plant deliberately — changing it changes every result
-already recorded on it. Every foot contact, gait and crawl measurement on this
-plant was made with toes that no muscle could move; that belongs beside any result
-that depends on push-off.
+These are the toe extensors and flexors. Both toe joints are therefore unactuated
+hinges held only by passive terms.
+
+**What it costs, measured** (`docs/FOOT_JOINTS.md`, base plant only, untouched):
+**almost nothing in the protocols this repo runs.** The toe joint stays within
+±0.009 rad supine and never comes closer than 0.38 rad to its ±0.524 bound in the
+crawl, held by its passive spring. Welding it, as upstream did, moves the ankle by at
+most 0.0016 rad and crawl travel by under 1 mm; F2's bar moves 2e-5 rad and no gate
+flips. The same runs reproduced three numbers recorded weeks earlier — the unstopped
+crawl's 1.450 rad, the stopped crawl's 0.220 rad, F2's 0.2202 — which also confirms
+on the rebuilt engine that the §1.3 damping fix moved no plant.
+
+**A defect underneath it, in the upstream foot.** Giving the toe muscles geometry
+paths (the route that fixed the subtalar) is **not viable as is**: it produces an
+impossible sign pattern — the dorsal extensor and the plantar flexors share a sign.
+The cause is in the files, including upstream `subject_walk_scaled.osim`: the toe
+muscles' last calcaneal via points were scaled ×1.156 while the mtp joint offset
+(0.1788 m) was not, so they sit 8–22 mm *beyond* the axis they should straddle, where
+Rajagopal places them 5–17 mm short of it.
+
+**Recommendation from that evidence:** leave `engineering_stance_v1` as it is (its
+stance linearization was solved with mtp free at 0.113 rad, so changing it means
+re-identifying the plant); weld mtp in any new plant; fix the foot geometry — scale
+the mtp offset, ideally adopt Rajagopal's oblique mtp axis — before giving the toes
+geometry paths. **Not measured:** upright stance and push-off, where toe loading
+matters most.
 
 ### 0.3 Two bodies of different stature and different mass
 
