@@ -230,7 +230,7 @@ def _prepare_mechanical_registration(root,relative):
 
 class EmbodiedRuntime:
     @classmethod
-    def from_workspace(cls,root,output,*,environment='supine',state_path=None,surface_contact_manifest=None,cutaneous_configuration=None,bed_material=None,regional_skin=False,source_pin=DEFAULT_SOURCE,intake_mass=False,augmented_registration=None,native_afferent_allocation=None,environment_selection=None,controller=None,initial_pose=None):
+    def from_workspace(cls,root,output,*,environment='supine',state_path=None,surface_contact_manifest=None,cutaneous_configuration=None,bed_material=None,regional_skin=False,source_pin=DEFAULT_SOURCE,intake_mass=False,augmented_registration=None,native_afferent_allocation=None,environment_selection=None,controller=None,initial_pose=None,mechanical_fidelity=None,display_pose=None):
         from .controller_selection import resolve_controller
         controller=resolve_controller(controller)
         if controller['kind']!='regional' and native_afferent_allocation is not None:
@@ -365,6 +365,7 @@ class EmbodiedRuntime:
                 augmented_registration=augmented_registration or 'data/derived/mechanics/whole_body_arm26_v2/registration.json',
                 surface_contact_manifest=surface_contact_manifest,surface_sensor_indices=sensor_indices,bed_material=bed_material,
                 instance_mass_variant='data/runtime/opensim/variants/instance_mass_v1' if intake_mass else None,
+                mechanical_fidelity=mechanical_fidelity,display_pose=display_pose,
                 **({'initial_pose':initial_pose} if initial_pose is not None else {}))
             if mechanical_catalog is not None and plant.muscle_catalog!=mechanical_catalog:
                 raise ValueError('Native plant catalog differs from preflight mechanical identity')

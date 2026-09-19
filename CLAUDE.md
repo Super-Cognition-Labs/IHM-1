@@ -9,6 +9,9 @@ its randomness traps and its corrections ledger apply here without restatement.
 - **`docs/ACTUATION_STAGES.md`** — how the body comes to move, and which parts
   are scaffold. Read it before touching anything that actuates, contacts or
   poses. It is the single most misreadable thing in this repo.
+- **`docs/WORKBENCH_AUTHENTICITY.md`** — every shortcut, proxy and unreachable
+  capability between the live body and what the workbench shows, with what each
+  one costs to close. Read it before claiming the app shows the model.
 - `../IBM-1/docs/DIRECTION.md` — the programme target and the standing
   corrections that produced it.
 - `../IBM-1/docs/DISCONNECTS.md` — where a declared model and the running model
@@ -62,8 +65,21 @@ report what the crude body did as what the body did.
   off their organs (the pelvic one by 171 mm, in the thigh). A frame audit passed all of
   them. Check each ENDPOINT against the structure its own label names; the relays are now
   on the dura centreline (`scripts/build_spinal_cord_levels.py`).
-- **Two bodies of different mass.** Mechanical 77.6122029 kg (a bare literal in
-  67 places across 58 files, no derivation found) against anatomical 70.7713 kg.
+- **Two bodies of different mass, and the mechanical one is a PHYSIOLOGY number.**
+  Mechanical 77.6122029 kg against anatomical 70.7713 kg. This line used to say "a bare
+  literal, no derivation found"; that was wrong on both halves. The derivation is exact in
+  float: `170 lb x 0.45359237 + 0.5015 kg` — the BioGears StandardMale patient plus the
+  0.5 L water, 500 mg calcium and 1 g sodium the engine seeds in the stomach at t=0 — and
+  the number sits verbatim in 8 of the 19 BioGears `*@0s` state files already on disk
+  (`data/raw/.../states/StandardMale@0s.xml:8`). **The plant is scaled to the fed weight of
+  a physiology reference patient**, to the same 170 lb this repo's own composition ledger
+  rejected as unreachable for the anatomy. Both constants are now declared once in
+  `ihm/body_constants.py`; `scripts/verify_body_constants.py` re-derives them and fails on
+  a raw literal under `ihm/`. **The count was wrong too, and a grep is why**: this shell's
+  `grep` is a wrapper passing `--ignore-files`, so it silently skips everything in
+  `.gitignore` — which here is `data/derived`, `data/runtime`, `artifacts`, `logs` and
+  `out`, i.e. almost the whole repository by volume. Use `/usr/bin/grep` or `git grep`, and
+  say which, whenever you quote a count.
 
 ## A pre-registration can carry an unmeasured assumption
 

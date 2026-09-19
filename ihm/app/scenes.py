@@ -14,6 +14,13 @@ import json
 from pathlib import Path
 
 CATALOGUE = 'data/derived/environment-catalogue-v1/catalogue.json'
+# The reduced-kinematics engine (ihm/assembly/interactive_scene.py) moved off the
+# name that read as the body's. This endpoint -- the environment/object/scene tile
+# catalogue -- keeps its `/api/scene/...` prefix: it is a catalogue of assets, it
+# is what the live embodied body's environment ids are drawn from, and nothing
+# about it claims to be a physics engine.
+RETIRED_SESSION_PATH = '/api/scene/sessions'
+REDUCED_SESSION_PATH = '/api/reduced-kinematics/sessions'
 MANIFEST = 'data/derived/environment-catalogue-v1/manifest.json'
 PHYSICS_FIELDS = ('gravity', 'axis', 'plane', 'supports')
 
@@ -151,6 +158,23 @@ def scene_catalog(root, live):
     # One flat array for a tile grid; slot and requires carry the rules, so the
     # front end reads them rather than encoding which tile excludes which.
     catalog['tiles'] = environments + scenes + components + objects
+    # The reduced-kinematics engine's path was renamed so it cannot be read as
+    # the body. The derived catalogue was built against the old name and its
+    # `selection` blocks still quote it; rewrite them on the way out, and say
+    # beside each one that it is not the body. Serving `POST /api/scene/sessions`
+    # here would hand every caller a path that now 410s.
+    rewritten = 0
+    for entry in catalog['tiles']:
+        for option in entry.get('selection') or []:
+            if option.get('endpoint') == 'POST ' + RETIRED_SESSION_PATH:
+                option['endpoint'] = 'POST ' + REDUCED_SESSION_PATH
+                option['is_body_simulation'] = False
+                option['use_instead'] = 'POST /api/embodied/sessions - the body. This selection drives the reduced-kinematics experiment.'
+                rewritten += 1
+    if rewritten:
+        notes.append('Rewrote ' + str(rewritten) + ' derived selection endpoints from ' + RETIRED_SESSION_PATH
+                     + ' to ' + REDUCED_SESSION_PATH + '; rebuild scripts/build_environment_catalogue.py to remove this rewrite. '
+                     + 'Neither path is the body: the body is POST /api/embodied/sessions.')
     catalog['notes'] = notes
     return catalog
 

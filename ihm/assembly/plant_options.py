@@ -1,0 +1,345 @@
+"""Server-owned mechanical fidelity options for a live body.
+
+WHY THIS EXISTS.  `NativeMechanicalStream` has accepted joint stops, real segment
+contact surfaces and derived tissue force elements for some time.  Nothing that
+serves a live body could ask for them: `ArticulatedBodyPlant.__init__` did not
+forward the keywords, so the only callers were offline `scripts/*.py`.  The live
+workbench therefore ran a body with **no joint limits**, standing on **spheres
+inscribed in inertia ellipsoids**, carrying **none** of the 117 tissue elements --
+while the replacements sat built, measured and documented on disk.
+`docs/WORKBENCH_AUTHENTICITY.md` Tier 1 is that gap; this module is its fix.
+
+WHAT IT IS.  A resolver, in the same shape as `controller_selection.py`: the
+client names an identity, never a path, and gets back the resolved parameters
+plus a disclosure it cannot render a result without having been handed.  Anything
+not named is off, and off is the historical behaviour, so an existing caller is
+unaffected to the float.
+
+WHAT IT IS NOT.  It does not make any of these true by default.  Each option
+below is an improvement with a measured cost, and two of them are actively worse
+in some configurations -- the selections carry those numbers rather than hiding
+them.
+"""
+from pathlib import Path
+import json
+import xml.etree.ElementTree as ET
+
+MODEL = 'data/models/engineering_stance_v1/model.osim'
+
+# A coordinate declaring +-10 rad is not declaring a range, it is declaring the
+# absence of one; the six shoulder coordinates do exactly that.  Stopping them at
+# a number the model never gave would be inventing a limit, so they are left free
+# and `unranged_coordinates` says which they are on every resolution.
+_RANGE_SENTINEL_RAD = 18.0
+_TRANSLATIONS = ('pelvis_tx', 'pelvis_ty', 'pelvis_tz')
+
+# Measured, not chosen.  scripts/crawl.py swept stiffness at IDENTICAL port gains
+# over 3 s of the seed pattern (its own note records that the first sweep compared
+# a no-stop row against stopped rows at different gains, which is this programme's
+# recurring "compared against the wrong thing"):
+#
+#   k (N.m/rad)   s / advance   worst excursion past the declared range
+#   none              0.515     1.450 rad   (ankle_angle_r -- the folded foot)
+#    300              0.937     0.139 rad
+#    100              0.505     0.192 rad
+#     30              0.264     0.220 rad
+#
+# 30 is HALF the wall clock of no stop at all and holds the plant 6.6x closer to
+# its declared range, because a plant kept out of absurd configurations is a plant
+# the error controller can integrate.  These are engineering constants stated by
+# the caller, NOT measured ligament properties, and the resolution says so.
+#
+# THE DAMPING FIELD IS NOT IN THE UNITS ITS OLD NAME CLAIMED, and the defect is in
+# the shared engine, not here.  `scripts/native_mechanical_stream.cpp` converts the
+# limits, the stiffness and the transition width from radians to degrees for
+# `CoordinateLimitForce` and passes `damping` THROUGH.  OpenSim's own header
+# declares that property as `Nm/(degree/s)` for a rotational coordinate
+# (`CoordinateLimitForce.h`, the `damping` property), so a caller's 1.5 is applied
+# as 1.5 * 180/pi = 85.94 N.m.s/rad -- 57.3x what the name said.
+#
+# The value is LEFT AS IT IS on purpose.  Every measurement behind the table above,
+# and every stopped run in this repo, was made with this damping; changing the
+# number to "fix" the units would silently alter the plant those results describe
+# and make a stopped live body a different object from a stopped offline crawl. So
+# the field is named for what the engine actually consumes and the effective value
+# is stated beside it. Fixing the conversion is an engine change that invalidates
+# every prior stopped run and must be done deliberately, with the runs redone.
+JOINT_STOP_PROFILES = {
+    'measured_soft': {'stiffness_nm_per_rad': 30.0, 'damping_nm_per_deg_per_s': 1.5,
+                      'transition_rad': 0.35},
+    'firm': {'stiffness_nm_per_rad': 100.0, 'damping_nm_per_deg_per_s': 2.0,
+             'transition_rad': 0.25},
+    'stiff': {'stiffness_nm_per_rad': 300.0, 'damping_nm_per_deg_per_s': 3.0,
+              'transition_rad': 0.20},
+}
+DEG_PER_RAD = 180.0 / 3.141592653589793
+JOINT_STOP_DAMPING_NOTE = (
+    'The engine passes this value to OpenSim CoordinateLimitForce unconverted, and that '
+    'property is Nm/(degree/s) for a rotational coordinate, so the effective damping is '
+    '{:.2f} N.m.s/rad -- 57.3x the number. Left as measured: every stopped run in this '
+    'repo was made with it. scripts/native_mechanical_stream.cpp is where the conversion '
+    'is missing.')
+DEFAULT_JOINT_STOP_PROFILE = 'measured_soft'
+
+# The real segment surfaces, in place of the upright environment's COM spheres.
+# `skin` is the one the programme is actually about: docs/ACTUATION_STAGES.md says
+# contact with the world is never bone against world, and this is the bundle where
+# the skin is what meets the floor.
+# `replaces_source_feet` is the whole question, not a detail.
+#
+# `scripts/measure_segment_contact_meshes.py` records, and EXCLUDES the arm from its
+# own default run for it: **the skin never reaches the floor in the stance pose.**
+# The skin surface of the foot sits above the source foot contact spheres' effective
+# plane, so a bundle that REPLACES those spheres leaves a standing body with nothing
+# under it, and it collapses. That is not the skin failing to hold the body; it is a
+# pose in which the skin is not yet touching.
+#
+# So both arms are offered and neither is called the truth: `skin` replaces the feet
+# (the intended end state, and the one that collapses from the stance pose), and
+# `skin_carried` keeps them (the cost of CARRYING the geometry, separated from the
+# cost of a plant that is collapsing -- two things one number would mix).
+SEGMENT_CONTACT_BUNDLES = {
+    'skin': {
+        'path': 'data/derived/segment-contact-meshes/skin',
+        'layer': 'skin',
+        'label': 'Skin exterior, replacing the source feet',
+        'replaces_source_feet': True,
+        'caveat': 'The skin does not reach the floor in the stance pose. With the source '
+                  'foot spheres replaced, a standing body has nothing under it and collapses. '
+                  'Use skin_carried to separate the cost of the geometry from that.',
+    },
+    'skin_carried': {
+        'path': 'data/derived/segment-contact-meshes/skin',
+        'layer': 'skin',
+        'label': 'Skin exterior, source feet kept',
+        'replaces_source_feet': False,
+        'caveat': 'The source foot spheres still carry the body; the skin is present and '
+                  'only loads where it actually touches. This measures carrying the '
+                  'geometry, NOT the skin holding the body up.',
+    },
+    'skin_layer_map': {
+        'path': 'data/derived/segment-contact-meshes/skin-layer-map-v1',
+        'layer': 'skin',
+        'label': 'Skin exterior with per-patch measured depth, replacing the source feet',
+        'replaces_source_feet': True,
+        'caveat': 'Same caveat as skin: it does not reach the floor in the stance pose.',
+    },
+    'bone_all': {
+        'path': 'data/derived/segment-contact-meshes/stance-bone-all',
+        'layer': 'bone',
+        'label': 'Every bone surface',
+        'replaces_source_feet': False,
+    },
+    'bone_proxy': {
+        'path': 'data/derived/segment-contact-meshes/stance-bone-proxy',
+        'layer': 'bone',
+        'label': 'Bone surfaces, proxy subset',
+        'replaces_source_feet': False,
+    },
+}
+
+# docs/TISSUE_MECHANICS.md measured both sets on three drops.  The full set makes
+# the plant WORSE; the 66 elements that survive the kinematic check make it no
+# worse and sometimes much better, and added to the stops improve the worst
+# excursion past the declared ranges on every drop tested by 4-24%.  51 of the 117
+# fail that check -- the derived ACL reads 77% strain at 90 degrees of knee flexion,
+# which is an attachment in the wrong place.  So `admissible` is the only selection
+# offered by default, and `all` exists to reproduce the negative result.
+TISSUE_BUNDLES = {
+    'admissible': {'path': 'data/derived/tissue-force-elements-v1',
+                   'classes': ['ligament', 'joint_capsule'], 'admissible_only': True,
+                   'label': 'Ligaments and capsules, kinematically admissible only'},
+    'all': {'path': 'data/derived/tissue-force-elements-v1',
+            'classes': ['ligament', 'joint_capsule'], 'admissible_only': False,
+            'label': 'Ligaments and capsules, unfiltered (measured WORSE than none)'},
+}
+
+DISCLOSURE = {
+    'joint_stops':
+        'Joint stops at the coordinate ranges the source model already declares. '
+        'Nothing else in this plant enforces them: every rotational coordinate '
+        'carries <clamped>true</clamped>, the model holds zero CoordinateLimitForce, '
+        'and OpenSim does not clamp during forward dynamics. The LIMIT is the '
+        "model's own; the stiffness, damping and transition width are explicit "
+        'engineering constants, not measured ligament properties. The declared range '
+        "and the model's own passive stops DISAGREE -- a resting prone body already "
+        'sits 0.240 rad outside its declared hip_rotation_l -- so these stops are '
+        'soft by design and a coordinate may still be found outside its range.',
+    'segment_contact_skin':
+        'The body stands on its SKIN: the canonical exterior skin surface, cut per '
+        'segment and capped, as OpenSim ContactMesh over SimTK TriangleMesh carried '
+        'by ElasticFoundationForce -- an independent spring at every triangle centroid '
+        'below the plane. No convex hull is taken. The skin is carried RIGIDLY by its '
+        'segment: no in-plane stretch, no sliding, no deformable continuum. Every '
+        'segment boundary is a seam the real body does not have, and both tali are '
+        'refused for having fewer than 64 exterior triangles.',
+    'segment_contact_bone':
+        'The body stands on BONE surfaces. This is a collider against other bones and '
+        'its own soft tissue, NOT what meets the floor in a real body; select the skin '
+        'bundle for that. The layer travels into the native emit so no report can say '
+        'the body stood on its skin about a run that stood on its femurs.',
+    'tissue_ligaments':
+        'Blankevoort1991Ligament elements over attachments derived from each '
+        "structure's OWN surface. A CONSTRUCTION from mesh geometry and a published "
+        'cadaver modulus -- not measured insertion footprints, not a subject-specific '
+        'ligament property. These forces are internal: they can change how the plant '
+        'moves and cannot change its momentum balance. They do NOT replace the joint '
+        'stops.',
+}
+
+
+def declared_ranges(root, model=MODEL):
+    """Rotational coordinate ranges as the source model declares them.
+
+    Read out of the model rather than typed. CLAUDE.md records a day lost to a knee
+    whose range was mirror-imaged between two models, and a number nobody
+    transcribed cannot be transcribed wrong.
+    """
+    root = Path(root)
+    ranged, unranged = {}, []
+    for coordinate in ET.parse(root / model).getroot().iter('Coordinate'):
+        name = coordinate.get('name')
+        element = coordinate.find('range')
+        if not name or element is None or element.text is None:
+            continue
+        low, high = (float(v) for v in element.text.split())
+        if name in _TRANSLATIONS:
+            continue
+        if high - low > _RANGE_SENTINEL_RAD:
+            unranged.append(name)
+            continue
+        ranged[name] = (low, high)
+    return ranged, sorted(unranged)
+
+
+def joint_stops(root, profile=DEFAULT_JOINT_STOP_PROFILE, model=MODEL):
+    """The plant's coordinate-limit rows, one per coordinate that declares a range."""
+    if profile not in JOINT_STOP_PROFILES:
+        raise ValueError('Unknown joint stop profile')
+    constants = JOINT_STOP_PROFILES[profile]
+    ranged, unranged = declared_ranges(root, model)
+    if not ranged:
+        raise ValueError('Model declares no usable rotational ranges')
+    # the wire field the engine reads is still called damping_nm_s_per_rad; only the
+    # name in this module is corrected, because renaming the wire would change the
+    # plant's input format and every offline caller with it.
+    wire = {'stiffness_nm_per_rad': constants['stiffness_nm_per_rad'],
+            'damping_nm_s_per_rad': constants['damping_nm_per_deg_per_s'],
+            'transition_rad': constants['transition_rad']}
+    rows = [dict(coordinate=name, lower_rad=low, upper_rad=high, **wire)
+            for name, (low, high) in sorted(ranged.items())]
+    return rows, unranged
+
+
+def _verified_bundle(root, relative, schema):
+    path = (Path(root) / relative).resolve()
+    if not path.is_relative_to(Path(root).resolve()):
+        raise ValueError('Owned bundle required')
+    manifest = json.loads((path / 'manifest.json').read_bytes())
+    if manifest.get('schema') != schema:
+        raise ValueError('Bundle schema is not the one this resolver understands: ' + str(relative))
+    return manifest
+
+
+def resolve_fidelity(root, value=None, *, environment='supine'):
+    """Resolve a client's named mechanical fidelity into plant keywords.
+
+    Returns `(kwargs, selection)`. `kwargs` go straight to NativeMechanicalStream;
+    `selection` is the disclosure, and is carried on the session so no caller can
+    read a result without having been handed what it rests on.
+
+    `None` is the historical plant, exactly: no stops, COM-sphere contact, no
+    tissue. That default is deliberate -- an existing measurement must not change
+    because this resolver arrived.
+    """
+    if value is None:
+        return {}, {'joint_stops': None, 'segment_contact': None, 'tissue_ligaments': None,
+                    'basis': 'Historical plant: no coordinate limits, inertia-ellipsoid COM '
+                             'sphere contact, no tissue force elements.'}
+    if not isinstance(value, dict) or set(value) - {'joint_stops', 'segment_contact', 'tissue_ligaments'}:
+        raise ValueError('Unknown mechanical fidelity configuration')
+
+    kwargs, selection = {}, {}
+
+    stops = value.get('joint_stops')
+    if stops in (None, False):
+        selection['joint_stops'] = None
+    else:
+        profile = DEFAULT_JOINT_STOP_PROFILE if stops is True else stops
+        if not isinstance(profile, str):
+            raise ValueError('Joint stop selection must be a profile name or a boolean')
+        rows, unranged = joint_stops(root, profile)
+        kwargs['coordinate_limits'] = rows
+        selection['joint_stops'] = {
+            'profile': profile, 'constants': JOINT_STOP_PROFILES[profile],
+            'effective_damping_nm_s_per_rad':
+                round(JOINT_STOP_PROFILES[profile]['damping_nm_per_deg_per_s'] * DEG_PER_RAD, 4),
+            'damping_units_note': JOINT_STOP_DAMPING_NOTE.format(
+                JOINT_STOP_PROFILES[profile]['damping_nm_per_deg_per_s'] * DEG_PER_RAD),
+            'coordinates': [r['coordinate'] for r in rows],
+            'unranged_coordinates': unranged,
+            'unranged_basis': 'Declared +-10 rad, which is the absence of a range; left free '
+                              'rather than stopped at a limit the model never gave.',
+            'disclosure': DISCLOSURE['joint_stops']}
+
+    contact = value.get('segment_contact')
+    if contact is None:
+        selection['segment_contact'] = None
+    else:
+        if contact not in SEGMENT_CONTACT_BUNDLES:
+            raise ValueError('Unknown segment contact bundle')
+        if environment != 'upright':
+            raise ValueError('Segment contact meshes require the upright environment')
+        spec = SEGMENT_CONTACT_BUNDLES[contact]
+        manifest = _verified_bundle(root, spec['path'], 'ihm.segment-contact-meshes.v1')
+        if manifest.get('layer') != spec['layer']:
+            raise ValueError('Segment contact bundle layer does not match its selection')
+        kwargs['segment_contact_meshes'] = spec['path']
+        kwargs['segment_contact_replaces_source_feet'] = spec['replaces_source_feet']
+        # E, Poisson ratio and thickness come from the canonical skin-layer entities the
+        # bundle itself recorded, so the arm measures what THIS body's declared skin does
+        # rather than what a default number does. A bundle carrying a per-segment layer
+        # map declares its own per record, and the plant refuses a caller override there.
+        material = manifest.get('skin_material') or {}
+        declared = {k: material[k] for k in ('youngs_modulus_pa', 'poissons_ratio', 'layer_thickness_m')
+                    if k in material}
+        if declared and not manifest.get('per_record_material'):
+            kwargs['segment_contact_material'] = declared
+        selection['segment_contact'] = {
+            'id': contact, 'label': spec['label'], 'layer': spec['layer'],
+            'replaces_source_feet': spec['replaces_source_feet'],
+            'meshes': manifest.get('meshes'), 'total_faces': manifest.get('total_faces'),
+            'watertight_meshes': manifest.get('watertight_meshes'),
+            'concave_meshes': manifest.get('concave_meshes'),
+            'refused': manifest.get('refused') or [],
+            'bundle_basis': manifest.get('basis'),
+            'material': declared or None,
+            'material_basis': 'Declared by the bundle from this body\'s own canonical skin-layer '
+                              'entities; not a tuned contact stiffness.' if declared else None,
+            'caveat': spec.get('caveat'),
+            'disclosure': DISCLOSURE['segment_contact_skin' if spec['layer'] == 'skin'
+                                     else 'segment_contact_bone']}
+
+    tissue = value.get('tissue_ligaments')
+    if tissue is None:
+        selection['tissue_ligaments'] = None
+    else:
+        if tissue not in TISSUE_BUNDLES:
+            raise ValueError('Unknown tissue ligament bundle')
+        spec = TISSUE_BUNDLES[tissue]
+        manifest = _verified_bundle(root, spec['path'], 'ihm.tissue-force-elements.v1')
+        kwargs['tissue_ligaments'] = spec['path']
+        kwargs['tissue_ligament_classes'] = list(spec['classes'])
+        kwargs['tissue_ligament_admissible_only'] = spec['admissible_only']
+        selection['tissue_ligaments'] = {
+            'id': tissue, 'label': spec['label'], 'classes': list(spec['classes']),
+            'admissible_only': spec['admissible_only'],
+            'bundle_scope': manifest.get('scope'),
+            'measured_cost': None if spec['admissible_only'] else
+                'docs/TISSUE_MECHANICS.md measured this unfiltered set as WORSE than no '
+                'tissue on every drop tested. It is offered to reproduce that result.',
+            'disclosure': DISCLOSURE['tissue_ligaments']}
+
+    selection['basis'] = ('Server-owned bundles resolved by identity; a client never supplies '
+                          'a path, a mesh or a material.')
+    return kwargs, selection

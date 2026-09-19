@@ -4,6 +4,18 @@ import {LiveBodyHistory,bodyEndpoint,bodyEnvironment,bodyCommand,signalInfo,fram
 const frame=(time,sequence=0)=>({schema:'ihm.embodied-frame.v1',time_s:time,sequence,entities:{},mechanics:{muscles:{bra_r:{}}},physiology:{values:{heart_rate_per_min:72,unknown:null},units:{heart_rate_per_min:'1/min'}}});
 test('default live owner never silently selects reduced scene',()=>{
  assert.equal(bodyEndpoint('embodied'),'/api/embodied/sessions');
+ // The reduced engine is not a body. Its path must not be readable as one, and
+ // the retired '/api/scene/sessions' must never be produced again.
+ assert.equal(bodyEndpoint('reduced'),'/api/reduced-kinematics/sessions');
+ assert.doesNotMatch(bodyEndpoint('reduced'),/\/api\/scene\//);
+ assert.doesNotMatch(bodyEndpoint('reduced'),/body|embodied/);
+ // A reduced frame announces itself before any of its scope prose is read.
+ const reduced={is_body_simulation:false,engine:'reduced-kinematics',use_instead:'/api/embodied/sessions',
+  scope:{body_mechanics:'Canonical linked rigid translations',body_rotations:'Reference orientations constrained',
+   body_environment:'No body-surface mattress or floor contact solve',body_object_contact:false,
+   clothing_contact:false,physiology_feedback:false}};
+ assert.match(frameScope(reduced),/^Not the body simulation/);
+ assert.match(frameScope(reduced),/\/api\/embodied\/sessions/);
  assert.equal(bodyEnvironment('bed','embodied'),'supine');
  assert.equal(bodyEnvironment('floor','embodied'),'upright');
  assert.throws(()=>bodyEndpoint('fake'));assert.throws(()=>bodyEnvironment('fake','embodied'));

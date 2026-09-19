@@ -1,6 +1,6 @@
 # Unified live body controls and monitors
 
-The source UI's default **Start Body** now uses `/api/embodied/sessions`. There is no automatic fallback to `/api/scene`: the older constrained mechanics experiment is available only through Advanced execution. Environment choices map Free space→`free`, Bed→`supine`, Floor→`upright`. Native integration acceptance and production build remain separate from these interface tests.
+The source UI's default **Start Body** now uses `/api/embodied/sessions`. There is no automatic fallback to the reduced engine: the older constrained mechanics experiment is available only through Advanced execution, and since 18 September 2026 it is named `/api/reduced-kinematics/sessions` — `/api/scene/sessions` is retired and returns `410`. Its responses carry `is_body_simulation: false`. Environment choices map Free space→`free`, Bed→`supine`, Floor→`upright`. Native integration acceptance and production build remain separate from these interface tests.
 
 Live body frames drive canonical `entities`, including their current rotations/deformation gradients. Respiratory skin displacement remains applied in canonical reference coordinates before each entity transform; diagnostic `respiration.skin_field.entity_transforms` is not applied again. Historical physiology and regional replay remain separate owners and are labeled as recorded materializations.
 

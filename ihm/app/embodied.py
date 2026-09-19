@@ -2,6 +2,7 @@
 from concurrent.futures import Future
 from pathlib import Path
 import gzip,hashlib,json,os,queue,threading,time,uuid
+from copy import deepcopy
 
 
 from ihm.brain.active_source import resolve_ibm_candidate,resolve_source,ACTIVE_COMMIT
@@ -129,7 +130,7 @@ class EmbodiedSessions:
         self.creation_done=threading.Condition(self.lock)
         self.surface_assets=SurfaceAssetRegistry()
     def create(self,data):
-        if not isinstance(data,dict) or set(data)-{'environment','regional_skin','intake_mass','ibm_candidate','environment_selection','controller'}:raise ValueError('Unknown embodied configuration')
+        if not isinstance(data,dict) or set(data)-{'environment','regional_skin','intake_mass','ibm_candidate','environment_selection','controller','mechanical_fidelity','display_pose'}:raise ValueError('Unknown embodied configuration')
         from ihm.assembly.controller_selection import resolve_controller
         controller=resolve_controller(data.get('controller'))
         if controller['kind']!='regional' and 'ibm_candidate' in data:
@@ -145,6 +146,16 @@ class EmbodiedSessions:
             raise ValueError('Stance controllers require upright fixed-mass mechanics')
         from ihm.assembly.environment_dynamics import resolve_selection
         environment_selection,environment_options=resolve_selection(self.root,environment,data.get('environment_selection'))
+        # Resolve the mechanical fidelity HERE, before a resource slot is taken and
+        # before the owner thread starts: an unknown bundle or a skin selection in the
+        # wrong environment must be a 400 on this call, not a body that dies during
+        # initialization and leaves the caller to read an engine log.
+        from ihm.assembly.plant_options import resolve_fidelity
+        mechanical_fidelity=data.get('mechanical_fidelity')
+        _,fidelity_selection=resolve_fidelity(self.root,mechanical_fidelity,environment=environment)
+        display_pose=data.get('display_pose')
+        if display_pose is not None and display_pose not in ('opensim','anatomical'):
+            raise ValueError('Display pivot must be opensim or anatomical')
         explicit='ibm_candidate' in data
         source_pin=None if controller['kind'] not in ('regional','engineering_stance') else (resolve_ibm_candidate(self.root,data['ibm_candidate']) if explicit else resolve_source(self.root))
         with self.lock:
@@ -154,7 +165,7 @@ class EmbodiedSessions:
         try:
             from ihm.assembly.embodied import EmbodiedRuntime
             ident=uuid.uuid4().hex;output=self.root/'data/derived/embodied-sessions'/ident
-            options={'controller':controller,'environment':environment,'regional_skin':regional_skin,'intake_mass':intake_mass,'source_pin':source_pin,**({'environment_selection':environment_selection,**environment_options} if environment_selection is not None else {})}
+            options={'controller':controller,'environment':environment,'regional_skin':regional_skin,'intake_mass':intake_mass,'source_pin':source_pin,'mechanical_fidelity':mechanical_fidelity,'display_pose':display_pose,**({'environment_selection':environment_selection,**environment_options} if environment_selection is not None else {})}
             # The active default is a candidate like any other: re-resolved on the
             # owner thread and disclosed, never an unreported implicit selection.
             selected=None if source_pin is None else (dict(data['ibm_candidate']) if explicit else {'commit':ACTIVE_COMMIT,'manifest_sha256':source_pin.manifest_sha256})
@@ -169,6 +180,8 @@ class EmbodiedSessions:
                 return body
             actor=BodyActor(factory,output)
             actor.controller_selection=dict(controller)
+            actor.mechanical_fidelity_selection=fidelity_selection
+            actor.display_pose_selection=display_pose
             actor.brain_source_selection=({'mode':'implicit_checkpoint','kind':controller['kind']} if source_pin is None else {'mode':'immutable_candidate' if explicit else 'active_default',
                 'commit':selected['commit'],'manifest_sha256':source_pin.manifest_sha256,
                 'package_sha256':source_pin.package_sha256,'neural_source_sha256':source_pin.neural_source_sha256})
@@ -189,6 +202,9 @@ class EmbodiedSessions:
         result={'brain_source_selection':dict(value)} if value is not None else {}
         controller=getattr(actor,'controller_selection',None)
         if controller is not None:result['controller_selection']=dict(controller)
+        fidelity=getattr(actor,'mechanical_fidelity_selection',None)
+        if fidelity is not None:result['mechanical_fidelity_selection']=deepcopy(fidelity)
+        result['display_pose_selection']=getattr(actor,'display_pose_selection',None)
         return result
     def command(self,ident,action,data=None):
         with self.lock:actor=self.actors.get(ident)
@@ -202,6 +218,13 @@ class EmbodiedSessions:
         if action=='close' and result.get('closed'):
             with self.lock:self.actors.pop(ident,None)
         return {'id':ident,**result,**self._identity(actor)}
+    def display_pose_map(self,ident):
+        """The static entity->segment map for a session started with a display pose."""
+        with self.lock:actor=self.actors.get(ident)
+        if actor is None:raise ValueError('Unknown embodied session')
+        body=getattr(actor,'body',None);plant=getattr(body,'plant',None)
+        return None if plant is None else getattr(plant,'display_pose_map',None)
+
     def list(self):
         with self.lock:return {'sessions':[{'id':ident,**actor.status(),**self._identity(actor)} for ident,actor in self.actors.items()]}
     def close(self,timeout=30):

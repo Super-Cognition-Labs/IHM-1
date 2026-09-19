@@ -1,8 +1,13 @@
 import {rotateOffset} from './scene-forces.js';
 import {systemicLabel} from './systemic.js';
+// 'embodied' is the body: OpenSim/Simbody + BioGears. 'reduced' is NOT a body —
+// it is the reduced-kinematics experiment (ihm/assembly/interactive_scene.py),
+// which cannot rotate the body, lets dragged objects pass through it and solves
+// no floor or mattress contact. It used to answer at '/api/scene/sessions', a
+// name that read as the body's; that path is retired and returns an error.
 export function bodyEndpoint(kind='embodied') {
  if(kind==='embodied')return '/api/embodied/sessions';
- if(kind==='reduced')return '/api/scene/sessions';
+ if(kind==='reduced')return '/api/reduced-kinematics/sessions';
  throw Error('Unknown body execution owner');
 }
 export function bodyEnvironment(view,kind='embodied') {
@@ -62,7 +67,9 @@ export function frameScope(frame) {
   frame.mechanics?.body_environment?.scope,
   frame.environment_state ? `Environment: ${frame.environment_state.contact_count} active body contacts. ${frame.environment_state.scope}` : 'Native supports are computational contact proxies; no scene contact owner is attached.',...(frame.mechanics?.limitations||[]),frame.coupling?.metabolic_law,
  ].filter(Boolean).join(' ');
- const s=frame?.scope||{};return [s.body_mechanics,s.body_rotations,s.body_gravity,s.body_environment,
+ const s=frame?.scope||{};return [
+  frame?.is_body_simulation===false?`Not the body simulation: this is the ${frame.engine||'reduced-kinematics'} experiment. Use ${frame.use_instead||'/api/embodied/sessions'}.`:null,
+  s.body_mechanics,s.body_rotations,s.body_gravity,s.body_environment,
   s.body_object_contact===false?'Body–object contact is not coupled.':null,
   s.clothing_contact===false?'Clothing contact is not coupled to this experiment.':null,
   s.physiology_feedback===false?'Reduced experiment: forces do not feed physiology.':null].filter(Boolean).join(' ');

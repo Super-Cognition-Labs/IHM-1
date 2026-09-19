@@ -15,6 +15,19 @@ import uuid
 
 SAFE_ID=re.compile(r'^[A-Za-z0-9_-]+$')
 
+# `/api/scene/sessions` served the reduced-kinematics experiment
+# (ihm/assembly/interactive_scene.py) under a name a caller would read as the
+# body's, and it would answer. It is retired rather than aliased: a silent
+# redirect would leave the caller believing the old name meant the body.
+RETIRED_SCENE_SESSIONS=(
+    '/api/scene/sessions is retired and is deliberately NOT aliased. It served the reduced-kinematics '
+    'experiment, not the body: that engine holds the body orientations fixed so the body cannot rotate, '
+    'dragged objects pass straight through the body, and nothing solves body-surface contact with a floor '
+    'or a mattress. THE BODY SIMULATION IS POST /api/embodied/sessions (OpenSim/Simbody + BioGears). '
+    'If the reduced-kinematics experiment is genuinely what you want, it is now at '
+    'POST /api/reduced-kinematics/sessions, and every response it returns says is_body_simulation: false. '
+    'The environment/tile catalogue at /api/scene/catalog is unchanged.')
+
 def read_json(path):return json.loads(Path(path).read_text())
 
 class Jobs:
@@ -183,7 +196,17 @@ def create_server(root=None,port=8765,host='127.0.0.1'):
                 if path=='/api/embodied/sessions':return self._send(self.server.embodied.list())
                 if re.fullmatch(r'/api/embodied/sessions/[a-f0-9]{32}',path):
                     return self._send(self.server.embodied.command(path.rsplit('/',1)[1],'snapshot'))
-                if re.fullmatch(r'/api/scene/sessions/[a-f0-9]{32}',path):
+                # The display pose's static half. A frame carries 22 segment motions;
+                # this is the entity->segment map and the rest centroids they apply to,
+                # which do not change for the life of the session. Sending them per frame
+                # was 1,159,032 bytes against 8,077 for the compact form.
+                if re.fullmatch(r'/api/embodied/sessions/[a-f0-9]{32}/display-pose-map',path):
+                    payload=self.server.embodied.display_pose_map(path.split('/')[4])
+                    if payload is None:return self._error('This body was not started with a display pose',404)
+                    return self._send(payload)
+                if path=='/api/scene/sessions' or path.startswith('/api/scene/sessions/'):
+                    return self._error(RETIRED_SCENE_SESSIONS,410)
+                if re.fullmatch(r'/api/reduced-kinematics/sessions/[a-f0-9]{32}',path):
                     return self._send(self.server.scenes.current(path.rsplit('/',1)[1]))
                 # The ring's structure and its magnitudes. The graph is derived
                 # from the declarations and cached against their mtimes; the
@@ -368,9 +391,12 @@ def create_server(root=None,port=8765,host='127.0.0.1'):
             except (RuntimeError,TimeoutError,EOFError) as e:return self._error(str(e),503)
         def do_POST(self):
             if not self._authorized(post=True):return self._error('Only local workbench requests are accepted',403)
-            scene_request=self.path=='/api/scene/sessions' or re.fullmatch(r'/api/scene/sessions/[a-f0-9]{32}/(step|insert|close)',self.path)
+            # Answer the retired name before anything else, including the
+            # Content-Type check, so the caller is told what it actually asked for.
+            if self.path=='/api/scene/sessions' or self.path.startswith('/api/scene/sessions/'):return self._error(RETIRED_SCENE_SESSIONS,410)
+            reduced_request=self.path=='/api/reduced-kinematics/sessions' or re.fullmatch(r'/api/reduced-kinematics/sessions/[a-f0-9]{32}/(step|insert|close)',self.path)
             embodied_request=self.path=='/api/embodied/sessions' or re.fullmatch(r'/api/embodied/sessions/[a-f0-9]{32}/(step|close|intakes)',self.path)
-            if self.path not in ('/api/scenarios','/api/body/scenarios','/api/body/microvascular-patch','/api/brain/prompt') and not scene_request and not embodied_request:return self._error('Endpoint not found',404)
+            if self.path not in ('/api/scenarios','/api/body/scenarios','/api/body/microvascular-patch','/api/brain/prompt') and not reduced_request and not embodied_request:return self._error('Endpoint not found',404)
             if self.headers.get('Content-Type','').split(';')[0]!='application/json':return self._error('Expected application/json',415)
             try:
                 # the brain prompt carries a base64 image or audio clip, which does
@@ -394,8 +420,8 @@ def create_server(root=None,port=8765,host='127.0.0.1'):
                     if self.path=='/api/embodied/sessions':return self._send(self.server.embodied.create(data),201)
                     parts=self.path.split('/')
                     return self._send(self.server.embodied.command(parts[-2],parts[-1],data))
-                if scene_request:
-                    if self.path=='/api/scene/sessions':return self._send(self.server.scenes.create(data),201)
+                if reduced_request:
+                    if self.path=='/api/reduced-kinematics/sessions':return self._send(self.server.scenes.create(data),201)
                     parts=self.path.split('/')
                     return self._send(self.server.scenes.command(parts[-2],parts[-1],data))
                 if not self.server.jobs.list()['available']:return self._error('Native backend unavailable; build it locally',503)

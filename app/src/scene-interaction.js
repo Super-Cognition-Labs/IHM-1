@@ -10,10 +10,11 @@ import {mountSkinVoltageMonitor} from './skin-voltage-monitor.js';
 import {mountIntakeMassMonitor} from './intake-mass-monitor.js';
 import {mountIntakeMonitor} from './intake-monitor.js';
 import {mountEmbodiedPanels} from './embodied-panels.js';
+import {fidelityConfiguration,fidelityNote,contactAvailable} from './mechanical-fidelity.js';
 
 // One native body; controller and ablation choices are frozen at session creation.
 export function mountSceneInteraction({scene,camera,renderer,controls,group,getObjects,getEnvironmentObjects=()=>[],onSelect,onFrame,onPauseReplay,mount,monitor,onStatus}) {
-  mount.innerHTML=`<div class="scene-modes" role="group" aria-label="Cursor mode"><button data-scene-mode="select" aria-pressed="true">Select</button><button data-scene-mode="gimbal" aria-pressed="false">Gimbal</button><button data-scene-mode="force" aria-pressed="false">Force</button></div><div class="scene-actions"><button id="scene-reset" type="button">Reset</button></div><label class="live-input-label">Controller<select id="scene-controller" aria-label="Body controller"><option value="regional">Regional baseline</option><option value="implicit">Implicit IBM cortex (untrained motor heads)</option><option value="implicit_curriculum16">IBM 16-objective curriculum kernel (untrained motor heads)</option><option value="implicit_ankle_primitive">Learned ankle primitive (8-site kernel)</option><option value="implicit_cortical_ankle">Learned IBM cortical ankle control (128 sites)</option><option value="engineering_stance">Engineered balance</option><option value="implicit_cortical_stance">Experimental learned IBM balance (1024 sites)</option><option value="implicit_curriculum16_stance">Experimental learned IBM balance · 16-objective kernel (1024 sites)</option></select></label><label class="live-input-label" id="scene-ablation-label">Ablation<select id="scene-ablation" aria-label="Controller ablation"><option value="full">Full controller + cord</option><option value="sever">Sever cortical kernel</option><option value="no-cord">Bypass cord</option></select></label><label class="live-input-label" id="scene-ankle-target-label" hidden>Ankle target · rad<input id="scene-ankle-target" aria-label="Learned ankle target in radians" type="number" min="-.25" max=".25" step=".01" value=".12"></label><p class="note" id="scene-controller-note">Controller choices apply when Body starts. Reset to change them. After Body starts, use Force to drag the ball or blanket.</p>`;
+  mount.innerHTML=`<div class="scene-modes" role="group" aria-label="Cursor mode"><button data-scene-mode="select" aria-pressed="true">Select</button><button data-scene-mode="gimbal" aria-pressed="false">Gimbal</button><button data-scene-mode="force" aria-pressed="false">Force</button></div><div class="scene-actions"><button id="scene-reset" type="button">Reset</button></div><label class="live-input-label">Controller<select id="scene-controller" aria-label="Body controller"><option value="regional">Regional baseline</option><option value="implicit">Implicit IBM cortex (untrained motor heads)</option><option value="implicit_curriculum16">IBM 16-objective curriculum kernel (untrained motor heads)</option><option value="implicit_ankle_primitive">Learned ankle primitive (8-site kernel)</option><option value="implicit_cortical_ankle">Learned IBM cortical ankle control (128 sites)</option><option value="engineering_stance">Engineered balance</option><option value="implicit_cortical_stance">Experimental learned IBM balance (1024 sites)</option><option value="implicit_curriculum16_stance">Experimental learned IBM balance · 16-objective kernel (1024 sites)</option></select></label><label class="live-input-label" id="scene-ablation-label">Ablation<select id="scene-ablation" aria-label="Controller ablation"><option value="full">Full controller + cord</option><option value="sever">Sever cortical kernel</option><option value="no-cord">Bypass cord</option></select></label><label class="live-input-label" id="scene-ankle-target-label" hidden>Ankle target · rad<input id="scene-ankle-target" aria-label="Learned ankle target in radians" type="number" min="-.25" max=".25" step=".01" value=".12"></label><label class="live-input-label" id="scene-contact-label">Contact<select id="scene-contact" aria-label="What the body touches the world with"><option value="">COM spheres (inertia ellipsoid)</option><option value="skin">Skin surfaces</option><option value="bone_all">Bone surfaces</option></select></label><label class="live-input-label"><input id="scene-joint-stops" type="checkbox" aria-label="Enforce declared joint ranges"> Joint stops</label><label class="live-input-label"><input id="scene-tissue" type="checkbox" aria-label="Carry admissible tissue force elements"> Tissue forces</label><label class="live-input-label">Anatomy pose<select id="scene-display-pose" aria-label="Which registration poses the anatomy"><option value="">Force frame (does not move the anatomy)</option><option value="opensim">Verified binding · OpenSim pivot</option><option value="anatomical">Verified binding · anatomical pivot</option></select></label><p class="note" id="scene-fidelity-note"></p><p class="note" id="scene-controller-note">Controller choices apply when Body starts. Reset to change them. After Body starts, use Force to drag the ball or blanket.</p>`;
   monitor.innerHTML=`<div class="scene-values"><span>Time <b id="scene-clock">0.00 s</b></span><span>Applied force <b id="scene-force-value">0 N</b></span></div><p id="scene-target" class="note">No force target</p><p id="scene-scope" class="note"></p>`;
   const $=id=>document.getElementById(id);
   const objectMeshes=new Map(),ray=new THREE.Raycaster(),plane=new THREE.Plane(),cursor=new THREE.Vector3();
@@ -63,6 +64,15 @@ export function mountSceneInteraction({scene,camera,renderer,controls,group,getO
   const endpoint=()=>bodyEndpoint('embodied');
   function syncController(){
     $('scene-controller').disabled=!!session||!!creating||resetting;
+    for(const id of ['scene-contact','scene-joint-stops','scene-tissue','scene-display-pose'])
+      $(id).disabled=!!session||!!creating||resetting;
+    // The real segment surfaces are an upright-environment capability: the supine
+    // plant already has a measured skin foundation against the bed, and mixing the
+    // two would be two different contact models on one body.
+    const floor=contactAvailable(environment);
+    for(const value of ['skin','bone_all']) $('scene-contact').querySelector(`option[value="${value}"]`).disabled=!floor;
+    if(!floor&&$('scene-contact').value) $('scene-contact').value='';
+    $('scene-fidelity-note').textContent=fidelityNote(fidelityState());
     const kind=$('scene-controller').value;
     $('scene-ablation-label').hidden=kind==='engineering_stance';
     $('scene-ablation').disabled=$('scene-controller').disabled||['regional','engineering_stance'].includes(kind);
@@ -140,6 +150,10 @@ export function mountSceneInteraction({scene,camera,renderer,controls,group,getO
     initializing=true;syncIntake();status('Body initializing · waiting for the native resource slot.');
     panels.status('Body initializing · no live physiological frame yet.');
   }
+  /* The controls' meaning is a value a test can read: app/src/mechanical-fidelity.js. */
+  const fidelityState=()=>({contact:$('scene-contact').value,jointStops:$('scene-joint-stops').checked,
+    tissue:$('scene-tissue').checked,displayPose:$('scene-display-pose').value});
+
   async function start() {
     if(disposed||resetting)return;
     if(faulted){status('Reset is required before this body can restart.');return;}
@@ -151,7 +165,7 @@ export function mountSceneInteraction({scene,camera,renderer,controls,group,getO
     if(!session){
       creating=(async()=>{
         onPauseReplay();running=true;status('Initializing body…');
-        const frame=await createBodyOwner(request,endpoint(),{environment:bodyEnvironment(environment,'embodied'),environment_selection:environmentSelection,...options,controller:controllerConfiguration($('scene-controller').value,$('scene-ablation').value,$('scene-ankle-target').value===''?NaN:Number($('scene-ankle-target').value))});
+        const frame=await createBodyOwner(request,endpoint(),{environment:bodyEnvironment(environment,'embodied'),environment_selection:environmentSelection,...options,...fidelityConfiguration(fidelityState()),controller:controllerConfiguration($('scene-controller').value,$('scene-ablation').value,$('scene-ankle-target').value===''?NaN:Number($('scene-ankle-target').value))});
         session=frame.id;syncController();
         if(!session)throw Error('Body startup returned no session identity');
         if(disposed){await request(endpoint()+'/'+session+'/close',{});return;}

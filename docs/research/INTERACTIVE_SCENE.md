@@ -1,4 +1,17 @@
-# Interactive scene mechanics
+# Interactive scene mechanics — the reduced-kinematics engine, which is NOT the body
+
+**Renamed 18 September 2026.** This engine is served at
+`/api/reduced-kinematics/sessions`. It was served at `/api/scene/sessions`, which
+a caller could reasonably read as the body; that path is retired and returns
+`410` naming `/api/embodied/sessions`, with no alias. Every response this engine
+returns now carries `is_body_simulation: false`, `use_instead`, and the three
+facts below at the **top level** rather than only inside `scope`:
+`body_rotations` (the body cannot rotate), `body_object_contact: false` (dragged
+objects pass straight through the body) and `body_environment` (no body-surface
+mattress or floor contact solve). The body is
+`ihm/assembly/embodied.py` (OpenSim/Simbody + BioGears) at
+`/api/embodied/sessions`, and the shipped UI has always driven that one
+(`app/src/scene-interaction.js:63`).
 
 The workbench provides Select, Gimbal and Force modes. The latter two apply a
 bounded cursor spring to the selected mechanical owner; the gimbal does not
@@ -28,9 +41,16 @@ reject duplicated advances. Following an uncertain HTTP response the client
 reads current state and pauses, without replaying a potentially committed
 force.
 
-Endpoints are local-workbench-only: GET `/api/scene/catalog`, POST
-`/api/scene/sessions`, GET `/api/scene/sessions/{id}`, and POST
-`/api/scene/sessions/{id}/step` or `/close`. Events are retained under
+Endpoints are local-workbench-only: POST `/api/reduced-kinematics/sessions`, GET
+`/api/reduced-kinematics/sessions/{id}`, and POST
+`/api/reduced-kinematics/sessions/{id}/step`, `/insert` or `/close`. The old
+`/api/scene/sessions` spellings of all four return `410`. GET
+`/api/scene/catalog` keeps its name and is unaffected: it is the
+environment/object/scene tile catalogue, it claims no physics of its own, and the
+live embodied body draws its environment ids from it. It is not disclosed as
+"not the body" for that reason, and it rewrites the retired session path out of
+the derived catalogue's `selection` blocks on the way out
+(`ihm/app/scenes.py`). Events are retained under
 `data/derived/interactive-scenes/{id}/`. A server restart does not resume an
 in-memory session from those records.
 

@@ -1,5 +1,15 @@
 """Continuing, recorded force experiments on the canonical reduced mechanics.
 
+**This is not the body.** The body is OpenSim/Simbody + BioGears behind
+`ihm/assembly/embodied.py`, served at `/api/embodied/sessions`. What runs here is
+a hand-rolled reduced-kinematics experiment: linked rigid translations and affine
+soft regions, with the reference orientations held fixed, no body-object contact
+and no floor or mattress contact solve. It was served at `/api/scene/sessions`,
+a name a caller could reasonably read as the body's; it is now served at
+`/api/reduced-kinematics/sessions`, and every response it emits carries
+`NOT_THE_BODY` at the TOP level, because a caller who has to open `scope` to find
+out has already been misled.
+
 An environment supplies explicit ideal supports, not an unvalidated whole-body
 collision replacement. Free spheres have finite mass, rotational inertia and
 Coulomb ground contact. The native blood/gas solver is not duplicated here.
@@ -156,6 +166,31 @@ ENVIRONMENTS={
 }
 
 
+# Promoted out of `InteractiveScene.scope` and onto the top level of every
+# response. The three facts below are the ones that make this engine unusable as
+# a body: it cannot rotate, dragged objects pass straight through it, and nothing
+# solves its contact with a floor or a mattress.
+NOT_THE_BODY={
+    'is_body_simulation':False,
+    'engine':'reduced-kinematics',
+    'use_instead':'/api/embodied/sessions - the OpenSim/Simbody + BioGears body (ihm/assembly/embodied.py). This engine is not the body and must never be reported as one.',
+    'body_rotations':'Reference orientations constrained; this body cannot rotate',
+    'body_object_contact':False,
+    'body_environment':'No body-surface mattress or floor contact solve',
+}
+
+
+def disclosed(payload):
+    """Every response leaving this engine carries the disclosure, first and last.
+
+    First so it reads before anything else, last so a payload key can never
+    overwrite it. A caller cannot render one of these frames without having been
+    handed the three facts.
+    """
+    if not isinstance(payload,dict):raise TypeError('Reduced-kinematics responses are JSON objects')
+    return {**NOT_THE_BODY,**payload,**NOT_THE_BODY}
+
+
 def vector(value,name):
     if not isinstance(value,(list,tuple,np.ndarray)) or len(value)!=3 or any(isinstance(v,(bool,np.bool_)) for v in value):
         raise ValueError(name+' requires three finite numbers')
@@ -307,10 +342,10 @@ class InteractiveScene:
         self._event_index+=1;self._last_event_sha256=digest
 
     def snapshot(self):
-        return {**self.frame,'objects':[s.snapshot() for s in self.objects.values()],
+        return disclosed({**self.frame,'objects':[s.snapshot() for s in self.objects.values()],
                 'environment_id':self.environment_id,'environment':self.environment,
                 'scene_id':self.scene_id,'scene':self.scene,
-                'scope':self.scope,'sequence':self.sequence,'closed':self.closed}
+                'scope':self.scope,'sequence':self.sequence,'closed':self.closed})
 
     def insert(self,data):
         """Additive object insert. Each call is a new instance with its own id; nothing is replaced."""
@@ -410,27 +445,39 @@ class InteractiveScene:
 
 
 class SceneSessions:
+    """Session manager for the reduced-kinematics engine. NOT the body.
+
+    Kept under its historical class name because `scripts/verify_interactive_scene.py`
+    imports it. Served at `/api/reduced-kinematics/sessions`; `/api/scene/sessions`
+    is retired and returns an error naming `/api/embodied/sessions`.
+
+    `catalog()` is deliberately NOT disclosed: it is the environment/gravity/support
+    table that `/api/scene/catalog` serves for the tile grid, and the live embodied
+    body consumes those same environment ids. Marking that response
+    `is_body_simulation: false` would be a false statement about the catalogue.
+    Every response that comes out of the *engine* is disclosed.
+    """
     def __init__(self,root):self.root=Path(root);self.sessions={};self.lock=threading.Lock()
     def catalog(self):return dict(environments=[dict(id=k,**v) for k,v in ENVIRONMENTS.items()],force_limit_n=100.,step_s=.02)
     def current(self,ident):
         with self.lock:scene=self.sessions.get(ident)
-        if scene is None:raise ValueError('Unknown scene session')
-        with scene.lock:return copy.deepcopy(dict(id=ident,**scene.snapshot()))
+        if scene is None:raise ValueError('Unknown reduced-kinematics session')
+        with scene.lock:return copy.deepcopy(disclosed(dict(id=ident,**scene.snapshot())))
     def create(self,data):
-        if not isinstance(data,dict) or set(data)-{'environment','scene'}:raise ValueError('Unknown scene configuration')
+        if not isinstance(data,dict) or set(data)-{'environment','scene'}:raise ValueError('Unknown reduced-kinematics configuration')
         with self.lock:
-            if len(self.sessions)>=4:raise ValueError('Close a scene before opening another')
+            if len(self.sessions)>=4:raise ValueError('Close a reduced-kinematics session before opening another')
             ident=uuid.uuid4().hex
             scene=InteractiveScene(self.root,self.root/'data/derived/interactive-scenes'/ident,data.get('environment','studio'),data.get('scene'))
             self.sessions[ident]=scene
-        return dict(id=ident,**scene.snapshot())
+        return disclosed(dict(id=ident,**scene.snapshot()))
     def command(self,ident,action,data):
         if action=='close' and (not isinstance(data,dict) or data):raise ValueError('Close accepts an empty object')
         with self.lock:scene=self.sessions.get(ident)
-        if scene is None and action=='close':return dict(id=ident,closed=True,already_absent=True)
-        if scene is None:raise ValueError('Unknown scene session')
-        if action=='step':return dict(id=ident,**scene.step(data))
-        if action=='insert':return dict(id=ident,**scene.insert(data))
+        if scene is None and action=='close':return disclosed(dict(id=ident,closed=True,already_absent=True))
+        if scene is None:raise ValueError('Unknown reduced-kinematics session')
+        if action=='step':return disclosed(dict(id=ident,**scene.step(data)))
+        if action=='insert':return disclosed(dict(id=ident,**scene.insert(data)))
         if action=='close':
             if not isinstance(data,dict) or data:raise ValueError('Close accepts an empty object')
             with scene.lock:
@@ -438,8 +485,8 @@ class SceneSessions:
                     scene._record({'kind':'close','sequence':scene.sequence,'time_s':scene.body.time})
                     scene.closed=True
             with self.lock:self.sessions.pop(ident,None)
-            return dict(id=ident,closed=True)
-        raise ValueError('Unknown scene action')
+            return disclosed(dict(id=ident,closed=True))
+        raise ValueError('Unknown reduced-kinematics action')
 
 
 _IMPORT_SOURCES=(_loaded_source(_mechanics_module),_loaded_source(_rigid_contact_module),_loaded_source(sys.modules[__name__]))
