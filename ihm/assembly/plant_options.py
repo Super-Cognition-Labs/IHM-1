@@ -154,6 +154,38 @@ TISSUE_BUNDLES = {
             'label': 'Ligaments and capsules, unfiltered (measured WORSE than none)'},
 }
 
+# A DEFORMABLE soft-tissue layer over each segment (ihm/assembly/soft_tissue_layer.py,
+# docs/SOFT_BODY.md): 3-D compressible neo-Hookean tetrahedra between the skin and this
+# body's own measured soft-tissue depth, carried by the segment, deforming under
+# contact and returning the force and moment it transmits.  Unlike every other entry in
+# this file it is NOT a NativeMechanicalStream keyword: the native plant does not
+# integrate it.  Resolving it puts the layer's identity and disclosure on the body, and
+# `soft_tissue_layer.build_selected_layers` builds it for a caller that will pose it.
+#
+# The two identities differ only in how the in-vivo APPARENT layer modulus is read as a
+# 3-D material, which the measurement does not fix (soft_tissue_layer.LAYER_MODULUS_MAPPINGS).
+SOFT_TISSUE_LAYERS = {
+    'layer_map_confined': {
+        'bundle': 'data/derived/segment-contact-meshes/skin-layer-map-v1',
+        'mapping': 'confined', 'spacing_m': 0.005,
+        'label': 'Deformable neo-Hookean layer at measured depth; modulus read as confined (softest)'},
+    'layer_map_unconfined': {
+        'bundle': 'data/derived/segment-contact-meshes/skin-layer-map-v1',
+        'mapping': 'unconfined', 'spacing_m': 0.005,
+        'label': 'Deformable neo-Hookean layer at measured depth; modulus read as Young\'s (stiffest)'},
+}
+# Measured, and re-derived by scripts/verify_soft_tissue.py, which fails if it moves: at
+# 5 mm these segments' skin patches are thinner than their own measured depth
+# everywhere, so no cell is core and nothing carries the layer.
+SOFT_TISSUE_UNANCHORED = ('patella_l', 'patella_r')
+# Which world axis the support pushes along, per environment, in the plant's own
+# conventions: the supine foundation measures penetration as `plane_x - x`
+# (supine_contact.foundation); the upright ground is OpenSim's y-up floor.
+SOFT_TISSUE_SUPPORT = {
+    'supine': {'axis': 0, 'sign': 1.0, 'basis': 'supine_contact.foundation: penetration = plane_x - x'},
+    'upright': {'axis': 1, 'sign': 1.0, 'basis': 'OpenSim ground frame, y up'},
+}
+
 DISCLOSURE = {
     'joint_stops':
         'Joint stops at the coordinate ranges the source model already declares. '
@@ -185,6 +217,17 @@ DISCLOSURE = {
         'ligament property. These forces are internal: they can change how the plant '
         'moves and cannot change its momentum balance. They do NOT replace the joint '
         'stops.',
+    'soft_tissue_layer':
+        'A DEFORMABLE soft-tissue layer per segment: compressible neo-Hookean tetrahedra from '
+        'the skin inward to this body\'s measured soft-tissue depth, the deeper core carried '
+        'rigidly by the segment. It deforms under contact against a frictionless half-space '
+        'and returns the force and moment it transmits to its segment. It is NOT in the native '
+        'plant: the engine still integrates the rigid scaffold and its own contact, and nothing '
+        'here feeds back into that integration unless a caller applies the returned load. The '
+        'core is depth-defined, not bone (skin and bone are not co-registered in this bundle); '
+        'muscle is inside the rigid core; segments are independent, with a seam at every '
+        'boundary; the surface is voxelised at the cell size. Per-solve cost is seconds, not '
+        'milliseconds: see docs/SOFT_BODY.md before calling it real-time.',
 }
 
 
@@ -254,9 +297,11 @@ def resolve_fidelity(root, value=None, *, environment='supine'):
     """
     if value is None:
         return {}, {'joint_stops': None, 'segment_contact': None, 'tissue_ligaments': None,
+                    'soft_tissue': None,
                     'basis': 'Historical plant: no coordinate limits, inertia-ellipsoid COM '
                              'sphere contact, no tissue force elements.'}
-    if not isinstance(value, dict) or set(value) - {'joint_stops', 'segment_contact', 'tissue_ligaments'}:
+    if not isinstance(value, dict) or set(value) - {'joint_stops', 'segment_contact', 'tissue_ligaments',
+                                                    'soft_tissue'}:
         raise ValueError('Unknown mechanical fidelity configuration')
 
     kwargs, selection = {}, {}
@@ -339,6 +384,37 @@ def resolve_fidelity(root, value=None, *, environment='supine'):
                 'docs/TISSUE_MECHANICS.md measured this unfiltered set as WORSE than no '
                 'tissue on every drop tested. It is offered to reproduce that result.',
             'disclosure': DISCLOSURE['tissue_ligaments']}
+
+    soft = value.get('soft_tissue')
+    if soft is None:
+        selection['soft_tissue'] = None
+    else:
+        if soft not in SOFT_TISSUE_LAYERS:
+            raise ValueError('Unknown soft tissue layer')
+        if environment not in SOFT_TISSUE_SUPPORT:
+            raise ValueError('A soft tissue layer needs a support to press against; '
+                             'the ' + str(environment) + ' environment has none')
+        from .soft_tissue_layer import BUNDLE_SCHEMA, LAYER_MODULUS_MAPPINGS
+        spec = SOFT_TISSUE_LAYERS[soft]
+        manifest = _verified_bundle(root, spec['bundle'], BUNDLE_SCHEMA)
+        if manifest.get('layer') != 'skin' or 'layer_map' not in manifest:
+            raise ValueError('Soft tissue bundle carries no measured per-segment depth')
+        bodies = [r['body'] for r in manifest['records']]
+        # NOTHING is added to kwargs: NativeMechanicalStream has no such keyword, and the
+        # plant it builds is exactly the plant it would have built without this key.
+        selection['soft_tissue'] = {
+            'id': soft, 'label': spec['label'], 'bundle': spec['bundle'],
+            'mapping': spec['mapping'], 'mapping_basis': LAYER_MODULUS_MAPPINGS[spec['mapping']],
+            'spacing_m': spec['spacing_m'],
+            'segments': [b for b in bodies if b not in SOFT_TISSUE_UNANCHORED],
+            'unanchored_segments': list(SOFT_TISSUE_UNANCHORED),
+            'unanchored_basis': 'skin patch thinner than its own measured depth everywhere at '
+                                'this spacing: no rigid core, nothing to carry the layer',
+            'refused_by_bundle': manifest.get('refused') or [],
+            'support': SOFT_TISSUE_SUPPORT[environment],
+            'in_native_plant': False,
+            'builder': 'ihm.assembly.soft_tissue_layer.build_selected_layers',
+            'disclosure': DISCLOSURE['soft_tissue_layer']}
 
     selection['basis'] = ('Server-owned bundles resolved by identity; a client never supplies '
                           'a path, a mesh or a material.')
