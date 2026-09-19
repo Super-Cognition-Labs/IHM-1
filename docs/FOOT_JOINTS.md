@@ -690,3 +690,51 @@ Q1 named.
 * **G-S and F2 stay FAILED.** Neither is rescored, here or anywhere.
 * **This is still the scaffold.** Nothing here is a statement about a human foot,
   ankle or trunk, and a pinned plane is an instrument, not a better bed.
+
+---
+
+## Q4 — pre-registration: is it the proxy RADIUS or the repartitioned INERTIA?
+
+Written and committed **before any Q4 arm runs**. Q3 excluded the support plane and
+left two candidates standing, both of which travel with the torso repartition:
+
+* the **proxy sphere radius**, 0.2577 m on the base plant and 0.3090 m on the
+  repartitioned one, unchanged by pinning the floor — a pure contact artefact;
+* the **repartitioned inertia itself**, which changes the trunk's dynamics whatever
+  the contact geometry.
+
+The engine option added for this (`proxy_radius_m={'torso': <m>}`, commit to follow)
+pins a named body's proxy radius instead of inscribing it in that body's inertia
+ellipsoid. It is refused in the upright environment and refuses a body the model does
+not have.
+
+**Arms.** `supine_tonic`, TONIC 0.02, 200 steps of 10 ms, bar **0.2202 rad** — F2's
+protocol line for line, as Q1 and Q3 used.
+
+| arm | plant | torso proxy radius |
+|---|---|---|
+| `base` | base | derived (0.2577 m) |
+| `tweld` | repartitioned, all new joints welded | derived (0.3090 m) |
+| **`tweld@R0`** | repartitioned | **pinned 0.2577 m** — the base plant's ball |
+| **`base@RT`** | base | **pinned 0.3090 m** — the repartitioned ball |
+
+**What each outcome means**, fixed now:
+
+| `tweld@R0` | `base@RT` | reading |
+|---|---|---|
+| recovers | collapses | the **radius** is the mechanism: a contact artefact, and the repartitioned inertia is exonerated |
+| still collapses | stays fine | the **inertia** is the mechanism: not a contact artefact at all, and the sphere is exonerated |
+| recovers | stays fine | the two are **not separable by this arm**; each is necessary and neither sufficient |
+| still collapses | collapses | **both** are independently sufficient — report both, claim neither alone |
+
+A fifth outcome is possible and will be reported as such: **neither** explains it, in
+which case the factor is the repartition through some third route and Q1's factor
+stands with no mechanism attached. That is the outcome this pre-registration exists to
+keep available, because the mechanism has already been guessed wrong twice here.
+
+**Instrument checks that must pass before any arm is read.** Pinning a body's radius at
+its OWN derived value must reproduce the unpinned run bit-identically; `base` and
+`tweld` must reprint Q1/Q3's 0.1229/0.1207 and 1.4014/1.2876; the pinned radius must be
+read back out of each run's own `execution.json`, never inferred from the flag passed;
+and the support plane must move exactly as the pinned radius dictates, since the plane
+still hangs under the lowest ball.

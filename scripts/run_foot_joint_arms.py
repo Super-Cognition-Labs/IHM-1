@@ -112,7 +112,7 @@ def model_of(registration):
 
 
 def open_stream(registration, environment, stops=None, pose=None,
-                support_plane_source_x_m=None):
+                support_plane_source_x_m=None, proxy_radius_m=None):
     """`support_plane_source_x_m` PINS the supine support plane instead of hanging
     it under the lowest inertia-inscribed proxy sphere.  None is the engine's own
     default and the only value any Q1/Q2 arm ever passes."""
@@ -122,7 +122,8 @@ def open_stream(registration, environment, stops=None, pose=None,
                                     target_mass_kg=TARGET_MASS_KG,
                                     augmented_registration=registration,
                                     coordinate_limits=stops, initial_pose=pose,
-                                    support_plane_source_x_m=support_plane_source_x_m)
+                                    support_plane_source_x_m=support_plane_source_x_m,
+                                    proxy_radius_m=proxy_radius_m)
     return stream, out
 
 
@@ -182,13 +183,14 @@ def row(state, t):
 
 
 # ------------------------------------------------------------------ protocols
-def supine_tonic(registration, stops=None, support_plane_source_x_m=None):
+def supine_tonic(registration, stops=None, support_plane_source_x_m=None, proxy_radius_m=None):
     """F2's `tonic_excursions`, line for line, plus a trace.  `support_plane_source_x_m`
     pins the plane; None (every Q1/Q2 arm) leaves the engine's own rule alone."""
     model = model_of(registration)
     declared = {k: v for k, v in coordinates(model).items() if v is not None}
     stream, out = open_stream(registration, 'supine', stops=stops,
-                              support_plane_source_x_m=support_plane_source_x_m)
+                              support_plane_source_x_m=support_plane_source_x_m,
+                              proxy_radius_m=proxy_radius_m)
     # read back out of the run's OWN record, never inferred from the flag passed
     record = json.loads((ROOT / out / 'execution.json').read_text())
     try:
