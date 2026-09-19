@@ -129,6 +129,20 @@ cost profile of the old Newton step)
   CV9/CV10  CV1/CV2 on the heel fixture, fitted-local, 2 mm.
   Same spacings, same 2.5 mm memory rule.
 
+  THIRD AMENDMENT, same day.  A smoke run of the fitted layers (to find crashes) showed that at 2 mm
+  on M3's fixture BOTH fitted meshes carry exactly 0 N: their lowest node is 2.1 mm above the seam
+  wedge's tip, so the plane never reaches them.  No other fitted force has been computed.  So on
+  M3's fixture, S3/S6 at 2 mm, S4, S5 and RT1 would be evaluated on UNLOADED solves, and RT1 would
+  pass because an unloaded solve costs nothing -- a pass for a reason unrelated to the test.  Rule,
+  applied to every gate from here on: a gate whose solves carried no load is printed VOID and counts
+  as FAILED.  The gates above stay as written.  Added, on the HEEL FIXTURE:
+  S3h/S6h   S3/S6 on the fitted-local heel at 1/2/4 mm (the depth map puts 6-13.5 mm of tissue
+            under the plantar heel, so 4 mm stays inside it) and on the fitted-median heel at
+            2/6/12 mm.
+  S4h/S5h   S4/S5 on the fitted-local heel at 2 mm (warm start from 1.5 mm).
+  RT1h      RECORDED: RT1 on the fitted-local heel, ramp 0 -> 4 mm at 0.5 mm per step.
+  RT1mh     RECORDED: RT1 on the fitted-median heel, ramp 0 -> 12 mm at 0.5 mm per step.
+
 RECORDED
   R1  The Saint-Venant crop must put <= 1% of the load on the truncation at radius 3h, heel,
       6 mm.  This bar was written AFTER development runs showed 17-100% on this segment, so it
@@ -157,7 +171,7 @@ from ihm.assembly.mechanics_backend import DeformableRegion, tetra_box  # noqa: 
 from ihm.assembly.supine_contact import foundation                      # noqa: E402
 
 REPORT = ROOT / 'data/derived/soft-tissue-layer-v1/report.json'
-RECORDED_FAILURES = {'R1', 'RT1', 'RT1m', 'D1'}
+RECORDED_FAILURES = {'R1', 'RT1', 'RT1m', 'D1', 'RT1h', 'RT1mh'}
 HEEL = 'calcn_l'
 results, failures = {}, []
 
@@ -665,8 +679,10 @@ def cv_convergence(rule, depth_m, keys, spacings=(0.006, 0.005, 0.004, 0.003, 0.
     one_sign = complete and len(diff) >= 3 and (np.all(diff > 0) or np.all(diff < 0))
     shrinking = complete and len(diff) >= 3 and bool(np.all(np.abs(diff[1:]) < np.abs(diff[:-1])))
     detail = 'forces ' + ' / '.join(f'{x:.6f}' for x in f) + ' N; differences ' + ' / '.join(f'{x:+.6f}' for x in diff)
-    gate(keys[0], f'{rule}: successive force differences keep one sign', one_sign, detail)
-    gate(keys[1], f'{rule}: successive force differences shrink', shrinking,
+    void = ' -- VOID: a solve carried no load' if not np.all(np.abs(f) > 0) else ''
+    one_sign, shrinking = one_sign and not void, shrinking and not void
+    gate(keys[0], f'{rule}: successive force differences keep one sign' + void, one_sign, detail)
+    gate(keys[1], f'{rule}: successive force differences shrink' + void, shrinking,
          'magnitudes ' + ' / '.join(f'{abs(x):.6f}' for x in diff))
     summary = {'rows': rows}
     if len(f) >= 3 and complete:
@@ -705,8 +721,8 @@ def heel_pose(vertices, deepest_m=0.006):
     return rotation, low, theta
 
 
-def s_fast(heel_local, heel_median, low):
-    print('\nS1-S6  the fast path', flush=True)
+def s_fast(heel_local, heel_median, low, rotation=np.eye(3), suffix='', local_depths=(0.002, 0.006, 0.012)):
+    print(f'\nS1-S6{suffix}  the fast path' + (' (heel fixture)' if suffix else ''), flush=True)
     from ihm.assembly.mechanics_backend import DeformableRegion
     layer = heel_local
     rng = np.random.default_rng(20260918)
@@ -729,20 +745,25 @@ def s_fast(heel_local, heel_median, low):
     e1, g1 = posed.energy_gradient(ypos)
     e2, g2 = region.energy_gradient(ypos)
     rel = max(float(np.abs(g1 - g2).max() / np.abs(g2).max()), abs(e1 - e2) / abs(e2))
-    gate('S1', 'fast gradient and energy = DeformableRegion.energy_gradient', rel <= 1e-12, f'max rel {rel:.2e}')
+    if not suffix:
+        gate('S1', 'fast gradient and energy = DeformableRegion.energy_gradient', rel <= 1e-12, f'max rel {rel:.2e}')
     posed.prepare(ypos)
     vec = rng.normal(size=ypos.shape)
     hv = posed.hessian_vector(vec)
     ref = (stl.assemble(region, stl.element_hessians(region, ypos, project=False)) @ vec.ravel()).reshape(-1, 3)
     rel = float(np.abs(hv - ref).max() / np.abs(ref).max())
-    gate('S2', 'Hessian-vector product = assembled element_hessians(project=False) @ v', rel <= 1e-10, f'max rel {rel:.2e}')
+    if not suffix:
+        gate('S2', 'Hessian-vector product = assembled element_hessians(project=False) @ v', rel <= 1e-10, f'max rel {rel:.2e}')
+
+    loaded = []
 
     def agree(layer_, depths, key3, key6):
         rows, ok3, ok6 = [], True, True
         for d in depths:
             try:
-                n = layer_.solve(plane_axis=1, plane_value_m=low + d, plane_sign=1)
-                f = layer_.solve(plane_axis=1, plane_value_m=low + d, plane_sign=1, method='fast')
+                n = layer_.solve(rotation=rotation, plane_axis=1, plane_value_m=low + d, plane_sign=1)
+                f = layer_.solve(rotation=rotation, plane_axis=1, plane_value_m=low + d, plane_sign=1, method='fast')
+                loaded.append(abs(n['segment_force_n'][1]) > 0)
             except (ValueError, RuntimeError) as error:
                 print(f'      {d*1e3:4.1f} mm: NOT COMPUTABLE: {str(error)[:150]}', flush=True)
                 ok3 = ok6 = False
@@ -758,39 +779,44 @@ def s_fast(heel_local, heel_median, low):
             print(f'      {d*1e3:4.1f} mm: Newton {n["segment_force_n"][1]:.6f} N {n["wall_seconds"]:6.2f} s ({n["iterations"]} it) | '
                   f'fast {f["segment_force_n"][1]:.6f} N {f["wall_seconds"]:6.3f} s ({f["iterations"]} it; {f["solver_message"][-40:]}) | '
                   f'|dF| {dfn:.2e} vs bound {bound:.2e}', flush=True)
-        gate(key3, 'fast force = Newton force within 2 x DOF x tolerance', ok3)
-        gate(key6, 'fast is faster than Newton at every depth', ok6)
+        void = not all(loaded[-len(depths):])
+        gate(key3, 'fast force = Newton force within 2 x DOF x tolerance' + (' -- VOID: a solve carried no load' if void else ''),
+             ok3 and not void)
+        gate(key6, 'fast is faster than Newton at every depth' + (' -- VOID: a solve carried no load' if void else ''),
+             ok6 and not void)
         return rows
 
     print('      fitted-local heel', flush=True)
-    local_rows = agree(heel_local, (0.002, 0.006, 0.012), 'S3', 'S6')
+    local_rows = agree(heel_local, local_depths, 'S3' + suffix, 'S6' + suffix)
     print('      fitted-median heel', flush=True)
-    median_rows = agree(heel_median, (0.002, 0.006, 0.012), 'S3m', 'S6m')
+    median_rows = agree(heel_median, (0.002, 0.006, 0.012), 'S3m' if not suffix else 'S3h-median', 'S6m' if not suffix else 'S6h-median')
 
-    a = heel_local.solve(plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast', return_positions=True)
-    b = heel_local.solve(plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast', return_positions=True)
+    kw = dict(rotation=rotation, plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast')
+    a = heel_local.solve(return_positions=True, **kw)
+    b = heel_local.solve(return_positions=True, **kw)
     heel_local.clear_cache()
-    c = heel_local.solve(plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast', return_positions=True)
-    gate('S4', 'fast solve twice, and after clear_cache(): bitwise identical',
+    c = heel_local.solve(return_positions=True, **kw)
+    void = ' -- VOID: the solve carried no load' if not abs(a['segment_force_n'][1]) > 0 else ''
+    gate('S4' + suffix, 'fast solve twice, and after clear_cache(): bitwise identical' + void, not void and
          all(np.array_equal(a['positions_m'], o['positions_m']) and a['segment_force_n'] == o['segment_force_n'] for o in (b, c)))
-    prev = heel_local.solve(plane_axis=1, plane_value_m=low + 0.0015, plane_sign=1, method='fast')
-    warm = heel_local.solve(plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast',
-                            warm_start_local_m=prev['state']['positions_local_m'])
+    prev = heel_local.solve(**dict(kw, plane_value_m=low + 0.0015))
+    warm = heel_local.solve(warm_start_local_m=prev['state']['positions_local_m'], **kw)
     dfn = float(np.linalg.norm(np.subtract(warm['segment_force_n'], a['segment_force_n'])))
     bound = 2 * a['solved_dof'] * a['force_tolerance_n']
-    gate('S5', 'a warm start reaches the cold start\'s force within the S3 bound', dfn <= bound and warm['converged'],
+    gate('S5' + suffix, 'a warm start reaches the cold start\'s force within the S3 bound' + void,
+         not void and dfn <= bound and warm['converged'],
          f'|dF| {dfn:.2e} N vs {bound:.2e}; warm {warm["wall_seconds"]*1e3:.1f} ms ({warm["iterations"]} it) vs cold '
          f'{a["wall_seconds"]*1e3:.1f} ms')
     return {'local': local_rows, 'median': median_rows}
 
 
-def rt_ramp(layer, low, top_m, key, label, step_m=0.0005):
+def rt_ramp(layer, low, top_m, key, label, step_m=0.0005, rotation=np.eye(3)):
     print(f'\n{key}  plant-loop ramp, {label}: 0 -> {top_m*1e3:.0f} mm at {step_m*1e3:.1f} mm per 10 ms step, warm-started', flush=True)
     state, walls, forces, iters = None, [], [], []
     began_mb = peak_mb()
     for k in range(1, int(round(top_m / step_m)) + 1):
         t0 = time.perf_counter()
-        r = layer.solve(plane_axis=1, plane_value_m=low + k * step_m, plane_sign=1, method='fast',
+        r = layer.solve(rotation=rotation, plane_axis=1, plane_value_m=low + k * step_m, plane_sign=1, method='fast',
                         warm_start_local_m=None if state is None else state['positions_local_m'])
         walls.append(time.perf_counter() - t0)
         forces.append(r['segment_force_n'][1])
@@ -801,7 +827,8 @@ def rt_ramp(layer, low, top_m, key, label, step_m=0.0005):
     walls = np.array(walls)
     print('      per-step wall ms: ' + ' '.join(f'{w*1e3:.0f}' for w in walls), flush=True)
     print('      force N: ' + ' '.join(f'{x:.3f}' for x in forces), flush=True)
-    gate(key, 'median per-step wall < 10 ms (the plant step)', float(np.median(walls)) < 0.010,
+    void = ' -- VOID: a step carried no load' if not all(abs(x) > 0 for x in forces) else ''
+    gate(key, 'median per-step wall < 10 ms (the plant step)' + void, not void and float(np.median(walls)) < 0.010,
          f'median {np.median(walls)*1e3:.1f} ms, max {walls.max()*1e3:.1f} ms, first (cold) {walls[0]*1e3:.1f} ms; '
          f'Newton iterations {iters}; peak {max(began_mb, peak_mb()):.0f} MB')
     return {'wall_s': walls.tolist(), 'force_n': forces, 'iterations': iters}
@@ -846,6 +873,10 @@ def main() -> int:
     report['S'] = s_fast(heel_local, heel_median, low)
     report['RT1'] = rt_ramp(heel_local, low, 0.002, 'RT1', 'fitted-local heel')
     report['RT1m'] = rt_ramp(heel_median, low, 0.012, 'RT1m', 'fitted-median heel')
+    rot_h, low_h, _ = heel_pose(mesh[0])
+    report['S_heel'] = s_fast(heel_local, heel_median, low_h, rotation=rot_h, suffix='h', local_depths=(0.001, 0.002, 0.004))
+    report['RT1h'] = rt_ramp(heel_local, low_h, 0.004, 'RT1h', 'fitted-local heel, heel fixture', rotation=rot_h)
+    report['RT1mh'] = rt_ramp(heel_median, low_h, 0.012, 'RT1mh', 'fitted-median heel, heel fixture', rotation=rot_h)
     del heel_median, heel_local
     report['CV_median'] = cv_convergence('segment_median', 0.006, ('CV1', 'CV2'))
     report['CV_local'] = cv_convergence('local', 0.006, ('CV3', 'CV4'))
