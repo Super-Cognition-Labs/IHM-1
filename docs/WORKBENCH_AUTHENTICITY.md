@@ -486,6 +486,60 @@ Further limits on the skin path that is there:
 deformable skin with self-contact, and an afferent allocation that is not capped
 at 128 points.
 
+### 2.1 A deforming soft-tissue layer exists — and is not yet in the plant loop
+
+`docs/SOFT_BODY.md`; built in `a1b2812`, made convergent, depth-correct and fast in
+`17ecc4e`. Per segment, tissue from the skin down to the body's own measured depth
+is meshed and solved with the same constitutive law as the shipped supine
+foundation; its reactions on the rigid core are the force and moment on the bone.
+Selectable as `soft_tissue: layer_fitted_local_confined`. **It is the first
+implementation of any part of ACTUATION_STAGES' "participant" mode, and it is not
+yet coupled: nothing it computes flows back into the integrator.**
+
+**The first heel result is withdrawn.** Every earlier "heel" figure — the
+1.113 / 0.457 / 0.657 N non-converging sequence, and the "4.4–17× softer than the
+column it replaces" — measured `calcn_l`'s lowest skin vertex, which is on the rim of
+the cut between the heel and toe segments, where tissue is at most 1.7 mm thick. That
+was a seam wedge, not the heel pad. A real heel pose is now derived from the mesh (the
+smallest rotation keeping the forefoot off the floor, 17.26°), not typed.
+
+**Depth.** The "rigid core 30 mm above the sole" was measured between two points
+55 mm apart. Under the heel the core sits at the declared depth. What was wrong is
+the declared depth itself: one median per segment (18.61 mm), while the measured
+depth map reads 6.4–14.1 mm under the heel and 3.9–8.9 mm under the forefoot, so the
+median left the forefoot with no core at all. A local rule now reads the map point
+by point — 6.9 mm heel, 5.9 mm forefoot, the latter inside the published fat pad
+(5.8–7.1 mm). `radius_l` fails that rule on one vertex two skin partitions disagree
+about and is refused rather than passed.
+
+**Convergence — monotone, first order, not converged.** The mesh is now cut to the
+skin and the core surface, with nodes exactly on both. Heel force by cell size is
+monotone under both depth rules, but successive differences do not shrink from the
+first step (CV8, CV10 **FAILED**, recorded). Observed order ≈ 1; Richardson
+extrapolation puts the finest forces ~8% and ~15% high. **No contact force from this
+layer is converged to better than about 10%.**
+
+**Speed, and how far the plant loop is.** A cold heel solve went from 2.0–3.3 s to
+0.17–0.44 s at 190 MB (fill-reducing ordering, numeric factorisation reused across
+iterations and steps, an exact Hessian, a line search that no longer stalls). A
+loaded, warm-started heel step costs **136–159 ms median against the plant's 10 ms**
+— 9–16× short of real time (RT1h **FAILED**). Those absolute times were measured on a
+heavily loaded machine; the ratios are fair, the absolutes are an upper bound. A
+small-strain condensation reaches 1–3 ms but reads 2–27% low, so it was measured and
+not offered.
+
+**The amendments were audited before this was accepted.** The pre-registration
+(`e140edf`, 18:40) was amended three times; every gated run — the first after it is
+run 5 at 19:33 — postdates all three, and the census was pre-registered (19:39)
+before its first run (20:05). A depth-map *build* at 18:59 preceded the 19:17
+amendment; it is geometry, and the amendment concerns geometry.
+
+*Still to close:* coupling it into the integration loop (a caller in `articulated.py`
+and a force path the engine accepts), real-time cost, a converged mesh, bone as the
+rigid core (skin and bone are not co-registered in the bundle), muscle as a
+volumetric activation-coupled solid, and sliding between soft surfaces for fascia and
+bursae.
+
 ---
 
 ## Tier 3 — the control path
