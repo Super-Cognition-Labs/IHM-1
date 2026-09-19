@@ -1,0 +1,368 @@
+{
+  "schema": "ihm.thoracic-capacity.v1",
+  "model": "data/models/thoracic_drive_v1/model.osim",
+  "pose": "each model's own rest pose; thoracic_* = 0",
+  "quantity": "Sum Fmax x |moment arm| per direction, a CEILING at one pose: full activation at optimal fibre length, no force-length, no force-velocity, no tendon state, no activation dynamics, and not a tension-feasible torque cone",
+  "arm_floor_m": 0.001,
+  "control_base_plant_worst_thoracic_arm_m": 0,
+  "control_basis": "every muscle probed must read ZERO about every thoracic coordinate on the base plant, which is what docs/ARTICULATED_SPINE.md measured; a nonzero reading there would void this whole measurement",
+  "attachment_driven": {
+    "muscles": [
+      "seth_PectoralisMajorThorax_I_l",
+      "seth_PectoralisMajorThorax_I_r",
+      "seth_PectoralisMajorThorax_M_l",
+      "seth_PectoralisMajorThorax_M_r",
+      "seth_PectoralisMinor_l",
+      "seth_PectoralisMinor_r",
+      "seth_SerratusAnterior_I_l",
+      "seth_SerratusAnterior_I_r",
+      "seth_SerratusAnterior_M_l",
+      "seth_SerratusAnterior_M_r"
+    ],
+    "basis": "torso attachment moved onto the thorax under the rule in scripts/measure_thoracic_reassignability.py",
+    "bounds": {
+      "thoracic_extension": {
+        "muscles_crossing": 10,
+        "plus_bound_nm": 903.6723371246596,
+        "minus_bound_nm": 0,
+        "crossing": [
+          "seth_PectoralisMajorThorax_I_l",
+          "seth_PectoralisMajorThorax_I_r",
+          "seth_PectoralisMajorThorax_M_l",
+          "seth_PectoralisMajorThorax_M_r",
+          "seth_PectoralisMinor_l",
+          "seth_PectoralisMinor_r",
+          "seth_SerratusAnterior_I_l",
+          "seth_SerratusAnterior_I_r",
+          "seth_SerratusAnterior_M_l",
+          "seth_SerratusAnterior_M_r"
+        ]
+      },
+      "thoracic_bending": {
+        "muscles_crossing": 10,
+        "plus_bound_nm": 370.2162307658755,
+        "minus_bound_nm": 368.80546088941134,
+        "crossing": [
+          "seth_PectoralisMajorThorax_I_l",
+          "seth_PectoralisMajorThorax_I_r",
+          "seth_PectoralisMajorThorax_M_l",
+          "seth_PectoralisMajorThorax_M_r",
+          "seth_PectoralisMinor_l",
+          "seth_PectoralisMinor_r",
+          "seth_SerratusAnterior_I_l",
+          "seth_SerratusAnterior_I_r",
+          "seth_SerratusAnterior_M_l",
+          "seth_SerratusAnterior_M_r"
+        ]
+      },
+      "thoracic_rotation": {
+        "muscles_crossing": 10,
+        "plus_bound_nm": 347.2461792853377,
+        "minus_bound_nm": 343.05963754695006,
+        "crossing": [
+          "seth_PectoralisMajorThorax_I_l",
+          "seth_PectoralisMajorThorax_I_r",
+          "seth_PectoralisMajorThorax_M_l",
+          "seth_PectoralisMajorThorax_M_r",
+          "seth_PectoralisMinor_l",
+          "seth_PectoralisMinor_r",
+          "seth_SerratusAnterior_I_l",
+          "seth_SerratusAnterior_I_r",
+          "seth_SerratusAnterior_M_l",
+          "seth_SerratusAnterior_M_r"
+        ]
+      }
+    }
+  },
+  "wrap_only": {
+    "muscles": [
+      "seth_LatissimusDorsi_I_l",
+      "seth_LatissimusDorsi_I_r",
+      "seth_LatissimusDorsi_M_l",
+      "seth_LatissimusDorsi_M_r",
+      "seth_LatissimusDorsi_S_l",
+      "seth_LatissimusDorsi_S_r",
+      "seth_LevatorScapulae_l",
+      "seth_LevatorScapulae_r",
+      "seth_PectoralisMajorClavicle_S_l",
+      "seth_PectoralisMajorClavicle_S_r",
+      "seth_Rhomboideus_I_l",
+      "seth_Rhomboideus_I_r",
+      "seth_Rhomboideus_S_l",
+      "seth_Rhomboideus_S_r",
+      "seth_SerratusAnterior_S_l",
+      "seth_SerratusAnterior_S_r",
+      "seth_Supraspinatus_A_l",
+      "seth_Supraspinatus_A_r",
+      "seth_TeresMajor_l",
+      "seth_TeresMajor_r",
+      "seth_TrapeziusClavicle_S_l",
+      "seth_TrapeziusClavicle_S_r",
+      "seth_TrapeziusScapula_I_l",
+      "seth_TrapeziusScapula_I_r",
+      "seth_TrapeziusScapula_M_l",
+      "seth_TrapeziusScapula_M_r",
+      "seth_TrapeziusScapula_S_l",
+      "seth_TrapeziusScapula_S_r"
+    ],
+    "basis": "both attachments unchanged; the thoracic dependence comes from the rib-cage wrap ellipsoid alone, which moved with the rib cage. A WEAKER mechanism than an attachment and deliberately not added to the count above.",
+    "bounds": {
+      "thoracic_extension": {
+        "muscles_crossing": 0,
+        "plus_bound_nm": 0,
+        "minus_bound_nm": 0,
+        "crossing": []
+      },
+      "thoracic_bending": {
+        "muscles_crossing": 2,
+        "plus_bound_nm": 0.3282919903783987,
+        "minus_bound_nm": 0.3233155643613228,
+        "crossing": [
+          "seth_LatissimusDorsi_I_l",
+          "seth_LatissimusDorsi_I_r"
+        ]
+      },
+      "thoracic_rotation": {
+        "muscles_crossing": 2,
+        "plus_bound_nm": 0.6384858185373048,
+        "minus_bound_nm": 0.6497201328506405,
+        "crossing": [
+          "seth_LatissimusDorsi_I_l",
+          "seth_LatissimusDorsi_I_r"
+        ]
+      }
+    }
+  },
+  "moment_arms_m": {
+    "seth_LatissimusDorsi_I_l": {
+      "thoracic_extension": -0.0003240418548825191,
+      "thoracic_bending": 0.0012149962634285666,
+      "thoracic_rotation": -0.0024045896848654347
+    },
+    "seth_LatissimusDorsi_I_r": {
+      "thoracic_extension": -0.0003240418548825191,
+      "thoracic_bending": -0.00119657869859853,
+      "thoracic_rotation": 0.002363011911685066
+    },
+    "seth_LatissimusDorsi_M_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_LatissimusDorsi_M_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_LatissimusDorsi_S_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_LatissimusDorsi_S_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_LevatorScapulae_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_LevatorScapulae_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_PectoralisMajorClavicle_S_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_PectoralisMajorClavicle_S_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_PectoralisMajorThorax_I_l": {
+      "thoracic_extension": 0.1921666555101944,
+      "thoracic_bending": -0.1152013528978038,
+      "thoracic_rotation": 0.15193612743204127
+    },
+    "seth_PectoralisMajorThorax_I_r": {
+      "thoracic_extension": 0.1921666555101944,
+      "thoracic_bending": 0.11608760152927956,
+      "thoracic_rotation": -0.15042146378809051
+    },
+    "seth_PectoralisMajorThorax_M_l": {
+      "thoracic_extension": 0.12943841195916578,
+      "thoracic_bending": -0.2611434448887726,
+      "thoracic_rotation": 0.12581868691789694
+    },
+    "seth_PectoralisMajorThorax_M_r": {
+      "thoracic_extension": 0.12943841195916578,
+      "thoracic_bending": 0.2609735498880947,
+      "thoracic_rotation": -0.12469891185488363
+    },
+    "seth_PectoralisMinor_l": {
+      "thoracic_extension": 0.22931580165147905,
+      "thoracic_bending": 0.053629839999598715,
+      "thoracic_rotation": 0.10458294533394889
+    },
+    "seth_PectoralisMinor_r": {
+      "thoracic_extension": 0.22931580165147908,
+      "thoracic_bending": -0.05184928177595459,
+      "thoracic_rotation": -0.10307060403452242
+    },
+    "seth_Rhomboideus_I_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_Rhomboideus_I_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_Rhomboideus_S_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_Rhomboideus_S_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_SerratusAnterior_I_l": {
+      "thoracic_extension": 0.11234213677005538,
+      "thoracic_bending": 0.12079228957336395,
+      "thoracic_rotation": 0.14163814392924629
+    },
+    "seth_SerratusAnterior_I_r": {
+      "thoracic_extension": 0.1123421367700554,
+      "thoracic_bending": -0.11996712356664525,
+      "thoracic_rotation": -0.13967709798927502
+    },
+    "seth_SerratusAnterior_M_l": {
+      "thoracic_extension": 0.210179530558022,
+      "thoracic_bending": 0.09964384594572966,
+      "thoracic_rotation": 0.1351314657475224
+    },
+    "seth_SerratusAnterior_M_r": {
+      "thoracic_extension": 0.21017953055802197,
+      "thoracic_bending": -0.09983968922286142,
+      "thoracic_rotation": -0.13303878563486266
+    },
+    "seth_SerratusAnterior_S_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_SerratusAnterior_S_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_Supraspinatus_A_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_Supraspinatus_A_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TeresMajor_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TeresMajor_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TrapeziusClavicle_S_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TrapeziusClavicle_S_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TrapeziusScapula_I_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TrapeziusScapula_I_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TrapeziusScapula_M_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TrapeziusScapula_M_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TrapeziusScapula_S_l": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    },
+    "seth_TrapeziusScapula_S_r": {
+      "thoracic_extension": 0,
+      "thoracic_bending": 0,
+      "thoracic_rotation": 0
+    }
+  },
+  "max_isometric_force_n": {
+    "seth_LatissimusDorsi_I_l": 270.2,
+    "seth_LatissimusDorsi_I_r": 270.2,
+    "seth_LatissimusDorsi_M_l": 315,
+    "seth_LatissimusDorsi_M_r": 315,
+    "seth_LatissimusDorsi_S_l": 201.6,
+    "seth_LatissimusDorsi_S_r": 201.6,
+    "seth_LevatorScapulae_l": 280,
+    "seth_LevatorScapulae_r": 280,
+    "seth_PectoralisMajorClavicle_S_l": 408.8,
+    "seth_PectoralisMajorClavicle_S_r": 408.8,
+    "seth_PectoralisMajorThorax_I_l": 571.2,
+    "seth_PectoralisMajorThorax_I_r": 571.2,
+    "seth_PectoralisMajorThorax_M_l": 683.2,
+    "seth_PectoralisMajorThorax_M_r": 683.2,
+    "seth_PectoralisMinor_l": 429.8,
+    "seth_PectoralisMinor_r": 429.8,
+    "seth_Rhomboideus_I_l": 407.4,
+    "seth_Rhomboideus_I_r": 407.4,
+    "seth_Rhomboideus_S_l": 200.2,
+    "seth_Rhomboideus_S_r": 200.2,
+    "seth_SerratusAnterior_I_l": 430,
+    "seth_SerratusAnterior_I_r": 430,
+    "seth_SerratusAnterior_M_l": 508,
+    "seth_SerratusAnterior_M_r": 508,
+    "seth_SerratusAnterior_S_l": 387.8,
+    "seth_SerratusAnterior_S_r": 387.8,
+    "seth_Supraspinatus_A_l": 543.2,
+    "seth_Supraspinatus_A_r": 543.2,
+    "seth_TeresMajor_l": 851.2,
+    "seth_TeresMajor_r": 851.2,
+    "seth_TrapeziusClavicle_S_l": 201.6,
+    "seth_TrapeziusClavicle_S_r": 201.6,
+    "seth_TrapeziusScapula_I_l": 414.4,
+    "seth_TrapeziusScapula_I_r": 414.4,
+    "seth_TrapeziusScapula_M_l": 470.4,
+    "seth_TrapeziusScapula_M_r": 470.4,
+    "seth_TrapeziusScapula_S_l": 1043,
+    "seth_TrapeziusScapula_S_r": 1043
+  }
+}

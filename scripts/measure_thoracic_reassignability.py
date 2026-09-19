@@ -188,13 +188,26 @@ def main() -> int:
         if entity_id in by_id:
             candidates[entity_id] = ('thorax', by_id[entity_id]['name'])
     resolved_non_thorax = []
+    rejected_by_role = []
     for entity_id, entity in by_id.items():
         if entity_id in candidates:
             continue
         label = (entity.get('name') or '').lower()
-        if any(s in label for s in NON_THORAX_LABEL_SUBSTRINGS):
-            candidates[entity_id] = ('other', entity['name'])
-            resolved_non_thorax.append(entity['name'])
+        if not any(s in label for s in NON_THORAX_LABEL_SUBSTRINGS):
+            continue
+        # INSTRUMENT DEFECT FIXED AFTER THE FIRST TWO RUNS, and recorded rather
+        # than quietly corrected.  The substring 'scapula' also matches "left
+        # subscapularis", "right subscapular vein" and "infrascapular region" --
+        # a muscle, a vein and a surface region, none of which is a bone an
+        # attachment can sit ON.  They polluted the non-thorax candidate set.
+        # The rule (R1: nearest wins, no tolerance) is NOT changed; only the set
+        # of structures it searches is corrected to bones.  docs/WRIST_AND_THORAX.md
+        # records the before-and-after: no verdict moved.
+        if entity.get('role') != 'rigid_bone':
+            rejected_by_role.append(entity['name'])
+            continue
+        candidates[entity_id] = ('other', entity['name'])
+        resolved_non_thorax.append(entity['name'])
 
     meshes = {}
     missing = []
@@ -211,13 +224,22 @@ def main() -> int:
         detail = []
         for point_name, location in row['points']:
             canonical = (torso_to_canonical @ np.append(location, 1.0))[:3]
-            best_id, best_d = None, np.inf
+            best = {'thorax': (None, np.inf), 'other': (None, np.inf)}
             for entity_id, vertices in meshes.items():
+                group = candidates[entity_id][0]
                 d = float(np.min(np.linalg.norm(vertices - canonical, axis=1)))
-                if d < best_d:
-                    best_id, best_d = entity_id, d
+                if d < best[group][1]:
+                    best[group] = (entity_id, d)
+            best_id, best_d = min(best.values(), key=lambda t: t[1])
             group, label = candidates[best_id]
             margin = float(location[1] - centre[1])
+            # AMENDED AFTER THE FIRST RUN, reporting only: the runner-up from the
+            # OTHER group, so a reader can see how decisive R1's nearest-wins
+            # test was at points that sit centimetres from every surface. The
+            # RULE is unchanged -- nearest wins, no tolerance -- and the verdicts
+            # this run prints are identical to the first run's.
+            runner_group = 'other' if group == 'thorax' else 'thorax'
+            runner_id, runner_d = best[runner_group]
             detail.append({
                 'point': point_name,
                 'location_torso_m': [float(x) for x in location],
@@ -225,6 +247,10 @@ def main() -> int:
                 'nearest_structure': label,
                 'nearest_structure_id': best_id,
                 'nearest_surface_distance_m': best_d,
+                'nearest_other_group_structure': (candidates[runner_id][1]
+                                                  if runner_id else None),
+                'nearest_other_group_distance_m': (runner_d if runner_id else None),
+                'decision_margin_m': ((runner_d - best_d) if runner_id else None),
                 'R1_endpoint_is_a_thorax_structure': group == 'thorax',
                 'R2_margin_clears_sqrt2_x_62mm': margin > MARGIN_BAR_M,
             })
@@ -259,6 +285,7 @@ def main() -> int:
         'thorax_partition_structures': len(thorax_ids),
         'thorax_partition_with_surface': len([i for i in meshes if candidates[i][0] == 'thorax']),
         'non_thorax_candidates_resolved': sorted(resolved_non_thorax),
+        'non_thorax_label_matches_rejected_as_not_bone': sorted(set(rejected_by_role)),
         'candidate_surfaces_missing': sorted(missing),
         'muscles_with_a_torso_attachment': len(report_muscles),
         'reassignable': reassignable,
@@ -273,18 +300,22 @@ def main() -> int:
     print('margin bar: %.4f m (sqrt(2) x %.3f m)' % (MARGIN_BAR_M, JOINT_CENTRE_RESIDUAL_M))
     print('thorax partition structures with a surface on disk: %d of %d'
           % (report['thorax_partition_with_surface'], len(thorax_ids)))
-    print('non-thorax candidate structures resolved: %d' % len(resolved_non_thorax))
+    print('non-thorax candidate bones resolved: %d (label matches rejected as '
+          'not a bone: %d)' % (len(resolved_non_thorax), len(set(rejected_by_role))))
     print()
-    header = '%-34s %-22s %9s %9s %s'
-    print(header % ('muscle', 'nearest structure', 'dist_mm', 'margin_mm', 'verdict'))
+    header = '%-32s %-22s %8s %8s %8s %s'
+    print(header % ('muscle', 'nearest structure', 'dist_mm', 'next_mm',
+                    'margin_mm', 'verdict'))
     for muscle in sorted(report_muscles, key=lambda m: m['muscle']):
         first = muscle['points'][0] if muscle['points'] else None
         if first is None:
-            print(header % (muscle['muscle'], '(moving point only)', '', '', muscle['verdict']))
+            print(header % (muscle['muscle'], '(moving point only)', '', '', '',
+                            muscle['verdict']))
             continue
         worst = min(muscle['points'], key=lambda p: p['height_above_thoracic_joint_centre_m'])
         print(header % (muscle['muscle'], worst['nearest_structure'][:22],
                         '%.1f' % (1000 * worst['nearest_surface_distance_m']),
+                        '%.1f' % (1000 * worst['nearest_other_group_distance_m']),
                         '%.1f' % (1000 * worst['height_above_thoracic_joint_centre_m']),
                         muscle['verdict']))
     print()

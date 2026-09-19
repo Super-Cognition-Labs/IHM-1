@@ -1,0 +1,265 @@
+{
+  "schema": "ihm.thoracic-drive-variant.v1",
+  "model_path": "data/models/thoracic_drive_v1/model.osim",
+  "model_sha256": "afd270c89495e61cda73c103137b3e312d2a6ca0f1be794c8edde680fad7e1c1",
+  "catalog_path": "data/models/thoracic_drive_v1/catalog.json",
+  "catalog_sha256": "4e123a3985ae043927221b3a83ce4fff001bbcce4dc2e99f14b7309afa2bb528",
+  "base_model_path": "data/models/shoulder_girdle_v1/model.osim",
+  "base_model_sha256": "59d3210034b2e79ffa6de5767d08838fc5651790d63d7189f581065a812909ab",
+  "sources": {
+    "data/models/shoulder_girdle_v1/model.osim": "59d3210034b2e79ffa6de5767d08838fc5651790d63d7189f581065a812909ab",
+    "data/models/shoulder_girdle_v1/catalog.json": "7f01c5c5d50dbee6af8c1114507de16b73a3860a9d6290a465b0ea86f7b9254f",
+    "data/models/shoulder_girdle_v1/registration.json": "fd45b66d629f57f2aa923700c1e3e0627c49773e346edd089874b908a05767f3",
+    "scripts/build_thoracic_drive.py": "e38b4bd939e03b277cc90d2e987089094a7fa0229fec23c249d584f0d43a02e1",
+    "scripts/measure_thoracic_reassignability.py": "d2fed643fe56a4f15dd948b0722e668821f0c3408e70d1b0dc15f48cf5f12276",
+    "out/thoracic_reassignability.json": "0cfe2bb788ffc962e640d779f1ab506ceb23ccfba973abe5a44bf832def7ddd5"
+  },
+  "muscle_count": 158,
+  "body_count": 29,
+  "default_enabled": false,
+  "native_acceptance_complete": false,
+  "native_verified": false,
+  "donor": {
+    "note": "No new donor. Every muscle, parameter and path point here is already in data/models/shoulder_girdle_v1 and carries the provenance that build recorded: Seth, Dong, Matias and Delp 2019, Front. Neurorobot. 13:90, CC BY 4.0 from the authors on SimTK and Apache-2.0 as a file of opensim-core. docs/SHOULDER_GIRDLE.md section 1. NOTHING here comes from MoBL-ARMS 4.1 or from the Gonzalez/Buchanan/Delp wrist model, directly or indirectly."
+  },
+  "changes": {
+    "muscle_attachments_moved_torso_to_thorax": [
+      {
+        "muscle": "seth_SerratusAnterior_I_r",
+        "point": "seth_SerratusAnterior_I_r-P2",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.057584908340099446,
+          0.18228061825223937,
+          0.1949940184848921
+        ],
+        "location_thorax_m": [
+          0.08007323434084271,
+          0.10450870246512742,
+          0.19380367625203668
+        ]
+      },
+      {
+        "muscle": "seth_SerratusAnterior_M_r",
+        "point": "seth_SerratusAnterior_M_r-P2",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.0802464724374726,
+          0.30621248990466315,
+          0.15091363631109314
+        ],
+        "location_thorax_m": [
+          0.10273479843821587,
+          0.2284405741175512,
+          0.14972329407823773
+        ]
+      },
+      {
+        "muscle": "seth_PectoralisMajorThorax_I_r",
+        "point": "seth_PectoralisMajorThorax_I_r-P1",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.1282800521139497,
+          0.25440789361567506,
+          0.03254102554809076
+        ],
+        "location_thorax_m": [
+          0.15076837811469296,
+          0.1766359778285631,
+          0.03135068331523534
+        ]
+      },
+      {
+        "muscle": "seth_PectoralisMajorThorax_M_r",
+        "point": "seth_PectoralisMajorThorax_M_r-P1",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.08399240221707496,
+          0.3565568205445787,
+          0.017098819026502288
+        ],
+        "location_thorax_m": [
+          0.10648072821781823,
+          0.27878490475746676,
+          0.01590847679364687
+        ]
+      },
+      {
+        "muscle": "seth_PectoralisMinor_r",
+        "point": "seth_PectoralisMinor_r-P1",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.12107148699574444,
+          0.26973385005954414,
+          0.1199309851225099
+        ],
+        "location_thorax_m": [
+          0.1435598129964877,
+          0.1919619342724322,
+          0.11874064288965448
+        ]
+      },
+      {
+        "muscle": "seth_SerratusAnterior_I_l",
+        "point": "seth_SerratusAnterior_I_l-P2",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.057584908340099446,
+          0.18228061825223937,
+          -0.1949940184848921
+        ],
+        "location_thorax_m": [
+          0.08007323434084271,
+          0.10450870246512742,
+          -0.1961843607177475
+        ]
+      },
+      {
+        "muscle": "seth_SerratusAnterior_M_l",
+        "point": "seth_SerratusAnterior_M_l-P2",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.0802464724374726,
+          0.30621248990466315,
+          -0.15091363631109314
+        ],
+        "location_thorax_m": [
+          0.10273479843821587,
+          0.2284405741175512,
+          -0.15210397854394855
+        ]
+      },
+      {
+        "muscle": "seth_PectoralisMajorThorax_I_l",
+        "point": "seth_PectoralisMajorThorax_I_l-P1",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.1282800521139497,
+          0.25440789361567506,
+          -0.03254102554809076
+        ],
+        "location_thorax_m": [
+          0.15076837811469296,
+          0.1766359778285631,
+          -0.03373136778094618
+        ]
+      },
+      {
+        "muscle": "seth_PectoralisMajorThorax_M_l",
+        "point": "seth_PectoralisMajorThorax_M_l-P1",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.08399240221707496,
+          0.3565568205445787,
+          -0.017098819026502288
+        ],
+        "location_thorax_m": [
+          0.10648072821781823,
+          0.27878490475746676,
+          -0.018289161259357704
+        ]
+      },
+      {
+        "muscle": "seth_PectoralisMinor_l",
+        "point": "seth_PectoralisMinor_l-P1",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "location_torso_m": [
+          0.12107148699574444,
+          0.26973385005954414,
+          -0.1199309851225099
+        ],
+        "location_thorax_m": [
+          0.1435598129964877,
+          0.1919619342724322,
+          -0.12112132735536531
+        ]
+      }
+    ],
+    "wrap_objects_moved_torso_to_thorax": [
+      {
+        "wrap_object": "Thorax_r",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "translation_torso_m": [
+          0.0293530781275175,
+          0.2135798929200429,
+          0.09207227387076115
+        ],
+        "translation_thorax_m": [
+          0.05184140412826077,
+          0.13580797713293094,
+          0.09088193163790574
+        ]
+      },
+      {
+        "wrap_object": "Thorax_l",
+        "from_body": "torso",
+        "to_body": "thorax",
+        "translation_torso_m": [
+          0.0293530781275175,
+          0.2135798929200429,
+          -0.09207227387076115
+        ],
+        "translation_thorax_m": [
+          0.05184140412826077,
+          0.13580797713293094,
+          -0.09326261610361657
+        ]
+      }
+    ],
+    "thoracic_joint_offset_m": [
+      -0.02248832600074327,
+      0.07777191578711196,
+      0.0011903422328554166
+    ],
+    "transform": "p_thorax = p_torso - thoracic_joint_offset. The thoracic joint parent frame is a pure translation on torso with zero orientation and its child frame is the thorax origin, both asserted by the builder, so this is exact at thoracic_* = 0 and every path length is unchanged at the rest pose.",
+    "muscles_reassigned": [
+      "seth_PectoralisMajorThorax_I_l",
+      "seth_PectoralisMajorThorax_I_r",
+      "seth_PectoralisMajorThorax_M_l",
+      "seth_PectoralisMajorThorax_M_r",
+      "seth_PectoralisMinor_l",
+      "seth_PectoralisMinor_r",
+      "seth_SerratusAnterior_I_l",
+      "seth_SerratusAnterior_I_r",
+      "seth_SerratusAnterior_M_l",
+      "seth_SerratusAnterior_M_r"
+    ],
+    "mass_moved_kg": 0.0,
+    "bodies_added": 0,
+    "coordinates_added": 0,
+    "muscle_parameters_changed": 0
+  },
+  "thoracic_ranges_rad": {
+    "thoracic_extension": [
+      -0.2617993877991494,
+      0.2617993877991494
+    ],
+    "thoracic_bending": [
+      -0.2617993877991494,
+      0.2617993877991494
+    ],
+    "thoracic_rotation": [
+      -0.3490658503988659,
+      0.3490658503988659
+    ]
+  },
+  "thoracic_stops": "inherited unchanged from articulated_spine_v1; one CoordinateLimitForce per thoracic coordinate, at exactly its declared range, asserted by the builder",
+  "selection": "NativeMechanicalStream(..., augmented_registration='data/models/thoracic_drive_v1/registration.json')",
+  "limitations": [
+    "Five muscles per side is not a controllable trunk. All ten are anterior chest muscles; the measured torque bound and its sign are in docs/WRIST_AND_THORAX.md and are a capacity at one pose, not behaviour.",
+    "Nineteen muscles per side wrap on the rib-cage ellipsoid that moved, so fourteen per side acquire a dependence on thoracic_* through the WRAP SURFACE alone while their attachments stay on torso. That is a weaker mechanism than an attachment and is reported separately.",
+    "The thoracic joint centre is inherited from a registration with a 62 mm RMS proxy residual, and two of the five reassignments (PectoralisMajorThorax_M, SerratusAnterior_M) won their nearest-surface test by 8-15 mm, well inside that residual. They passed the rule as written and were not rescored; the margins are reported.",
+    "No linearization.npz, no stance acceptance, no controller, and no actuator port on any thoracic coordinate."
+  ]
+}

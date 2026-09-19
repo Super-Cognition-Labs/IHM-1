@@ -1,0 +1,1562 @@
+{
+  "schema": "ihm.thoracic-reassignability.v1",
+  "model": "data/models/shoulder_girdle_v1/model.osim",
+  "thoracic_joint_centre_torso_m": [
+    -0.02248832600074327,
+    0.07777191578711196,
+    0.0011903422328554166
+  ],
+  "margin_bar_m": 0.0876812408671319,
+  "margin_bar_basis": "sqrt(2) x the 62 mm RMS proxy residual declared for the registration that placed the thoracic joint centre",
+  "thorax_partition_structures": 48,
+  "thorax_partition_with_surface": 48,
+  "non_thorax_candidates_resolved": [
+    "atlas",
+    "atlas c1",
+    "axis",
+    "axis c2",
+    "coccyx",
+    "eighth thoracic vertebra",
+    "eleventh thoracic vertebra",
+    "fifth cervical vertebra",
+    "fifth lumbar vertebra",
+    "fifth thoracic vertebra",
+    "first lumbar vertebra",
+    "first thoracic vertebra",
+    "fourth cervical vertebra",
+    "fourth lumbar vertebra",
+    "fourth thoracic vertebra",
+    "left clavicle",
+    "left hip bone",
+    "left scapula",
+    "ninth thoracic vertebra",
+    "right clavicle",
+    "right hip bone",
+    "right scapula",
+    "sacrum",
+    "second lumbar vertebra",
+    "second thoracic vertebra",
+    "seventh cervical vertebra",
+    "seventh thoracic vertebra",
+    "sixth cervical vertebra",
+    "sixth thoracic vertebra",
+    "tenth thoracic vertebra",
+    "third cervical vertebra",
+    "third lumbar vertebra",
+    "third thoracic vertebra",
+    "twelfth thoracic vertebra"
+  ],
+  "non_thorax_label_matches_rejected_as_not_bone": [
+    "intervertebral disk of axis",
+    "intervertebral disk of eighth thoracic vertebra",
+    "intervertebral disk of eleventh thoracic vertebra",
+    "intervertebral disk of fifth cervical vertebra",
+    "intervertebral disk of fifth lumbar vertebra",
+    "intervertebral disk of fifth thoracic vertebra",
+    "intervertebral disk of first lumbar vertebra",
+    "intervertebral disk of first thoracic vertebra",
+    "intervertebral disk of fourth cervical vertebra",
+    "intervertebral disk of fourth lumbar vertebra",
+    "intervertebral disk of fourth thoracic vertebra",
+    "intervertebral disk of ninth thoracic vertebra",
+    "intervertebral disk of second lumbar vertebra",
+    "intervertebral disk of second thoracic vertebra",
+    "intervertebral disk of seventh cervical vertebra",
+    "intervertebral disk of seventh thoracic vertebra",
+    "intervertebral disk of sixth cervical vertebra",
+    "intervertebral disk of sixth thoracic vertebra",
+    "intervertebral disk of tenth thoracic vertebra",
+    "intervertebral disk of third cervical vertebra",
+    "intervertebral disk of third lumbar vertebra",
+    "intervertebral disk of third thoracic vertebra",
+    "left circumflex scapular artery",
+    "left circumflex scapular vein",
+    "left dorsal scapular artery",
+    "left inferior transverse scapular ligament",
+    "left infrascapular region",
+    "left interscapular region",
+    "left levator scapulae",
+    "left scapular region",
+    "left subscapular artery",
+    "left subscapular vein",
+    "left subscapularis",
+    "left superior transverse scapular ligament",
+    "left suprascapular artery",
+    "left suprascapular vein",
+    "right circumflex scapular artery",
+    "right circumflex scapular vein",
+    "right dorsal scapular artery",
+    "right inferior transverse scapular ligament",
+    "right infrascapular region",
+    "right interscapular region",
+    "right levator scapulae",
+    "right scapular region",
+    "right subscapular artery",
+    "right subscapular vein",
+    "right subscapularis",
+    "right superior transverse scapular ligament",
+    "right suprascapular artery",
+    "right suprascapular vein"
+  ],
+  "candidate_surfaces_missing": [],
+  "muscles_with_a_torso_attachment": 44,
+  "reassignable": [
+    "seth_PectoralisMajorThorax_I_l",
+    "seth_PectoralisMajorThorax_I_r",
+    "seth_PectoralisMajorThorax_M_l",
+    "seth_PectoralisMajorThorax_M_r",
+    "seth_PectoralisMinor_l",
+    "seth_PectoralisMinor_r",
+    "seth_SerratusAnterior_I_l",
+    "seth_SerratusAnterior_I_r",
+    "seth_SerratusAnterior_M_l",
+    "seth_SerratusAnterior_M_r"
+  ],
+  "reassignable_per_side": {
+    "r": 5,
+    "l": 5
+  },
+  "verdict": "UNBLOCKED",
+  "muscles": [
+    {
+      "muscle": "arm26_TRIlong_r",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "arm26_TRIlong_r_TRIlong-P1",
+          "location_torso_m": [
+            -0.03549160077929807,
+            0.3765045113775302,
+            0.17370821676150705
+          ],
+          "height_above_thoracic_joint_centre_m": 0.29873259559041826,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.01572889157935935,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.08371179546046607,
+          "decision_margin_m": 0.06798290388110673,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "arm26_BIClong_r",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "arm26_BIClong_r_BIClong-P1",
+          "location_torso_m": [
+            -0.02005828138988639,
+            0.3958464038464662,
+            0.174305427251991
+          ],
+          "height_above_thoracic_joint_centre_m": 0.31807448805935423,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.03649567912213799,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.09493423885408707,
+          "decision_margin_m": 0.05843855973194908,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "arm26_BIClong_r_BIClong-P2",
+          "location_torso_m": [
+            -0.009005156531377774,
+            0.40772632387958135,
+            0.18349147507685928
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3299544080924694,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.054624617990065065,
+          "nearest_other_group_structure": "right second rib",
+          "nearest_other_group_distance_m": 0.11029450671943278,
+          "decision_margin_m": 0.05566988872936771,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "arm26_BICshort_r",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "arm26_BICshort_r_BICshort-P1",
+          "location_torso_m": [
+            0.0287674734597715,
+            0.37944703564649906,
+            0.16000534514489284
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3016751198593871,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.054749809223551375,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.08660654721263039,
+          "decision_margin_m": 0.031856737989079016,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "arm26_BICshort_r_BICshort-P2",
+          "location_torso_m": [
+            0.016530870527692035,
+            0.34870832955527825,
+            0.17171185465761973
+          ],
+          "height_above_thoracic_joint_centre_m": 0.2709364137681663,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.04134177495883242,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.07714361343801868,
+          "decision_margin_m": 0.035801838479186256,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "arm26_TRIlong_l",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "arm26_TRIlong_l_TRIlong-P1",
+          "location_torso_m": [
+            -0.03549160077929807,
+            0.3765045113775302,
+            -0.17370821676150705
+          ],
+          "height_above_thoracic_joint_centre_m": 0.29873259559041826,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.017774639291943502,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.08568837262707704,
+          "decision_margin_m": 0.06791373333513354,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "arm26_BIClong_l",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "arm26_BIClong_l_BIClong-P1",
+          "location_torso_m": [
+            -0.02005828138988639,
+            0.3958464038464662,
+            -0.174305427251991
+          ],
+          "height_above_thoracic_joint_centre_m": 0.31807448805935423,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.037546958470572885,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.09677157614283963,
+          "decision_margin_m": 0.05922461767226674,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "arm26_BIClong_l_BIClong-P2",
+          "location_torso_m": [
+            -0.009005156531377774,
+            0.40772632387958135,
+            -0.18349147507685928
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3299544080924694,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.05588753052556118,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.11227620283953797,
+          "decision_margin_m": 0.05638867231397679,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "arm26_BICshort_l",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "arm26_BICshort_l_BICshort-P1",
+          "location_torso_m": [
+            0.0287674734597715,
+            0.37944703564649906,
+            -0.16000534514489284
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3016751198593871,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.05626540242814881,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.08851326470795237,
+          "decision_margin_m": 0.032247862279803564,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "arm26_BICshort_l_BICshort-P2",
+          "location_torso_m": [
+            0.016530870527692035,
+            0.34870832955527825,
+            -0.17171185465761973
+          ],
+          "height_above_thoracic_joint_centre_m": 0.2709364137681663,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.0442039660557748,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.07959923362748603,
+          "decision_margin_m": 0.03539526757171123,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "gait2392_ercspn_r",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "ercspn_r-P2",
+          "location_torso_m": [
+            -0.055,
+            0.11,
+            0.0241
+          ],
+          "height_above_thoracic_joint_centre_m": 0.032228084212888045,
+          "nearest_structure": "twelfth thoracic vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3156",
+          "nearest_surface_distance_m": 0.006063737234999084,
+          "nearest_other_group_structure": "right eleventh rib",
+          "nearest_other_group_distance_m": 0.01204125600316757,
+          "decision_margin_m": 0.0059775187681684865,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        }
+      ]
+    },
+    {
+      "muscle": "gait2392_intobl_r",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "intobl_r-P2",
+          "location_torso_m": [
+            0.07,
+            0.16,
+            0.015
+          ],
+          "height_above_thoracic_joint_centre_m": 0.08222808421288805,
+          "nearest_structure": "diaphragm",
+          "nearest_structure_id": "body-bp3d-FJ3131",
+          "nearest_surface_distance_m": 0.03985863628942338,
+          "nearest_other_group_structure": "twelfth thoracic vertebra",
+          "nearest_other_group_distance_m": 0.07620624196156857,
+          "decision_margin_m": 0.03634760567214519,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        }
+      ]
+    },
+    {
+      "muscle": "gait2392_extobl_r",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "extobl_r-P2",
+          "location_torso_m": [
+            0.065,
+            0.11,
+            0.11
+          ],
+          "height_above_thoracic_joint_centre_m": 0.032228084212888045,
+          "nearest_structure": "diaphragm",
+          "nearest_structure_id": "body-bp3d-FJ3131",
+          "nearest_surface_distance_m": 0.0022459363971489535,
+          "nearest_other_group_structure": "first lumbar vertebra",
+          "nearest_other_group_distance_m": 0.1104622836163278,
+          "decision_margin_m": 0.10821634721917885,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        }
+      ]
+    },
+    {
+      "muscle": "gait2392_ercspn_l",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "ercspn_l-P2",
+          "location_torso_m": [
+            -0.055,
+            0.11,
+            -0.0241
+          ],
+          "height_above_thoracic_joint_centre_m": 0.032228084212888045,
+          "nearest_structure": "twelfth thoracic vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3156",
+          "nearest_surface_distance_m": 0.007701793741257136,
+          "nearest_other_group_structure": "left eleventh rib",
+          "nearest_other_group_distance_m": 0.010022052976762442,
+          "decision_margin_m": 0.002320259235505306,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        }
+      ]
+    },
+    {
+      "muscle": "gait2392_intobl_l",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "intobl_l-P2",
+          "location_torso_m": [
+            0.07,
+            0.16,
+            -0.015
+          ],
+          "height_above_thoracic_joint_centre_m": 0.08222808421288805,
+          "nearest_structure": "diaphragm",
+          "nearest_structure_id": "body-bp3d-FJ3131",
+          "nearest_surface_distance_m": 0.041276033527563316,
+          "nearest_other_group_structure": "twelfth thoracic vertebra",
+          "nearest_other_group_distance_m": 0.07661330275965647,
+          "decision_margin_m": 0.035337269232093155,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        }
+      ]
+    },
+    {
+      "muscle": "gait2392_extobl_l",
+      "law": "Thelen2003Muscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "extobl_l-P2",
+          "location_torso_m": [
+            0.065,
+            0.11,
+            -0.11
+          ],
+          "height_above_thoracic_joint_centre_m": 0.032228084212888045,
+          "nearest_structure": "left eighth rib",
+          "nearest_structure_id": "body-bp3d-FJ3235",
+          "nearest_surface_distance_m": 0.0017586542690920604,
+          "nearest_other_group_structure": "first lumbar vertebra",
+          "nearest_other_group_distance_m": 0.11230109874239642,
+          "decision_margin_m": 0.11054244447330436,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        }
+      ]
+    },
+    {
+      "muscle": "seth_TrapeziusScapula_M_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_TrapeziusScapula_M_r-P1",
+          "location_torso_m": [
+            -0.052842479744439445,
+            0.40605538211298753,
+            -0.002323690046888523
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3282834663258756,
+          "nearest_structure": "sixth cervical vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3170",
+          "nearest_surface_distance_m": 0.0033562816230283932,
+          "nearest_other_group_structure": "left first rib",
+          "nearest_other_group_distance_m": 0.028611746045462173,
+          "decision_margin_m": 0.02525546442243378,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_TrapeziusScapula_S_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_TrapeziusScapula_S_r-P1",
+          "location_torso_m": [
+            -0.040163102761133,
+            0.46579165101582504,
+            -0.004769873402695366
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3880197352287131,
+          "nearest_structure": "axis",
+          "nearest_structure_id": "body-bp3d-FJ3177",
+          "nearest_surface_distance_m": 0.0008975828961923724,
+          "nearest_other_group_structure": "left first rib",
+          "nearest_other_group_distance_m": 0.08243986278184735,
+          "decision_margin_m": 0.08154227988565498,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_TrapeziusScapula_I_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_TrapeziusScapula_I_r-P1",
+          "location_torso_m": [
+            -0.075374737465295,
+            0.22953462004283828,
+            0.0015126141428352436
+          ],
+          "height_above_thoracic_joint_centre_m": 0.15176270425572633,
+          "nearest_structure": "seventh thoracic vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3173",
+          "nearest_surface_distance_m": 0.00572268837392518,
+          "nearest_other_group_structure": "left eighth rib",
+          "nearest_other_group_distance_m": 0.01840677218026111,
+          "decision_margin_m": 0.01268408380633593,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_TrapeziusClavicle_S_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_TrapeziusClavicle_S_r-P1",
+          "location_torso_m": [
+            -0.023609921122318654,
+            0.5647917259547421,
+            0.003217024423396991
+          ],
+          "height_above_thoracic_joint_centre_m": 0.4870198101676302,
+          "nearest_structure": "atlas",
+          "nearest_structure_id": "body-bp3d-FJ3176",
+          "nearest_surface_distance_m": 0.06974827700005615,
+          "nearest_other_group_structure": "right first rib",
+          "nearest_other_group_distance_m": 0.18160662283482135,
+          "decision_margin_m": 0.1118583458347652,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_SerratusAnterior_I_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_SerratusAnterior_I_r-P2",
+          "location_torso_m": [
+            0.057584908340099446,
+            0.18228061825223937,
+            0.1949940184848921
+          ],
+          "height_above_thoracic_joint_centre_m": 0.10450870246512742,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451",
+          "nearest_surface_distance_m": 0.06637801067865093,
+          "nearest_other_group_structure": "right scapula",
+          "nearest_other_group_distance_m": 0.16557083580050738,
+          "decision_margin_m": 0.09919282512185645,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_SerratusAnterior_M_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_SerratusAnterior_M_r-P2",
+          "location_torso_m": [
+            0.0802464724374726,
+            0.30621248990466315,
+            0.15091363631109314
+          ],
+          "height_above_thoracic_joint_centre_m": 0.2284405741175512,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451",
+          "nearest_surface_distance_m": 0.07221766373111654,
+          "nearest_other_group_structure": "right scapula",
+          "nearest_other_group_distance_m": 0.09514085304863074,
+          "decision_margin_m": 0.022923189317514192,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_SerratusAnterior_S_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_SerratusAnterior_S_r-P2",
+          "location_torso_m": [
+            0.020854099761303452,
+            0.38743286206702165,
+            0.13067619440121547
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3096609462799097,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.04980886061108163,
+          "nearest_other_group_structure": "right second rib",
+          "nearest_other_group_distance_m": 0.06897858183275228,
+          "decision_margin_m": 0.019169721221670648,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_Rhomboideus_S_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_Rhomboideus_S_r-P1",
+          "location_torso_m": [
+            -0.03812412666724412,
+            0.45939384358675917,
+            -0.0026832387522027277
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3816219277996472,
+          "nearest_structure": "third cervical vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3161",
+          "nearest_surface_distance_m": 0.003132946958070723,
+          "nearest_other_group_structure": "left first rib",
+          "nearest_other_group_distance_m": 0.0764499986312119,
+          "decision_margin_m": 0.07331705167314118,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_Rhomboideus_I_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_Rhomboideus_I_r-P1",
+          "location_torso_m": [
+            -0.06095852799739341,
+            0.39434941105639704,
+            -0.000670811660991339
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3165774952692851,
+          "nearest_structure": "seventh cervical vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3172",
+          "nearest_surface_distance_m": 0.004061567791733401,
+          "nearest_other_group_structure": "left first rib",
+          "nearest_other_group_distance_m": 0.02681629846079974,
+          "decision_margin_m": 0.022754730669066338,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_LevatorScapulae_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_LevatorScapulae_r-P1",
+          "location_torso_m": [
+            0.012503540567179908,
+            0.5657796062473647,
+            0.04088011958731592
+          ],
+          "height_above_thoracic_joint_centre_m": 0.4880076904602527,
+          "nearest_structure": "atlas c1",
+          "nearest_structure_id": "body-za-7fb5720fb1239ed9",
+          "nearest_surface_distance_m": 0.08794678395873926,
+          "nearest_other_group_structure": "right first rib",
+          "nearest_other_group_distance_m": 0.18757396003326157,
+          "decision_margin_m": 0.09962717607452232,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_LatissimusDorsi_S_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "MIXED",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_LatissimusDorsi_S_r-P1",
+          "location_torso_m": [
+            -0.0744013536129772,
+            0.25313193638019715,
+            0.0022491918076838237
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1753600205930852,
+          "nearest_structure": "sixth thoracic vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3171",
+          "nearest_surface_distance_m": 0.008274106330322521,
+          "nearest_other_group_structure": "right seventh rib",
+          "nearest_other_group_distance_m": 0.014173654755438895,
+          "decision_margin_m": 0.005899548425116374,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "seth_LatissimusDorsi_S_r-P2",
+          "location_torso_m": [
+            -0.09363226161417443,
+            0.2534476371394906,
+            0.03788111825944455
+          ],
+          "height_above_thoracic_joint_centre_m": 0.17567572135237863,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451",
+          "nearest_surface_distance_m": 0.007060910022150528,
+          "nearest_other_group_structure": "sixth thoracic vertebra",
+          "nearest_other_group_distance_m": 0.009071079960994597,
+          "decision_margin_m": 0.0020101699388440693,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "seth_LatissimusDorsi_S_r-P3",
+          "location_torso_m": [
+            -0.10292326029733534,
+            0.27682876900623404,
+            0.1328681440783886
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1990568532191221,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.03064709811573075,
+          "nearest_other_group_structure": "right fifth rib",
+          "nearest_other_group_distance_m": 0.040750823784016954,
+          "decision_margin_m": 0.010103725668286205,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "seth_LatissimusDorsi_S_r-P4",
+          "location_torso_m": [
+            -0.06376019966207541,
+            0.2969866266146355,
+            0.17863331202270885
+          ],
+          "height_above_thoracic_joint_centre_m": 0.21921471082752353,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.033603590598540234,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.06685213443235898,
+          "decision_margin_m": 0.03324854383381874,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_LatissimusDorsi_M_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "MIXED",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_LatissimusDorsi_M_r-P1",
+          "location_torso_m": [
+            -0.06116898937086753,
+            0.12051788617947051,
+            -0.002051897741993413
+          ],
+          "height_above_thoracic_joint_centre_m": 0.04274597039235856,
+          "nearest_structure": "eleventh thoracic vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3155",
+          "nearest_surface_distance_m": 0.0036558583672009586,
+          "nearest_other_group_structure": "left eleventh rib",
+          "nearest_other_group_distance_m": 0.023516445512352758,
+          "decision_margin_m": 0.0198605871451518,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        },
+        {
+          "point": "seth_LatissimusDorsi_M_r-P2",
+          "location_torso_m": [
+            -0.08334596198562708,
+            0.13631476292261913,
+            0.034500813267282174
+          ],
+          "height_above_thoracic_joint_centre_m": 0.05854284713550717,
+          "nearest_structure": "right tenth rib",
+          "nearest_structure_id": "body-bp3d-FJ3330",
+          "nearest_surface_distance_m": 0.015119384634432602,
+          "nearest_other_group_structure": "tenth thoracic vertebra",
+          "nearest_other_group_distance_m": 0.016828962207731685,
+          "decision_margin_m": 0.0017095775732990839,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        },
+        {
+          "point": "seth_LatissimusDorsi_M_r-P3",
+          "location_torso_m": [
+            -0.07835920584165323,
+            0.21241569970225882,
+            0.14948192335943444
+          ],
+          "height_above_thoracic_joint_centre_m": 0.13464378391514686,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451",
+          "nearest_surface_distance_m": 0.03547614562391903,
+          "nearest_other_group_structure": "right scapula",
+          "nearest_other_group_distance_m": 0.03798120370997784,
+          "decision_margin_m": 0.0025050580860588104,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "seth_LatissimusDorsi_M_r-P4",
+          "location_torso_m": [
+            -0.041967575607363715,
+            0.26139173038357827,
+            0.18417606128170078
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1836198145964663,
+          "nearest_structure": "right scapula",
+          "nearest_structure_id": "body-bp3d-FJ3384",
+          "nearest_surface_distance_m": 0.05640707744855591,
+          "nearest_other_group_structure": "right fifth rib",
+          "nearest_other_group_distance_m": 0.06147623412756279,
+          "decision_margin_m": 0.005069156679006884,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_LatissimusDorsi_I_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "MIXED",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_LatissimusDorsi_I_r-P1",
+          "location_torso_m": [
+            -0.024231897871052947,
+            0.07138133834921018,
+            0.11918600463001143
+          ],
+          "height_above_thoracic_joint_centre_m": -0.006390577437901779,
+          "nearest_structure": "right tenth rib",
+          "nearest_structure_id": "body-bp3d-FJ3330",
+          "nearest_surface_distance_m": 0.0013848289574411162,
+          "nearest_other_group_structure": "first lumbar vertebra",
+          "nearest_other_group_distance_m": 0.08315209905428679,
+          "decision_margin_m": 0.08176727009684567,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        },
+        {
+          "point": "seth_LatissimusDorsi_I_r-P2",
+          "location_torso_m": [
+            -0.03008804340791193,
+            0.1616718325295399,
+            0.1914978854963908
+          ],
+          "height_above_thoracic_joint_centre_m": 0.08389991674242794,
+          "nearest_structure": "right seventh rib",
+          "nearest_structure_id": "body-bp3d-FJ3346",
+          "nearest_surface_distance_m": 0.06225568849512945,
+          "nearest_other_group_structure": "right scapula",
+          "nearest_other_group_distance_m": 0.10981560071210096,
+          "decision_margin_m": 0.04755991221697151,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        },
+        {
+          "point": "seth_LatissimusDorsi_I_r-P3",
+          "location_torso_m": [
+            0.0053388603136660245,
+            0.2531303429010847,
+            0.19232726224630858
+          ],
+          "height_above_thoracic_joint_centre_m": 0.17535842711397276,
+          "nearest_structure": "right fifth rib",
+          "nearest_structure_id": "body-bp3d-FJ3342",
+          "nearest_surface_distance_m": 0.06565691758813862,
+          "nearest_other_group_structure": "right scapula",
+          "nearest_other_group_distance_m": 0.08358016054479064,
+          "decision_margin_m": 0.017923242956652027,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_PectoralisMajorThorax_I_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_PectoralisMajorThorax_I_r-P1",
+          "location_torso_m": [
+            0.1282800521139497,
+            0.25440789361567506,
+            0.03254102554809076
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1766359778285631,
+          "nearest_structure": "body of sternum",
+          "nearest_structure_id": "body-bp3d-FJ3178",
+          "nearest_surface_distance_m": 0.03161752395660837,
+          "nearest_other_group_structure": "right clavicle",
+          "nearest_other_group_distance_m": 0.12571189730831037,
+          "decision_margin_m": 0.094094373351702,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_PectoralisMajorThorax_M_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_PectoralisMajorThorax_M_r-P1",
+          "location_torso_m": [
+            0.08399240221707496,
+            0.3565568205445787,
+            0.017098819026502288
+          ],
+          "height_above_thoracic_joint_centre_m": 0.27878490475746676,
+          "nearest_structure": "manubrium",
+          "nearest_structure_id": "body-bp3d-FJ3290",
+          "nearest_surface_distance_m": 0.03992296453949154,
+          "nearest_other_group_structure": "right clavicle",
+          "nearest_other_group_distance_m": 0.048991983726890814,
+          "decision_margin_m": 0.009069019187399274,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_PectoralisMinor_r",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_PectoralisMinor_r-P1",
+          "location_torso_m": [
+            0.12107148699574444,
+            0.26973385005954414,
+            0.1199309851225099
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1919619342724322,
+          "nearest_structure": "right fourth rib",
+          "nearest_structure_id": "body-bp3d-FJ3340",
+          "nearest_surface_distance_m": 0.06285273519381418,
+          "nearest_other_group_structure": "right clavicle",
+          "nearest_other_group_distance_m": 0.13588099445736762,
+          "decision_margin_m": 0.07302825926355344,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_TrapeziusScapula_M_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_TrapeziusScapula_M_l-P1",
+          "location_torso_m": [
+            -0.052842479744439445,
+            0.40605538211298753,
+            0.002323690046888523
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3282834663258756,
+          "nearest_structure": "sixth cervical vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3170",
+          "nearest_surface_distance_m": 0.003896607747253083,
+          "nearest_other_group_structure": "left first rib",
+          "nearest_other_group_distance_m": 0.03078391221041813,
+          "decision_margin_m": 0.02688730446316505,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_TrapeziusScapula_S_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_TrapeziusScapula_S_l-P1",
+          "location_torso_m": [
+            -0.040163102761133,
+            0.46579165101582504,
+            0.004769873402695366
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3880197352287131,
+          "nearest_structure": "axis c2",
+          "nearest_structure_id": "body-za-fcd977845f4183e5",
+          "nearest_surface_distance_m": 0.0016865535247739154,
+          "nearest_other_group_structure": "right first rib",
+          "nearest_other_group_distance_m": 0.08326388079705907,
+          "decision_margin_m": 0.08157732727228516,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_TrapeziusScapula_I_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_TrapeziusScapula_I_l-P1",
+          "location_torso_m": [
+            -0.075374737465295,
+            0.22953462004283828,
+            -0.0015126141428352436
+          ],
+          "height_above_thoracic_joint_centre_m": 0.15176270425572633,
+          "nearest_structure": "seventh thoracic vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3173",
+          "nearest_surface_distance_m": 0.005245107277491689,
+          "nearest_other_group_structure": "left eighth rib",
+          "nearest_other_group_distance_m": 0.01628407013135967,
+          "decision_margin_m": 0.011038962853867983,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_TrapeziusClavicle_S_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_TrapeziusClavicle_S_l-P1",
+          "location_torso_m": [
+            -0.023609921122318654,
+            0.5647917259547421,
+            -0.003217024423396991
+          ],
+          "height_above_thoracic_joint_centre_m": 0.4870198101676302,
+          "nearest_structure": "atlas c1",
+          "nearest_structure_id": "body-za-7fb5720fb1239ed9",
+          "nearest_surface_distance_m": 0.06894026074406348,
+          "nearest_other_group_structure": "left first rib",
+          "nearest_other_group_distance_m": 0.1806288560991924,
+          "decision_margin_m": 0.11168859535512893,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_SerratusAnterior_I_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_SerratusAnterior_I_l-P2",
+          "location_torso_m": [
+            0.057584908340099446,
+            0.18228061825223937,
+            -0.1949940184848921
+          ],
+          "height_above_thoracic_joint_centre_m": 0.10450870246512742,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451M",
+          "nearest_surface_distance_m": 0.06793736978042271,
+          "nearest_other_group_structure": "left scapula",
+          "nearest_other_group_distance_m": 0.16791964099019535,
+          "decision_margin_m": 0.09998227120977264,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_SerratusAnterior_M_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_SerratusAnterior_M_l-P2",
+          "location_torso_m": [
+            0.0802464724374726,
+            0.30621248990466315,
+            -0.15091363631109314
+          ],
+          "height_above_thoracic_joint_centre_m": 0.2284405741175512,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451M",
+          "nearest_surface_distance_m": 0.07350996295826911,
+          "nearest_other_group_structure": "left scapula",
+          "nearest_other_group_distance_m": 0.09711342166604613,
+          "decision_margin_m": 0.02360345870777701,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_SerratusAnterior_S_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_SerratusAnterior_S_l-P2",
+          "location_torso_m": [
+            0.020854099761303452,
+            0.38743286206702165,
+            -0.13067619440121547
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3096609462799097,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.049869629661063036,
+          "nearest_other_group_structure": "left second rib",
+          "nearest_other_group_distance_m": 0.07129685602671962,
+          "decision_margin_m": 0.021427226365656582,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_Rhomboideus_S_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_Rhomboideus_S_l-P1",
+          "location_torso_m": [
+            -0.03812412666724412,
+            0.45939384358675917,
+            0.0026832387522027277
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3816219277996472,
+          "nearest_structure": "third cervical vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3161",
+          "nearest_surface_distance_m": 0.00471409873808847,
+          "nearest_other_group_structure": "right first rib",
+          "nearest_other_group_distance_m": 0.07735265706701838,
+          "decision_margin_m": 0.07263855832892992,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_Rhomboideus_I_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_Rhomboideus_I_l-P1",
+          "location_torso_m": [
+            -0.06095852799739341,
+            0.39434941105639704,
+            0.000670811660991339
+          ],
+          "height_above_thoracic_joint_centre_m": 0.3165774952692851,
+          "nearest_structure": "seventh cervical vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3172",
+          "nearest_surface_distance_m": 0.003365410648870361,
+          "nearest_other_group_structure": "left first rib",
+          "nearest_other_group_distance_m": 0.02752226199434767,
+          "decision_margin_m": 0.024156851345477307,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_LevatorScapulae_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "STAYS_ON_TORSO",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_LevatorScapulae_l-P1",
+          "location_torso_m": [
+            0.012503540567179908,
+            0.5657796062473647,
+            -0.04088011958731592
+          ],
+          "height_above_thoracic_joint_centre_m": 0.4880076904602527,
+          "nearest_structure": "atlas c1",
+          "nearest_structure_id": "body-za-7fb5720fb1239ed9",
+          "nearest_surface_distance_m": 0.08933502267379759,
+          "nearest_other_group_structure": "left first rib",
+          "nearest_other_group_distance_m": 0.18759437483025684,
+          "decision_margin_m": 0.09825935215645926,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_LatissimusDorsi_S_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "MIXED",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_LatissimusDorsi_S_l-P1",
+          "location_torso_m": [
+            -0.0744013536129772,
+            0.25313193638019715,
+            -0.0022491918076838237
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1753600205930852,
+          "nearest_structure": "sixth thoracic vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3171",
+          "nearest_surface_distance_m": 0.0064268128417994536,
+          "nearest_other_group_structure": "left seventh rib",
+          "nearest_other_group_distance_m": 0.010392839273443963,
+          "decision_margin_m": 0.003966026431644509,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "seth_LatissimusDorsi_S_l-P2",
+          "location_torso_m": [
+            -0.09363226161417443,
+            0.2534476371394906,
+            -0.03788111825944455
+          ],
+          "height_above_thoracic_joint_centre_m": 0.17567572135237863,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451M",
+          "nearest_surface_distance_m": 0.005357326635737115,
+          "nearest_other_group_structure": "sixth thoracic vertebra",
+          "nearest_other_group_distance_m": 0.010897939280227822,
+          "decision_margin_m": 0.005540612644490708,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "seth_LatissimusDorsi_S_l-P3",
+          "location_torso_m": [
+            -0.10292326029733534,
+            0.27682876900623404,
+            -0.1328681440783886
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1990568532191221,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.03022367717481384,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.042477788711015256,
+          "decision_margin_m": 0.012254111536201415,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "seth_LatissimusDorsi_S_l-P4",
+          "location_torso_m": [
+            -0.06376019966207541,
+            0.2969866266146355,
+            -0.17863331202270885
+          ],
+          "height_above_thoracic_joint_centre_m": 0.21921471082752353,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.03598572165484067,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.06887717084890889,
+          "decision_margin_m": 0.032891449194068216,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_LatissimusDorsi_M_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "MIXED",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_LatissimusDorsi_M_l-P1",
+          "location_torso_m": [
+            -0.06116898937086753,
+            0.12051788617947051,
+            0.002051897741993413
+          ],
+          "height_above_thoracic_joint_centre_m": 0.04274597039235856,
+          "nearest_structure": "eleventh thoracic vertebra",
+          "nearest_structure_id": "body-bp3d-FJ3155",
+          "nearest_surface_distance_m": 0.0022431955270066383,
+          "nearest_other_group_structure": "right eleventh rib",
+          "nearest_other_group_distance_m": 0.026366358535925866,
+          "decision_margin_m": 0.024123163008919226,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        },
+        {
+          "point": "seth_LatissimusDorsi_M_l-P2",
+          "location_torso_m": [
+            -0.08334596198562708,
+            0.13631476292261913,
+            -0.034500813267282174
+          ],
+          "height_above_thoracic_joint_centre_m": 0.05854284713550717,
+          "nearest_structure": "left tenth rib",
+          "nearest_structure_id": "body-bp3d-FJ3225",
+          "nearest_surface_distance_m": 0.012748927936320457,
+          "nearest_other_group_structure": "tenth thoracic vertebra",
+          "nearest_other_group_distance_m": 0.017669400228232057,
+          "decision_margin_m": 0.0049204722919115994,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        },
+        {
+          "point": "seth_LatissimusDorsi_M_l-P3",
+          "location_torso_m": [
+            -0.07835920584165323,
+            0.21241569970225882,
+            -0.14948192335943444
+          ],
+          "height_above_thoracic_joint_centre_m": 0.13464378391514686,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451M",
+          "nearest_surface_distance_m": 0.03689263263371751,
+          "nearest_other_group_structure": "left scapula",
+          "nearest_other_group_distance_m": 0.0407763771009678,
+          "decision_margin_m": 0.0038837444672502885,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        },
+        {
+          "point": "seth_LatissimusDorsi_M_l-P4",
+          "location_torso_m": [
+            -0.041967575607363715,
+            0.26139173038357827,
+            -0.18417606128170078
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1836198145964663,
+          "nearest_structure": "left scapula",
+          "nearest_structure_id": "body-bp3d-FJ3279",
+          "nearest_surface_distance_m": 0.05933837371196209,
+          "nearest_other_group_structure": "external intercostal muscle",
+          "nearest_other_group_distance_m": 0.06352706534862512,
+          "decision_margin_m": 0.004188691636663029,
+          "R1_endpoint_is_a_thorax_structure": false,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_LatissimusDorsi_I_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "MIXED",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_LatissimusDorsi_I_l-P1",
+          "location_torso_m": [
+            -0.024231897871052947,
+            0.07138133834921018,
+            -0.11918600463001143
+          ],
+          "height_above_thoracic_joint_centre_m": -0.006390577437901779,
+          "nearest_structure": "left tenth rib",
+          "nearest_structure_id": "body-bp3d-FJ3225",
+          "nearest_surface_distance_m": 0.002857258038447974,
+          "nearest_other_group_structure": "first lumbar vertebra",
+          "nearest_other_group_distance_m": 0.08550394201767597,
+          "decision_margin_m": 0.082646683979228,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        },
+        {
+          "point": "seth_LatissimusDorsi_I_l-P2",
+          "location_torso_m": [
+            -0.03008804340791193,
+            0.1616718325295399,
+            -0.1914978854963908
+          ],
+          "height_above_thoracic_joint_centre_m": 0.08389991674242794,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451M",
+          "nearest_surface_distance_m": 0.06381258580955776,
+          "nearest_other_group_structure": "left scapula",
+          "nearest_other_group_distance_m": 0.11255403295852875,
+          "decision_margin_m": 0.048741447148970996,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": false
+        },
+        {
+          "point": "seth_LatissimusDorsi_I_l-P3",
+          "location_torso_m": [
+            0.0053388603136660245,
+            0.2531303429010847,
+            -0.19232726224630858
+          ],
+          "height_above_thoracic_joint_centre_m": 0.17535842711397276,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451M",
+          "nearest_surface_distance_m": 0.06790141833684059,
+          "nearest_other_group_structure": "left scapula",
+          "nearest_other_group_distance_m": 0.08642766565513092,
+          "decision_margin_m": 0.018526247318290334,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_PectoralisMajorThorax_I_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_PectoralisMajorThorax_I_l-P1",
+          "location_torso_m": [
+            0.1282800521139497,
+            0.25440789361567506,
+            -0.03254102554809076
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1766359778285631,
+          "nearest_structure": "body of sternum",
+          "nearest_structure_id": "body-bp3d-FJ3178",
+          "nearest_surface_distance_m": 0.03193773651177242,
+          "nearest_other_group_structure": "left clavicle",
+          "nearest_other_group_distance_m": 0.1262511567519527,
+          "decision_margin_m": 0.09431342024018027,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_PectoralisMajorThorax_M_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_PectoralisMajorThorax_M_l-P1",
+          "location_torso_m": [
+            0.08399240221707496,
+            0.3565568205445787,
+            -0.017098819026502288
+          ],
+          "height_above_thoracic_joint_centre_m": 0.27878490475746676,
+          "nearest_structure": "manubrium",
+          "nearest_structure_id": "body-bp3d-FJ3290",
+          "nearest_surface_distance_m": 0.040354797313840285,
+          "nearest_other_group_structure": "left clavicle",
+          "nearest_other_group_distance_m": 0.04867035703818425,
+          "decision_margin_m": 0.008315559724343967,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    },
+    {
+      "muscle": "seth_PectoralisMinor_l",
+      "law": "Millard2012EquilibriumMuscle",
+      "verdict": "REASSIGNABLE",
+      "moving_points_on_torso": 0,
+      "points": [
+        {
+          "point": "seth_PectoralisMinor_l-P1",
+          "location_torso_m": [
+            0.12107148699574444,
+            0.26973385005954414,
+            -0.1199309851225099
+          ],
+          "height_above_thoracic_joint_centre_m": 0.1919619342724322,
+          "nearest_structure": "external intercostal muscle",
+          "nearest_structure_id": "body-bp3d-FJ1451M",
+          "nearest_surface_distance_m": 0.06390609845645831,
+          "nearest_other_group_structure": "left clavicle",
+          "nearest_other_group_distance_m": 0.13815340667622159,
+          "decision_margin_m": 0.07424730821976327,
+          "R1_endpoint_is_a_thorax_structure": true,
+          "R2_margin_clears_sqrt2_x_62mm": true
+        }
+      ]
+    }
+  ]
+}
