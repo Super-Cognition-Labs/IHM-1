@@ -53,13 +53,38 @@ The 13 `CoordinateActuator` torque motors are also not what that entry implied:
 `ihm/app/` or `ihm/assembly/`, so on the live path all 13 sit at zero and the
 upper body is moved by muscle or by nothing.
 
-**What is actually missing, which is narrower and sharper:** no shoulder girdle
-(no scapula, no clavicle), no deltoid, rotator cuff, pectoralis or latissimus; no
-forearm rotation (the Arm26 donor fuses it — `pro_sup` has a 2.16 mm moment arm);
-no wrist, no hand, no neck. The shoulder is three biceps and three triceps heads
-per side. From the model's own masses, the 21.1 N·m shoulder-flexion bound holds
-the arm's 41.2 N at 0.51 m — it can hold an arm out; **nothing here bounds
-pressing the trunk up**, which is what the self-righting milestone needs.
+**The girdle now exists, from a licence-clean donor** (`294f3a9`…`3a354ce`,
+`docs/SHOULDER_GIRDLE.md`). `data/models/shoulder_girdle_v1`: **29 bodies, 60
+coordinates, 158 muscles**, mass conserved to 1e-9, built from Seth 2019's
+thoracoscapular model — CC BY 4.0 on SimTK *and* Apache-2.0 through opensim-core's
+CLA, which **converge on commercial use with attribution**, the exact question on
+which MoBL-ARMS's statements diverge. Clavicle and scapula per side, a
+sternoclavicular and a 4-DOF scapulothoracic joint, the acromioclavicular constraint,
+`acromial` re-parented onto the scapula, 30 donor muscles per side. The arm does not
+move: <1e-9 m against the base plant. The torso debit reconstructs to **0.0 kg** and
+7.1e-16 kg·m². 16 of 16 checks pass, re-run here.
+
+**The donor's own inertia was not physically realisable, and was replaced rather than
+clipped.** Verified here independently: its clavicle and scapula violate the triangle
+inequality and its **radius carries a negative principal moment** (−4.5e-06 kg·m²).
+They were rebuilt from this body's own anatomy.
+
+**Can it press itself up? The girdle is not the limit — the elbow is.** Against a body
+weight of 761.1 N, arms straight gives **3,265 N (4.29 body weights)**, bounded by the
+scapula; at the worst-case lever it is **345 N (0.45 body weights)**, bounded by the
+**elbow's 43.7 N·m**, which this build does not touch. Shoulder torques rose 4–31×
+and are bidirectionally balanced for the first time. Before the girdle the question
+had **no answer at all**: the humerus was jointed straight to `torso`, so a press-up
+load reached the trunk through joint reactions with no muscle in the path. **This is
+capacity at one pose, not demonstrated behaviour** — nothing integrates, and a
+per-axis sum of `Fmax·|r|` is not a tension-feasible torque cone.
+
+**Still missing:** forearm rotation (the Arm26 donor fuses it — `pro_sup` has a
+2.16 mm moment arm), the wrist, the hand. Recorded from the build: on the left,
+`scapula_elevation_l` and `scapula_upward_rot_l` run **opposite** to their right-side
+namesakes, because the mobilizer's convention is not derivable from its declaration —
+and assembly success was no test of it (16 of 48 candidate conventions assembled,
+wrong ones included).
 
 Two cautions measured alongside: the lumbar drive ran **30.1° outside its declared
 ±90° range** with nothing clamping it (see Tier 1 — joint stops are now
