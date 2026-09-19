@@ -313,15 +313,44 @@ joints; see the comment in the code). That is fixed, and the base poser was chec
 committed module on all 150 gait-best frames in both pivot modes. The rotation, translation,
 centroid and segment-motion arrays and the skin were bit-identical.
 
+### The live plant runs the variant (18 September 2026)
+
+`ArticulatedBodyPlant(root, out, environment='upright', target_mass_kg=77.6122029,
+augmented_registration='data/models/articulated_spine_v1/registration.json', display_pose='opensim')`
+now constructs, steps, and projects frames with 25 segments. Its display pose moves the skull
+with `head`. The runtime had been built layer by layer for exactly 22 bodies, and two layers
+refused the variant, in this order:
+
+| layer | refusal | now uses | commit |
+|---|---|---|---|
+| force-frame registration (`CanonicalRegistration`) | 'Native segment has no retained canonical bone anchors: thorax' | bodies `canonical/mechanics.json` does not register are anchored on this binding's `segment_named_bones` (thorax 43, head 89, cervical 10), and those bones leave `torso` | `7ded91b` |
+| display poser | would have refused the 25 bodies in `check_bodies` | `AnatomyPoser.from_workspace(root, plant)` for the identified plant | `7ded91b` |
+| skin blend (`ContinuousSurfaceBinding.from_root`) | 'Surface binding registration supports changed' | a second blend over 25 segments, selected by `articulated.SURFACE_BINDINGS[plant]` | this change |
+
+After the third fix, nothing else in that construction refused. The variant also runs with
+`display_pose='anatomical'` and with `environment='supine'`. `enable_garments=True` fails on the
+BASE plant as well ('Garment constructor hash mismatch'), so that failure is not the variant's.
+The plant does not claim the variant stands. Why its ankle collapses is being diagnosed
+separately.
+
+The base plant is bit-identical to `7ded91b`: 7 frames and 6 output files, 0 differences, and a
+1-ulp control that fires. The display-pose battery is unchanged. Everything is in
+`scripts/verify_variant_runtime.py`, and its receipt is
+`data/derived/variant-runtime-verification.json`.
+
 ### What still does not follow
 
-* **The skin.** Its linear blend (`continuous_surface_binding.json.gz`) is over the 22 base
-  segments. In the variant, the skin of the head and neck rides `torso`, and the skull nods
-  underneath it. Fixing this needs a blend rebuilt over 25 segments.
-* **The app.** `ArticulatedBodyPlant` calls `AnatomyPoser.from_workspace(root, pivot=...)` with
-  no plant (`ihm/assembly/articulated.py:161`). A plant built on the variant registration would
-  have its 25 bodies refused by `check_bodies`. It needs to pass `'articulated_spine_v1'` when
-  the variant is selected. That is `articulated.py`'s change, not made here.
+* **The skin: done for the plant, not yet for the poser.** This bullet used to say that the
+  skin's linear blend covered only the 22 base segments, so the variant's head and neck skin
+  rode `torso` while the skull nodded underneath it. A 25-segment blend now exists, built by the
+  same method (see `DISTRIBUTED_SURFACE_BINDING.md`, "The 25-body variant"). The live plant's
+  force-frame skin and `surface_transforms` use it. `AnatomyPoser.skin_vertices` still reads
+  `SKIN_BINDING`, which is the 22-segment blend, for every plant. So in the variant the POSED
+  skin still follows `torso`. That is a one-line change in `anatomy_pose.py`: select the blend by
+  plant, as `PLANTS` does.
+* **The app: done.** This bullet used to say that `ArticulatedBodyPlant` called
+  `AnatomyPoser.from_workspace` with no plant. Since `7ded91b` it passes the plant it identified
+  from the engine's body set.
 * **Mass and surface disagree.** 1,128 entities, including the thoracic vertebrae and the lung lobes, are
   bound to `thorax` or `cervical` but have their mass in the torso residual core, because the
   variant's partition is rib cage only.
