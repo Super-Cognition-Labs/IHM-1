@@ -155,17 +155,35 @@ apart, and the explanation it gave is **withdrawn**:
   excluded too: at the crossing they carry 25–31 N against 468–476 N in the
   dorsiflexors, and the ankle crosses before the subtalar reaches its bound.
 
-  **Leading candidate, and it is the contact proxy, not the anatomy.** The engine sizes
-  each body's contact ball from its inertia ellipsoid and puts the support plane under
-  the lowest ball. The repartitioned torso's ball grows 0.258 → 0.309 m, and the plane
-  drops **48.5 mm** — verified here: every arm with the repartition sits at −0.45201 m
-  and every arm without it at −0.40350 m, without exception. The legs then fall
-  further, the heel lands 3.1× harder (1,142 N against 363 N) 0.14 s before the ankle
-  crosses the bar, and the foot folds onto its toes. **Not separated:** whether the
-  plane offset or the mass change itself drives the fold — that needs an engine option
-  for the plane offset. So this is one more reason §1's real skin contact should
-  replace the inertia-ellipsoid spheres: the spheres made a mass repartition look like
-  a joint failure.
+  ~~**Leading candidate: the contact proxy's PLANE.**~~ **WITHDRAWN 18 Sep 2026** —
+  the second mechanism withdrawn on this question, after the subtalar. The engine
+  option added in `3a6e8f0` made the separating run possible, and it was
+  pre-registered (`e8d25d8`) before running (`293b913`, `docs/FOOT_JOINTS.md` Q3):
+
+  | arm | floor | ankle r / l |
+  |---|---|---|
+  | repartitioned trunk, floor **pinned UP** at the base plant's −0.403499 m | held | **1.3961 / 1.2820 — still collapses** |
+  | base trunk, floor **dropped** to the repartitioned −0.452013 m | held | **0.1532 / 0.1504 — still fine** |
+
+  Moving the floor 48.5 mm is worth **−0.0054 rad** on the repartitioned plant and
+  **+0.0303** on the base one; the repartition is worth **+1.2732 rad with the floor
+  pinned**, against +1.254 with it free — factor and floor do not interact. A 5-rung
+  ladder is monotone and graded with no threshold (0.1229 → 0.1532, slope 6.26e-4
+  rad/mm); at that slope the floor would need ~2.0 m to reach 1.40.
+
+  **The impact story is falsified by its own witness.** `base@PT` lands its heels at
+  992/925 N — 2.7× the base arm's, as hard as the collapsed arms — and its ankle moves
+  0.03 rad; `tweld@P0` lands *softer* than `tweld` and folds anyway. Heel impact is a
+  co-symptom.
+
+  **What survives.** Pinning the plane does not pin the BALL: the repartitioned torso's
+  proxy sphere is **0.3090 m against 0.2577 m** at every arm, wherever the floor is, so
+  that trunk's contact point sits 51.3 mm further from its own mass centre. Two
+  candidates remain and this run does not choose between them — the **proxy radius**
+  (still a contact artefact) or the **repartitioned inertia itself**. The separating arm
+  needs an engine option for the per-body proxy radius: run `tweld` with the torso ball
+  pinned at 0.2577 m.
+
 * **F2's bar compares plants lying on planes 48.5 mm apart.** Recorded; F2 stays
   FAILED and is not rescored.
 * The original gate — no new coordinate may leave its range by more than the base

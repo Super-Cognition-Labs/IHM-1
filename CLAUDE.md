@@ -81,6 +81,29 @@ report what the crude body did as what the body did.
   `out`, i.e. almost the whole repository by volume. Use `/usr/bin/grep` or `git grep`, and
   say which, whenever you quote a count.
 
+## A factorial identifies a FACTOR, not a mechanism
+
+**The mechanism you attribute to a factor afterwards is a separate claim, and the
+factorial never tested it.** A clean pre-registered factorial found that the spine
+variant's ankle collapse rides entirely on the torso repartition (+1.254 rad; wrists
+-0.001, subtalar -0.019), and that was right and still is. The mechanism was then
+guessed **twice** and wrong both times: first "the plantarflexors load a hinge they
+cannot control" (excluded -- at the crossing they carry 25-31 N against 468-476 N in
+the dorsiflexors), then "the repartitioned torso's ball drops the support plane
+48.5 mm" (excluded -- pinning the floor up leaves the collapse at 1.3961 rad, and
+dropping it under the base plant leaves it at 0.1532; the floor is worth 6.26e-4
+rad/mm, and would need ~2 m to matter).
+
+Both guesses were plausible, quantitative, and supported by a real correlate -- the
+second even had a measured 48.5 mm plane drop and a 3.1x harder heel strike to point
+at. The heel strike was a co-symptom: an arm that lands 2.7x harder than the base and
+does not fold proves it.
+
+**Each mechanism needed its own instrument**, and in the second case that instrument
+did not exist until an engine option was added for it. So: when a factorial hands you
+a factor, name the mechanism as a HYPOTHESIS, and build the arm that would exclude it
+before writing it down as the cause. `docs/FOOT_JOINTS.md` is the worked example.
+
 ## A pre-registration can carry an unmeasured assumption
 
 **Fixing a threshold before the result protects against one failure. It does nothing about a
