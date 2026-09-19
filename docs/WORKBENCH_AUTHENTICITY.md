@@ -376,23 +376,60 @@ at 128 points.
 
 ## Tier 3 — the control path
 
-### 3.1 Eight muscles have reflexes; 80 have an engineered gain
+### 3.1 The control path: a recruitment pool, and hip/knee reflexes from the source
 
-`ihm/assembly/sensorimotor.py` declares its own scope in the frame it emits:
+**Two corrections to how this entry used to read.** The reflex source is **Geyer &
+Herr 2010** (IEEE TNSRE 18(3):263), not "Song & Geyer": the pinned file's sha256
+matches `SOURCE_SHA256` and its title page says so. The wrong name came from the
+download URL's filename, `song.pdf`, and was carried from here into two work
+orders. And the headcount was not "80 muscles" — the live plant has 92 by default
+and 98 for stance (§0.1).
 
-> `'all catalog effectors have engineered sensory/descending ports; eight ankle
-> effectors have source reflex primitives; no autonomous walking policy'`
-> `'decoder_basis': 'engineered regional-rate gain and effector-gated drive; not
-> identified motor recruitment'`
-> `'biological_validation': False`
+What the entry used to describe is still the default, deliberately: eight ankle
+muscles `{tibant,soleus,gasmed,gaslat}_{l,r}` with Geyer & Herr's Table I constants,
+and every other muscle driven by `baseline + gain·reflex + drive` with gain a
+linear function of a regional firing rate (`cortical_gain_per_hz = .005`). That is
+a dial, not recruitment, and `None`/`None` still selects it — reproduced field by
+field against the original file at `ab3d2b8` over 30 of 30 frames
+(`scripts/verify_recruitment.py`, all pass).
 
-The eight are `{tibant,soleus,gasmed,gaslat}_{l,r}`, with hand-transcribed Song
-& Geyer constants (`1.1*(length-.71)`, `1.2*force`, `-.3*soleus force`). Every
-other muscle's command is `baseline + gain·reflex + drive` where gain is a linear
-function of a **regional firing rate** — `cortical_gain_per_hz = .005` — around a
-reference recorded at t=0. That is a dial, not recruitment. The cortical
-assignment itself is declared an `'engineering prior … no measured somatotopic
-recruitment'` (`sensorimotor_catalog.py`).
+**What exists now beside it** (`docs/MOTOR_RECRUITMENT.md`):
+
+- **A size-principle recruitment pool** (`ihm/assembly/recruitment.py`) — the
+  Fuglevand, Winter & Patla 1993 motor-unit pool, every number from the
+  open-access restatement by Potvin & Fuglevand 2017, pinned by sha256. 120 units,
+  recruited small-first, firing from 8 imp/s to a 35→25 imp/s ceiling; the last unit
+  recruits at 74.6% of maximum drive, as the paper states. It produces excitation
+  only; native mechanics still owns activation, fibre dynamics and force. It is
+  **one pool shape for every muscle** — no source read supports ordering units
+  across muscles by Fmax or fibre length, so it does not.
+- **Knee and hip reflexes** (VAS, HAM, GLU, HFL, stance and swing) transcribed from
+  Geyer & Herr's Table I and Appendix I, not by analogy. Two defects in the source
+  are recorded rather than fixed silently: the printed stance HFL law can only
+  lower stimulation, contradicting the paper's own p. 265 (the p. 265 reading is
+  used); and `k_bw = 1.2` lies outside its own printed range of 1.3–5.0. Declared as
+  unmeasured choices: which plant muscles map to each source group, how one source
+  muscle is split across several, and that all reflexes run at 20 ms where the
+  source uses 20/10/5 ms for ankle/knee/hip.
+
+**Measured against EMG, pre-registered before scoring** (commits `313f7db` then
+`02b3861`), one right-leg walking trial on the model the plant descends from:
+
+| gate | result |
+|---|---|
+| P1 — knee/hip reflexes beat a foot-contact indicator | **FAILED**: skill +0.023 vs +0.040, 95% CI of the difference −0.124 to +0.126 |
+| P2 — pool vs rate decoder | **null, as predicted**: with no descending drive the pool is idle and the arms differ by a dial moving 1.005–1.103; CI −0.053 to +0.019 |
+| P3 — context, not a gate | the existing ankle reflexes carry signal beyond gait phase: 0.54 vs 0.09, soleus r = 0.85 |
+
+Medial hamstrings is predicted **backwards** — its +0.065 skill exists only because
+the fitted map has a negative slope, and its raw correlation is −0.25. So skill
+after a fitted map can reward a law that is wrong in sign; read the raw correlation
+beside it. The comparison ran on a **replay**, not the native plant, because the
+engine cannot prescribe motion and its static evaluator returns no tendon force.
+
+**What still stops it:** the pool can only be tested on a task with a measured
+descending command, and none is retained. Everything above is one subject and
+about one stride.
 
 ### 3.2 The cortico-cortical path carries 0.03–0.07% and severing it changes nothing
 
