@@ -1,0 +1,322 @@
+{
+ "gate": "cutaneous nociceptor transduction",
+ "scope": "cutaneous nociceptor transduction: contact pressure -> A-delta and C afferent rate.  NOT a pain scale and NOT a reward.",
+ "route_scope": "schematic lower bound (IBM-1 ibm/topologies/ihm_bridge.py caveat): route length is an authored endpoint-to-relay polyline (dermatomes.json path_length_scope), not a dissected nerve; central and synaptic delays excluded",
+ "verdict": "PASSED",
+ "failed": [],
+ "checks": [
+  {
+   "check": "K1",
+   "verdict": "PASS",
+   "detail": "rates [0.0, 0.0, 0.0, 0.0] Hz below/at threshold",
+   "pressures_pa": [
+    0.0,
+    66666.66666666667,
+    133333.33320000002,
+    133333.33333333334
+   ],
+   "rates_hz": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "check": "K2",
+   "verdict": "PASS",
+   "detail": "rate at P_half = 5.0 Hz (ceiling/2 = 5.0)",
+   "rate_hz": 5.0
+  },
+  {
+   "check": "K3",
+   "verdict": "PASS",
+   "detail": "rate at 1e4 P0 = 9.997500 Hz of 10.0",
+   "rate_hz": 9.997500374943758
+  },
+  {
+   "check": "K4",
+   "verdict": "PASS",
+   "detail": "non-decreasing over 1 kPa..1 GPa"
+  },
+  {
+   "check": "I1",
+   "verdict": "PASS",
+   "detail": "firing_rate_hz called twice on 4,096 pressures"
+  },
+  {
+   "check": "B1",
+   "verdict": "PASS",
+   "detail": "1326 of 1326 patches match their recorded triangle count",
+   "faces_bound": 109183
+  },
+  {
+   "check": "B2",
+   "verdict": "PASS",
+   "detail": "21382 of 21382 supine samples bound (supine-surface-contact-5jqy1juo)",
+   "quadrature": "data/derived/supine-surface-contact-5jqy1juo"
+  },
+  {
+   "check": "S1",
+   "verdict": "PASS",
+   "detail": "max sample off its face 4.52e-16 m; projected 0.5346 m2 -> skin 0.4892 m2 (11102 faces capped at their own area, min |cos| 0.0061)",
+   "max_off_plane_m": 4.523833564695767e-16,
+   "min_cos": 0.00609381598905053,
+   "samples_cos_below_0_1": 106,
+   "projected_area_m2": 0.5345500000000001,
+   "uncapped_surface_area_m2": 0.8680877035946418,
+   "surface_area_m2": 0.4892090561382264,
+   "faces_capped": 11102
+  },
+  {
+   "check": "B3",
+   "verdict": "PASS",
+   "detail": "patch dermatome-patch-left-t3-pectoral_girdle-0555: 6.274711990 Hz, expected 6.274711990, sample rate 7.058823529; covered 24.31 of 27.35 cm2 skin; every other patch 0.0",
+   "patch": "dermatome-patch-left-t3-pectoral_girdle-0555",
+   "rate_hz": 6.274711989574282,
+   "expected_hz": 6.274711989574284,
+   "peak_sample_rate_hz": 7.058823529411765
+  },
+  {
+   "check": "B3m",
+   "verdict": "PASS",
+   "detail": "uniform 2 P_half everywhere: max patch rate 6.838879 Hz <= sample rate 7.058824; 717 patches loaded, covered fraction median 0.393, max 0.968841",
+   "patches_loaded": 717,
+   "covered_fraction_median": 0.3930015652250643
+  },
+  {
+   "check": "B4",
+   "verdict": "PASS",
+   "detail": "0.999 P0 on all 21382 samples -> max patch rate 0.0 Hz"
+  },
+  {
+   "check": "R3",
+   "verdict": "PASS",
+   "detail": "zero stimulus: 0 events sent, arrivals False"
+  },
+  {
+   "check": "I3",
+   "verdict": "PASS",
+   "detail": "one delay-line state stepped twice with one input"
+  },
+  {
+   "check": "R1",
+   "verdict": "PASS",
+   "detail": "1326 of 1326 patches: A-delta first; lead min 56.0 ms, median 433.0 ms, max 1122.0 ms",
+   "lead_ms": {
+    "min": 56.00000000000005,
+    "median": 433.00000000000034,
+    "max": 1121.9999999999784
+   }
+  },
+  {
+   "check": "R2",
+   "verdict": "PASS",
+   "detail": "worst |first arrival - L/v| = 1.000 ms (dt 1 ms)"
+  }
+ ],
+ "delays": {
+  "adelta": {
+   "min_ms": 4.002997008878995,
+   "median_ms": 30.8886153996469,
+   "max_ms": 80.15581411843816,
+   "velocity_m_s": 15.0
+  },
+  "c": {
+   "min_ms": 60.044955133184935,
+   "median_ms": 463.32923099470355,
+   "max_ms": 1202.3372117765723,
+   "velocity_m_s": 1.0
+  }
+ },
+ "law": {
+  "threshold_pa": 133333.33333333334,
+  "half_saturation_pa": 466666.6666666666,
+  "ceiling_hz": 10.0
+ },
+ "evidence": {
+  "threshold_pa": {
+   "value": 133333.33333333334,
+   "units": "Pa",
+   "derivation": "4 N / 30 mm2",
+   "source": {
+    "citation": "Adriaensen H, Gybels J, Handwerker HO, Van Hees J (1984). Nociceptor discharges and sensations due to prolonged noxious mechanical stimulation -- a paradox. Hum Neurobiol 3(1):53-58.",
+    "pmid": "6330012",
+    "species": "human",
+    "method": "psychophysics + microneurography, forceps squeeze of a dorsal-hand skin fold, constant force for 120 s",
+    "quote": "forces greater than 4 N exerted on forceps faces of 30 mm2 elicited pain"
+   },
+   "kind": "human psychophysical pain threshold, used as the receptor channel's threshold",
+   "transfer": "a pain-REPORT threshold, not a unit's firing threshold; human nociceptors fire below it (see sub_pain_von_frey).  applied to every patch region, though it was measured on dorsal hand skin."
+  },
+  "half_saturation_pa": {
+   "value": 466666.6666666666,
+   "units": "Pa",
+   "derivation": "14 N / 30 mm2",
+   "source": {
+    "citation": "Schmidt R, Schmelz M, Torebjork HE, Handwerker HO (2000). Mechano-insensitive nociceptors encode pain evoked by tonic pressure to human skin. Neuroscience 98(4):793-800.",
+    "doi": "10.1016/s0306-4522(00)00189-5",
+    "pmid": "10891622",
+    "species": "human",
+    "method": "microneurography, superficial peroneal nerve; tonic pressure",
+    "quote": "tonic pressure stimulation (14N at 30 mm(2); 120 s) ... induced augmenting pain responses which were matched by the discharges of initially mechano-insensitive ('silent') C-units"
+   },
+   "kind": "the one human suprathreshold pressure, in the same 30 mm2 geometry, reported strongly and increasingly painful",
+   "transfer": "half-saturation is PLACED here.  that placement is the modelling choice; the source does not report a half-saturation."
+  },
+  "rate_ceiling_hz": {
+   "value": 10.0,
+   "units": "Hz",
+   "source": {
+    "citation": "Van Hees J, Gybels J (1981). C nociceptor activity in human nerve during painful and non painful skin stimulation. J Neurol Neurosurg Psychiatry 44(7):600-607.",
+    "doi": "10.1136/jnnp.44.7.600",
+    "pmid": "7288447",
+    "species": "human",
+    "method": "microneurography, >100 single C fibres, radial nerve",
+    "quotes": [
+     "mechanical threshold, measured with von Frey hairs, varied between 2.3 and 13.1 g",
+     "conduction velocities ... mean value of 0.86 m/s (SD: 0.17)",
+     "discharge even up to more than 10 spikes/s ... not necessarily accompanied by pain sensation"
+    ]
+   },
+   "kind": "observed maximum of mechanically evoked human C-nociceptor discharge",
+   "transfer": "'more than 10 spikes/s' makes 10 Hz a FLOOR on the observed maximum; used as the asymptote, so the channel may understate peak discharge."
+  },
+  "law": {
+   "form": "rate = ceiling * x / (1 + x), x = max(0, P - threshold) / (half_saturation - threshold)",
+   "kind": "modelling choice",
+   "why": "the sources give a threshold, a strongly painful level and a ceiling, not a curve.  a rectified hyperbola is silent at and below threshold, monotone, and saturates without a second free constant."
+  },
+  "adelta_law": {
+   "kind": "UNMEASURED ASSUMPTION",
+   "statement": "the A-delta channel uses the C-fibre law above unchanged",
+   "what_would_measure_it": "human A-delta high-threshold mechanoreceptor thresholds and discharge: Adriaensen H, Gybels J, Handwerker HO, Van Hees J (1983) J Neurophysiol 49(1):111-122, doi:10.1152/jn.1983.49.1.111 -- not read for this module."
+  },
+  "sub_pain_von_frey": {
+   "kind": "NOT USED",
+   "source": [
+    {
+     "citation": "Van Hees J, Gybels J (1981). C nociceptor activity in human nerve during painful and non painful skin stimulation. J Neurol Neurosurg Psychiatry 44(7):600-607.",
+     "doi": "10.1136/jnnp.44.7.600",
+     "pmid": "7288447",
+     "species": "human",
+     "method": "microneurography, >100 single C fibres, radial nerve",
+     "quotes": [
+      "mechanical threshold, measured with von Frey hairs, varied between 2.3 and 13.1 g",
+      "conduction velocities ... mean value of 0.86 m/s (SD: 0.17)",
+      "discharge even up to more than 10 spikes/s ... not necessarily accompanied by pain sensation"
+     ]
+    },
+    {
+     "citation": "Schmidt R, Schmelz M, Torebjork HE, Handwerker HO (2000). Mechano-insensitive nociceptors encode pain evoked by tonic pressure to human skin. Neuroscience 98(4):793-800.",
+     "doi": "10.1016/s0306-4522(00)00189-5",
+     "pmid": "10891622",
+     "species": "human",
+     "method": "microneurography, superficial peroneal nerve; tonic pressure",
+     "quote": "tonic pressure stimulation (14N at 30 mm(2); 120 s) ... induced augmenting pain responses which were matched by the discharges of initially mechano-insensitive ('silent') C-units"
+    }
+   ],
+   "values": "polymodal C units: 2.3-13.1 g (22.6-128.5 mN); < 160 mN",
+   "why": "forces on von Frey hair tips of undeclared area; converting to a pressure would need a tip area neither abstract gives."
+  },
+  "algometry_crosscheck": {
+   "kind": "independent human check, NOT used in the law",
+   "source": [
+    {
+     "citation": "Pan LH, Ling YH, Lai KL, Wang YF, Hsiao FJ, Chen SP, Liu HY, Chen WT, Wang SJ (2024). The normative values of pain thresholds in healthy Taiwanese. Brain Behav 14(4):e3485.",
+     "doi": "10.1002/brb3.3485",
+     "pmid": "38648375",
+     "species": "human",
+     "method": "electronic algometer, 1 cm2 probe, ~50 kPa/s, DFNS protocol",
+     "n_male": 55,
+     "n_female": 75,
+     "ppt_kpa": {
+      "thenar": {
+       "male": [
+        290.3,
+        91.3
+       ],
+       "female": [
+        256.7,
+        94.8
+       ]
+      },
+      "masseter": {
+       "male": [
+        178.5,
+        56.7
+       ],
+       "female": [
+        156.6,
+        58.4
+       ]
+      }
+     }
+    },
+    {
+     "citation": "Rolke R, Baron R, Maier C, et al. (2006). Quantitative sensory testing in the German Research Network on Neuropathic Pain (DFNS): standardized protocol and reference values. Pain 123:231-243.",
+     "quote": "pressure gauge device ... with a probe area of 1 cm2 (probe diameter of 1.1 cm) ... slowly increasing ramp of 50 kPa/s"
+    },
+    {
+     "citation": "Lautenbacher S, Kunz M, Strate P, Nielsen J, Arendt-Nielsen L (2005). Age effects on pain thresholds, temporal summation and spatial summation of heat and pressure pain. Pain 115(3):410-418.",
+     "doi": "10.1016/j.pain.2005.03.025",
+     "pmid": "15876494"
+    }
+   ],
+   "pooled_ppt_kpa": {
+    "thenar": 270.9153846153846,
+    "masseter": 165.8653846153846
+   },
+   "ratio_to_threshold": {
+    "thenar": 2.0318653846153847,
+    "masseter": 1.2439903846153846
+   },
+   "reading": "1 cm2 algometry reads 1.24-2.03x the 30 mm2 forceps threshold; spatial summation predicts the opposite sign, so site and loading mode dominate the difference."
+  },
+  "unmodelled_dynamics": {
+   "kind": "measured, NOT modelled",
+   "source": [
+    {
+     "citation": "Adriaensen H, Gybels J, Handwerker HO, Van Hees J (1984). Nociceptor discharges and sensations due to prolonged noxious mechanical stimulation -- a paradox. Hum Neurobiol 3(1):53-58.",
+     "pmid": "6330012",
+     "species": "human",
+     "method": "psychophysics + microneurography, forceps squeeze of a dorsal-hand skin fold, constant force for 120 s",
+     "quote": "forces greater than 4 N exerted on forceps faces of 30 mm2 elicited pain"
+    },
+    {
+     "citation": "Schmidt R, Schmelz M, Torebjork HE, Handwerker HO (2000). Mechano-insensitive nociceptors encode pain evoked by tonic pressure to human skin. Neuroscience 98(4):793-800.",
+     "doi": "10.1016/s0306-4522(00)00189-5",
+     "pmid": "10891622",
+     "species": "human",
+     "method": "microneurography, superficial peroneal nerve; tonic pressure",
+     "quote": "tonic pressure stimulation (14N at 30 mm(2); 120 s) ... induced augmenting pain responses which were matched by the discharges of initially mechano-insensitive ('silent') C-units"
+    }
+   ],
+   "what": "polymodal C adaptation; mechano-insensitive recruitment after >20 s and sensitisation on repeat",
+   "why": "no time constant is given by either source"
+  },
+  "c_velocity_crosscheck": {
+   "kind": "human measurement beside the IBM velocity used",
+   "source": {
+    "citation": "Van Hees J, Gybels J (1981). C nociceptor activity in human nerve during painful and non painful skin stimulation. J Neurol Neurosurg Psychiatry 44(7):600-607.",
+    "doi": "10.1136/jnnp.44.7.600",
+    "pmid": "7288447",
+    "species": "human",
+    "method": "microneurography, >100 single C fibres, radial nerve",
+    "quotes": [
+     "mechanical threshold, measured with von Frey hairs, varied between 2.3 and 13.1 g",
+     "conduction velocities ... mean value of 0.86 m/s (SD: 0.17)",
+     "discharge even up to more than 10 spikes/s ... not necessarily accompanied by pain sensation"
+    ]
+   },
+   "measured_m_s": [
+    0.86,
+    0.17
+   ],
+   "used_m_s": 1.0
+  }
+ },
+ "dermatomes_sha256": "3c5161824a9f0e49ebe0c90e054c2c75ea99e341a187c36cbe55d5f6ed7ac849",
+ "patches": 1326,
+ "supine_samples": 21382
+}
