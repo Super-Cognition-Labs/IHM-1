@@ -1,0 +1,148 @@
+{
+  "schema": "ihm.wrist-donor-source.v1",
+  "question": "Is there a licence-clean forearm/wrist/hand muscle donor available to this programme?",
+  "answer": "NO. Every wrist-muscled model on disk is one artefact whose rights holders' own licence forbids copying, forbids distribution and restricts use to non-commercial academic work. The one upper-limb donor released without a non-commercial restriction is not on disk and is behind a login wall.",
+  "verdict": "BLOCKED_ON_LICENCE",
+  "verdict_is_a_statement_of_fact_not_a_legal_opinion": true,
+  "determined_on": "2026-09-18",
+  "record": "docs/WRIST_AND_THORAX.md part one",
+  "nothing_was_copied_or_derived": "No muscle, path point, parameter or number from any model below appears in any file produced by this work. data/raw/ is gitignored and `git ls-files data/raw` returns zero tracked files, so this repository does not redistribute any of them.",
+
+  "on_disk": {
+    "census_basis": "every .osim in the repository parsed; 1641 files, 414 unique by content (data/raw = 215); a candidate counts only if a muscle PATH touches a carpal or metacarpal body, not if a coordinate is merely named for the wrist",
+    "files_with_a_muscle_crossing_the_wrist": 4,
+    "files_with_wrist_coordinates_and_no_wrist_muscle": 25,
+    "candidates": [
+      {
+        "id": "gonzalez_wrist_opensim_models",
+        "path": "data/raw/anatomy/opensim-models/source/Models/WristModel/wrist.osim",
+        "sha256": "66488a7819cecac562bda9c59b935c1e4c7b78c7bdb21d2ef44e23f6198c1996",
+        "bytes": 419036,
+        "document_version": "40000",
+        "credits": "Gonzalez, R.V., Buchanan, T.S., Delp, S.L.",
+        "publications": "How muscle architecture and moment arms affect wrist flexion-extension moments. Journal of Biomechanics, vol. 30, pp. 705-712, 1997.",
+        "muscle_count": 25,
+        "muscle_law": "Schutte1993Muscle_Deprecated",
+        "body_count": 28,
+        "wrist_coordinates": {
+          "flexion": [-1.22173048, 1.22173048],
+          "deviation": [-0.436332, 0.610865]
+        },
+        "licence_text_inside_the_file": "NONE. A grep for licen|copyright|creative|commons|BSD|MIT|apache over the file returns zero hits.",
+        "usable": false
+      },
+      {
+        "id": "gonzalez_wrist_opensim_core_jni",
+        "path": "data/raw/mechanics/opensim-core/Bindings/Java/OpenSimJNI/Test/wrist.osim",
+        "sha256": "3a702ad1aada48a83921dfebd97b8d231d5e14d51895d57e6478edbbee5ab60b",
+        "bytes": 381258,
+        "document_version": "10905",
+        "credits": "PLACEHOLDER: 'Model authors names..'",
+        "muscle_count": 26,
+        "muscle_law": "Schutte1993Muscle (legacy tag, no _Deprecated suffix; a census grepping only the modern class names reports ZERO forces here)",
+        "same_model_as": "gonzalez_wrist_opensim_models",
+        "usable": false
+      },
+      {
+        "id": "gonzalez_wrist_opensim_core_tests",
+        "path": "data/raw/mechanics/opensim-core/OpenSim/Simulation/tests/resources/wrist_mass.osim",
+        "sha256": "78f07837d7974bc88de10f3fe6d806cad4942b538dc4cfd3f262bdd7380fe619",
+        "bytes": 382251,
+        "document_version": "10905",
+        "credits": "PLACEHOLDER: 'Model authors names..'",
+        "muscle_count": 26,
+        "same_model_as": "gonzalez_wrist_opensim_models",
+        "usable": false
+      },
+      {
+        "id": "pushup_fixture",
+        "path": "data/raw/mechanics/opensim-core/OpenSim/Simulation/tests/resources/PushUpToesOnGroundWithMuscles.osim",
+        "sha256": "5b8344e1c22ecd981a2ed41d884b2672e7e02f5df859be0526ec53e2f3d595d6",
+        "bytes": 989833,
+        "document_version": "30000",
+        "credits": "PLACEHOLDER: 'Model authors names..'",
+        "carpal_attached_muscles": 48,
+        "muscle_law": "Schutte1993Muscle_Deprecated",
+        "usable": false,
+        "unusable_because": [
+          "placeholder credits; docs/UPPER_BODY_ACTUATION.md section 10.3 established that its derivative author granted nothing findable and the ULB download page shows no licence at all",
+          "the radiocarpal is a one-DOF PinJoint: flexion only, NO deviation coordinate exists to drive",
+          "both wrist coordinates ship <locked>true</locked> at -1.57079632 rad"
+        ]
+      }
+    ]
+  },
+
+  "operative_licence": {
+    "applies_to": ["gonzalez_wrist_opensim_models", "gonzalez_wrist_opensim_core_jni", "gonzalez_wrist_opensim_core_tests"],
+    "issuer": "the SimTK project 'Wrist Model' (group_id 325), whose listed team is the model's three authors: Roger Gonzalez, Thomas S Buchanan, Scott Delp",
+    "authority": "the only statement found that is issued by anyone holding rights in this model",
+    "url": "https://simtk.org/frs/?group_id=325",
+    "project_url": "https://simtk.org/projects/wrist-model/",
+    "simtk_licence_field": "Custom Use Agreement",
+    "package": "WristModel.zip, 73 KB, released 2008-07-25, last updated 2008-08-19",
+    "read_live_on": "2026-09-18",
+    "licence_string_sha256": "51741011d62f393ae91ed347463238634ea0c038bced97c8529f4508bd23aa92",
+    "verbatim": "Wrist Model\n\nThank you for your interest in using our model of the wrist. You are welcome to use and modify this model for our noncommercial research. We hope it will be helpful to you and that you will continue to improve and apply the model to new research applications.\n\nThere are five conditions on the use of this model.\n\n1. This model was developed and tested over several years of collaborative work. An overview of the model is published in the references cited on this website. You must acknowledge the source of the model in any presentation, publication, or grant application that includes an image or description of the model or results generated with the model.\n\n2. You must test the accuracy of the model in the context of your application. We have developed the model for a specific purpose and understand its strengths and limitations in this specific application. You are responsible for testing its accuracy in the context of your planned application. We make no guarantees as to its suitability for your particular application.\n\n3. We ask you to provide improvements you make to the model to us, so that we, and others, may benefit from your work.\n\n4. You may not copy or distribute this model. If others are interested in using the model, please direct them to this website.\n\n5. This model may be used only for non-commercial, academic work. It may not be used in any commercial activity. You may not sell the model or results or images generated with the model.",
+    "what_it_forbids": [
+      "copying or distributing the model (condition 4)",
+      "any commercial activity, and selling the model or results or images generated with it (condition 5)"
+    ],
+    "what_it_requires": [
+      "acknowledging the source in any presentation, publication or grant application including an image, description or result (condition 1)",
+      "testing the accuracy of the model in the context of the application (condition 2)",
+      "offering improvements back to the authors (condition 3)"
+    ],
+    "comparison_to_mobl_arms": "STRICTER. MoBL-ARMS 4.1's SimTK notice is BSD-3 restricted to non-commercial use, which at least permits redistribution with the notice. This one forbids copying and distribution outright."
+  },
+
+  "the_apache_copy_is_not_a_second_opinion": {
+    "claim_rejected": "that the opensim-core copies are covered by opensim-core's Apache-2.0 LICENSE.txt",
+    "why": "this is the exact error docs/UPPER_BODY_ACTUATION.md section 10.1(4) recorded for MoBL-ARMS: reading a repository's own licence as covering a model somebody else contributed to it. The repository says otherwise itself.",
+    "opensim_core_notice_carve_out": "If you use plugins, models, or other components contributed by your fellow researchers, you must acknowledge their work as described in the license that accompanies each of these files.",
+    "no_licence_accompanies_these_files": true,
+    "and_the_credits_are_placeholders": "so the opensim-core copies do not even carry the attribution condition 1 requires",
+    "opensim_models_repository": {
+      "licence_notice_or_copying_file_anywhere_in_the_tree": "NONE",
+      "readme_in_full": "OpenSim models (.osim) and related example files that are distributed with the OpenSim application. (plus two AppVeyor badge links)",
+      "osim_files_carrying_an_explicit_in_file_grant": 33,
+      "wrist_osim_is_one_of_them": false,
+      "sibling_example": "Arm26, two directories away: 'License: Creative Commons (CCBY 3.0). You are free to distribute, remix, tweak, and build upon this work, even commercially, as long as you credit us for the original creation. http://creativecommons.org/licenses/by/3.0/'",
+      "reading": "in a tree where granted models say so, silence is not an inheritance"
+    }
+  },
+
+  "the_donor_that_would_be_clean": {
+    "name": "Stanford-VA upper limb model (Holzbaur, Murray, Delp 2005)",
+    "simtk_project": "https://simtk.org/projects/up-ext-model",
+    "downloads_page": "https://simtk.org/frs/?group_id=324",
+    "package": "UpperExtremityModel.zip (file id 1131)",
+    "read_live_on": "2026-09-18",
+    "licence_string_sha256": "037e1fe374fc9a1f6006d06e8c0a1bf93cff274ed019ac9f551152ff5a3caa7b",
+    "licence": "BSD 3-Clause. Copyright (c) 2005, Stanford University and VA Palo Alto Health Care System. All rights reserved.",
+    "citation_required": "Holzbaur KRS, Murray WM, Delp SL. A model of the upper extremity for simulating musculoskeletal surgery and analyzing neuromuscular control. Annals of Biomedical Engineering 2005; 33: 829-840.",
+    "non_commercial_clause": "NONE",
+    "acquired": false,
+    "acquisition_blocked_by": "https://simtk.org/frs/download_confirm.php/file/1131/UpperExtremityModel.zip?group_id=324 returns 197 bytes of HTML redirecting to /account/login.php?triggered=1 -- the same login wall docs/SHOULDER_GIRDLE.md section 1.4 hit at 216 bytes for the thoracoscapular package and docs/UPPER_BODY_ACTUATION.md section 10.1 hit for MoBL-ARMS",
+    "wrist_muscle_content_verified": false,
+    "note": "Arm26, already registered in this plant, is this model's educational reduction and names the same paper. The catalog remark that it has 'no inertial properties for the bodies' does not bear on this use: this plant supplies its own radius, ulna and hand inertia and would take only paths and parameters."
+  },
+
+  "registration_cost_once_a_donor_is_cleared": {
+    "finding": "against a Rajagopal/Holzbaur-lineage donor the frame map is EXACT arithmetic, not a fit",
+    "evidence": "this plant's arm bodies are Rajagopal's own bones through OpenSim's ScaleTool, which records the factors it used. RajagopalLaiUhlrich2023.osim's radius_hand_r offset (-0.008797, -0.235841, 0.01361) times this model's own radius_r <Mesh><scale_factors> (1.0693436226, 1.0010835523, 1.0916949738) reproduces this plant's offset (-0.009407015848012, -0.236096546057984, 0.014857968593418) with a componentwise difference of exactly 0.0",
+    "corroboration": "this plant's wrist ranges, inherited from RajagopalLaiUhlrich2023's own radius_hand, are +-1.22173048 and -0.43633231..0.61086524 rad; the Gonzalez model declares the same two ranges to six decimals",
+    "same_rule_already_audited_by": "scripts/build_corrected_foot.py check C3, over 19 joint offsets",
+    "what_would_still_be_work": [
+      "the Gonzalez wrist is two coupled carrier bodies plus welded carpals where this plant is a single UniversalJoint, so the two DOFs must be identified rather than copied",
+      "Schutte1993 is a deprecated law; either it travels or the parameters are re-expressed under a current one and that is declared",
+      "the left side is a reflection prior needing the explicit validation docs/SHOULDER_GIRDLE.md section 4 shows is not optional"
+    ],
+    "but": "none of this is the blocker; the licence is"
+  },
+
+  "what_would_unblock_this": [
+    "the owner acquiring data/raw the Stanford-VA package from SimTK with an account, at which point the BSD-3 terms above govern and the registration is the cheap job described here",
+    "an owner decision on the Gonzalez model's terms, which is NOT recommended: conditions 4 and 5 are not ambiguous and this repository is public"
+  ]
+}

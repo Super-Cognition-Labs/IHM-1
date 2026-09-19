@@ -698,3 +698,157 @@ the first time.
 the per-axis sum is not a tension-feasible torque cone — the caution §2 already
 attaches to this exact quantity — and nothing here integrates. The body has not
 been shown to press itself up.
+
+---
+
+## 12. The wrist is blocked on a licence, and the thoracic joint is not blocked any more — 18 September 2026
+
+Full record and every number: **`docs/WRIST_AND_THORAX.md`**. This section is
+the part that belongs to *this* file: what §5's census turned out to be missing,
+and what §10's method found when it was pointed at the wrist.
+
+### The wrist donor, and the verdict is STOP
+
+§5's table lists `WristModel` (Gonzalez 1997) as *"25 Schutte1993_Deprecated;
+includes `ECU_pre-`/`post-surgery` alternatives; deprecated law"* and says
+nothing about its terms. **Its terms are the reason it cannot be used, and they
+are stricter than MoBL-ARMS's.**
+
+A whole-repository census — 1,641 `.osim` files, **414 unique by content** —
+finds **four** files with a muscle whose path touches a carpal or metacarpal
+body. Three are the same Gonzalez model (the `opensim-models` copy at schema
+40000 and two `opensim-core` copies at 10905 whose credits are the placeholder
+`Model authors names..`). The fourth is `PushUpToesOnGroundWithMuscles.osim`,
+which §5 already ruled out and which could not do the job anyway: its
+radiocarpal is a one-DOF `PinJoint` with **no deviation coordinate at all**, and
+both wrist coordinates ship locked at −1.57079632 rad. Twenty-five further files
+declare `wrist_flex_*`/`wrist_dev_*` and, checked by parsing every muscle block
+rather than by reading coordinate names, **not one muscle path touches a hand or
+carpal body** in any of them.
+
+The SimTK project `wrist-model` (group 325) is run by the three people the model
+credits. Its licence field reads **"Custom Use Agreement"** and the agreement
+says, verbatim (sha256 of the string `51741011…3aa92`, read live 18 September):
+
+> 4. **You may not copy or distribute this model.** If others are interested in
+> using the model, please direct them to this website.
+>
+> 5. **This model may be used only for non-commercial, academic work. It may not
+> be used in any commercial activity.** You may not sell the model or results or
+> images generated with the model.
+
+§11 records that the girdle donor was chosen because its two candidate
+statements **converge** on commercial use with attribution. Here there is one
+statement, issued by the rights holders, and it diverges. **Nothing was copied,
+nothing was derived, no wrist muscle was installed**, and `data/raw/` is
+gitignored — `git ls-files data/raw` returns zero tracked files — so this
+repository does not redistribute it either.
+
+**The Apache copy is not a second opinion.** Taking the byte-equivalent
+`opensim-core` copy because that repository has a real Apache-2.0 `LICENSE.txt`
+is **precisely the error §10.1(4) recorded for MoBL-ARMS**, and `opensim-core`'s
+own `NOTICE` forbids the inference: *"If you use plugins, models, or other
+components contributed by your fellow researchers, you must acknowledge their
+work as described in the license that accompanies each of these files."* No
+licence accompanies these files. The `opensim-models` tree has **no `LICENSE`,
+`NOTICE` or `COPYING` anywhere in it**, and yet 33 of its `.osim` files carry an
+explicit in-file grant — Arm26's CC BY 3.0 among them. `wrist.osim` carries
+none. In a tree where granted models say so, silence is not an inheritance.
+
+### §10.3's alternate, re-read, and it is the right donor
+
+§10.3 recorded the Stanford-VA upper limb model (Holzbaur 2005) as the only
+upper-limb musculature among these sources released without a non-commercial
+restriction. Confirmed live at `simtk.org/frs/?group_id=324` (string sha256
+`037e1fe3…caa92`): BSD-3, copyright Stanford University and VA Palo Alto Health
+Care System, citation of Holzbaur 2005 required, **no non-commercial clause**.
+
+**It is behind the same login wall.** `download_confirm.php` returns **197 bytes
+of HTML** redirecting to `/account/login.php?triggered=1` — the 216-byte wall
+`docs/SHOULDER_GIRDLE.md` §1.4 hit, and the one §10.1 hit for MoBL-ARMS. So §6's
+*"(c) — does not apply. No acquisition is required"* is **no longer true of the
+wrist**: this is a genuine acquisition gap, and it is one an account can close.
+
+### And the registration would be cheap, which §8-style scoping missed
+
+`docs/ARTICULATED_SPINE.md` scoped the wrist against MoBL-ARMS and concluded *"a
+station copy is not possible"* because the frames differ. Against a
+Rajagopal/Holzbaur-lineage donor they do not. This plant's arm bodies are
+Rajagopal's own bones through `ScaleTool`, which records its factors:
+`RajagopalLaiUhlrich2023.osim`'s `radius_hand_r` offset times this model's own
+`radius_r` `<Mesh><scale_factors>` reproduces this plant's offset **to exactly
+zero on all three components**. An attachment in a generic arm frame maps in by
+componentwise multiplication — the rule `build_corrected_foot.py` check C3
+already audits over 19 joint offsets. No fit, no landmark estimate, no residual.
+The corroborating detail: this plant's wrist ranges and the Gonzalez model's
+`flexion`/`deviation` ranges agree to six decimals. One lineage, two files.
+
+**The licence is the blocker. Not the registration, and not the frames.**
+
+### The thoracic joint: `data/models/thoracic_drive_v1`
+
+§4's table says the trunk has *"lumbar extension / bending / rotation"* and
+nothing about the thoracic joint, because when it was written nothing crossed
+it. `docs/ARTICULATED_SPINE.md` blocked it on the six gait2392 trunk muscles,
+whose torso insertion sits 32 mm above a joint centre known to ~62 mm.
+
+That verdict was re-asked against the **sixty** Seth 2019 muscles §11 installed,
+32 of which take a `torso` attachment, under a rule committed before it ran
+(`1643a94`): an attachment moves to `thorax` only if its **nearest anatomical
+surface in this body's own meshes** is one of the 48 structures the composition
+plan debited (ribs, cartilages, sternum, intercostals, diaphragm — **no
+vertebra**), and only if it sits more than `sqrt(2) × 62 mm` above the joint
+centre.
+
+**Ten muscles, five per side, passed**: pectoralis major thoracic I and M,
+pectoralis minor, serratus anterior I and M. The refusals are what shows the
+instrument works — trapezius, rhomboid and levator scapulae land **0.4–5.7 mm
+from a vertebra or an intervertebral disc**, and latissimus dorsi comes back
+MIXED with one point 6.4 mm *below* the joint centre. Two corroborations came
+for free: `gait2392_ercspn` reads **32.2 mm**, reproducing the number
+`ARTICULATED_SPINE.md` quoted from a different computation, and
+`arm26_BIClong`/`TRIlong` come back nearest the **scapula**, which is §11's own
+open re-registration.
+
+The build moves those ten attachments and the two rib-cage wrap ellipsoids from
+`torso` to `thorax` — a 128-line diff in 683 kB, no mass moved, no body or
+coordinate added, no parameter touched. **10 gates pass, 1 is recorded FAILED.**
+The known answer is that at the rest pose it is the same mechanical object as
+its base: all 158 path lengths agree to better than 1e-12 m, every non-thoracic
+moment arm to better than 1e-12 m, `soleus_r` still −0.0497080 m, the lumbar arms
+still 42.69 / −52.82 / −62.79 mm. The control that can fail is re-run in the same
+session: the base plant still reads **0.00e+00** about every thoracic coordinate.
+
+**The result is not a controllable trunk, and the shape is the finding.**
+
+| coordinate | crossing | + bound | − bound |
+|---|---:|---:|---:|
+| `thoracic_extension` | 10 | **903.7 N·m** | **0.0 N·m** |
+| `thoracic_bending` | 10 | 370.2 | 368.8 |
+| `thoracic_rotation` | 10 | 347.2 | 343.1 |
+
+All ten pull the same way about extension and there is **no antagonist**,
+because the antagonist is erector spinae and its origin is on T12, inside the
+torso. Bending and rotation are balanced only by left–right mirroring, not by
+opposition per side. So the joint went from topologically unmuscled to
+one-directionally muscled at a 900 N·m ceiling, against a 30 N·m/rad stop at
+±15°, which any search will drive to the bound. `default_enabled` stays false.
+The 112–229 mm moment arms are a property of the single lumped thoracolumbar
+joint, not a measurement of a human chest. Same `Σ Fmax·|r|` caution as §2.
+
+### The press-up, and this is a correction to how §11's answer reads
+
+Neither piece of work changes `docs/SHOULDER_GIRDLE.md` §7's numbers — 3,265 N
+arms-straight, 345 N at the worst lever, **elbow-limited at 43.7 N·m** — and the
+thoracic reassignment provably changes no arm about `elbow_flex`, `arm_*` or any
+`scapula_*` coordinate, measured to 1e-12 m.
+
+But the wrist changes what that sentence is worth. §11's whole argument was that
+**with a girdle the question is bounded, because every newton reaches the trunk
+through muscle.** The wrist is now the one link in that chain with no muscle in
+it at all, and — measured from the model file — no elastic resistance either:
+`wrist_flex_{r,l}` and `wrist_dev_{r,l}` carry only `-1.0*qdot` viscous damping
+and a `CoordinateLimitForce` that by construction acts *outside* the declared
+range. Inside the range the wrist is a free hinge. **So 43.7 N·m is the smallest
+number among the links that have muscle; it is not the smallest number in the
+chain.** Still capacity, still not behaviour.
