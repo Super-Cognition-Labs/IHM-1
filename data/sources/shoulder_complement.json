@@ -20,81 +20,6 @@
     "older_catalog": "MIT listed in older OpenSim model catalog; not relied upon",
     "scope": "local research candidate; no public publication or deployment authorization inferred"
   },
-  "license_evidence": {
-    "established": "2026-09-18",
-    "document": "docs/UPPER_BODY_ACTUATION.md section 10",
-    "nature": "FACTS ONLY. This block records what each primary source says, who issued it, and what it covers. It is not a legal opinion and does NOT clear the donor for shipping; whether this programme's use is within the terms is the owner's decision.",
-    "operative_statement": {
-      "source": "SimTK project upexdyn download page, licence attached to each release package",
-      "url": "https://simtk.org/frs/?group_id=657",
-      "held_copy": "data/research/shoulder_complement/simtk_downloads.html (retrieved 2026-09-06; licence string identical to the live page re-fetched 2026-09-18)",
-      "licence_string_sha256": "847c2df49931add9df201e619dcfb12af5edcd1d3d6ba8779da67b0a69f00734",
-      "issuer": "the MoBL-ARMS project on SimTK (team: Katherine Saul, Wendy Murray), in the name of the copyright holders",
-      "copyright_holders_named": "Copyright (c) 2014-present, North Carolina State University, Northwestern University, Rehabilitation Institute of Chicago, Valparaiso University, Wake Forest University, Stanford University and VA HCS. All rights reserved.",
-      "notice_verbatim": "The MoBL-ARMS upper limb model has been open sourced solely for non-commercial purposes (including research, academic, evaluation and personal uses) under the BSD 3-Clause License below. By downloading or using this software, (1) you accept the terms and conditions of the aforementioned open source license, (2) acknowledge that your use of this software is non-commercial and commercial use requires a commercial license, and (3) accept that use of the model software must be acknowledged in all publications, presentations, or documents describing work in which the MoBL-ARMS upper limb model is used by citing the following work:",
-      "required_citations": [
-        "Saul KR, Hu X, Goehler CM, Daly M, Vidt ME, Velisar A, Murray WM. Benchmarking of dynamic simulation predictions in two software platforms using an upper limb musculoskeletal model. Computer Methods in Biomechanics and Biomedical Engineering. 2015; 18:1445-58.",
-        "McFarland DC, McCain EM, Poppo MN, Saul KR. Spatial Dependency of Glenohumeral Joint Stability During Dynamic Unimanual and Bimanual Pushing and Pulling. J Biomech Eng. 2019; 141(5): 051006. doi:10.1115/1.4043035"
-      ],
-      "bsd3_conditions": "retain the copyright notice, conditions and disclaimer in source redistributions; reproduce them in documentation of binary redistributions; no use of holders' or contributors' names to endorse derived products without written permission",
-      "covers": "all three SimTK releases carry the identical licence string: 'MoBL-ARMS dynamic upper limb model' (2014-07-06, SIMM + OpenSim), 'OpenSim 3.2+' (2016-03-11), 'OpenSim 4.1+' (2021-02-22, MobL_ARMS_OpenSim41_unimanual_tutorial.zip, the release whose name MOBL_ARMS_41.osim matches and which the CEINMS README names as its source; byte identity unverified)",
-      "history": "Earliest Wayback capture of the licence text is 2018-09-12 (web.archive.org/web/20180912052104/https://simtk.org/frs/?group_id=657): the same non-commercial notice, then headed 'Copyright (c) 2014-2015', covering the 2014 and 2016 releases. Between the 2021-01-26 and 2021-04-12 captures a copyright header was prepended, the year range became '2014-present', and the McFarland 2019 citation was added; the non-commercial clause is unchanged across every capture. No capture of the licence text before 2018-09-12 was found."
-    },
-    "other_statements": [
-      {
-        "source": "donor file on disk",
-        "path": "data/research/shoulder_complement/MOBL_ARMS_41.osim",
-        "says": "<credits>Katherine R. Saul, Wendy M. Murray, Craig M. Goehler, Melissa Daly, Meghan E. Vidt, Dustin L. Crouch</credits> <publications>Comp Meth Biomech Biomed Eng 2014</publications>; no licence, copyright or terms text anywhere in the file",
-        "bearing": "silent on licence"
-      },
-      {
-        "source": "Saul et al. 2015 (PMC4282829, author manuscript)",
-        "path": "data/research/shoulder_complement/saul_2015.html",
-        "says": "'Control inputs, simulation results, and the model itself will be publically available via simtk.org ( https://simtk.org/home/upexdyn/ ).' No licence terms stated.",
-        "bearing": "points at SimTK; states no terms of its own"
-      },
-      {
-        "source": "CEINMS-RT/UpperLimbModel root LICENSE",
-        "path": "data/research/shoulder_complement/LICENSE",
-        "says": "Apache License 2.0; added in the repository's 'Initial commit' 23f72c6ead (2022-09-01) before any MoBL file existed there; MOBL_ARMS_41.osim was added later in 5924cd622f (2023-03-15, 'Added the osim model.')",
-        "bearing": "GitHub's repository licence field (apache-2.0) is its auto-detection of this root file. The same repository's README scopes Apache-2.0 to CEINMS-RT and reproduces the SimTK MoBL notice for the model: current README 'CEINMS-rt is licensed under the [Apache License](LICENSE).' then '### MoBL OpenSim model:' followed by the SimTK notice verbatim; the README at the commit that added the model (5924cd622f) says 'The MoBL license is non comercial (see below)'. The mirror did not purport to relicense MoBL-ARMS, and CEINMS-RT is not among the named copyright holders."
-      },
-      {
-        "source": "OpenSim Confluence 'Musculoskeletal Models' catalog (page 53090607)",
-        "url": "https://opensimconfluence.atlassian.net/wiki/spaces/OpenSim/pages/53090607",
-        "says": "row 'Upper Extremity Dynamic Model | ... Katherine Saul, Xiao Hu, Craig Goehler Meghan Vidt, Melissa Daly, Anca Velisar, Wendy Murray | Research-grade kinematics and dynamic simulation of shoulder and arm movement. | MIT | July2014', licence cell linked to opensource.org/licenses/MIT",
-        "issued": "row first appears in page version 31, 2014-07-21T22:46Z, editor display name 'james'; absent from version 30 (2014-03-05); unchanged through the current version 43 (2022-10-04)",
-        "bearing": "a wiki catalog entry, in a section headed 'Models contributed by members of the OpenSim community. These models are developed and maintained by the authors listed, NOT the Stanford OpenSim team.' Not issued by the copyright holders as far as can be established; describes the July 2014 release only (it says 'Compatible with 3.1' in v31) and predates the 4.1 release by 6.5 years. Whether SimTK itself showed MIT in July 2014 could not be established: no capture exists."
-      },
-      {
-        "source": "opensim-org distribution",
-        "says": "none found: opensim-models Models/ holds no MoBL-ARMS; GitHub code search for 'MOBL_ARMS_41' (28 hits, 2026-09-18) returns no opensim-org repository",
-        "bearing": "no Stanford/OpenSim-issued licence for this artefact exists to weigh"
-      }
-    ],
-    "resolution": "The SimTK notice is the only statement issued in the name of the copyright holders and the only one attached to the 4.1 release; the Apache-2.0 reading comes from repository metadata that the mirror's own README contradicts, and the MIT listing is a 2014 third-party catalog cell about the 2014 release. On the text, the governing terms for MOBL_ARMS_41.osim are: BSD-3-Clause conditions, restricted to non-commercial purposes, with mandatory citation of Saul 2015 and McFarland 2019. Confidence that this is the operative statement: high. Confidence about how it applies to this programme: none claimed.",
-    "permits_on_its_text": [
-      "non-commercial use, stated as including research, academic, evaluation and personal uses",
-      "redistribution and modification in source or binary form, for non-commercial purposes, if the copyright notice, the BSD conditions and the disclaimer are retained (source) or reproduced in documentation (binary)"
-    ],
-    "does_not_permit_on_its_text": [
-      "commercial use without a separate commercial licence from the holders ('commercial use requires a commercial license')",
-      "any use without citing Saul 2015 and McFarland 2019 in every publication, presentation or document describing work that uses the model",
-      "redistribution that drops the notice",
-      "using the holders' or contributors' names to endorse or promote derived products without written permission",
-      "treating the donor as Apache-2.0 or MIT: neither statement was issued by the holders for this release"
-    ],
-    "unresolved": [
-      "'non-commercial' is not defined beyond the parenthetical; whether this programme, its public site or any downstream is non-commercial is the owner's decision",
-      "a non-commercial field-of-use restriction on top of BSD-3 is not an OSI open-source licence, whatever the notice calls it; the BSD text alone carries no restriction and the restriction lives in the preamble",
-      "byte equality of the CEINMS mirror file with the SimTK 4.1 package is unverified (SimTK download requires login); the notice binds 'downloading or using this software' on its wording regardless of the route the bytes took",
-      "terms in force before 2018-09-12 are unknown; the MIT catalog cell may or may not have reflected SimTK in July 2014, and it does not concern the 4.1 release",
-      "whether numerical parameters extracted from the model (shoulder_forces.xml, the muscle and body tables in this file) are covered by the notice is a legal question not answered here",
-      "the osim credits name Dustin L. Crouch, who is not among the authors listed on SimTK; who authored the 4.1 changes is not documented in anything held"
-    ],
-    "existing_distribution_fact": "MOBL_ARMS_41.osim, shoulder_forces.xml and this file (which carries donor parameters) are tracked in git and present on origin/feat/integrated-human of the PUBLIC repository github.com/JacobFV/IHM-1 (first commit e99ad6e). IHM-1 carries no repository licence. The same directory retains the CEINMS README.md, which contains the MoBL notice verbatim, and the CEINMS Apache LICENSE, which does not apply to MoBL. Whether that redistribution is within the terms is for the owner.",
-    "regeneration_warning": "scripts/materialize_shoulder_complement.py rewrites this whole file from a literal and will drop this block; update that script before re-running it."
-  },
   "units": {
     "position": "m",
     "force": "N",
@@ -2277,5 +2202,188 @@
     "anthropometry": "50th-percentile male model",
     "force_generation": "Saul2015 reports32muscle volumes and joint moments from5healthy young male subjects; fitted specific tension50.8N/cm2",
     "uncertainty": "No per-parameter covariance or individual donor sample distribution supplied here; no target calibration inferred"
+  },
+  "license_evidence": {
+    "established": "2026-09-18",
+    "document": "docs/UPPER_BODY_ACTUATION.md section 10",
+    "nature": "FACTS ONLY. This block records what each primary source says, who issued it, and what it covers. It is not a legal opinion and does NOT clear the donor for shipping; whether this programme's use is within the terms is the owner's decision.",
+    "operative_statement": {
+      "source": "SimTK project upexdyn download page, licence attached to each release package",
+      "url": "https://simtk.org/frs/?group_id=657",
+      "held_copy": "data/research/shoulder_complement/simtk_downloads.html (retrieved 2026-09-06; licence string identical to the live page re-fetched 2026-09-18)",
+      "licence_string_sha256": "847c2df49931add9df201e619dcfb12af5edcd1d3d6ba8779da67b0a69f00734",
+      "issuer": "the MoBL-ARMS project on SimTK (team: Katherine Saul, Wendy Murray), in the name of the copyright holders",
+      "copyright_holders_named": "Copyright (c) 2014-present, North Carolina State University, Northwestern University, Rehabilitation Institute of Chicago, Valparaiso University, Wake Forest University, Stanford University and VA HCS. All rights reserved.",
+      "notice_verbatim": "The MoBL-ARMS upper limb model has been open sourced solely for non-commercial purposes (including research, academic, evaluation and personal uses) under the BSD 3-Clause License below. By downloading or using this software, (1) you accept the terms and conditions of the aforementioned open source license, (2) acknowledge that your use of this software is non-commercial and commercial use requires a commercial license, and (3) accept that use of the model software must be acknowledged in all publications, presentations, or documents describing work in which the MoBL-ARMS upper limb model is used by citing the following work:",
+      "required_citations": [
+        "Saul KR, Hu X, Goehler CM, Daly M, Vidt ME, Velisar A, Murray WM. Benchmarking of dynamic simulation predictions in two software platforms using an upper limb musculoskeletal model. Computer Methods in Biomechanics and Biomedical Engineering. 2015; 18:1445-58.",
+        "McFarland DC, McCain EM, Poppo MN, Saul KR. Spatial Dependency of Glenohumeral Joint Stability During Dynamic Unimanual and Bimanual Pushing and Pulling. J Biomech Eng. 2019; 141(5): 051006. doi:10.1115/1.4043035"
+      ],
+      "bsd3_conditions": "retain the copyright notice, conditions and disclaimer in source redistributions; reproduce them in documentation of binary redistributions; no use of holders' or contributors' names to endorse derived products without written permission",
+      "covers": "all three SimTK releases carry the identical licence string: 'MoBL-ARMS dynamic upper limb model' (2014-07-06, SIMM + OpenSim), 'OpenSim 3.2+' (2016-03-11), 'OpenSim 4.1+' (2021-02-22, MobL_ARMS_OpenSim41_unimanual_tutorial.zip, the release whose name MOBL_ARMS_41.osim matches and which the CEINMS README names as its source; byte identity unverified)",
+      "history": "Earliest Wayback capture of the licence text is 2018-09-12 (web.archive.org/web/20180912052104/https://simtk.org/frs/?group_id=657): the same non-commercial notice, then headed 'Copyright (c) 2014-2015', covering the 2014 and 2016 releases. Between the 2021-01-26 and 2021-04-12 captures a copyright header was prepended, the year range became '2014-present', and the McFarland 2019 citation was added; the non-commercial clause is unchanged across every capture. No capture of the licence text before 2018-09-12 was found."
+    },
+    "other_statements": [
+      {
+        "source": "donor file on disk",
+        "path": "data/research/shoulder_complement/MOBL_ARMS_41.osim",
+        "says": "<credits>Katherine R. Saul, Wendy M. Murray, Craig M. Goehler, Melissa Daly, Meghan E. Vidt, Dustin L. Crouch</credits> <publications>Comp Meth Biomech Biomed Eng 2014</publications>; no licence, copyright or terms text anywhere in the file",
+        "bearing": "silent on licence"
+      },
+      {
+        "source": "Saul et al. 2015 (PMC4282829, author manuscript)",
+        "path": "data/research/shoulder_complement/saul_2015.html",
+        "says": "'Control inputs, simulation results, and the model itself will be publically available via simtk.org ( https://simtk.org/home/upexdyn/ ).' No licence terms stated.",
+        "bearing": "points at SimTK; states no terms of its own"
+      },
+      {
+        "source": "CEINMS-RT/UpperLimbModel root LICENSE",
+        "path": "data/research/shoulder_complement/LICENSE",
+        "says": "Apache License 2.0; added in the repository's 'Initial commit' 23f72c6ead (2022-09-01) before any MoBL file existed there; MOBL_ARMS_41.osim was added later in 5924cd622f (2023-03-15, 'Added the osim model.')",
+        "bearing": "GitHub's repository licence field (apache-2.0) is its auto-detection of this root file. The same repository's README scopes Apache-2.0 to CEINMS-RT and reproduces the SimTK MoBL notice for the model: current README 'CEINMS-rt is licensed under the [Apache License](LICENSE).' then '### MoBL OpenSim model:' followed by the SimTK notice verbatim; the README at the commit that added the model (5924cd622f) says 'The MoBL license is non comercial (see below)'. The mirror did not purport to relicense MoBL-ARMS, and CEINMS-RT is not among the named copyright holders."
+      },
+      {
+        "source": "OpenSim Confluence 'Musculoskeletal Models' catalog (page 53090607)",
+        "url": "https://opensimconfluence.atlassian.net/wiki/spaces/OpenSim/pages/53090607",
+        "says": "row 'Upper Extremity Dynamic Model | ... Katherine Saul, Xiao Hu, Craig Goehler Meghan Vidt, Melissa Daly, Anca Velisar, Wendy Murray | Research-grade kinematics and dynamic simulation of shoulder and arm movement. | MIT | July2014', licence cell linked to opensource.org/licenses/MIT",
+        "issued": "row first appears in page version 31, 2014-07-21T22:46Z, editor display name 'james'; absent from version 30 (2014-03-05); unchanged through the current version 43 (2022-10-04)",
+        "bearing": "a wiki catalog entry, in a section headed 'Models contributed by members of the OpenSim community. These models are developed and maintained by the authors listed, NOT the Stanford OpenSim team.' Not issued by the copyright holders as far as can be established; describes the July 2014 release only (it says 'Compatible with 3.1' in v31) and predates the 4.1 release by 6.5 years. Whether SimTK itself showed MIT in July 2014 could not be established: no capture exists."
+      },
+      {
+        "source": "opensim-org distribution",
+        "says": "none found: opensim-models Models/ holds no MoBL-ARMS; GitHub code search for 'MOBL_ARMS_41' (28 hits, 2026-09-18) returns no opensim-org repository",
+        "bearing": "no Stanford/OpenSim-issued licence for this artefact exists to weigh"
+      }
+    ],
+    "resolution": "The SimTK notice is the only statement issued in the name of the copyright holders and the only one attached to the 4.1 release; the Apache-2.0 reading comes from repository metadata that the mirror's own README contradicts, and the MIT listing is a 2014 third-party catalog cell about the 2014 release. On the text, the governing terms for MOBL_ARMS_41.osim are: BSD-3-Clause conditions, restricted to non-commercial purposes, with mandatory citation of Saul 2015 and McFarland 2019. Confidence that this is the operative statement: high. Confidence about how it applies to this programme: none claimed.",
+    "permits_on_its_text": [
+      "non-commercial use, stated as including research, academic, evaluation and personal uses",
+      "redistribution and modification in source or binary form, for non-commercial purposes, if the copyright notice, the BSD conditions and the disclaimer are retained (source) or reproduced in documentation (binary)"
+    ],
+    "does_not_permit_on_its_text": [
+      "commercial use without a separate commercial licence from the holders ('commercial use requires a commercial license')",
+      "any use without citing Saul 2015 and McFarland 2019 in every publication, presentation or document describing work that uses the model",
+      "redistribution that drops the notice",
+      "using the holders' or contributors' names to endorse or promote derived products without written permission",
+      "treating the donor as Apache-2.0 or MIT: neither statement was issued by the holders for this release"
+    ],
+    "unresolved": [
+      "'non-commercial' is not defined beyond the parenthetical; whether this programme, its public site or any downstream is non-commercial is the owner's decision",
+      "a non-commercial field-of-use restriction on top of BSD-3 is not an OSI open-source licence, whatever the notice calls it; the BSD text alone carries no restriction and the restriction lives in the preamble",
+      "byte equality of the CEINMS mirror file with the SimTK 4.1 package is unverified (SimTK download requires login); the notice binds 'downloading or using this software' on its wording regardless of the route the bytes took",
+      "terms in force before 2018-09-12 are unknown; the MIT catalog cell may or may not have reflected SimTK in July 2014, and it does not concern the 4.1 release",
+      "whether numerical parameters extracted from the model (shoulder_forces.xml, the muscle and body tables in this file) are covered by the notice is a legal question not answered here",
+      "the osim credits name Dustin L. Crouch, who is not among the authors listed on SimTK; who authored the 4.1 changes is not documented in anything held"
+    ],
+    "existing_distribution_fact": "MOBL_ARMS_41.osim, shoulder_forces.xml and this file (which carries donor parameters) are tracked in git and present on origin/feat/integrated-human of the PUBLIC repository github.com/JacobFV/IHM-1 (first commit e99ad6e). IHM-1 carries no repository licence. The same directory retains the CEINMS README.md, which contains the MoBL notice verbatim, and the CEINMS Apache LICENSE, which does not apply to MoBL. Whether that redistribution is within the terms is for the owner.",
+    "regeneration_warning": "scripts/materialize_shoulder_complement.py rewrites this whole file from a literal and will drop this block; update that script before re-running it."
+  },
+  "thoracoscapular_alternate": {
+    "established": "2026-09-18",
+    "why_this_block_is_here": "This file's donor, MoBL-ARMS 4.1, is governed by a SimTK notice permitting non-commercial use only (license_evidence above), and registration.gates[0] is open. The shoulder girdle was therefore built from a DIFFERENT donor, recorded here so that the two are never confused. No number in data/models/shoulder_girdle_v1 comes from MoBL-ARMS.",
+    "document": "docs/SHOULDER_GIRDLE.md section 1; docs/UPPER_BODY_ACTUATION.md section 11",
+    "nature": "FACTS ONLY, from primary sources read on 2026-09-18. Not a legal opinion.",
+    "model": "Thoracoscapular Shoulder Model",
+    "authors": [
+      "Ajay Seth",
+      "Meilin Dong",
+      "Ricardo Matias",
+      "Scott Delp"
+    ],
+    "citation_required": "Seth A, Dong M, Matias R, Delp SL. Muscle contributions to upper-extremity movement and work from a musculoskeletal model of the human shoulder. Frontiers in Neurorobotics 13:90 (2019).",
+    "bytes_held": {
+      "path": "data/raw/mechanics/opensim-core/OpenSim/Tests/shared/ThoracoscapularShoulderModel.osim",
+      "sha256": "892bd333a1e1e6a2b77902b54218f12727eefd2306ca82bbda81621c926271fe",
+      "bytes": 318742,
+      "document_version": 40000,
+      "contains_licence_text": false,
+      "credits": "Ajay Seth, Meilin Dong, Ricardo Matias, Scott Delp. Parameters from van der Helm and Klein-Breteler",
+      "publications": "Frontiers in Neurorobotics: in In Press DSEM: van der Helm 1994 Klein-Breteler et al. 1996.",
+      "inventory": {
+        "bodies": 7,
+        "joints": 7,
+        "coordinates": 17,
+        "constraints": 1,
+        "muscles": 33,
+        "path_points_fixed": 73,
+        "path_points_moving": 5,
+        "path_points_conditional": 0,
+        "wrap_objects": 10,
+        "markers": 21,
+        "geometry_files_referenced": 7,
+        "geometry_files_present": 0
+      }
+    },
+    "repository_provenance": {
+      "repository": "github.com/opensim-org/opensim-core",
+      "checkout_revision": "86b30588374650fbaf012a345a836a64f6855522",
+      "checkout_is_shallow": true,
+      "working_tree_clean_for_path": true,
+      "added_by_commit": "62205cd879d0",
+      "added_date": "2021-03-12T20:48:58Z",
+      "added_by": "carmichaelong",
+      "pull_request": 2971,
+      "pull_request_title": "Fix IDTool and IDSolver to account for extra q's in state",
+      "later_commits_touching_the_path": 0,
+      "method": "GitHub commits API for the path, because the local checkout is shallow; independently confirms docs/UPPER_BODY_ACTUATION.md section 10.3."
+    },
+    "licence_statements": [
+      {
+        "issuer": "the authors, on SimTK project thoracoscapular (group 1708)",
+        "url": "https://simtk.org/frs/?group_id=1708",
+        "read_live": "2026-09-18",
+        "package": "FrontiersPubMaterials / ThoracoscapularShoulderPaperMaterials.zip, 196 MB, 2019-06-28",
+        "package_version_label": "Pre-publication Release",
+        "licence": "CC BY 4.0",
+        "copyright_line": "Copyright (c) 2019, Stanford University and the authors.",
+        "permits": "share and adapt in any medium, for any purpose, even commercially",
+        "requires": "attribution, a link to the licence, and a statement of changes"
+      },
+      {
+        "issuer": "opensim-core, the repository these bytes were read from",
+        "licence": "Apache-2.0 (LICENSE.txt)",
+        "basis": "CONTRIBUTING.md, Contributor License Agreement: 'You grant the OpenSim project, developers, and users a nonexclusive, irrevocable license to use your submission ... under terms of the Apache 2.0 license.'",
+        "caution": "opensim-core/NOTICE says 'If you use plugins, models, or other components contributed by your fellow researchers, you must acknowledge their work as described in the license that accompanies each of these files.' NO licence accompanies this file, so the Apache reading is an INFERENCE from the contributor agreement and not a statement attached to the artefact -- the same shape of reasoning that produced the wrong Apache reading of MoBL-ARMS."
+      },
+      {
+        "issuer": "the published paper",
+        "citation": "Front. Neurorobot. 13:90 (2019), Data Availability Statement",
+        "text": "The model and simulation environment (OpenSim) are freely available, deployable, and modifiable for any research or commercial use without restrictions from SimTK.org at https://simtk.org/projects/thoracoscapular"
+      },
+      {
+        "issuer": "ScapulothoracicJoint.h/.cpp, the joint class this model needs",
+        "text": "Copyright (c) 2005-2020 Stanford University, TU Delft, and the Authors. Author(s): Ajay Seth. Licensed under the Apache License, Version 2.0",
+        "note": "the only explicit per-file licence statement in this chain"
+      }
+    ],
+    "resolution": "The two candidate statements CONVERGE: each permits use, modification and redistribution, commercially, with attribution. That is the material difference from MoBL-ARMS, whose candidate statements diverge on exactly the commercial question.",
+    "not_established": [
+      {
+        "question": "byte-identity with the SimTK CC BY release",
+        "answer": "NO",
+        "evidence": "https://simtk.org/frs/download_confirm.php/file/5812/ThoracoscapularShoulderPaperMaterials.zip?group_id=1708 returns 216 bytes of HTML redirecting to /account/login.php?triggered=1. Same login wall as MoBL-ARMS.",
+        "corroboration": "the 33 muscle lines group into exactly the 16 muscle groups the paper names; the credits name the four authors and the DSEM parameter source; both the file (\"in In Press\") and the package (\"Pre-publication Release\", \"in review\") are pre-publication artefacts"
+      },
+      {
+        "question": "the seven .vtp geometry files",
+        "answer": "ABSENT, and measured to cost nothing mechanically",
+        "evidence": "the engine loads the donor with seven \"Couldn't find file\" warnings and reports 33 actuators and a full assembly; the wrap surfaces are analytic and in the file. Acquiring them means the same login-walled 196 MB package."
+      },
+      {
+        "question": "the DSEM parameter sources' own terms (van der Helm 1994, Klein-Breteler 1996)",
+        "answer": "NOT EXAMINED"
+      }
+    ],
+    "defect_found": {
+      "what": "the donor's clavicle, scapula and radius inertia tensors are not physically realisable: tr(I)/2*eye - I has a negative eigenvalue (-3.07e-05, -9.79e-05, -1.40e-04 kg m2) so the principal moments violate the triangle inequality, and the radius has a negative principal moment (-4.54e-06 kg m2)",
+      "found_by": "ihm.assembly.cervical_inertia._physical refused them and the build threw",
+      "response": "replaced, never clipped, by convex-envelope priors of this body's own anatomical clavicle and scapula at the donor's stated mass -- the standing decision recorded for every cervical body in data/research/cervical_inertia/v2/manifest.json"
+    },
+    "second_copy_in_the_same_repository": {
+      "path": "data/raw/mechanics/opensim-core/OpenSim/Tests/Wrapping/testGeometryPathWrapping_ShoulderWrappingWithPathSprings.osim",
+      "differs": "its shoulder_elv range is -1.5 .. 3.14159 where the file used here declares -0.78 .. 2.53",
+      "note": "not used; recorded so \"the thoracoscapular model in opensim-core\" is never treated as one artefact"
+    },
+    "installed_as": "data/models/shoulder_girdle_v1"
   }
 }

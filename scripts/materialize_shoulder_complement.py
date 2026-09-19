@@ -75,7 +75,13 @@ if __name__=='__main__':
  target=ROOT/'data/sources/shoulder_complement.json'
  if target.exists():
   previous=json.loads(target.read_text())
-  if 'license_evidence' in previous:report['license_evidence']=previous['license_evidence']
+  # Blocks established from primary sources by hand, which this generator does
+  # not derive from the donor file and would otherwise silently erase.
+  # 'thoracoscapular_alternate' records the DIFFERENT, licence-clean donor the
+  # shoulder girdle was actually built from (docs/SHOULDER_GIRDLE.md s.1); losing
+  # it would leave this file looking like the only shoulder source on disk.
+  for key in ('license_evidence','thoracoscapular_alternate'):
+   if key in previous:report[key]=previous[key]
  target.write_text(json.dumps(report,indent=2)+'\n')
  (base/'shoulder_forces.xml').write_text(forces+'\n');(base/'source_dependencies.xml').write_text(dependencies+'\n')
  print(json.dumps({'selected_muscles':len(report['muscles']),'wraps':len(report['referenced_wrap_names']),'point_types':report['path_point_type_counts'],'source_bytes':report['acquisition_bytes']}))

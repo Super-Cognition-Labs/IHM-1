@@ -176,14 +176,20 @@ bound. Pressing the trunk up off the floor is a demand of a different order and
 | shoulder flexion / adduction / rotation | **muscle, bidirectional** — but from 3 muscles per axis, all of them biceps/triceps heads |
 | lumbar extension / bending / rotation | **muscle** in the 98-plant only; **absent** in the 92-muscle default |
 | forearm pro/supination | **none** (2.16 mm at best; donor fuses the forearm) |
-| deltoid, rotator cuff, pectoralis, latissimus | **none** — no such actuator exists in any loaded plant |
-| shoulder girdle | **no scapula and no clavicle body**; the plant's 22 bodies are pelvis, 6 leg segments per side, torso, and 4 arm segments per side |
+| deltoid, rotator cuff, pectoralis, latissimus | **none in any plant that existed when this was written**; present in `data/models/shoulder_girdle_v1` (§11) |
+| shoulder girdle | **no scapula and no clavicle body** in the plants above; both, with sternoclavicular, scapulothoracic and acromioclavicular articulation, in `data/models/shoulder_girdle_v1` (§11) |
 | wrist, fingers | **none**; `radius_hand_{l,r}` is a `WeldJoint` |
 | neck, head | **no body at all** |
 
 The honest one-line version: **the arms have an elbow and a crude sagittal
 shoulder, the trunk has an optional three-axis one, and everything that makes a
 shoulder a shoulder is missing.**
+
+*Amended 18 Sep 2026.* That is still true of every plant in the table above. It
+is no longer true of the repository: `data/models/shoulder_girdle_v1` carries a
+scapula, a clavicle, the three girdle articulations and thirty donor muscles per
+side, built from the licence-clean donor rather than from MoBL-ARMS. §11, and
+`docs/SHOULDER_GIRDLE.md` in full.
 
 ---
 
@@ -196,7 +202,7 @@ A census of every `.osim` under `data/raw/` (215 files) plus `data/research/`:
 | Arm26 | `data/raw/anatomy/opensim-models/source/Models/Arm26/` | 6 Thelen2003 | no | **already registered and running** (the 12) |
 | Gait2392 trunk | `.../Models/Gait2392_Simbody/` | 92 Thelen2003 | no | **already registered** (the 6) |
 | **MoBL-ARMS 4.1** (Saul/Murray 2015) | `data/research/shoulder_complement/MOBL_ARMS_41.osim` | **50 Millard2012** | **thorax, clavicle, scapula** | **acquired, extracted, not installed** |
-| Thoracoscapular shoulder (Seth 2019) | `data/raw/mechanics/opensim-core/OpenSim/Tests/shared/ThoracoscapularShoulderModel.osim` | 33 Millard2012 | **clavicle + scapula, 4 scapular coordinates** | on disk, unexamined by this repo |
+| Thoracoscapular shoulder (Seth 2019) | `data/raw/mechanics/opensim-core/OpenSim/Tests/shared/ThoracoscapularShoulderModel.osim` | 33 Millard2012 | **clavicle + scapula, 4 scapular coordinates** | **examined, licence established, and INSTALLED** — `data/models/shoulder_girdle_v1`, §11 |
 | `PushUpToesOnGroundWithMuscles.osim` | `data/raw/mechanics/opensim-core/OpenSim/Simulation/tests/resources/` | **100 Schutte1993_Deprecated + 54 Thelen2003**, 81 bodies, bilateral DELT1-3/SUPSP/INFSP/SUBSC/TMIN/TMAJ/PECM1-3/LAT1-3/CORB | **yes, full** | **deprecated muscle law and `<credits>Model authors names..</credits>` — a placeholder. Corroborating routes only; not a citable source** |
 | Rajagopal2016 / RajagopalLaiUhlrich2023 | `.../Models/Rajagopal/` | 80–81 Millard2012, **0 above the pelvis** | no | 18 `CoordinateActuator`s incl. both wrists — **the same gap one joint further out, not a fix** |
 | Hamner 2010 full body | `.../Models/Hamner/` | 93 Thelen2003 | no | lower limb + trunk only |
@@ -292,6 +298,13 @@ and that is the right place for it until `coordinate_limits` are forwarded.
 ## 8. What installing the shoulder would take
 
 Not an acquisition. A registration, and the mass partition is the hard part.
+
+> **Written for MoBL-ARMS, and MoBL-ARMS is not the donor that was used.**
+> §10 established that its SimTK notice restricts it to non-commercial use, so
+> the girdle was built from Seth 2019 instead. Steps 1-5 below describe the job
+> accurately and §11 records how each came out; step 6, the licence, is why the
+> donor changed. Nothing in `data/models/shoulder_girdle_v1` comes from
+> MoBL-ARMS.
 
 1. **Girdle bodies.** MoBL-ARMS routes 44 fixed, 13 moving and 8 conditional path
    points across `thorax`, `clavicle`, `scapula` and `humerus`, over 23 wrap objects.
@@ -572,3 +585,116 @@ analysis."*
 * Nothing here changes a gate. `registration.gates[0]` ("resolve donor provenance and reuse
   scope") stays open: the provenance facts are established, but the reuse scope is the
   owner's call.
+
+---
+
+## 11. The girdle, built — 18 September 2026
+
+`data/models/shoulder_girdle_v1`. Full record and every number:
+**`docs/SHOULDER_GIRDLE.md`**. This section is the part that belongs to *this*
+file — which donor, why, and what §8's five steps came out as.
+
+**The donor is Seth 2019, not MoBL-ARMS, and §10 is why.** §10.2 established that
+the SimTK notice governing MoBL-ARMS 4.1 permits non-commercial use only, and
+that the reuse scope is the owner's call. That call was not made, so the donor was
+not used. The Thoracoscapular Shoulder Model (Seth, Dong, Matias, Delp 2019,
+Front. Neurorobot. 13:90) is CC BY 4.0 from the authors on SimTK and Apache-2.0
+as a file of the opensim-core repository these bytes were read from, and **both
+statements permit commercial use with attribution** — they converge where
+MoBL-ARMS's diverge, which is the whole difference. `registration.gates[0]` on
+`data/sources/shoulder_complement.json` stays open, untouched: nothing here needs
+it resolved.
+
+**Provenance established** (`docs/SHOULDER_GIRDLE.md` §1): sha256, the single
+opensim-core commit `62205cd879d0` (PR #2971, 2021-03-12) that added the file and
+the fact that nothing has touched it since, both licence statements quoted from
+primary sources read live, and the caution that the Apache reading is an
+inference from the contributor agreement and not a statement attached to the
+artefact — the same shape of reasoning that produced the wrong Apache reading of
+MoBL-ARMS.
+
+**Provenance NOT established, and it is the same wall:** byte-identity with the
+SimTK CC BY release. `download_confirm.php` returns 216 bytes redirecting to
+`/account/login.php`. The copy is corroborated as the same model — its 33 muscle
+lines are exactly the sixteen groups the paper names, and both the file and the
+package are pre-publication artefacts — but not verified as the same bytes.
+
+**The seven `.vtp` meshes are absent and cost nothing mechanically.** Measured:
+the engine loads the donor with seven `Couldn't find file` warnings and reports
+33 actuators and a full assembly. They are display surfaces; the wrap surfaces
+are analytic and in the file. This closes the "geometry not acquired" line in §5
+for this donor: nothing mechanical is waiting on it.
+
+### §8's five steps, as they came out
+
+1. **Girdle bodies** — added, with the donor's own topology: `sternoclavicular`
+   (CustomJoint, 2 coordinates), `scapulothoracic` (**ScapulothoracicJoint**, a
+   Simbody ellipsoid mobilizer, 4), and the acromioclavicular `PointConstraint`
+   that closes the loop, per side. `acromial_{r,l}` is re-parented onto the
+   scapula, so §8.1's second option — welding the girdle to `torso` and losing
+   every girdle-only path — was not needed. 22 → 25 → **29 bodies**, 48 → **60
+   coordinates**.
+2. **Mass partition, once** — done, and it composed exactly as
+   `docs/ARTICULATED_SPINE.md` predicted: the girdle came out of the 17.938 kg
+   residual core through the same `partition_body`, reconstruction residual
+   **0.0 kg** and **7.1e-16 kg·m²**. The donor's masses (clavicle 0.1898 kg,
+   scapula 0.5016 kg) are transferred unscaled and declared so. **The donor's own
+   clavicle, scapula and radius inertia TENSORS are not physically realisable** —
+   negative second-moment eigenvalues — and were replaced by convex-envelope
+   priors of this body's own anatomy, never clipped.
+3. **Kinematic reconciliation before any force** — done, and the map is two
+   measured similarity factors plus a translation: `s_lat` = 1.31535 from the
+   glenohumeral half-width for the girdle, `s_long` = 1.10236 from the
+   glenohumeral-to-elbow length for humerus attachments, and a translation that
+   puts the donor's glenohumeral centre exactly on this plant's. **The arm does
+   not move**: measured against `articulated_spine_v1`, eight bodies × four
+   stations, worst difference below 1e-9 m.
+4. **Reconcile with what is already there** — `arm26_TRIlong`, `arm26_BIClong`
+   and `arm26_BICshort` are kept and the donor's `TRIlong`, `BIC_long` and
+   `BIC_brevis` are **not** transferred, so nothing is duplicated or silently
+   replaced and the Millard and Thelen laws stay distinct. The arm26 origins are
+   still on `torso` where their registration put them; moving them to the scapula
+   is a re-registration that was not done.
+5. **Gates** — `scripts/verify_shoulder_girdle.py`, 16 tests, all pass, including
+   the two-sided moment-arm check (a scapulohumeral muscle must read exactly zero
+   about every girdle coordinate, a thoracoscapular one must read nonzero about
+   its own side and zero about the other) with this repository's standing
+   controls: the query is a function, and `soleus_r` about `ankle_angle_r` still
+   reads **−0.0497080 m**. `native_verified` stays **false**: there is no
+   linearization, no stance acceptance and no controller.
+
+   **§8.5's warning about the left side was right, and it cost the most.** The
+   sternoclavicular mirror worked first try with this plant's own `−MIRROR·a`
+   axis rule. The scapulothoracic one did not: its coordinates come from the
+   ellipsoid mobilizer, not from declared axes, and the naive mirror put the left
+   scapula **162.5 mm** off. All 48 candidates were built and loaded and scored
+   on exact mirror symmetry; two are exact and the next is 6.4 mm out. **On the
+   LEFT, `scapula_elevation_l` and `scapula_upward_rot_l` run opposite to their
+   right-side namesakes** — written down here as well as there, because it is the
+   gait2392-knee sign trap and it is now in this plant.
+
+### The answer to §3's open question
+
+§3 ends *"nothing here bounds"* pressing the trunk up. It does now, and the
+girdle is what made it boundable rather than what made it possible: in
+`articulated_spine_v1` the humerus is jointed straight to `torso`, so at the top
+of a press-up the load reaches the trunk through joint reactions with **no muscle
+in the path at all**. Measured at the rest pose, against a body weight of
+761.1 N:
+
+| | two arms | limited by |
+|---|---:|---|
+| arms straight, only the scapula to hold | **3265 N = 4.29 body weights** | girdle, `scapula_upward_rot` |
+| worst-case lever (force ⟂ each segment, full length) | **345 N = 0.45 body weights** | **elbow**, 43.7 N·m |
+
+**The girdle is not the limiting element. The elbow is**, and it is unchanged by
+this build — three arm26 triceps heads, because the donor's `TRIlong` was
+excluded as a duplicate. The shoulder itself went from 18.7/31.8, 37.0/10.7 and
+5.6/2.9 N·m about flexion, adduction and rotation to **116.5/169.9, 151.6/151.5
+and 81.3/90.2**, four to thirty-one times more and bidirectionally balanced for
+the first time.
+
+**This is capacity and not behaviour.** `Σ Fmax·|r|` at one pose is a ceiling,
+the per-axis sum is not a tension-feasible torque cone — the caution §2 already
+attaches to this exact quantity — and nothing here integrates. The body has not
+been shown to press itself up.
