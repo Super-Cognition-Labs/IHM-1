@@ -2620,6 +2620,17 @@ already recorded as structurally unpassable): mean **0.4656** against the global
 whole-skin measure does not apply to twenty pieces under twenty similarities and no number
 is quoted for it.
 
+**Rebuilding it.** The bundle is under `data/derived/` and is not committed (14.7 s):
+
+    .venv/bin/python scripts/build_skin_contact_meshes.py \
+        --out data/derived/segment-contact-meshes/skin-per-segment --registration per_segment
+
+and the instruments are `scripts/verify_skin_contact.py [--engine]`,
+`scripts/measure_skin_contact_support.py` and
+`scripts/measure_segment_contact_meshes.py --steps 100 --arm ...`. Selectable as
+`segment_contact: skin_per_segment` / `skin_per_segment_carried`; both resolve and carry the
+bundle's own declared skin material (E = 3000 Pa, ν = 0.45, h = 6.6 mm).
+
 **What this leaves.** The seat is fixed and measured. The skin still cannot stand the body,
 and the defect that stops it is now named and is a different one: **the hard partition puts
 the midfoot and forefoot skin on the `toes` rigid body**, so no skin reaches the floor in
