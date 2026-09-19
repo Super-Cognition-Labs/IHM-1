@@ -124,7 +124,17 @@
   "unacquired_richer_source": {
     "url": "https://simtk.org/projects/upexdyn",
     "name": "MoBL-ARMS dynamic upper limb",
-    "status": "web tool returned403; no model bytes acquired; do not count as model data"
+    "status": "superseded 2026-09-18: the model XML WAS acquired on 2026-09-06, not from SimTK (download requires login) but from the CEINMS-RT/UpperLimbModel mirror at commit 459e2ebbf47acb72b0ecbc59950a2d0a983d28db",
+    "original_status_2026-09-05": "web tool returned403; no model bytes acquired; do not count as model data",
+    "acquired_path": "data/research/shoulder_complement/MOBL_ARMS_41.osim",
+    "acquired_sha256": "58bacbc1c61d1d42cff9a48b0a9dced9c648893f44adc7d9817cca56441a9fcf",
+    "acquisition_record": "data/research/shoulder_complement/acquisition.json",
+    "source_record": "data/sources/shoulder_complement.json",
+    "mirror_equals_official_release_verified": false,
+    "official_model_zip_held": false,
+    "geometry_meshes_held": false,
+    "licence": "SimTK notice: BSD-3-Clause conditions restricted to non-commercial purposes, citation of Saul 2015 and McFarland 2019 required; the mirror's Apache-2.0 file does not apply to the model (its own README says so) and the 2014 catalog 'MIT' cell was not issued by the holders. Facts only, not a clearance: docs/UPPER_BODY_ACTUATION.md section 10 and shoulder_complement.json license_evidence.",
+    "installed_in_plant": false
   },
   "canonical_audit": {
     "muscle_actuators": 443,
