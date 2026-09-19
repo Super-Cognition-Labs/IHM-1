@@ -180,6 +180,22 @@ SOFT_TISSUE_LAYERS = {
         'bundle': 'data/derived/segment-contact-meshes/skin-layer-map-v1',
         'mapping': 'unconfined', 'spacing_m': 0.005,
         'label': 'Deformable neo-Hookean layer at measured depth; modulus read as Young\'s (stiffest)'},
+    # 2026-09-18 (docs/SOFT_BODY.md): the boundary is FITTED -- cut by the skin and by the declared
+    # depth (isosurface stuffing), not a voxel staircase -- and the depth is LOCAL, the depth map's
+    # own value under each point of the skin rather than the segment's median, which left calcn's
+    # forefoot with no core at all.  The two entries above are unchanged, bit for bit.
+    'layer_fitted_local_confined': {
+        'bundle': 'data/derived/segment-contact-meshes/skin-layer-map-v1',
+        'mapping': 'confined', 'spacing_m': 0.005, 'surface': 'fitted', 'depth': 'local',
+        'refused_segments': ('radius_l',),
+        'label': 'Deformable neo-Hookean layer, body-fitted, at the LOCAL measured depth; modulus read as '
+                 'confined (softest). radius_l refused: its local depth failed its own known answer'},
+    'layer_fitted_local_unconfined': {
+        'bundle': 'data/derived/segment-contact-meshes/skin-layer-map-v1',
+        'mapping': 'unconfined', 'spacing_m': 0.005, 'surface': 'fitted', 'depth': 'local',
+        'refused_segments': ('radius_l',),
+        'label': 'Deformable neo-Hookean layer, body-fitted, at the LOCAL measured depth; modulus read as '
+                 'Young\'s (stiffest). radius_l refused: its local depth failed its own known answer'},
 }
 # Measured, and re-derived by scripts/verify_soft_tissue.py, which fails if it moves: at
 # 5 mm these segments' skin patches are thinner than their own measured depth

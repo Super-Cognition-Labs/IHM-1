@@ -535,9 +535,17 @@ by the depth map and the in-vivo layer modulus, not by any fat geometry. Fascia 
 the bursae/sheaths need contact between two SOFT surfaces, and the layer only
 contacts a rigid half-space. What it does give those rows is something to be built
 on: a continuum whose confined limit is the shipped foundation column to 7e-12, and
-whose unconfined limit is analytic neo-Hookean to 8e-10. On this body's own heel it
-is 4-17x softer than the column at the same penetration, not mesh-converged at the
-contact surface, and 3.6-36 s per solve.
+whose unconfined limit is analytic neo-Hookean to 8e-10. It was first reported as 4-17x
+softer than the column on this body's heel. **That is withdrawn (2026-09-18)**: the
+fixture pressed a thin wedge of skin on the calcn/toes cut, not the heel. The one-number
+depth (the segment's median, 18.6 mm) also left the forefoot with no core, because the
+forefoot is thinner than twice that everywhere. The layer now has a body-fitted surface and
+a LOCAL depth from the depth map: 6.9 mm under the heel and 5.9 mm under the forefoot, the
+latter matching the in vivo fat pad. On the actual heel it carries 3.3-6.0 N at 2 mm,
+monotone in the mesh spacing but still ~8-15% from converged. A loaded step costs about
+0.14 s, against the plant's 10 ms (docs/SOFT_BODY.md, first section). The local depth fails
+its own known answer for radius_l, where the layer map and the bundle partition disagree on
+one skin vertex, and is refused there.
 
 ---
 

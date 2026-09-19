@@ -590,9 +590,11 @@ def g_fitted(mesh, record):
     fit = m1['fit']
     print('      ' + ', '.join(f'{k} {v:.4g}' if isinstance(v, float) else f'{k} {v}' for k, v in fit.items()))
     bar = 1e-3 * 0.005
+    # the stuffing mesh is CUT, not moved, so "inverted" means a tet of non-positive volume
     gate('G2', 'fitted heel: no inversion, skin and interface nodes within 1e-3 cell of their surfaces',
-         fit['minimum_volume_ratio'] > 0 and fit['skin_residual_max_m'] <= bar and fit['interface_residual_max_m'] <= bar,
-         f'min volume ratio {fit["minimum_volume_ratio"]:.3f}, skin {fit["skin_residual_max_m"]*1e6:.3f} um, '
+         fit['minimum_volume_m3'] > 0 and fit['skin_residual_max_m'] <= bar and fit['interface_residual_max_m'] <= bar,
+         f'min volume {fit["minimum_volume_m3"]:.3e} m3, min quality {fit["minimum_quality"]:.2e}, '
+         f'skin {fit["skin_residual_max_m"]*1e6:.3f} um, '
          f'interface {fit["interface_residual_max_m"]*1e6:.3f} um; build {build:.1f} s')
     m2 = stl.fitted_layer_mesh(v, f, 0.005, HEEL, thickness_m=record['layer']['thickness_m'])
     gate('G3', 'fitted heel mesh built twice: bitwise identical',
@@ -651,7 +653,10 @@ def cv_convergence(rule, depth_m, keys, spacings=(0.006, 0.005, 0.004, 0.003, 0.
         try:
             layer = stl.segment_layer(ROOT, HEEL, spacing_m=spacing, surface='fitted', depth=rule)
             build = time.perf_counter() - began
-            r = layer.solve(rotation=rotation, plane_axis=1, plane_value_m=low + depth_m, plane_sign=1)
+            # method='fast', chosen before any CV result existed: on the fitted-median heel at 12 mm the
+            # original Newton path stagnates at its floating-point floor (1.3e-6 N, converged=False; with
+            # COLAMD 5.7e-7 N) while the fast path converges to 1.4e-10 N, and S3 checks they agree
+            r = layer.solve(rotation=rotation, plane_axis=1, plane_value_m=low + depth_m, plane_sign=1, method='fast')
         except MemoryError as error:
             rows.append({'spacing_mm': spacing * 1e3, 'not_run': 'memory: ' + str(error)[:120]})
             print(f'      spacing {spacing*1e3:.1f} mm: NOT RUN (memory, 4 GiB budget)', flush=True)
@@ -692,7 +697,10 @@ def cv_convergence(rule, depth_m, keys, spacings=(0.006, 0.005, 0.004, 0.003, 0.
         d1, d2 = f[-2] - f[-3], f[-1] - f[-2]
         try:
             p = brentq(lambda p: (h1 ** p - h2 ** p) / (h2 ** p - h3 ** p) - d1 / d2, 0.05, 8.0)
-            richardson = f[-1] - d2 * h3 ** p / (h2 ** p - h3 ** p)
+            # f(h) = f_inf + C h^p, so C = d2 / (h3^p - h2^p) and f_inf = f3 - C h3^p.  (Run 6 printed this
+            # with the sign of the correction reversed -- 5.83 / 27.58 N where it is 4.50 / 23.71 N; the
+            # observed order was right.  Reported, never gated.)
+            richardson = f[-1] - d2 * h3 ** p / (h3 ** p - h2 ** p)
         except ValueError:
             p, richardson = None, None
         summary.update({'observed_order': p, 'richardson_n': richardson,
@@ -741,7 +749,17 @@ def s_fast(heel_local, heel_median, low, rotation=np.eye(3), suffix='', local_de
     index[nodes] = np.arange(len(nodes))
     posed = layer._kernel(active, nodes, index[tets], free_dof[nodes]).posed(rot)
     region = DeformableRegion(rest[nodes], index[tets], mu_pa=layer.mu[active], lambda_pa=layer.lam[active], density_kg_m3=1.0)
-    ypos = rest[nodes] + rng.normal(scale=2e-4, size=(len(nodes), 3)) * free_dof[nodes]
+    # a smooth, nonuniform deformation (affine + quadratic, displacement gradient < 0.1) of the free
+    # nodes: random nodal noise of 0.2 mm inverted the fitted mesh's small tets (first run of S1),
+    # which is a property of the probe, not of the gradient being checked
+    x_ = rest[nodes] - rest[nodes].mean(axis=0)
+    size = float(np.ptp(x_, axis=0).max())
+    sym = rng.normal(size=(3, 3))
+    sym = 0.02 * (sym + sym.T) / np.abs(sym + sym.T).max()
+    e1, e2 = rng.normal(size=3), rng.normal(size=3)
+    e1, e2 = e1 / np.linalg.norm(e1), e2 / np.linalg.norm(e2)
+    field = x_ @ sym.T + 0.04 * ((x_ @ e1) ** 2 / size)[:, None] * e2
+    ypos = rest[nodes] + field                 # on EVERY node: masking it to the free ones is a jump
     e1, g1 = posed.energy_gradient(ypos)
     e2, g2 = region.energy_gradient(ypos)
     rel = max(float(np.abs(g1 - g2).max() / np.abs(g2).max()), abs(e1 - e2) / abs(e2))
