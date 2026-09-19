@@ -107,23 +107,47 @@ keep.
 **Then pain-guided reinforcement learning and self-supervised prediction, on the
 real body.** Control is learned from consequence rather than demonstration.
 
-### What pain-guided RL requires that does not exist yet
+### What pain-guided RL requires, after the receptor was built (18 Sep 2026)
 
-A reward signal grounded in nociception, and **there is no nociceptor
-transduction component**. `ibm/interoception.py` says so in its own text: the
-splanchnic high-threshold channels are bound to `transduction.baroreceptor` and
-merely *tagged* nociceptive in the row, because `transduction.nociceptor` is
-declared on the field but has no viscera-supported component. Adding
-`transduction.visceral_nociceptor` is named there as the fix and is not made.
+**The receptor exists now.** This section used to say there was no nociceptor
+transduction component and that pain-guided RL was blocked on a receptor, not a
+pathway. Both halves are built and gated — `docs/NOCICEPTION.md`:
 
-What does exist to build on: `adelta` and `c` are declared fibre classes with
-resolved conduction velocities, and **48 of 72 nerve trunks carry one or both** —
-so the pathway for fast and slow pain is declared even though the receptor is
-not. Cutaneous nociception has the same shape: 1,326 skin patches are innervated
-and located, and nothing yet transduces damage at them.
+- **Cutaneous** (`ihm/assembly/nociception.py`, `scripts/gate_nociception.py`,
+  19 of 19): contact pressure in, Aδ and C firing out, at all 1,326 innervated
+  patches. Threshold 133.3 kPa (4 N over 30 mm², Adriaensen et al. 1984),
+  half-saturation 466.7 kPa (14 N over the same area, Schmidt et al. 2000), ceiling
+  10 Hz (Van Hees & Gybels 1981, the highest C rate seen under mechanical
+  stimulation, and a lower bound on the true maximum). Both anchors share one
+  contact area, so no number crosses a change of units. Aδ arrives first on every
+  patch, by 56–1,122 ms.
+- **Visceral** (IBM-1 `ibm/interoception.py`): `transduction.visceral_nociceptor`
+  exists on the viscera support, and the five splanchnic high-threshold channels
+  are bound to it instead of to `transduction.baroreceptor` with a nociceptive tag.
+  `interoception.check()` refuses any channel whose flag and receptor disagree.
 
-So pain-guided RL is blocked on a receptor, not on a pathway. That is a small,
-well-specified gap and it is on the critical path for the stated plan.
+**What it still lacks, so the gap is not re-closed by a summary line:**
+
+- **a reward decision** — deliberately absent. Transduction is not a reward, and
+  choosing one is a separate decision;
+- **a damage stimulus during motion** — contact is bound to the supine reference
+  pose only, and the scaffold's contact spheres carry a force but no area, so they
+  cannot be converted to pressure;
+- **a visceral firing law** — the channels are bound but IHM emits them in mL and
+  human visceral pain thresholds are published as pressures; the conversion needs
+  an organ compliance the body does not declare;
+- sub-threshold firing, adaptation, sensitisation, a separately measured Aδ law,
+  per-region thresholds, and heat, cold and chemical nociception;
+- any central pain pathway past the relay, and measured nerve routes — every
+  delay is a schematic lower bound.
+
+**A conflict the owner of IBM-1 has to resolve.** IBM-1 already carried
+`nociceptor_polymodal` (`ibm/processes/transduction.py`, 9 Sep) with an 8 N
+*force* threshold and no contact area, a 100 Hz ceiling — ten times the human C
+maximum above — and a docstring describing its rate as usable as a reward signal.
+Two nociceptors now disagree by an order of magnitude at the ceiling and in their
+units at the threshold. It has not been touched here: it is another lane's
+component, and re-basing it changes that lane's results.
 
 ---
 
