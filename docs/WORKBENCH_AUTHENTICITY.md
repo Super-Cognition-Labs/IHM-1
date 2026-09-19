@@ -103,20 +103,53 @@ Every new coordinate carries a declared range from a donor's own declaration and
 a `CoordinateLimitForce` at that range, inside the model file. It loads and
 integrates at +17% wall clock.
 
-Two measurements make it a partial close and not a close:
+Two measurements made it a partial close. The first has since been taken
+apart, and the explanation it gave is **withdrawn**:
 
-* **No muscle has a moment arm about any of the fifteen new coordinates —
-  exactly zero, measured through the engine's own `moment_arms`.** The 80 source
-  paths are fitted polynomials in the coordinates that existed when they were
-  fitted, so **un-welding a joint does not give a muscle a moment arm about it**.
-  The new joints are free hinges with a soft stop and nothing that can drive
-  them, and the consequence is measurable: once `subtalar` is unwelded the
-  plantarflexors load a hinge they cannot control and `ankle_angle` leaves its
-  declared range by **1.36 rad instead of 0.12**. `docs/UPPER_BODY_ACTUATION.md`
-  is not a parallel task to this one; it is the rest of this one.
-* A pre-registered gate — no new coordinate may leave its range by more than the
-  base model already leaves its own — **FAILED** on `thoracic_extension`
-  (0.394 rad against a 0.220 rad bar). Recorded, not rescored.
+* ~~No muscle has a moment arm about any of the fifteen new coordinates, because
+  the source paths are fitted polynomials, so the missing subtalar arm is what
+  collapsed the ankle.~~ The zeros were **two different problems**, separated by
+  measuring each coordinate two independent ways — OpenSim on the model's own
+  muscle geometry, and which bodies each path touches read from the file — which
+  agree on all 21 coordinates checked:
+  * **representation:** 11 muscles per side genuinely cross the subtalar (arms up
+    to 32.7 mm) and read 0 only because the fitted polynomials take no subtalar
+    input;
+  * **absence:** nothing crosses the thoracic, neck or wrist joints at all. The real
+    geometry reads 0 too, and no refit can help — they need muscles.
+
+  **What is drivable now** (`1e29ee3`, `registration_muscled.json`: 25 bodies,
+  **148 muscles**, 48 coordinates). The 22 subtalar-crossing foot muscles run on
+  the model's own geometry, as the 18 arm and trunk muscles already did, with the
+  other 58 paths bit-for-bit unchanged. Two refits were tried first, each
+  pre-registered, and each FAILED its do-no-harm gate on the right knee
+  (`gasmed_r` 1.66 mm, then `gaslat_r` 4.50 mm, against 1.36 mm). The fitter was
+  also observed discarding 706 and 1,170 of 1,485 samples as NaN on two of four
+  fits, for a reason not found, so that route was closed rather than redrawn. The
+  neck gets **50 muscles transferred verbatim** from the MASI cervical donor —
+  sternocleidomastoid, splenius, semispinalis, longus colli and capitis, scalenes —
+  every one's rest length matching the donor's own to 1.5e-11 m, 160 of 168
+  muscle–joint pairs agreeing in sign with it. Excluded: 10 anchored to a clavicle
+  or scapula this body lacks, and 18 lying wholly inside the lumped cervical body.
+  At full activation the neck extensors reach about 53 N·m against ~9.5 N·m to hold
+  the head with the neck horizontal — **capacity, not demonstrated behaviour** — but
+  flexion at the skull joint reaches only 1.12 N·m against the 2.69 N·m needed to
+  lift the head from supine there.
+
+* **Pre-registered gate G-S — does giving the subtalar its arms repair the
+  ankle? FAILED.** It still leaves its range by 1.140 rad right and 0.871 left,
+  down from 1.356 and 1.352, against a 0.220 bar. So the missing arm was at most
+  part of the cause, and the cause is now **open**. The run that would separate it
+  — re-welding the subtalar alone — has not been made.
+* The original gate — no new coordinate may leave its range by more than the base
+  model already leaves its own — still **FAILED** on `thoracic_extension` (0.394
+  rad against 0.220). Recorded, not rescored.
+
+**Still blocked:** the thoracic joint has no donor muscles (the only candidates'
+attachments sit 32 mm above a joint centre that is itself uncertain to 62 mm); the
+wrists are blocked on MoBL-ARMS 4.1 and its unresolved licence, though NOT on the
+girdle, since the wrist muscles need no clavicle or scapula; the 10 girdle-anchored
+neck muscles wait on the girdle.
 
 Still absent in that variant: scapula, clavicle, fingers, per-vertebra thoracic
 bodies, and any actuator on the new coordinates. The shoulder girdle is absent
@@ -130,6 +163,31 @@ girdle's 0.86 kg per side can come out of the 17.938 kg residual core afterwards
 In the display nothing changes yet: `data/derived/anatomy-segment-binding/`
 assigns every entity to one of the original 22 segments, so the skull still rides
 `torso` until that binding knows the three new bodies exist.
+
+### 0.2a The identified plant has two toe hinges no muscle can drive
+
+Found while diagnosing the spine variant, and it is **not** a property of the
+variant — it is in `engineering_stance_v1`, the plant every existing result was
+measured on. Upstream fitted the muscle-path polynomials **with the toes welded**
+(`exampleMocoInverse.cpp:51`: `ModOpReplaceJointsWithWelds({"mtp_r", "mtp_l"})`);
+this repo's engine keeps `mtp` as a free `PinJoint`. So the toe muscles cross a
+joint their paths cannot see. Measured on the base plant through the engine:
+
+| muscle | about `ankle_angle_r` | about `mtp_angle_r` |
+|---|---:|---:|
+| `edl_r` | +39.3 mm | **0** |
+| `ehl_r` | +42.6 mm | **0** |
+| `fdl_r` | −11.3 mm | **0** |
+| `fhl_r` | −18.0 mm | **0** |
+| `soleus_r` (control) | −49.7 mm | 0 |
+
+These are the toe extensors and flexors, and their real geometric arm about the
+toe joint reaches 25.3 mm; the fit reads exactly zero, bit-identical on a repeat
+call. Both toe joints are therefore unactuated hinges held only by passive terms.
+Left untouched in the base plant deliberately — changing it changes every result
+already recorded on it. Every foot contact, gait and crawl measurement on this
+plant was made with toes that no muscle could move; that belongs beside any result
+that depends on push-off.
 
 ### 0.3 Two bodies of different stature and different mass
 
