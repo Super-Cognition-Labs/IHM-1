@@ -330,6 +330,16 @@ Fixing the conversion is an engine change that invalidates every prior stopped r
 It should be done deliberately, with those runs redone, not as a side effect of
 this work.
 
+**And it cannot be done concurrently with anything else.** The engine build's
+`manifest.json` hash-verifies `scripts/native_mechanical_stream.cpp` on every
+single load — `raise ValueError('Stale native mechanical build: ' + path)`. So
+editing that file does not just change the next build; it **immediately makes
+every existing build stale and refuses to start any engine at all**, including
+ones already relied on by work in flight. The fix therefore has to be sequenced
+alone: edit, rebuild, verify the new build, flip
+`data/runtime/mechanical-stream/latest.json`, then redo the stopped runs. Doing it
+beside other work takes the plant away from that work without warning.
+
 ---
 
 ## Tier 2 — contact, and the fact that the skin never touches anything
