@@ -116,8 +116,9 @@ def main() -> int:
                 carried['selection']['segment_contact']['material'] == {
                     'youngs_modulus_pa': 3000.0, 'poissons_ratio': 0.45, 'layer_thickness_m': 0.0066})
 
-    print('\nskin surfaces REPLACING the feet -- asserted to collapse, because the skin', flush=True)
-    print('does not reach the floor in this pose (measure_segment_contact_meshes.py)', flush=True)
+    print('\nskin surfaces REPLACING the feet -- asserted to collapse, because the plantar', flush=True)
+    print('skin is not LEVEL in this pose: toes_l -8.5 mm through the floor plane while', flush=True)
+    print('calcn_l sits +35.700 mm above it (scripts/verify_skin_contact.py, 2026-09-18).', flush=True)
     replaced = settle({'segment_contact': 'skin'}, pose)
     ok &= check('every contact element is a skin mesh',
                 all(n.startswith('mesh_support_skin_') for n in replaced['names']),
@@ -132,8 +133,12 @@ def main() -> int:
                 dropped <= base_fall + 1e-9,
                 f'fell {dropped*1e3:.1f} mm against the baseline\'s {base_fall*1e3:.1f} mm '
                 f'in {STEPS*DT:.2f} s -- caught {(base_fall-dropped)*1e3:.1f} mm higher')
+    # Until 2026-09-18 this asserted the string 'does not reach the floor', which the
+    # measurement withdrew: the shipped bundle's toes DO reach it, at -8.5 mm. The
+    # check is on the caveat naming the measured defect, not on the retired sentence.
+    caveat = replaced['selection']['segment_contact']['caveat'] or ''
     ok &= check('and the selection carries that caveat rather than a claim',
-                'does not reach the floor' in (replaced['selection']['segment_contact']['caveat'] or ''))
+                'not LEVEL' in caveat and '+20.139 mm ABOVE the calcaneus' in caveat)
 
     print('\njoint stops -- the model declares ranges and nothing enforced them', flush=True)
     stopped = settle(stops_only, pose)

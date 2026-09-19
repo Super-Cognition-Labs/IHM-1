@@ -155,14 +155,29 @@ if __name__=='__main__':
           'mesh_all':(ROOT/'data/derived/segment-contact-meshes/stance-bone-all',True,None),
           'skin':(skin_bundle,True,skin_material),
           # The same 112k faces of skin, with the source foot spheres KEPT.
-          # The skin never reaches the floor in this pose, so this arm is the
-          # cost of CARRYING the geometry, separated from the cost of a plant
-          # that is collapsing -- two things the `skin` arm's number mixes.
+          # The skin's HEEL cannot reach the floor while the spheres hold the body
+          # up -- they stand the calcaneus 15.407 mm off it and the shipped bundle
+          # seats the skin 20.139 mm ABOVE the calcaneus -- so this arm is the cost
+          # of CARRYING the geometry, separated from the cost of a plant that is
+          # collapsing, two things the `skin` arm's number mixes.
           'skin_carried':(skin_bundle,False,skin_material),
+          # One similarity per PIECE instead of one for the whole body, from the fit
+          # this repo already made and gated (data/derived/anatomy-segment-registration).
+          # The shipped bundle seats the heel skin +20.139 mm ABOVE the calcaneus; this
+          # one seats it -10.360 mm below, inside the [-25,-5] mm band fixed on
+          # 2026-09-10 and inside this body's own plantar pad (14.91 mm median).
+          # docs/SEGMENT_CONTACT_SURFACES.md, "one map per PIECE".
+          'skin_per_segment':(ROOT/'data/derived/segment-contact-meshes/skin-per-segment',True,None),
+          'skin_per_segment_carried':(ROOT/'data/derived/segment-contact-meshes/skin-per-segment',False,None),
           # Each patch its own measured depth and in vivo modulus (apply_soft_tissue_layer_map.py).
           # The bundle carries the layer, so no material is passed and none can override it.
           'skin_layer_map':(ROOT/'data/derived/segment-contact-meshes/skin-layer-map-v1',True,None)}
-    selected=args.arm or [n for n in arms if n!='skin']
+    # `skin` and the per-segment arms are out of the DEFAULT run because each
+    # replaces the source feet and the plant then rocks and collapses, which costs
+    # 9x the baseline per advance -- not because the skin cannot reach the floor.
+    # Measured at this pose on the shipped bundle: toes_l -8.5 mm (through the
+    # floor plane) against calcn_l +35.700 mm. scripts/verify_skin_contact.py.
+    selected=args.arm or [n for n in arms if n not in ('skin','skin_per_segment','skin_per_segment_carried')]
     reports=[]
     for name in selected:
         bundle,replace,material=arms[name]

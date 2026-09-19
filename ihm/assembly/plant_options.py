@@ -89,17 +89,36 @@ DEFAULT_JOINT_STOP_PROFILE = 'measured_soft'
 # the skin is what meets the floor.
 # `replaces_source_feet` is the whole question, not a detail.
 #
-# `scripts/measure_segment_contact_meshes.py` records, and EXCLUDES the arm from its
-# own default run for it: **the skin never reaches the floor in the stance pose.**
-# The skin surface of the foot sits above the source foot contact spheres' effective
-# plane, so a bundle that REPLACES those spheres leaves a standing body with nothing
-# under it, and it collapses. That is not the skin failing to hold the body; it is a
-# pose in which the skin is not yet touching.
+# ~~The skin never reaches the floor in the stance pose.~~ **WITHDRAWN 2026-09-18.**
+# That sentence stood here, in docs/WORKBENCH_AUTHENTICITY.md 1.1 and in
+# scripts/measure_segment_contact_meshes.py, and it is true of `skin-canonical` --
+# whose toes hover +96.7 mm -- and false of the bundle that ships. Measured at the
+# stance pose by scripts/verify_skin_contact.py: the shipped `skin` bundle's `toes_l`
+# reaches -8.5 mm, THROUGH the floor plane, while its `calcn_l` sits +35.700 mm above
+# it. The body does not stand on its skin because the plantar surface is not LEVEL,
+# not because it cannot reach.
 #
-# So both arms are offered and neither is called the truth: `skin` replaces the feet
-# (the intended end state, and the one that collapses from the stance pose), and
-# `skin_carried` keeps them (the cost of CARRYING the geometry, separated from the
-# cost of a plant that is collapsing -- two things one number would mix).
+# What the 36 mm is made of, at the stance pose (docs/SEGMENT_CONTACT_SURFACES.md,
+# "the 36 mm between the skin and the floor is the skin's, all of it"):
+#
+#   lowest calcn_l BONE vertex      +15.407 mm   the source foot spheres hold it there
+#   lowest calcn_l SKIN vertex      +35.700 mm   shipped `skin` bundle
+#   this body's own plantar pad      14.91 mm    median, its own depth map
+#
+# 35.700 = 15.407 + 20.293, and only the second term is an error: the source spheres'
+# loaded stand-off is inside this body's own heel pad to half a millimetre, and the
+# skin is seated +20.139 mm ABOVE the calcaneus in the segment's own frame. A skin at
+# the declared pad would sit at +0.5 mm -- on the floor, where the spheres put it.
+#
+# The consequence for `skin_carried` is structural and is not a pose: while the source
+# spheres carry the body they stand the calcaneus 15.4 mm off the floor, so the HEEL
+# skin cannot load however well it is seated. `skin_carried` measures carrying the
+# geometry; it is not the skin taking weight.
+#
+# So the arms are offered and none is called the truth: `skin` replaces the feet (the
+# intended end state), `skin_carried` keeps them (the cost of CARRYING the geometry,
+# separated from the cost of a plant that is collapsing -- two things one number would
+# mix), and `skin_per_segment` is the seat repair, measured below.
 SEGMENT_CONTACT_BUNDLES = {
     'skin': {
         'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
@@ -107,9 +126,13 @@ SEGMENT_CONTACT_BUNDLES = {
         'layer': 'skin',
         'label': 'Skin exterior, replacing the source feet',
         'replaces_source_feet': True,
-        'caveat': 'The skin does not reach the floor in the stance pose. With the source '
-                  'foot spheres replaced, a standing body has nothing under it and collapses. '
-                  'Use skin_carried to separate the cost of the geometry from that.',
+        'caveat': 'The plantar skin is not LEVEL in the stance pose: toes_l reaches -8.5 mm '
+                  'through the floor plane while calcn_l sits +35.700 mm above it, because '
+                  'the global similarity seats the heel skin +20.139 mm ABOVE the calcaneus. '
+                  'With the source feet replaced the body rocks onto its forefoot -- 431 N per '
+                  'side through the toes against 78 N through the heel -- overshoots weight by '
+                  '34% and settles 55.1 mm in 0.25 s. Use skin_per_segment for the seat repair '
+                  'and skin_carried to separate the cost of the geometry.',
     },
     'skin_carried': {
         'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
@@ -119,7 +142,9 @@ SEGMENT_CONTACT_BUNDLES = {
         'replaces_source_feet': False,
         'caveat': 'The source foot spheres still carry the body; the skin is present and '
                   'only loads where it actually touches. This measures carrying the '
-                  'geometry, NOT the skin holding the body up.',
+                  'geometry, NOT the skin holding the body up -- and the HEEL skin cannot '
+                  'load at all in this arm, whatever its seat, because the spheres stand the '
+                  'calcaneus 15.407 mm off the floor.',
     },
     'skin_layer_map': {
         'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
@@ -127,7 +152,72 @@ SEGMENT_CONTACT_BUNDLES = {
         'layer': 'skin',
         'label': 'Skin exterior with per-patch measured depth, replacing the source feet',
         'replaces_source_feet': True,
-        'caveat': 'Same caveat as skin: it does not reach the floor in the stance pose.',
+        'caveat': 'Same geometry and the same seat as skin: the plantar surface is not level '
+                  'and the body rocks onto its forefoot. Only the layer stiffness differs.',
+    },
+    'skin_per_segment': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
+        'path': 'data/derived/segment-contact-meshes/skin-per-segment',
+        'layer': 'skin',
+        'label': 'Skin exterior, one map per piece, replacing the source feet',
+        'replaces_source_feet': True,
+        'caveat': 'One similarity per PIECE instead of one for the whole body, from the fit '
+                  'this repo already made and gated (data/derived/anatomy-segment-registration). '
+                  'It seats the heel skin -10.360 mm below the calcaneus, inside the [-25,-5] mm '
+                  'band fixed on 2026-09-10 and inside this body\'s own plantar pad (14.91 mm '
+                  'median), where the global map seats it +20.139 mm ABOVE the bone. At the '
+                  'stance pose the plantar surface spans -0.4 to +5.1 mm instead of -8.5 to '
+                  '+35.7. It is NOT an anatomical skin: 20 pieces at 20 different scales, with a '
+                  'step at every seam (26-87 mm median) that the real body does not have, and the '
+                  'load is still forefoot-dominated. A better contact scaffold, nothing more.',
+    },
+    'skin_per_segment_carried': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
+        'path': 'data/derived/segment-contact-meshes/skin-per-segment',
+        'layer': 'skin',
+        'label': 'Skin exterior, one map per piece, source feet kept',
+        'replaces_source_feet': False,
+        'caveat': 'The source foot spheres still carry the body. The toe skin does reach the '
+                  'floor in this arm (-0.4 / -0.9 mm) so it is a SECOND path to the ground '
+                  'beside the spheres, worth ~0.01 N at this pose; the heel skin cannot load '
+                  'while the spheres hold the calcaneus 15.407 mm up.',
+    },
+    # THE CONTACT LAW THE DEFORMABLE LAYER IMPLIES (ihm/assembly/contact_law.py,
+    # scripts/measure_contact_law_fit.py, docs/SOFT_BODY.md).  Same meshes as
+    # `skin_layer_map`, byte for byte; the only thing that differs is the per-segment
+    # stiffness, and only on the segments where the 3-D soft-tissue layer was measured and
+    # its fit passed its own bar.  This is the IMPLICIT answer to the coupling's problem:
+    # `ElasticFoundationForce` is solved inside the integrator, so it costs nothing per step
+    # beyond the segment contact the plant already carries, where the coupled layer costs
+    # 53.9 ms per 10 ms step and is still a step behind by construction.
+    #
+    # It is a FIT to a layer that is itself converged to no better than ~10%, and the
+    # selection's disclosure says so.  A segment whose fit FAILED carries no fitted number at
+    # all -- it keeps the layer map's own k and the record says the fit was refused.
+    'skin_layer_fitted': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
+        'path': 'data/derived/contact-law-fit-v1',
+        'layer': 'skin',
+        'label': 'Skin exterior, per-segment stiffness FITTED to the deformable layer, '
+                 'replacing the source feet',
+        'replaces_source_feet': True,
+        'caveat': 'Same geometry and the same seat as skin_layer_map: the plantar surface is '
+                  'not level and the body rocks onto its forefoot. Only the layer stiffness '
+                  'differs, and only on the segments the layer was measured on -- every '
+                  'record says which. The fit inherits the layer\'s own ~10% convergence '
+                  'uncertainty and is not better than it.',
+    },
+    'skin_layer_fitted_carried': {
+        'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
+        'path': 'data/derived/contact-law-fit-v1',
+        'layer': 'skin',
+        'label': 'Skin exterior, per-segment stiffness FITTED to the deformable layer, '
+                 'source feet kept',
+        'replaces_source_feet': False,
+        'caveat': 'The source foot spheres still carry the body, so the HEEL skin cannot load '
+                  'however it is seated -- which is precisely the segment the fit was measured '
+                  'on. This arm measures carrying the fitted geometry, not the fitted law '
+                  'taking weight.',
     },
     'bone_all': {
         'plant': 'engineering_stance_v1',   # cut per segment of the 22-body base plant
@@ -407,10 +497,26 @@ def resolve_fidelity(root, value=None, *, environment='supine'):
         # bundle itself recorded, so the arm measures what THIS body's declared skin does
         # rather than what a default number does. A bundle carrying a per-segment layer
         # map declares its own per record, and the plant refuses a caller override there.
+        #
+        # THAT REFUSAL MADE THE LAYER-MAP BUNDLES UNSELECTABLE, and nothing said so.
+        # `NativeMechanicalStream` decides "does this bundle carry a per-segment layer map?"
+        # from the RECORDS (`'layer' in records[0]`) and raises if a caller also hands it an
+        # E, p or h. This resolver decided it from a top-level `per_record_material` key that
+        # `skin-layer-map-v1` does not carry, so it passed the uniform triple with every
+        # layer-map bundle and every such selection raised at plant construction. Measured
+        # 2026-09-18: `{'segment_contact': 'skin_layer_map'}` raised `Bundle carries a
+        # per-segment layer map; a caller E, p or h would override it`. The per-segment
+        # measured stiffness -- the bundle's own reason to exist -- had never been reachable
+        # through this resolver. The two sides now read the SAME thing off the same records,
+        # which is the only form of this fix that cannot drift apart again.
         material = manifest.get('skin_material') or {}
         declared = {k: material[k] for k in ('youngs_modulus_pa', 'poissons_ratio', 'layer_thickness_m')
                     if k in material}
-        if declared and not manifest.get('per_record_material'):
+        records = manifest.get('records') or []
+        per_record = bool(records) and 'layer' in records[0]
+        if per_record and any(('layer' in r) != per_record for r in records):
+            raise ValueError('Segment contact layer map must cover every record or none')
+        if declared and not per_record and not manifest.get('per_record_material'):
             kwargs['segment_contact_material'] = declared
         selection['segment_contact'] = {
             'id': contact, 'label': spec['label'], 'layer': spec['layer'],
@@ -420,12 +526,24 @@ def resolve_fidelity(root, value=None, *, environment='supine'):
             'concave_meshes': manifest.get('concave_meshes'),
             'refused': manifest.get('refused') or [],
             'bundle_basis': manifest.get('basis'),
-            'material': declared or None,
-            'material_basis': 'Declared by the bundle from this body\'s own canonical skin-layer '
-                              'entities; not a tuned contact stiffness.' if declared else None,
+            'material': None if per_record else (declared or None),
+            'material_basis': None if per_record else
+                              ('Declared by the bundle from this body\'s own canonical skin-layer '
+                               'entities; not a tuned contact stiffness.' if declared else None),
+            'per_segment_stiffness': None if not per_record else {
+                'rule': (manifest.get('layer_map') or {}).get('rule'),
+                'stiffness_pa_per_m': {r['element']: r['layer']['stiffness_pa_per_m'] for r in records},
+                'basis': 'The bundle carries one stiffness per segment. The uniform E, p and h '
+                         'are NOT what this plant stands on and are not passed to it; '
+                         'skin_material is kept only as the record of what the bundle was '
+                         'built with.'},
+            'contact_law_fit': manifest.get('contact_law_fit'),
             'caveat': spec.get('caveat'),
             'disclosure': DISCLOSURE['segment_contact_skin' if spec['layer'] == 'skin'
                                      else 'segment_contact_bone']}
+        if manifest.get('contact_law_fit'):
+            from .contact_law import DISCLOSURE as CONTACT_LAW_DISCLOSURE
+            selection['segment_contact']['disclosure'] += ' ' + CONTACT_LAW_DISCLOSURE
 
     tissue = value.get('tissue_ligaments')
     if tissue is None:

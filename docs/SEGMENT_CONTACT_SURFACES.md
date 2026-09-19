@@ -2511,3 +2511,119 @@ is twenty rigid pieces at twenty different scales, so the surface it presents ha
 every seam that the real body does not have. It is a better CONTACT SCAFFOLD, measured
 against a pad thickness, and nothing here licenses calling it the body's skin. The fused
 forefoot (*the forefoot is a mitten*) is untouched by any of it.
+
+### Result: the seat is repaired and it is NOT enough. Outcome three (2026-09-18)
+
+Run against the pre-registration above. `data/derived/segment-contact-meshes/skin-per-segment`,
+receipts `out/skin_per_segment_stance.json` (0.25 s), `out/skin_per_segment_stance_1s.json`
+and `out/skin_per_segment_controls_1s.json` (1.00 s), `out/verify_skin_contact.json` and
+`out/skin_contact_support.json` (`scripts/measure_skin_contact_support.py`).
+
+**Known answer: PASS.** Rebuilding with `--registration binding` reproduces the shipped
+`skin` bundle — all 20 mesh sha256s identical, every `skin_minus_bone_minimum_y_m`
+identical. (One manifest string differs, `enclosure_gate`: the shipped bundle predates its
+current wording. No geometry.)
+
+**Gates 1–3: PASS.**
+
+| gate | value | |
+|---|---|---|
+| 3, the seat, band `[−25, −5] mm` | `calcn_l` **−10.360**, `calcn_r` **−9.939** | **PASS**, and exactly the −10.36 / −9.94 predicted from the raw geometry before the cut — so the cut and the caps do not move it |
+| 2, orientation | every per-segment map has det > 0; the builder refuses a reflection by name | PASS |
+| 1, admissibility | 20 pieces, 20 watertight, 20 concave, the same two tali refused for the same reason | PASS |
+
+**What the seat repair does to the stance, at the stance pose, against the sphere arm:**
+
+| | `spheres` | `skin` (shipped) | `skin-per-segment` |
+|---|---:|---:|---:|
+| `calcn_l` skin above the floor | — | +35.700 mm | **+5.079 mm** |
+| `toes_l` skin above the floor | — | −8.489 mm | −0.394 mm |
+| plantar surface span | — | 44.2 mm | **5.5 mm** |
+| vertical contact at 0.25 s | 761.38 N (= mg) | 1019.37 N (**134%**) | 670.32 N (**88%**) |
+| `pelvis_ty` at 0.25 s | −0.0 mm | −55.1 mm | −9.4 mm |
+| worst penetration over 0.25 s (a MAXIMUM) | — | calcn 14.8 / toes 22.1 mm | calcn 6.7 / toes 4.9 mm |
+| s / advance, median | 0.051 | 0.340 | 0.206 |
+
+**And at 0.25 s that reads like a repair, which is why it was run to 1.00 s.**
+
+| at 1.00 s | `spheres` | `skin_carried` | `skin_per_segment_carried` | `skin` | `skin-per-segment` |
+|---|---:|---:|---:|---:|---:|
+| `pelvis_ty` drift | **+0.0 mm** | −4.1 mm | −1.3 mm | — | **−671.8 mm** |
+| outcome | stands | stands | stands | **integrator FAILED at t = 0.888 s** | falls onto its hands |
+
+**The `skin` arm is recorded FAILED**: `AbstractIntegrator::takeOneStep` could not advance
+past t = 0.887894 s. It is not rescored and nothing about it is quoted from the 0.25 s row
+as if the run had finished.
+
+**So the pre-registered reading is the third row: the seat is necessary and not sufficient.**
+Twenty-five steps could not tell settling from falling — at 0.25 s the per-segment arm is
+9.4 mm down and carrying 88% of weight, and at 1.00 s it is 672 mm down with its **hands** on
+the floor. This is the ledger's *"the maximum over a run's evaluations is not the run's
+result"* one level up: an early evaluation of a transient is not the result either.
+
+**Why it falls is measured, and it is no longer the seat.** From one snapshot, with the
+body's own emitted masses and mass centres (77.6122029 kg, CoM at ground x = **−0.093621 m**):
+
+| contact set | support region, ground x | behind the CoM | in front of the CoM |
+|---|---|---:|---:|
+| 12 source foot spheres | −0.2159 (heel) .. +0.0224 (medial toe) | **+122.3 mm** | **+116.0 mm** |
+| `skin`, vertices below the floor | −0.1821 .. −0.1128 | +88.5 mm | **−19.2 mm** |
+| `skin-per-segment`, below the floor | −0.1938 .. −0.1812 | +100.1 mm | **−87.5 mm** |
+
+The sphere arm's force-weighted centre of pressure is at x = −0.093621 m — the CoM's own x to
+**0.0 mm**, so the stance pose is a balanced static equilibrium *under the spheres*. **Every
+skin vertex that reaches the floor is behind the centre of mass**, by 19 mm on the shipped
+bundle and 88 mm on the repaired one. A body whose whole base of support is behind its weight
+line pitches forward, and both arms do, onto the hands.
+
+**And the surface doing the touching is not the one the element's name suggests.** The patch
+below the floor is carried by `toes_l` / `toes_r` and sits at ground x −0.18, **under the
+midfoot**, 200 mm behind the toe contact spheres. It is real skin, not invented cap surface:
+of the 50 (shipped) and 2 (repaired) below-floor vertices, **0 are cap vertices**. The `toes`
+skin piece spans ground x −0.178 .. +0.015 and the `calcn` piece only −0.239 .. −0.123 — the
+hard partition gives the midfoot skin to the *toes* rigid body, which is the same defect this
+file already recorded from the other side (*the calcaneus sits 0.78 inside the toes piece*),
+now with a contact consequence. The forefoot skin that would need to reach the floor rides
+`toes`, whose bone stands +16.746 mm up at this pose.
+
+**Stated as a hypothesis, with the instrument that would exclude it**, because a factor is
+not a mechanism: the support region's position relative to the CoM is *measured*; that it is
+what topples the body is the obvious reading and is not yet separated from the skin layer's
+own stiffness or from the loss of the spheres' friction. The arm that would separate it is a
+pose whose CoM lies over the skin patch, or the same bundle with a posterior-only sphere set
+retained. One correlate is already in hand and it is not nothing: `skin_per_segment_carried`,
+the identical geometry with the spheres kept, **stands** at 1.00 s (−1.3 mm).
+
+**The seam, reported and not gated**, as the pre-registration said. The same canonical skin
+vertex is carried by both of two neighbouring pieces, so the distance between its two images
+is the step:
+
+| seam | global map, at the reference pose | global map, at the stance pose | per-segment, median / max |
+|---|---:|---:|---:|
+| `calcn_l`\|`toes_l` | **5.9e-14** | 55.70 | 52.29 / 65.70 |
+| `tibia_l`\|`calcn_l` | **7.6e-14** | 9.49 | 28.84 / 34.84 |
+| `femur_l`\|`tibia_l` | **1.1e-13** | 6.76 | 47.32 / 59.48 |
+| `pelvis`\|`torso` | **2.5e-13** | 43.06 | 87.41 / 92.76 |
+| `radius_l`\|`hand_l` | **2.3e-13** | **2.3e-13** | 26.39 / 27.82 |
+
+**The control here failed the first time it was written and that is the useful part.** It was
+written as *under one global map the seam is zero*, which is false at the stance pose: the
+seam opens by the JOINT's own motion away from the reference pose, and the shipped bundle
+already carries a **55.70 mm** step at the MTP for that reason alone. `radius_l`\|`hand_l`
+reads float-zero at BOTH poses because the wrist is a `WeldJoint` (§0.2) — which is what
+separates the two causes. So: per-segment maps roughly double the seam at the ankle, the knee
+and the waist, and at the MTP they leave it about where the joint's own motion already put it.
+
+**Per-piece enclosure, reported and not gated** (the partition-confounded measure this file
+already recorded as structurally unpassable): mean **0.4656** against the global map's
+**0.4445**; toes 0.908 / 0.903, calcn 0.106 / 0.104, pelvis 0.912. The partition-free
+whole-skin measure does not apply to twenty pieces under twenty similarities and no number
+is quoted for it.
+
+**What this leaves.** The seat is fixed and measured. The skin still cannot stand the body,
+and the defect that stops it is now named and is a different one: **the hard partition puts
+the midfoot and forefoot skin on the `toes` rigid body**, so no skin reaches the floor in
+front of the centre of mass. That is not a registration problem and no map of any family
+fixes it — it is the same continuous-carrier problem this file has been circling, and the
+forefoot is also a mitten. `skin_per_segment` is offered as what it is: a better contact
+scaffold whose heel is seated where the body's own depth map says it should be.

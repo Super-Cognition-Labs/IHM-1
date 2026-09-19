@@ -71,6 +71,60 @@ def binding_registration():
     rest=model.forward(binding['reference_pose_rad'])
     return np.linalg.inv(similarity),{name:np.asarray(value,dtype=float) for name,value in rest.items()},binding
 
+def per_segment_registration():
+    """ONE MAP PER PIECE, from the fit this repo already made and already gated.
+
+    `scripts/fit_segment_registration.py` fitted one similarity per segment --
+    atlas bone group onto that segment's own scaffold bone mesh, symmetric
+    trimmed ICP initialised from the global map -- at the SAME
+    `reference_pose_rad` the binding similarity was fitted at.  Nothing is
+    re-fitted here; the artefact is read and its own reference pose is checked
+    against the binding's.
+
+    This file already measured per-segment maps as WORSE than the global one
+    (0.873 against 0.888) and that measurement stands -- of a BLENDED skin, where
+    linear blend skinning mixes neighbouring segments' scales and translations
+    over the vertices near a joint.  A contact bundle has no such seam to
+    protect: it is already a hard partition into independent closed meshes, each
+    loaded as its own ContactMesh paired ONLY with the floor and never with each
+    other.  Applying each piece's own map rigidly to that piece changes nothing
+    about how the engine treats it, and the blend -- the thing that failed -- does
+    not occur.
+
+    What it is NOT: an anatomical skin.  Twenty pieces at twenty different scales
+    have a step at every seam that the real body does not have.
+    """
+    record=json.loads((ROOT/'data/derived/anatomy-segment-registration/registration.json').read_text())
+    binding=json.loads((ROOT/'data/derived/anatomy-segment-binding/binding.json').read_text())
+    if record['reference_pose_rad']!=binding['reference_pose_rad']:
+        raise ValueError('the per-segment fit and the binding similarity are at different poses')
+    maps={}
+    for name,entry in record['segments'].items():
+        M=np.asarray(entry['atlas_to_ground'],dtype=float)
+        # A reflection would invert every triangle's winding and therefore every
+        # contact normal.  Gate 2 of the pre-registration, refused not reported.
+        if np.linalg.det(M[:3,:3])<=0:raise ValueError('per-segment map for '+name+' is a reflection')
+        maps[name]=M
+    spec=importlib.util.spec_from_file_location('_render_body_3d',ROOT/'scripts/render_body_3d.py')
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    model=module.OsimModel(ROOT/'data/models/engineering_stance_v1/model.osim')
+    rest=model.forward(binding['reference_pose_rad'])
+    report=dict(choice='per_segment',
+        map='data/derived/anatomy-segment-registration/registration.json, one similarity per segment',
+        sha256=sha(ROOT/'data/derived/anatomy-segment-registration/registration.json'),
+        method=record['method'],parameters=record['parameters'],
+        scale={name:float(entry['scale']) for name,entry in record['segments'].items()},
+        rms_nearest_surface_global_m={name:entry['rms_nearest_surface_global_m'] for name,entry in record['segments'].items()},
+        rms_nearest_surface_segment_m={name:entry['rms_nearest_surface_segment_m'] for name,entry in record['segments'].items()},
+        pose='binding.json reference_pose_rad (the pose BOTH fits were made at)',
+        limitation='One rigid similarity per PIECE. Each piece is its own closed ContactMesh '
+                   'paired only with the floor, so no blend occurs and none is needed -- but the '
+                   'twenty pieces are at twenty different scales and the surface they present has '
+                   'a step at every seam that the real body does not have. A contact scaffold, '
+                   'not an anatomical skin.')
+    return maps,{name:np.asarray(value,dtype=float) for name,value in rest.items()},report
+
+
 def bone_clouds():
     """Every body's own bone-mesh vertices, in the body frame, scale baked in.
 
@@ -165,7 +219,12 @@ def build(out_dir,reference_path,minimum_faces,registration_choice,warp=None):
     # other 99 components are interior surfaces of the same acquired body.
     evidence=json.loads((ROOT/EVIDENCE).read_text())
     exterior=np.asarray(evidence['contact_eligible_triangle_ids'],dtype=np.int64)
-    if registration_choice=='binding':
+    per_segment_maps=None
+    if registration_choice=='per_segment':
+        if warp is not None:raise ValueError('a skin warp is defined on the binding map only')
+        per_segment_maps,frames,registration_report=per_segment_registration()
+        transform=None
+    elif registration_choice=='binding':
         transform,frames,binding=binding_registration()
         registration_report=dict(choice='binding',
             map='inverse of binding.json similarity_atlas_from_opensim_ground',
@@ -181,7 +240,10 @@ def build(out_dir,reference_path,minimum_faces,registration_choice,warp=None):
             rms_landmark_residual_m=registration.global_fit['rms_landmark_residual_m'],
             maximum_landmark_residual_m=registration.global_fit['maximum_landmark_residual_m'],
             pose=str(reference_path)+' t=0 body transforms')
-    if warp is None:
+    if per_segment_maps is not None:
+        # One map per PIECE: the vertex array is built inside the loop, per segment.
+        source=None
+    elif warp is None:
         source=canonical@transform[:3,:3].T+transform[:3,3]
     else:
         # One smooth space warp (scripts/skin_warp.py) on top of the binding map, applied to the
@@ -204,18 +266,29 @@ def build(out_dir,reference_path,minimum_faces,registration_choice,warp=None):
     weights=np.asarray(binding['weights'],dtype=np.float32)
     if weights.shape!=(len(canonical),len(segments)):raise ValueError('binding width does not match the skin mesh')
     owner=((weights[faces[:,0]]+weights[faces[:,1]]+weights[faces[:,2]])/3).argmax(axis=1)
-    triangles=source[faces[exterior]]
-    exterior_area=float(np.linalg.norm(np.cross(triangles[:,1]-triangles[:,0],triangles[:,2]-triangles[:,0]),axis=1).sum()/2)
+    def area_of(vertices,triangle_ids):
+        t=vertices[faces[triangle_ids]]
+        return float(np.linalg.norm(np.cross(t[:,1]-t[:,0],t[:,2]-t[:,0]),axis=1).sum()/2)
+    exterior_area=0. if source is None else area_of(source,exterior)
     records=[];rejected=[]
     for index,segment in enumerate(segments):
         selected=exterior[owner[exterior]==index]
         if len(selected)<minimum_faces:
             rejected.append(dict(body=segment,reason='fewer than %d exterior triangles'%minimum_faces,faces=int(len(selected)),admitted=False))
             continue
+        if per_segment_maps is None:
+            piece_source=source
+        else:
+            if segment not in per_segment_maps:
+                rejected.append(dict(body=segment,reason='no per-segment registration for this body',faces=int(len(selected)),admitted=False))
+                continue
+            M=per_segment_maps[segment]
+            piece_source=canonical@M[:3,:3].T+M[:3,3]
+            exterior_area+=area_of(piece_source,selected)
         used,inverse=np.unique(faces[selected],return_inverse=True)
         piece_faces=inverse.reshape(-1,3)
         world=np.linalg.inv(frames[segment])
-        local=source[used]@world[:3,:3].T+world[:3,3]
+        local=piece_source[used]@world[:3,:3].T+world[:3,3]
         cut=measure(local,piece_faces)
         reason=simtk_precondition(local,piece_faces);capped=False;cap_area=0.
         if reason is not None:
@@ -278,7 +351,9 @@ def build(out_dir,reference_path,minimum_faces,registration_choice,warp=None):
                 enclosure_gate='Share of a segment\'s own bone-mesh vertices lying inside ITS OWN skin piece. This is the PARTITION-CONFOUNDED measure and must not be read as registration quality: a bone that crosses into a neighbour\'s piece, or a segment whose piece is a strip or a patch, scores low under ANY registration. Measured on this bundle: radius 0.07 and ulna 0.12-0.29 own strips, patella 0.10-0.15 owns a patch, the calcaneus sits inside the TOES piece (0.13) and the femoral head inside the PELVIS piece (0.56-0.64) -- while the same bones against the WHOLE skin read 1.000, 1.000, 1.000, 0.91 and 1.000. Segments that own a closed region containing their own bone agree between the two measures (hand 0.78 vs 0.79, toes 0.85 vs 0.85). The partition-free measure is scripts/measure_skin_enclosure_whole.py and it is the one a registration is judged by.',
                 segments_enclosing_their_bone_basis='COUNT OF SEGMENTS REACHING 0.99 on the partition-confounded measure above -- NOT a count of segments whose bone is inside their skin. It is 0 for every registration this repo has tried, including the body\'s own anatomical bones, because every bone cloud has vertices near a joint boundary that fall outside its own piece. Do not read 0 as "no segment encloses its bone": the same bundle\'s per-segment values run to 0.89, and against the whole skin 12 of 22 segments reach 0.99.',
                 reference_pose=str(reference_path),
-                reference_pose_basis='Segment-local stations are taken through the reference run\'s t=0 body transforms, which are the model\'s zero-coordinate neutral pose (only pelvis_ty is nonzero). The supine environment rotates GRAVITY, not the body, so the same transforms serve upright.',
+                reference_pose_basis=('Segment-local stations are taken through the reference run\'s t=0 body transforms, which are the model\'s zero-coordinate neutral pose (only pelvis_ty is nonzero). The supine environment rotates GRAVITY, not the body, so the same transforms serve upright.'
+                    if registration_choice=='canonical' else
+                    'Segment-local stations are taken through the body transforms at binding.json reference_pose_rad -- the pose the map was FITTED at, which is NOT the zero pose (ankle 0.2426/0.2451 rad, mtp -0.3197/-0.3260). The stations are segment-local and therefore pose-independent once cut; this string used to describe the canonical branch\'s zero pose for every bundle and was wrong for all of them (corrected 2026-09-18, no geometry changed).'),
                 basis='Canonical exterior skin surface cut per segment and capped so SimTK will accept it. The skin is carried RIGIDLY by its segment: no in-plane stretch, no sliding, no deformable continuum anywhere in this engine. The only compliance is the elastic foundation\'s normal layer.',
                 simtk_precondition='SimTK::ContactGeometry::TriangleMesh requires a closed, consistently oriented, non-degenerate edge-2-manifold.',
                 controls=controls(),records=records)
@@ -290,7 +365,7 @@ if __name__=='__main__':
     parser.add_argument('--out',required=True)
     parser.add_argument('--reference',default=DEFAULT_REFERENCE)
     parser.add_argument('--minimum-faces',type=int,default=64)
-    parser.add_argument('--registration',choices=('canonical','binding'),default='binding')
+    parser.add_argument('--registration',choices=('canonical','binding','per_segment'),default='binding')
     parser.add_argument('--warp',default=None,help='a scripts/skin_warp.py warp (.npz, path relative to the repo) applied to the whole skin on top of the binding map before it is cut; default: none')
     args=parser.parse_args()
     report=build(args.out,args.reference,args.minimum_faces,args.registration,args.warp)

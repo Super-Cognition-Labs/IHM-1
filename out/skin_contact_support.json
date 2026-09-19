@@ -1,0 +1,148 @@
+{
+  "schema": "ihm.skin-contact-support.v1",
+  "pose": "data/models/engineering_stance_v1/initial_pose.json",
+  "model": "data/models/engineering_stance_v1/model.osim",
+  "support": {
+    "idempotent": true,
+    "mass_kg": 77.61220289999999,
+    "com_ground_m": [
+      -0.09362094444070795,
+      1.0211590205923846,
+      -0.00011298542620862981
+    ],
+    "sphere_arm": {
+      "loaded": 12,
+      "vertical_n": 761.3757112009141,
+      "cop_x_m": -0.09362094441141922,
+      "centre_x_min_m": -0.21588931044176307,
+      "centre_x_max_m": 0.022361003574838875,
+      "com_minus_cop_mm": -2.9288738101485023e-08,
+      "behind_com_mm": 122.26836600105511,
+      "ahead_of_com_mm": 115.98194801554683
+    },
+    "bundles": {
+      "skin": {
+        "vertices_below_floor": 104,
+        "bodies": [
+          "toes_l",
+          "toes_r"
+        ],
+        "x_min_m": -0.18214508615999803,
+        "x_max_m": -0.11282064562263802,
+        "behind_com_mm": 88.52414171929007,
+        "ahead_of_com_mm": -19.199701181930067
+      },
+      "skin-per-segment": {
+        "vertices_below_floor": 6,
+        "bodies": [
+          "toes_l",
+          "toes_r"
+        ],
+        "x_min_m": -0.19376938101520877,
+        "x_max_m": -0.18116033963175715,
+        "behind_com_mm": 100.14843657450082,
+        "ahead_of_com_mm": -87.5393951910492
+      }
+    }
+  },
+  "seams": {
+    "reference calcn_l|toes_l": {
+      "shared": 40,
+      "global_max_mm": 5.928593550334434e-14,
+      "per_segment_median_mm": 58.83687956202674,
+      "per_segment_p90_mm": 67.53699562404735,
+      "per_segment_max_mm": 70.47442084362439
+    },
+    "reference calcn_r|toes_r": {
+      "shared": 38,
+      "global_max_mm": 6.546139416680337e-14,
+      "per_segment_median_mm": 56.8863439718152,
+      "per_segment_p90_mm": 68.4644282700399,
+      "per_segment_max_mm": 73.78137183122666
+    },
+    "reference tibia_l|calcn_l": {
+      "shared": 50,
+      "global_max_mm": 7.601177430610147e-14,
+      "per_segment_median_mm": 32.61886766057005,
+      "per_segment_p90_mm": 39.975398941795014,
+      "per_segment_max_mm": 41.77600239023285
+    },
+    "reference tibia_r|calcn_r": {
+      "shared": 46,
+      "global_max_mm": 5.928593550334434e-14,
+      "per_segment_median_mm": 31.205964636395855,
+      "per_segment_p90_mm": 40.45089394568841,
+      "per_segment_max_mm": 42.20519861824966
+    },
+    "reference femur_l|tibia_l": {
+      "shared": 56,
+      "global_max_mm": 1.1123893155135927e-13,
+      "per_segment_median_mm": 45.2115615066712,
+      "per_segment_p90_mm": 55.531673875174604,
+      "per_segment_max_mm": 58.51115462122518
+    },
+    "reference pelvis|torso": {
+      "shared": 128,
+      "global_max_mm": 2.482534153247273e-13,
+      "per_segment_median_mm": 83.1945143589718,
+      "per_segment_p90_mm": 121.985690489406,
+      "per_segment_max_mm": 127.31897300909212
+    },
+    "reference radius_l|hand_l": {
+      "shared": 23,
+      "global_max_mm": 2.3065952118587557e-13,
+      "per_segment_median_mm": 26.389553868163706,
+      "per_segment_p90_mm": 27.62103301985348,
+      "per_segment_max_mm": 27.820937985762402
+    },
+    "stance calcn_l|toes_l": {
+      "shared": 40,
+      "global_max_mm": 55.69522269310959,
+      "per_segment_median_mm": 52.28574386615415,
+      "per_segment_p90_mm": 63.052394429760206,
+      "per_segment_max_mm": 65.69751965223708
+    },
+    "stance calcn_r|toes_r": {
+      "shared": 38,
+      "global_max_mm": 57.20872312764221,
+      "per_segment_median_mm": 51.27877120985572,
+      "per_segment_p90_mm": 65.83764900554247,
+      "per_segment_max_mm": 68.80006094501918
+    },
+    "stance tibia_l|calcn_l": {
+      "shared": 50,
+      "global_max_mm": 9.487042596862103,
+      "per_segment_median_mm": 28.838830490161023,
+      "per_segment_p90_mm": 33.54869249341824,
+      "per_segment_max_mm": 34.836470109116455
+    },
+    "stance tibia_r|calcn_r": {
+      "shared": 46,
+      "global_max_mm": 9.194359590782701,
+      "per_segment_median_mm": 28.01248489706726,
+      "per_segment_p90_mm": 34.23160013321366,
+      "per_segment_max_mm": 35.668033212998054
+    },
+    "stance femur_l|tibia_l": {
+      "shared": 56,
+      "global_max_mm": 6.761730391004311,
+      "per_segment_median_mm": 47.322853913516944,
+      "per_segment_p90_mm": 56.52271953352149,
+      "per_segment_max_mm": 59.48090433232107
+    },
+    "stance pelvis|torso": {
+      "shared": 128,
+      "global_max_mm": 43.06133110752731,
+      "per_segment_median_mm": 87.4088336486026,
+      "per_segment_p90_mm": 90.57500151008354,
+      "per_segment_max_mm": 92.75662165171028
+    },
+    "stance radius_l|hand_l": {
+      "shared": 23,
+      "global_max_mm": 2.347203303329888e-13,
+      "per_segment_median_mm": 26.389553868163738,
+      "per_segment_p90_mm": 27.621033019853506,
+      "per_segment_max_mm": 27.820937985762402
+    }
+  }
+}
