@@ -44,6 +44,10 @@ Usage
 -----
     python scripts/bind_anatomy_to_segments.py
     python scripts/bind_anatomy_to_segments.py --out data/derived/my-binding
+    python scripts/bind_anatomy_to_segments.py --variant articulated_spine_v1
+
+`--variant` writes a SECOND binding for a model variant and never touches the
+22-segment one.  See `build_variant` below.
 """
 from __future__ import annotations
 
@@ -53,6 +57,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -403,9 +408,16 @@ def segment_path(model, a, b):
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--out", type=Path, default=OUT)
+    parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--samples", type=int, default=MAX_VERTEX_SAMPLES)
+    parser.add_argument("--variant", choices=sorted(VARIANTS), default=None,
+                        help="refine the 22-segment binding for a model variant; "
+                             "writes a separate binding")
     args = parser.parse_args()
+    if args.variant is not None:
+        return build_variant(args)
+    if args.out is None:
+        args.out = OUT
     started = time.time()
 
     anatomy = json.loads(ANATOMY.read_text())
@@ -752,5 +764,512 @@ def main():
           f"in {time.time()-started:.0f}s")
 
 
+# --------------------------------------------------------------------------
+# 4. A second binding for a model variant (added 18 September 2026)
+# --------------------------------------------------------------------------
+# `data/models/articulated_spine_v1` repartitions `torso` into torso, thorax,
+# cervical and head (docs/ARTICULATED_SPINE.md) and un-welds both wrists and
+# both subtalars.  Hand, talus and calcaneus were already segments of their own
+# here, so the wrists and subtalars need no new assignment.  The only change is
+# that what rode `torso` must now be split four ways.
+#
+# The variant binding is therefore a REFINEMENT of the 22-segment one, never a
+# refit:
+#   * the similarity A and the reference pose are the base binding's, with the
+#     fifteen new coordinates at 0.  At 0 the variant IS the base body -- every
+#     shared body's transform is identical (checked below, to 0.0 on this
+#     model) -- so A and T_ref carry over exactly and every residual in the base
+#     report still describes this binding;
+#   * an entity the base bound anywhere but `torso` keeps its segment;
+#   * an entity the base bound to `torso` is re-voted by the same rule
+#     (`vote`: nearest bone group per sampled vertex, majority wins) restricted
+#     to the four torso-family groups.
+# A flat 25-way vote was the alternative.  It can only differ on base-`torso`
+# entities (splitting one group's vertex share cannot make another group win
+# unless that group was losing to `torso`), where it may hand a straddling
+# entity to a limb because its torso share got divided.  It is computed and
+# reported, not used.
+#
+# Bones in the torso family are named, from the same records that define the
+# variant's MASS partition: the cervical prior (data/research/cervical_inertia/
+# v2/manifest.json: skull = 15 cranial bones, jaw = mandible, cerv1-7) and the
+# thoracic plan (data/research/thoracic_mechanism/native_composition_v1/
+# plan.json: ribs, costal cartilages 1-7, manubrium, body, xiphoid,
+# intercostals, diaphragm).  Two classes are named by anatomy and not by those
+# records, and say so in `named_basis`:
+#   * the thoracic vertebrae ride `thorax`: the thoracic joint sits between T12
+#     and L1 (registration.json), so T1-T12 are above it.  Their MASS is still in
+#     the torso residual core -- the plan's partition is rib cage only -- so the
+#     model carries them on the wrong body inertially.  Reported, not fixed:
+#     data/models is not this script's to change.
+#   * teeth, ear ossicles and the small facial bones ride `head`, fixed in the
+#     skull or mandible.
+# The hyoid is claimed by no record and articulates with no bone; it is voted,
+# like soft tissue.  Scapulae and clavicles stay on `torso`, because both
+# acromial joints still sit on `torso` in the variant.
+VARIANTS = {
+    "articulated_spine_v1": {
+        "model": ROOT / "data/models/articulated_spine_v1/model.osim",
+        "catalog": ROOT / "data/models/articulated_spine_v1/catalog.json",
+        "registration": ROOT / "data/models/articulated_spine_v1/registration.json",
+        "base_model": MODEL,
+        "base_binding": OUT / "binding.json",
+        "out": ROOT / "data/derived/anatomy-segment-binding-articulated-spine-v1",
+        "split": "torso",
+        "family": ("torso", "thorax", "cervical", "head"),
+        "new_joints": ("thoracic", "neck", "atlantooccipital", "subtalar_r",
+                       "subtalar_l", "radius_hand_r", "radius_hand_l"),
+        # The bones that FORM each joint, by anatomy: (parent side, child side).
+        # Whole segments are the wrong population here -- torso and thorax touch
+        # most where the scapulae lie on the ribs, which is not the T12/L1 joint,
+        # and `calcn` includes the navicular, which meets the talus at the
+        # talonavicular joint, not the subtalar.  Used for the joint-centre
+        # report and written into the binding as `joint_pivot_bones`, which
+        # AnatomyPoser(pivot='anatomical') reads.
+        "joint_bones": {
+            "thoracic": (("first lumbar vertebra", "vertebra l1"),
+                         ("twelfth thoracic vertebra", "vertebra t12")),
+            "neck": (("first thoracic vertebra",), ("seventh cervical vertebra",)),
+            "atlantooccipital": (("atlas", "atlas c1"), ("occipital bone",)),
+            "subtalar_r": (("right talus",), ("right calcaneus",)),
+            "subtalar_l": (("left talus",), ("left calcaneus",)),
+        },
+    },
+}
+CERVICAL_INERTIA = ROOT / "data/research/cervical_inertia/v2/manifest.json"
+THORACIC_PLAN = ROOT / "data/research/thoracic_mechanism/native_composition_v1/plan.json"
+CERVICAL_BODY_OF = {"skull": "head", "jaw": "head", **{f"cerv{i}": "cervical" for i in range(1, 8)}}
+
+
+def spine_variant_segment(name: str) -> tuple[str | None, str]:
+    """(segment, basis) of a bone the base binding named `torso`.  None: vote it."""
+    n = name.lower()
+    if "hyoid" in n:
+        return None, "claimed by no mass record and articulates with no bone; voted"
+    if any(k in n for k in CRANIAL) or any(k in n for k in DENTAL):
+        return "head", "skull/jaw per the cervical prior; teeth, ossicles and small facial bones by anatomy"
+    if (re.search(r"\b(atlas|axis)\b", n) or "cervical vertebra" in n
+            or re.fullmatch(r"vertebra c\d", n)):
+        return "cervical", "cerv1-7 per the cervical prior"
+    if re.search(r"\brib\b", n) or "sternum" in n or "manubrium" in n or "xiphoid" in n:
+        return "thorax", "rib cage per the thoracic plan"
+    if "thoracic vertebra" in n or re.fullmatch(r"vertebra t\d+", n):
+        return "thorax", ("anatomy: above the T12/L1 thoracic joint; its mass stays in the "
+                          "torso residual core")
+    if ("lumbar vertebra" in n or re.fullmatch(r"vertebra l\d", n)
+            or "scapula" in n or "clavicle" in n):
+        return "torso", "below the thoracic joint, or on the girdle the acromial joints hang from"
+    raise ValueError("torso bone with no variant rule: " + name)
+
+
+# Entities with an answer anatomy fixes, written before the variant binding was
+# first built.  The base KNOWN_CASES whose answer was `torso` are re-stated for
+# the split; every other base case is carried unchanged.
+VARIANT_KNOWN_CASES = [c for c in KNOWN_CASES if "torso" not in c[1]] + [
+    ("left twelfth rib", {"thorax"}),
+    ("stomach", {"torso", "thorax"}),
+    ("spleen", {"torso", "thorax"}),
+    ("left kidney", {"torso", "thorax"}),
+    ("superior lobe of right lung", {"thorax"}),
+    ("midbrain", {"head"}),
+    ("urinary bladder", {"pelvis", "torso"}),
+    ("acromial part of left deltoid", {"humerus_l", "torso"}),
+    ("descending thoracic aorta", {"thorax"}),
+    ("cerebellum", {"head"}),
+    ("pons", {"head"}),
+    ("medulla oblongata", {"head", "cervical"}),
+    ("tongue", {"head"}),
+    ("left parotid gland", {"head"}),
+    ("right submandibular gland", {"head", "cervical"}),
+    ("thyroid gland", {"cervical"}),
+    ("thyroid cartilage", {"cervical"}),
+    ("trachea", {"cervical", "thorax"}),
+    ("left sternocleidomastoid", {"cervical"}),
+    ("left seventh costal cartilage", {"thorax"}),
+    ("right talus", {"talus_r"}),
+]
+
+
+def mass_record_owner():
+    """entity id -> the variant body whose MASS the model's own records put it in."""
+    owner = {}
+    cervical = json.loads(CERVICAL_INERTIA.read_text())
+    for body, record in cervical["bodies"].items():
+        for src in record["sources"]:
+            owner[src["id"]] = CERVICAL_BODY_OF[body]
+    plan = json.loads(THORACIC_PLAN.read_text())
+    for ident in plan["thoracic_material_partitions"]:
+        owner[ident] = "thorax"
+    return owner
+
+
+def joint_proxy(parent_cloud, child_cloud):
+    """The base builder's anatomical joint proxy: mean of parent bone points
+    within 20 mm of the child's bones, else the midpoint of the closest pair."""
+    tree_p, tree_c = cKDTree(parent_cloud), cKDTree(child_cloud)
+    pairs = tree_p.query_ball_tree(tree_c, r=0.02)
+    contact = [parent_cloud[i] for i, hits in enumerate(pairs) if hits]
+    if contact:
+        return np.mean(contact, axis=0), len(contact)
+    distance, index = tree_c.query(parent_cloud)
+    k = int(np.argmin(distance))
+    return (parent_cloud[k] + child_cloud[index[k]]) / 2, 0
+
+
+def build_variant(args):
+    from ihm.assembly.anatomy_pose import OsimKinematics
+
+    spec = VARIANTS[args.variant]
+    out_dir = args.out or spec["out"]
+    started = time.time()
+    anatomy = json.loads(ANATOMY.read_text())
+    entities = {e["id"]: e for e in anatomy["entities"]}
+    GEOMETRY_PATH.update({e["id"]: ROOT / e["reference_geometry"]["path"]
+                          for e in anatomy["entities"] if e.get("reference_geometry")})
+    base = json.loads(spec["base_binding"].read_text())
+    for key, path in (("anatomy", ANATOMY), ("model", spec["base_model"])):
+        if base["provenance"][key]["sha256"] != digest(path):
+            raise ValueError(f"the base binding was fitted on a different {path}; rebuild it first")
+    if base["frame"] != anatomy["frame"]["id"]:
+        raise ValueError("base binding and anatomy.json disagree on the frame")
+    split, family = spec["split"], tuple(spec["family"])
+
+    # -- the variant at its new coordinates' zero IS the base body ---------------
+    kin = OsimKinematics(spec["model"])
+    kin_base = OsimKinematics(spec["base_model"])
+    new_coords = sorted(set(kin.coordinates) - set(kin_base.coordinates))
+    reference = dict(base["reference_pose_rad"])
+    reference.update({c: 0.0 for c in new_coords})
+    T_base = kin_base.forward(kin_base.complete(base["reference_pose_rad"]))
+    T_var = kin.forward(kin.complete(reference))
+    shared = sorted(T_base)
+    carry_over = max(float(np.abs(T_base[b] - T_var[b]).max()) for b in shared)
+    print(f"variant {args.variant}: {len(kin.bodies)} bodies, {len(kin.coordinates)} coordinates, "
+          f"{len(new_coords)} new; shared-body transforms at the base reference pose differ by "
+          f"{carry_over:.1e}")
+    if carry_over > 1e-12:
+        raise ValueError("the variant at zero is not the base body; the base registration "
+                         "does not carry over and a refit is needed")
+    segments = sorted(kin.bodies)
+    if set(segments) - set(base["segments"]) != set(family) - {split}:
+        raise ValueError(f"unexpected new bodies: {sorted(set(segments) - set(base['segments']))}")
+
+    # -- named bone groups -------------------------------------------------------
+    groups = {s: list(v) for s, v in base["segment_named_bones"].items() if s != split}
+    named_basis, unclaimed = {}, []
+    for f in family:
+        groups[f] = []
+    for ident in base["segment_named_bones"][split]:
+        segment, why = spine_variant_segment(entities[ident]["name"])
+        named_basis[ident] = why
+        if segment is None:
+            unclaimed.append(ident)
+        else:
+            groups[segment].append(ident)
+    for f in family:
+        if not groups[f]:
+            raise ValueError(f"no named bone for {f}")
+    print("named bones per torso-family segment: "
+          + ", ".join(f"{f} {len(groups[f])}" for f in family)
+          + f"; voted (claimed by no record): {[entities[i]['name'] for i in unclaimed]}")
+
+    bone_points = {i: read_geometry(i) for s in segments for i in groups[s]}
+    clouds = {s: np.concatenate([bone_points[i] for i in groups[s]]) for s in segments}
+    family_trees = [cKDTree(clouds[s]) for s in family]
+    all_trees = [cKDTree(clouds[s]) for s in segments]
+
+    # -- assignment: refine base-torso entities only -----------------------------
+    rows, flat_moves = {}, []
+    owner = {i: s for s in family for i in groups[s]}
+    print("re-voting the base binding's torso entities...", flush=True)
+    for ident, row in base["entities"].items():
+        new = dict(row)
+        rows[ident] = new
+        if row["segment"] != split:         # a limb segment, or excluded: unchanged
+            continue
+        points = sample(bone_points[ident] if ident in bone_points else read_geometry(ident),
+                        args.samples)
+        segment, coherence, mean_d, min_d, runner = vote(points, family_trees, list(family))
+        flat, _, _, _, _ = vote(points, all_trees, segments)
+        new.update({
+            "family_vote_segment": segment,
+            "family_coherence": coherence,
+            "family_mean_distance_m": mean_d,
+            "family_min_distance_m": min_d,
+            "family_runner_up": runner,
+            "flat_vote_segment": flat,
+            "base_segment": row["segment"],
+        })
+        if ident in owner:
+            new["segment"], new["basis"] = owner[ident], "named_bone"
+            new["named_basis"] = named_basis[ident]
+        else:
+            new["segment"] = segment
+            new["basis"] = ("unclaimed_bone_vote" if ident in unclaimed
+                            else "torso_family_vertex_vote")
+            if ident in named_basis:
+                new["named_basis"] = named_basis[ident]
+        if flat not in family:
+            flat_moves.append({"id": ident, "name": row["name"], "family_vote": segment,
+                               "flat_vote": flat, "base_coherence": row["coherence"]})
+    counts = {}
+    for row in rows.values():
+        counts[row["segment"]] = counts.get(row["segment"], 0) + 1
+    moved = {f: sum(1 for r in rows.values() if r.get("base_segment") == split
+                    and r["segment"] == f) for f in family}
+    print("base torso entities now on: " + ", ".join(f"{f} {moved[f]}" for f in family))
+    print(f"a flat {len(segments)}-way vote would have sent {len(flat_moves)} of them out of the "
+          "torso family (reported, not used)")
+
+    # -- gate: held-out bones inside the family ---------------------------------
+    heldout = {"tested": 0, "correct": 0, "failures": [],
+               "criterion": "drop a named torso-family bone from its own group and re-vote "
+                            "it among the four family groups"}
+    for f in family:
+        ids = groups[f]
+        if len(ids) < 2:
+            continue
+        for ident in ids:
+            rest = np.concatenate([bone_points[j] for j in ids if j != ident])
+            trees = [cKDTree(rest) if s == f else family_trees[k] for k, s in enumerate(family)]
+            got, _, _, _, _ = vote(sample(bone_points[ident], args.samples), trees, list(family))
+            heldout["tested"] += 1
+            heldout["correct"] += int(got == f)
+            if got != f:
+                share = len(bone_points[ident]) / len(clouds[f])
+                heldout["failures"].append({"id": ident, "name": entities[ident]["name"],
+                                            "truth": f, "assigned": got,
+                                            "vertex_share_of_its_segment": share})
+    print(f"held-out torso-family bones: {heldout['correct']}/{heldout['tested']}")
+    for x in heldout["failures"]:
+        print(f"    MISS {x['name']}: {x['assigned']} not {x['truth']} "
+              f"(share {x['vertex_share_of_its_segment']:.2f})")
+
+    # -- gate: the model's own mass records -------------------------------------
+    records = mass_record_owner()
+    mass_gate = {"criterion": "every entity the variant's mass partition names must ride the "
+                              "body its mass is in (cervical_inertia v2, thoracic plan)",
+                 "named": {"tested": 0, "correct": 0}, "voted": {"tested": 0, "correct": 0},
+                 "failures": []}
+    for ident, body in sorted(records.items()):
+        if ident not in rows:
+            mass_gate["failures"].append({"id": ident, "status": "not in anatomy.json"})
+            continue
+        kind = "named" if rows[ident]["basis"] == "named_bone" else "voted"
+        ok = rows[ident]["segment"] == body
+        mass_gate[kind]["tested"] += 1
+        mass_gate[kind]["correct"] += int(ok)
+        if not ok:
+            mass_gate["failures"].append({"id": ident, "name": rows[ident]["name"], "mass_on": body,
+                                          "bound_to": rows[ident]["segment"], "basis": kind,
+                                          "family_coherence": rows[ident].get("family_coherence")})
+    print(f"mass-record consistency: named {mass_gate['named']['correct']}/"
+          f"{mass_gate['named']['tested']} (restatement), voted "
+          f"{mass_gate['voted']['correct']}/{mass_gate['voted']['tested']} (the real test)")
+    for x in mass_gate["failures"]:
+        print(f"    MISS {x.get('name', x['id'])}: {x.get('bound_to')} but its mass is on "
+              f"{x.get('mass_on')}")
+    surface_without_mass = sorted(
+        (r["name"] for i, r in rows.items() if r["segment"] in ("thorax", "cervical")
+         and i not in records), key=str)
+    mass_gate["bound_to_thorax_or_cervical_with_mass_in_torso"] = len(surface_without_mass)
+
+    # -- gate: hand-checked ------------------------------------------------------
+    by_name = {}
+    for ident, row in rows.items():
+        by_name.setdefault(row["name"].lower(), []).append(ident)
+    hand = {"tested": 0, "correct": 0, "cases": []}
+    for name, accept in VARIANT_KNOWN_CASES:
+        ids = by_name.get(name, [])
+        if not ids:
+            hand["cases"].append({"name": name, "status": "no such entity"})
+            continue
+        ident = ids[0]
+        ok = rows[ident]["segment"] in accept
+        hand["tested"] += 1
+        hand["correct"] += int(ok)
+        hand["cases"].append({"name": name, "id": ident, "accept": sorted(accept),
+                              "assigned": rows[ident]["segment"], "basis": rows[ident]["basis"],
+                              "family_coherence": rows[ident].get("family_coherence"), "ok": ok})
+    print(f"hand-checked cases: {hand['correct']}/{hand['tested']}")
+    for case in hand["cases"]:
+        if not case.get("ok", True):
+            print(f"    MISS {case['name']}: {case.get('assigned')} not in {case.get('accept')}"
+                  f"{' (no such entity)' if case.get('status') else ''}")
+
+    # -- gate: muscles against the VARIANT's kinematic chain -------------------
+    catalog = {m["id"]: m for m in json.loads(spec["catalog"].read_text())}
+    native = json.loads(MECHANICS.read_text())["native_muscles"]
+    muscle = {"tested": 0, "path_correct": 0, "path_failures": [],
+              "criterion": "as the base gate: bound segment on the variant's kinematic "
+                           "chain between the declared attachment bodies"}
+    for record in native:
+        ident = record["canonical_entity_id"]
+        entry = catalog.get(record["source_name"])
+        if entry is None or ident not in rows or rows[ident]["segment"] is None:
+            continue
+        bodies = list(entry["attachment_bodies"])
+        path = set(bodies)
+        for i, a in enumerate(bodies):
+            for b in bodies[i + 1:]:
+                path |= segment_path(kin, a, b)
+        got = rows[ident]["segment"]
+        muscle["tested"] += 1
+        muscle["path_correct"] += int(got in path)
+        if got not in path:
+            muscle["path_failures"].append({"id": ident, "name": rows[ident]["name"],
+                                            "source_name": record["source_name"],
+                                            "attachment_bodies": sorted(bodies),
+                                            "path": sorted(path), "assigned": got,
+                                            "base_segment": base["entities"][ident]["segment"]})
+    print(f"muscles vs the variant's chain: {muscle['path_correct']}/{muscle['tested']}")
+    for x in muscle["path_failures"]:
+        print(f"    OFF-PATH {x['source_name']}: {x['name']} -> {x['assigned']} "
+              f"(base {x['base_segment']}), attaches {x['attachment_bodies']}")
+
+    # -- the new and un-welded joints: centre vs the anatomical joint ------------
+    A = np.asarray(base["similarity_atlas_from_opensim_ground"], float)
+    ids_by_name = {}
+    for f in segments:
+        for i in groups[f]:
+            ids_by_name.setdefault((f, entities[i]["name"].lower()), []).append(i)
+    joint_pivot_bones = {}
+    for jname, (parent_names, child_names) in spec["joint_bones"].items():
+        j = kin.joint_of[next(c for c, jj in kin.joint_of.items() if jj["name"] == jname)]
+        sides = {}
+        for side, body, names in (("parent", j["parent"], parent_names),
+                                  ("child", j["child"], child_names)):
+            found = [i for n in names for i in ids_by_name.get((body, n), [])]
+            if not found:
+                raise ValueError(f"{jname}: no named {body} bone called any of {names}")
+            sides[side] = found
+        joint_pivot_bones[jname] = dict(sides, basis="the bones that form this joint, by anatomy")
+    joints = []
+    for j in kin.order:
+        if j["name"] not in spec["new_joints"]:
+            continue
+        centre = (A @ (T_var[j["parent"]] @ j["Xpf"])[:, 3])[:3]
+        proxy, n_contact = joint_proxy(clouds[j["parent"]], clouds[j["child"]])
+        row = {"joint": j["name"], "type": j["type"], "parent": j["parent"],
+               "child": j["child"], "centre_atlas_m": centre.tolist(),
+               "whole_segment_proxy_m": proxy.tolist(),
+               "whole_segment_proxy_contact_points": n_contact,
+               "whole_segment_offset_m": float(np.linalg.norm(centre - proxy))}
+        if j["name"] in joint_pivot_bones:
+            pb = joint_pivot_bones[j["name"]]
+            bproxy, bn = joint_proxy(np.concatenate([bone_points[i] for i in pb["parent"]]),
+                                     np.concatenate([bone_points[i] for i in pb["child"]]))
+            row.update({"joint_bone_proxy_m": bproxy.tolist(), "joint_bone_contact_points": bn,
+                        "joint_bone_offset_m": float(np.linalg.norm(centre - bproxy))})
+        row["offset_m"] = row.get("joint_bone_offset_m", row["whole_segment_offset_m"])
+        if j["type"] == "PinJoint":
+            # A pin's frame origin is only one point on its axis; every other point on the
+            # axis is the same joint.  The distance that matters is to the LINE.
+            axis = A[:3, :3] @ (T_var[j["parent"]] @ j["Xpf"])[:3, 2]
+            axis = axis / np.linalg.norm(axis)
+            proxy = np.asarray(row.get("joint_bone_proxy_m", row["whole_segment_proxy_m"]))
+            d = proxy - centre
+            row["axis_atlas"] = axis.tolist()
+            row["axis_distance_m"] = float(np.linalg.norm(d - axis * (d @ axis)))
+        joints.append(row)
+        print(f"    joint {j['name']:17s} centre {1000 * row['offset_m']:6.1f} mm from the anatomical "
+              f"joint" + (f" (its own bones; whole-segment proxy {1000 * row['whole_segment_offset_m']:.1f} mm)"
+                          if "joint_bone_offset_m" in row else " (whole segments, as the base)")
+              + (f"; {1000 * row['axis_distance_m']:.1f} mm from the pin's AXIS" if "axis_distance_m" in row else ""))
+
+    # -- the foot: which talus/calcaneus disagreements the base already carried --
+    foot = []
+    for ident, row in rows.items():
+        if row["segment"] in ("talus_r", "talus_l", "calcn_r", "calcn_l") and row["basis"] == "named_bone":
+            if row["opensim_reference_segment"] != row["segment"]:
+                foot.append({"name": row["name"], "segment": row["segment"],
+                             "opensim_mesh_vote": row["opensim_reference_segment"]})
+    on_talus = sorted((r["name"], round(r["coherence"], 3), r["runner_up"])
+                      for r in rows.values() if r["segment"] in ("talus_r", "talus_l")
+                      and r["basis"] != "named_bone")
+    print(f"foot: {len(foot)} named talus/calcaneus-segment bones whose OpenSim-mesh second "
+          f"opinion disagrees; {len(on_talus)} soft entities ride a talus")
+
+    tears = sorted((r for r in rows.values() if r.get("base_segment") == split
+                    and r["segment"] is not None and r["basis"] != "named_bone"
+                    and r["family_coherence"] < 0.6), key=lambda r: r["family_coherence"])
+    report = {
+        "schema": "ihm.anatomy-segment-binding-variant-report.v1",
+        "variant": args.variant,
+        "generated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "method": "refinement of the 22-segment binding: base-torso entities re-voted among "
+                  "the torso family; every other entity unchanged",
+        "carry_over_max_abs_transform_difference": carry_over,
+        "new_coordinates": new_coords,
+        "named_bones_per_family_segment": {f: len(groups[f]) for f in family},
+        "base_torso_entities_now_on": moved,
+        "entities_per_segment": dict(sorted(counts.items(), key=lambda kv: -(kv[1]))),
+        "flat_vote_would_leave_family": flat_moves,
+        "family_coherence_below_0.6": len(tears),
+        "most_torn_in_family": [{"name": r["name"], "segment": r["segment"],
+                                 "family_coherence": r["family_coherence"],
+                                 "family_runner_up": r["family_runner_up"]} for r in tears[:40]],
+        "gate_heldout_family_bones": heldout,
+        "gate_mass_records": mass_gate,
+        "gate_hand_checked": hand,
+        "gate_muscles": muscle,
+        "joint_centres": joints,
+        "foot_opensim_mesh_disagreements": foot,
+        "soft_entities_on_a_talus": on_talus,
+        "limitations": [
+            "One rigid segment per entity, as in the base binding.",
+            "The skin's continuous linear blend (continuous_surface_binding.json.gz) is over "
+            "the 22 base segments. In this variant it does not follow head, cervical or "
+            "thorax motion: the skin of the head and neck rides torso.",
+            "The thoracic vertebrae ride thorax but their mass is in the torso residual core; "
+            "so are the lungs, heart and every other soft entity bound to thorax or cervical "
+            "that the mass records do not name.",
+            "The shoulder girdle and arms ride torso, not thorax: the acromial joints do.",
+            "The reference values of the fifteen new coordinates are 0, not fitted: the "
+            "variant was built so that 0 is the base body.",
+        ],
+    }
+    binding = {
+        "schema": "ihm.anatomy-segment-binding.v1",
+        "variant": args.variant,
+        "model_id": base["model_id"],
+        "frame": base["frame"],
+        "segments": segments,
+        "segment_named_bones": {s: groups[s] for s in segments},
+        "registration": dict(base["registration"], variant_note=(
+            "carried over from the 22-segment binding unchanged; the variant's shared bodies "
+            f"are identical at its new coordinates' zero (max |dT| {carry_over:.1e})")),
+        "reference_pose_rad": reference,
+        "similarity_atlas_from_opensim_ground": base["similarity_atlas_from_opensim_ground"],
+        "joint_pivot_bones": joint_pivot_bones,
+        "entities": rows,
+        "centroids_m": base["centroids_m"],
+        "provenance": {
+            "git_sha": git_sha(),
+            "script": "scripts/bind_anatomy_to_segments.py --variant " + args.variant,
+            "script_sha256": digest(__file__),
+            "anatomy": {"path": str(ANATOMY.relative_to(ROOT)), "sha256": digest(ANATOMY)},
+            "model": {"path": str(spec["model"].relative_to(ROOT)), "sha256": digest(spec["model"])},
+            "catalog": {"path": str(spec["catalog"].relative_to(ROOT)),
+                        "sha256": digest(spec["catalog"])},
+            "base_binding": {"path": str(spec["base_binding"].relative_to(ROOT)),
+                             "sha256": digest(spec["base_binding"])},
+            "base_model": {"path": str(spec["base_model"].relative_to(ROOT)),
+                           "sha256": digest(spec["base_model"])},
+            "cervical_inertia": {"path": str(CERVICAL_INERTIA.relative_to(ROOT)),
+                                 "sha256": digest(CERVICAL_INERTIA)},
+            "thoracic_plan": {"path": str(THORACIC_PLAN.relative_to(ROOT)),
+                              "sha256": digest(THORACIC_PLAN)},
+            "vertex_samples_per_entity": args.samples,
+        },
+        "scope": base["scope"],
+    }
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "binding.json").write_text(json.dumps(binding) + "\n")
+    (out_dir / "report.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(f"wrote {out_dir / 'binding.json'} and report.json in {time.time() - started:.0f}s")
+    return 0
+
+
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

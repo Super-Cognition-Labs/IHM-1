@@ -39,7 +39,7 @@ display export is a normalised +-1 box, 15.7% from these metres, and "the boxes 
     binding was fitted on THIS anatomy.json and THIS model (sha256); A's scale is the declared
     0.963 registration (a binding fitted to the normalised box would read ~1.11); the skin mesh
     measures the anatomical stature 1.7195 m (a +-1 box reads ~2.0).
-  * every call: exactly the 22 bodies; each a proper rigid 4x4; and every rotation-only joint's
+  * every call: exactly the model's bodies (22, or 25 for articulated_spine_v1); each a proper rigid 4x4; and every rotation-only joint's
     parent and child offset frames coincide to 0.1 mm -- an invariant of the model that fails
     for millimetres, for a scaled frame and for the atlas frame (see `joint_residuals_m`).
   * output: `transform_vertices` refuses any frame but `bodyparts3d-display-m`.
@@ -74,6 +74,17 @@ REFUSED_FRAMES = ('z-anatomy-display-normalized',)
 BINDING = 'data/derived/anatomy-segment-binding/binding.json'
 ANATOMY = 'data/derived/canonical/anatomy.json'
 MODEL = 'data/models/engineering_stance_v1/model.osim'
+# Every plant the poser knows, as a (model, binding) pair.  The binding is only valid for the
+# model it was fitted on, and `_check_sources` holds it to that by sha256.  The first entry is
+# the default and is the pair every result before 18 Sep 2026 used.
+PLANTS = {
+    'engineering_stance_v1': (MODEL, BINDING),
+    # 25 bodies: head, cervical and thorax repartitioned out of torso, wrists and subtalars
+    # un-welded (docs/ARTICULATED_SPINE.md).  Binding: `bind_anatomy_to_segments.py --variant`.
+    'articulated_spine_v1': ('data/models/articulated_spine_v1/model.osim',
+                             'data/derived/anatomy-segment-binding-articulated-spine-v1/binding.json'),
+}
+DEFAULT_PLANT = 'engineering_stance_v1'
 SKIN_BINDING = 'data/derived/canonical/continuous_surface_binding.json.gz'
 SKIN_ID = 'body-bp3d-FJ2810'
 SKIN_LAYERS = ('body-skin-epidermis', 'body-skin-dermis', 'body-skin-hypodermis')
@@ -219,7 +230,7 @@ def _function(node):
 class OsimKinematics:
     """Bodies, joints, coordinates and coupler constraints of an .osim, and its FK."""
 
-    JOINT_TYPES = ('CustomJoint', 'PinJoint', 'WeldJoint')
+    JOINT_TYPES = ('CustomJoint', 'PinJoint', 'WeldJoint', 'UniversalJoint')
 
     def __init__(self, path: Path):
         model = ET.parse(path).getroot().find('Model')
@@ -228,7 +239,7 @@ class OsimKinematics:
         for jt in self.JOINT_TYPES:
             for j in model.iter(jt):
                 self.joints.append(self._joint(j, jt))
-        for other in ('BallJoint', 'FreeJoint', 'SliderJoint', 'UniversalJoint', 'PlanarJoint',
+        for other in ('BallJoint', 'FreeJoint', 'SliderJoint', 'PlanarJoint',
                       'GimbalJoint', 'EllipsoidJoint'):
             if next(model.iter(other), None) is not None:
                 raise ValueError(f'{other} in {path.name}: not implemented here')
@@ -238,13 +249,20 @@ class OsimKinematics:
                 independent=(c.findtext('independent_coordinate_names') or '').split(),
                 dependent=(c.findtext('dependent_coordinate_name') or '').strip(),
                 f=_function(c.find('coupled_coordinates_function'))))
+        # Topological order, each joint ONCE.  Until 18 Sep 2026 `rest` was taken before the
+        # pass, so a joint whose parent was placed during the pass was appended then AND again
+        # in the next pass: 41 entries for 22 joints.  Every consumer recomputed the same value
+        # from an already-final parent, so no output changed (verified bit-identical over
+        # gait-best in both pivot modes); it only did the work twice.
         placed, order, pending = {'ground'}, [], list(self.joints)
         while pending:
-            rest = [j for j in pending if j['parent'] not in placed]
+            rest = []
             for j in pending:
                 if j['parent'] in placed:
                     order.append(j)
                     placed.add(j['child'])
+                else:
+                    rest.append(j)
             if len(rest) == len(pending):
                 raise ValueError('disconnected joints: ' + ', '.join(j['name'] for j in rest))
             pending = rest
@@ -316,6 +334,11 @@ class OsimKinematics:
             return np.eye(4)
         if j['type'] == 'PinJoint':
             return _xform(_axis_rot((0, 0, 1), q[j['coords'][0]]), np.zeros(3))
+        if j['type'] == 'UniversalJoint':
+            # Simbody MobilizedBody::Universal: about the joint frame's x, then about the NEW y.
+            # (articulated_spine_v1's wrists.)  Checked against Simbody by verify_anatomy_pose.py.
+            return _xform(_axis_rot((1, 0, 0), q[j['coords'][0]]) @ _axis_rot((0, 1, 0), q[j['coords'][1]]),
+                          np.zeros(3))
         R, t = np.eye(3), np.zeros(3)
         for name, cname, axis, fn in j['axes']:
             val = fn(q[cname] if cname else 0.0)
@@ -370,7 +393,7 @@ class AnatomyPose:
     rotation: np.ndarray                 # (N,3,3)
     translation: np.ndarray              # (N,3): x_now = R x_rest + t
     centroid_m: np.ndarray               # (N,3) posed centroids
-    segment_motion: np.ndarray           # (22,4,4) atlas-frame rigid motion per segment
+    segment_motion: np.ndarray           # (n_segments,4,4) atlas-frame rigid motion per segment
     unbound: dict = field(default_factory=dict)
     index: dict = field(default_factory=dict)
 
@@ -390,10 +413,12 @@ class AnatomyPose:
 
 class AnatomyPoser:
     def __init__(self, root: Path, binding: dict, anatomy: dict, kin: OsimKinematics, *,
-                 pivot: str = 'opensim', symmetric: bool = True, check_sources: bool = True):
+                 pivot: str = 'opensim', symmetric: bool = True, check_sources: bool = True,
+                 model_path: str = MODEL):
         if pivot not in ('opensim', 'anatomical'):
             raise ValueError(f'pivot must be opensim or anatomical, not {pivot!r}')
         self.root, self.kin, self.pivot = Path(root), kin, pivot
+        self.model_path = model_path
         # ---- frames, at the boundary
         for label, fr in (('anatomy.json', anatomy['frame']['id']), ('binding.json', binding['frame'])):
             if fr != FRAME:
@@ -451,15 +476,29 @@ class AnatomyPoser:
 
     # ---- construction ---------------------------------------------------------------------
     @classmethod
-    def from_workspace(cls, root, **kw) -> 'AnatomyPoser':
+    def from_workspace(cls, root, plant: str | None = None, *, model: str | None = None,
+                       binding: str | None = None, **kw) -> 'AnatomyPoser':
+        """`plant` names a (model, binding) pair in PLANTS; default engineering_stance_v1, which
+        is exactly what this call did before plants existed.  `model=` and `binding=` (repo-
+        relative paths) give an explicit pair instead and must be passed together -- a binding
+        is fitted on one model, and the sha256 check refuses any other."""
         root = Path(root)
-        binding = json.loads((root / BINDING).read_text())
+        if (model is None) != (binding is None):
+            raise ValueError('pass model= and binding= together: a binding belongs to one model')
+        if model is not None and plant is not None:
+            raise ValueError('pass a plant name or an explicit model/binding pair, not both')
+        if model is None:
+            name = DEFAULT_PLANT if plant is None else plant
+            if name not in PLANTS:
+                raise ValueError(f'unknown plant {name!r}; known: {sorted(PLANTS)}')
+            model, binding = PLANTS[name]
+        payload = json.loads((root / binding).read_text())
         anatomy = json.loads((root / ANATOMY).read_text())
-        return cls(root, binding, anatomy, OsimKinematics(root / MODEL), **kw)
+        return cls(root, payload, anatomy, OsimKinematics(root / model), model_path=model, **kw)
 
     def _check_sources(self, binding):
         prov = binding['provenance']
-        for key, rel in (('anatomy', ANATOMY), ('model', MODEL)):
+        for key, rel in (('anatomy', ANATOMY), ('model', self.model_path)):
             got = _sha256(self.root / rel)
             if prov[key]['sha256'] != got:
                 raise FrameError(f'binding.json was fitted on a different {rel} '
@@ -504,7 +543,7 @@ class AnatomyPoser:
 
     # ---- the per-frame call ---------------------------------------------------------------
     def check_bodies(self, bodies: dict) -> dict:
-        """assert the input is 22 proper rigid transforms in OpenSim ground metres."""
+        """assert the input is exactly this model's bodies, proper rigid, in OpenSim ground metres."""
         if set(bodies) != set(self.segments):
             raise FrameError(f'expected the {len(self.segments)} model bodies, got '
                              f'missing {sorted(set(self.segments) - set(bodies))} '
@@ -548,7 +587,7 @@ class AnatomyPoser:
     def pose_from_coordinates(self, q: dict, fill: str | dict | None = 'reference') -> AnatomyPose:
         """a motion file's coordinates; absent ones take the registered reference pose by default
         (held at zero the pelvis would sit at the ground origin), or `fill='default'`, or a dict,
-        or None to require all 33."""
+        or None to require every coordinate (33 base, 48 articulated_spine_v1)."""
         fill_map = (self.reference_pose if fill == 'reference' else
                     {k: v['default'] for k, v in self.kin.coordinates.items()} if fill == 'default' else fill)
         return self.pose(self.kin.forward(self.kin.complete(q, fill_map)))
@@ -575,20 +614,28 @@ class AnatomyPoser:
         """joint -> point where the parent's and child's bone surfaces are closest, atlas rest."""
         if self._pivots is None:
             from scipy.spatial import cKDTree
-            bones = {}
-            for s in self.segments:
+            def cloud(ids):
                 pts = []
-                for bid in self._binding['segment_named_bones'][s]:
+                for bid in ids:
                     e = self._anatomy_entities[bid]
                     with gzip.open(self.root / e['reference_geometry']['path']) as f:
                         pts.append(np.asarray(json.load(f)['positions'], float).reshape(-1, 3))
                 P = np.concatenate(pts)
-                bones[s] = P[:: max(1, len(P) // 40000)]
+                return P[:: max(1, len(P) // 40000)]
+            bones = {s: cloud(self._binding['segment_named_bones'][s]) for s in self.segments}
+            # A binding may name the two bones that FORM a joint, where the closest surfaces of
+            # the two whole segments are somewhere else: in articulated_spine_v1 torso and thorax
+            # are closest where the scapulae lie on the ribs, not at T12/L1.  The base binding
+            # names none, so this is a no-op there.
+            named = self._binding.get('joint_pivot_bones', {})
             piv = {}
             for j in self.kin.order:
                 if j['parent'] == 'ground':
                     continue
-                a, b = bones[j['parent']], bones[j['child']]
+                if j['name'] in named:
+                    a, b = cloud(named[j['name']]['parent']), cloud(named[j['name']]['child'])
+                else:
+                    a, b = bones[j['parent']], bones[j['child']]
                 d, idx = cKDTree(b).query(a)
                 k = max(8, int(PIVOT_PAIR_FRACTION * len(a)))
                 sel = np.argsort(d)[:k]

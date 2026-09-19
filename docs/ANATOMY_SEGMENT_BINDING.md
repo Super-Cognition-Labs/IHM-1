@@ -157,3 +157,183 @@ at the knee and from 105 to 14 mm at the lumbar joint. In exchange it moves the 
 simulated segments by 11 mm median and 50 mm max over gait-best. The default is `opensim`.
 
 The full account is in IBM-1 `docs/DISCONNECTS.md` §1.
+
+## The 25-body variant: a second binding (18 September 2026)
+
+`data/models/articulated_spine_v1` (`docs/ARTICULATED_SPINE.md`) adds `thorax`, `cervical` and
+`head` and un-welds both wrists and both subtalars. The binding above knew only the 22 original
+bodies, so in the display the skull, every vertebra and every rib still rode `torso`, and
+`AnatomyPoser.check_bodies` refused the variant's 25 bodies outright. There is now a second
+binding. **The 22-segment one is untouched**; every result above was measured on it.
+
+    .venv/bin/python scripts/bind_anatomy_to_segments.py --variant articulated_spine_v1
+        -> data/derived/anatomy-segment-binding-articulated-spine-v1/{binding,report}.json   (~50 s)
+    .venv/bin/python scripts/record_articulated_spine_native_frames.py      (2 engine sessions, one at a time)
+        -> .../native_frames.json
+    poser = AnatomyPoser.from_workspace(root, 'articulated_spine_v1')       # default is unchanged
+    .venv/bin/python scripts/verify_anatomy_pose.py --plant articulated_spine_v1
+
+### What it is: a refinement, not a refit
+
+* **The registration carries over exactly.** Where the variant's fifteen new coordinates are
+  zero, its 22 shared bodies are the base body: their transforms at the base reference pose
+  differ by **0.0** (the builder checks this and refuses to continue if it does not hold). So
+  the similarity A (scale 0.963), the reference pose and every residual in the table above
+  still apply. The fifteen new coordinates have a reference value of 0. That is not a fitted
+  value. It is the pose the variant was built to equal the base body at.
+* **Only what rode `torso` is re-voted.** An entity the base bound to any other segment keeps
+  it. Hand, talus and calcaneus were already segments, so un-welding the wrists and subtalars
+  needs no reassignment. A base-`torso` entity is re-voted with the same rule
+  (`vote`: nearest bone group per sampled vertex, majority wins), restricted to the four groups
+  that make up the torso family. A flat 25-way vote was computed as a comparison and not used.
+  It can differ only on base-`torso` entities, and it would have sent **13** of them out of the
+  family to a limb or the pelvis because splitting the torso's vertex share four ways lets a
+  runner-up win. The 13 are the clavicular pectoralis, iliocostalis lumborum, thoracolumbar
+  fascia layers and four mesocolic/omental structures.
+* **Torso-family bones are named from the records that define the variant's mass.** These are
+  the cervical prior (`data/research/cervical_inertia/v2/manifest.json`: skull = 15 cranial
+  bones, jaw = mandible, cerv1–7) and the thoracic plan
+  (`data/research/thoracic_mechanism/native_composition_v1/plan.json`: ribs, sternum parts).
+  Two classes are named by anatomy and not by a record, and the binding says so (`named_basis`):
+  * thoracic vertebrae go to `thorax`, because the thoracic joint sits at T12/L1;
+  * teeth, ossicles and the small facial bones go to `head`.
+  The hyoid is claimed by no record, so it is voted (it went to `head`, 0.74). Scapulae and
+  clavicles stay on `torso`, because both acromial joints still hang from `torso` in the variant.
+
+### How many entities moved where
+
+Of the base binding's 2,440 `torso` entities (`report.json`, `base_torso_entities_now_on`):
+
+| segment | entities | named bones among them |
+|---|---:|---:|
+| `thorax` | **1,021** | 43 |
+| `head` | **885** | 89 |
+| `torso` (stays) | **372** | 13 |
+| `cervical` | **162** | 10 |
+
+After the poser's load-time symmetrisation, the posed counts are thorax 1,022, head 885,
+torso 372 and cervical 162. Symmetry overrides go from **11 to 26**. The 15 new ones are pairs
+that the four-way vote split across the thorax/torso or head/cervical boundary, for example
+the left and right common carotid, the adrenal glands and `rectus capitis lateralis`.
+
+### Gates on the binding
+
+| gate | result |
+|---|---|
+| held-out bones: drop each named torso-family bone from its group and re-vote among the four | **150 / 155** |
+| mass-record consistency: every entity the variant's mass partition names rides the body its mass is in | named 50/50 (a restatement); **voted 21/21**, the real test: intercostals, diaphragm, costal cartilages 1–7 |
+| hand-checked cases, written before the first build | **32 / 33, FAILED on one** |
+| native muscles against the VARIANT's kinematic chain | 78 / 80, the same two psoas as the base |
+| builder run twice with a pinned `IBM_GIT_SHA` | byte-identical `binding.json` |
+
+Held-out misses: both scapulae (30–32% of their segment's surface) and both clavicles go to
+`thorax`. The girdle lies on the rib cage but kinematically hangs from `torso`, and removing a
+scapula leaves the torso group as mostly lumbar spine. C7 also goes to `thorax` (it is adjacent
+to T1).
+
+**Hand-checked miss, recorded FAILED:** `left sternocleidomastoid` was pre-registered as
+`{cervical}` and went to `head`, with family coherence 0.33 and `torso` as runner-up. It is the
+least coherent entity in the family. Its belly lies over the cervical spine, but its surface is
+split three ways between the mastoid, the neck and the sternum. The acceptance set is not
+widened.
+
+### Where the new joints sit relative to the anatomy
+
+The joint centre is carried through A and compared with the bones that form the joint.
+
+| joint | offset | note |
+|---|---:|---|
+| thoracic | **8.1 mm** from L1/T12 | measured on whole segments it read **187.0 mm**, which is where the scapulae touch the ribs, not the joint |
+| neck | 30.7 mm from T1/C7 | |
+| atlantooccipital | 28.8 mm from C1/occipital | |
+| subtalar r / l | **8.1 / 7.6 mm from the pin's AXIS** | 97.8 / 97.9 mm from its frame origin |
+| wrist r / l | 7.5 / 8.9 mm | |
+
+**Two instrument corrections came out of this table, and both apply to the base report too:**
+
+* **Whole-segment proxies measure the wrong contact.** Torso and thorax touch most at the
+  scapula–rib interface. The builder now names the bones that form each spine joint and the
+  subtalar (talus with calcaneus, not navicular). It writes them to the binding as
+  `joint_pivot_bones`, and `AnatomyPoser.pivots()` uses them. The base binding names none, so
+  the base pivots are unchanged.
+* **For a PinJoint, the distance to the frame origin is not the joint error.** Every point on
+  the axis is the same pin. The base report's **101 mm** subtalar offset (and the 86–91 mm
+  radioulnar ones, and the other pins) are point distances. The subtalar axis passes within
+  8 mm of the talocalcaneal articulation.
+
+**The foot.** The named split (talus → `talus`; calcaneus, navicular, cuboid, cuneiforms,
+metatarsals, sesamoids → `calcn`) is the model's own geometry partition. `r_talus.vtp` rides
+`talus_r` with 52 mm extent, and `r_foot.vtp` rides `calcn_r` with 212 mm extent from heel to
+metatarsal heads. The OpenSim-mesh second opinion disagrees on 9 named foot bones: both calcanei
+and both naviculars go to talus, and 3 sesamoids go to toes. That instrument is density-biased,
+not evidence against the split. It measures distance to mesh VERTICES: 99 on the talus against
+1,000 spread over the foot. The atlas' right calcaneus is 8.8 mm from the nearest talus vertex
+and 15.7 mm from the nearest foot vertex, which is the same long-facet-tail hazard as CLAUDE.md's
+centroid-seeded search. 17 soft entities ride a talus, all ligaments and tendon sheaths that
+cross the ankle or subtalar joint (coherence 0.43–0.67). Each will open at the subtalar joint
+now that it moves.
+
+### The verified pose, both plants
+
+`scripts/verify_anatomy_pose.py` runs the same battery on each plant. The variant runs it on its
+own native frames: 12 frames, 2 sessions, every new coordinate off zero, one session on each side
+of its range.
+
+| gate | `engineering_stance_v1` | `articulated_spine_v1` |
+|---|---|---|
+| FK vs Simbody `transform_ground` | 7.77e-16, 12 frames | **9.99e-16**, 12 frames (both UniversalJoint wrists, both subtalar pins, all three spine joints) |
+| reference pose = atlas rest | 5.05e-16 m | 5.05e-16 m |
+| distal only, OpenSim / anatomical pivots | 31 coordinates, 0 violations | **46 coordinates, 0 violations**, both modes |
+| idempotent (twice, and via a fresh poser) | bit-identical | bit-identical |
+| frame guards fire | 7/7 refused | 7/7 refused |
+| coverage | 3,995 rigid + skin + 3 layers + 1 listed | the same |
+| mirrored pairs (new) | 0 label / 0 motion violations; control 11 / 15 | 0 / 0; control 26 / 18 |
+| variant at new-coordinate zero reproduces the base poser | — | **3,995 entities × 150 gait frames, worst 6.7e-16 m, rotation 0.0** |
+| gait-best posed, ms per pose | 0.92 | 1.07 |
+
+Coordinates in the variant move exactly the entities downstream of them:
+`thoracic_extension` 2,069 (thorax + cervical + head), `neck_extension` 1,047, `head_*` 885,
+`subtalar_angle_r` 172, `subtalar_angle_l` 171, `wrist_flex_r` 158, and `wrist_dev_l` 156.
+
+**The mirrored-pair gate FAILED in its first form, on the base plant, and is recorded as such.**
+The first version compared every moved entity, by mirrored name, between each left and right
+coordinate. It read **36** violations on the base plant (45 on the variant). Every one was an
+entity with no unique twin in the atlas: unsided names that exist once and sit on one side, such
+as `ulnopisiform ligament` and `set of plantar digital arteries proper`, and one-sided vessels
+such as `right anterior tibial vein`. No binding can mirror an entity whose twin does not exist,
+so v1 counted the wrong population. The gate is now restricted to the 2,684 names whose twin
+exists exactly once. The 51 names outside that population are listed in the report and not gated.
+It also has a control that must fire, the same counts with `symmetric=False`, and it does: 11/15
+on the base plant and 26/18 on the variant. The bar did not move. The population changed, and v1's
+count is still printed on every run.
+
+The base battery's ten original gates print the same numbers as before this change. Separately,
+`OsimKinematics` had built its topological order with every joint TWICE (41 entries for 22
+joints; see the comment in the code). That is fixed, and the base poser was checked against the
+committed module on all 150 gait-best frames in both pivot modes. The rotation, translation,
+centroid and segment-motion arrays and the skin were bit-identical.
+
+### What still does not follow
+
+* **The skin.** Its linear blend (`continuous_surface_binding.json.gz`) is over the 22 base
+  segments. In the variant, the skin of the head and neck rides `torso`, and the skull nods
+  underneath it. Fixing this needs a blend rebuilt over 25 segments.
+* **The app.** `ArticulatedBodyPlant` calls `AnatomyPoser.from_workspace(root, pivot=...)` with
+  no plant (`ihm/assembly/articulated.py:161`). A plant built on the variant registration would
+  have its 25 bodies refused by `check_bodies`. It needs to pass `'articulated_spine_v1'` when
+  the variant is selected. That is `articulated.py`'s change, not made here.
+* **Mass and surface disagree.** 1,128 entities, including the thoracic vertebrae and the lung lobes, are
+  bound to `thorax` or `cervical` but have their mass in the torso residual core, because the
+  variant's partition is rib cage only.
+* **The girdle.** Scapulae, clavicles and the arms ride `torso`, not `thorax`, as the model
+  does. When the thorax rotates, the ribs slide under the scapulae. The worst cross-joint
+  opening at `thoracic` (76.2 mm OpenSim, 71.7 mm anatomical pivots) is exactly that scapula–rib
+  pair, not the T12/L1 joint.
+* **Tearing at the new joints.** 127 re-voted entities have family coherence below 0.6: neck
+  fascia, platysma, sternocleidomastoid, rhomboid minor, the infrahyoids. These are the
+  structures that span the new joints, and a rigid binding tears them.
+* **Worst openings at the new joints** (64 closest bone pairs, through each range):
+  * neck: 38.4 mm with OpenSim pivots, 14.2 mm with anatomical pivots;
+  * atlantooccipital: 18.5 → 4.5 mm;
+  * subtalar: 17.1 → 15.1 mm;
+  * wrist: 11.5 → 11.8 mm.

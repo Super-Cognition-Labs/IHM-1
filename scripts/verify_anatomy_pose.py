@@ -2,9 +2,12 @@
 """Known answers for the runtime anatomy pose (ihm/assembly/anatomy_pose.py).
 
     CUDA_VISIBLE_DEVICES="" .venv/bin/python scripts/verify_anatomy_pose.py
+    CUDA_VISIBLE_DEVICES="" .venv/bin/python scripts/verify_anatomy_pose.py --plant articulated_spine_v1
 
-Writes `data/derived/anatomy-segment-binding/runtime_pose_report.json` and exits non-zero if a
-gate fails.  Every gate here can fail; the ones that test a guard are run on input built to
+Writes `data/derived/anatomy-segment-binding/runtime_pose_report.json` (or the variant binding's
+directory, for `--plant articulated_spine_v1`) and exits non-zero if a gate fails.  The base plant
+runs the battery below unchanged; the variant runs the same battery on its own native frames
+(`scripts/record_articulated_spine_native_frames.py`) plus gate 10.  Every gate here can fail; the ones that test a guard are run on input built to
 trip it, because a guard nobody has watched fire is not a guard.
 
 1. FK against Simbody: the pure-python forward kinematics must reproduce `transform_ground`
@@ -25,12 +28,21 @@ trip it, because a guard nobody has watched fire is not a guard.
    against anatomical (closest-bone-surface) pivots.  Reported; not a gate.
 8. A real motion: every frame of `data/derived/gait-best/trajectory.json` and the stored native
    frames, posed; finite and rigid; time per call.
+9. Mirrored pairs (added 18 Sep 2026, both plants): after symmetrisation every mirrored pair of
+   entities sits on mirrored segments, and -- the half that tests motion rather than labels --
+   each sided coordinate moves the mirror image, by name, of what its opposite moves.  The
+   control is the same count with `symmetric=False`, which must find the raw asymmetries.
+10. Variant only: at its fifteen new coordinates' zero the 25-body variant IS the base body, so
+   over every gait-best frame the variant poser must reproduce the base poser for every entity.
 """
 from __future__ import annotations
 
+import argparse
 import gzip
 import json
+import re
 import sys
+from collections import Counter
 import time
 from pathlib import Path
 
@@ -38,9 +50,12 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from ihm.assembly.anatomy_pose import (AnatomyPoser, FrameError, FRAME, SKIN_ID)  # noqa: E402
+from ihm.assembly.anatomy_pose import (AnatomyPoser, FrameError, FRAME, PLANTS, SKIN_ID,  # noqa: E402
+                                       DEFAULT_PLANT)
 
 OUT = ROOT / 'data/derived/anatomy-segment-binding/runtime_pose_report.json'
+VARIANT_OUT = ROOT / 'data/derived/anatomy-segment-binding-articulated-spine-v1/runtime_pose_report.json'
+VARIANT_NATIVE = ['data/derived/anatomy-segment-binding-articulated-spine-v1/native_frames.json']
 NATIVE = ['data/derived/supine-equilibrium-initial-xfhqpo4e/advanced_1us.json',
           'data/derived/native-stream-smoke-n6e0pvqi/supine/smoke.json',
           'data/derived/opensim-instance-mass-7lmt4max/baseline_frames.json',
@@ -62,12 +77,24 @@ def native_frames(x):
             yield from native_frames(v)
 
 
+def mirror_name(n):
+    return re.sub(r'\b(left|right)\b', lambda m: 'right' if m.group(1) == 'left' else 'left', n)
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--plant', choices=sorted(PLANTS), default=DEFAULT_PLANT)
+    plant = parser.parse_args().plant
+    base_plant = plant == DEFAULT_PLANT
+    native_files = NATIVE if base_plant else VARIANT_NATIVE
+    out = OUT if base_plant else VARIANT_OUT
     t0 = time.time()
-    P = AnatomyPoser.from_workspace(ROOT)
-    Pa = AnatomyPoser.from_workspace(ROOT, pivot='anatomical')
-    rec: dict = {'frame': FRAME, 'load_s': time.time() - t0, 'gates': []}
+    P = AnatomyPoser.from_workspace(ROOT, plant)
+    Pa = AnatomyPoser.from_workspace(ROOT, plant, pivot='anatomical')
+    rec: dict = {'plant': plant, 'model': P.model_path, 'frame': FRAME, 'load_s': time.time() - t0,
+                 'gates': []}
     kin = P.kin
+    print(f'plant {plant}: {len(P.segments)} segments, {len(kin.coordinates)} coordinates')
 
     def gate(name, passed, **extra):
         rec['gates'].append(dict(gate=name, passed=bool(passed), **extra))
@@ -76,7 +103,7 @@ def main() -> int:
 
     # ---- 1. FK against Simbody
     worst, per_body, nframes, files = 0.0, {}, 0, []
-    for f in NATIVE:
+    for f in native_files:
         p = ROOT / f
         if not p.exists():
             continue
@@ -112,7 +139,8 @@ def main() -> int:
     dd = np.linalg.norm(dflt.centroid_m - P.rest_centroid, axis=1)
     rec['model_default_pose'] = dict(
         max_m=float(dd.max()), median_m=float(np.median(dd)),
-        reading='the .osim default pose is not the pose the atlas was registered at (binding '
+        reading=('' if base_plant else 'variant: the base registration with the 15 new coordinates at '
+                 '0, which is the base body; so the base reading holds -- ') + 'the .osim default pose is not the pose the atlas was registered at (binding '
                 'reference_pose_rad: pelvis_ty 1.0185 vs 0.93 default, lumbar_rotation 0.236 rad, '
                 'hip_rotation -0.14..-0.18 rad, ...); this is the anatomy moved into the model '
                 'default, not an error')
@@ -123,6 +151,7 @@ def main() -> int:
     coupled = {c['independent'][0]: c['dependent'] for c in kin.couplers}
     dependents = set(coupled.values())
     rows = []
+    moved_by = {}                       # opensim mode: coordinate -> entity ids it moves (gate 9)
     for mode, poser in (('opensim', P), ('anatomical', Pa)):
         base = poser.pose_from_coordinates({})
         bad = 0
@@ -144,6 +173,8 @@ def main() -> int:
                 p = poser.pose_from_coordinates({cname: float(v)})
                 moved |= (np.linalg.norm(p.centroid_m - base.centroid_m, axis=1) > MOVE_TOL) | \
                          (np.abs(p.rotation - base.rotation).max(axis=(1, 2)) > MOVE_TOL)
+            if mode == 'opensim':
+                moved_by[cname] = [poser.entity_ids[i] for i in np.flatnonzero(moved)]
             wrong = int((moved & ~expect).sum())
             still = int((~moved & expect).sum())
             bad += wrong + still
@@ -153,16 +184,22 @@ def main() -> int:
         gate(f'single coordinate moves exactly its distal entities ({mode} pivots)', bad == 0,
              coordinates=sum(r['mode'] == mode for r in rows), violations=bad)
     rec['distal_only'] = rows
+    shown = ('knee_angle_r', 'elbow_flex_l', 'ankle_angle_r', 'hip_flexion_l', 'lumbar_extension', 'pelvis_tilt')
+    if not base_plant:
+        shown += ('thoracic_extension', 'neck_extension', 'head_extension', 'head_rotation',
+                  'subtalar_angle_r', 'subtalar_angle_l', 'wrist_flex_r', 'wrist_dev_l')
     for r in rows:
-        if r['mode'] == 'opensim' and r['coordinate'] in ('knee_angle_r', 'elbow_flex_l', 'ankle_angle_r',
-                                                          'hip_flexion_l', 'lumbar_extension', 'pelvis_tilt'):
+        if r['mode'] == 'opensim' and r['coordinate'] in shown:
             print(f'      {r["coordinate"]:18s} moved {r["moved"]:4d}, expected {r["expected"]:4d} '
                   f'({", ".join(r["segments"]) if len(r["segments"]) < 6 else str(len(r["segments"])) + " segments"})')
 
     # ---- 4. idempotence
     q = {'knee_angle_r': 0.9, 'hip_flexion_l': 0.4, 'elbow_flex_r': 1.1, 'lumbar_bending': 0.1}
+    if not base_plant:
+        q.update({'thoracic_extension': 0.2, 'neck_rotation': 0.3, 'head_extension': -0.2,
+                  'subtalar_angle_r': 0.3, 'wrist_flex_l': 0.6, 'wrist_dev_r': -0.2})
     a, b = P.pose_from_coordinates(q), P.pose_from_coordinates(q)
-    P2 = AnatomyPoser.from_workspace(ROOT)
+    P2 = AnatomyPoser.from_workspace(ROOT, plant)
     c = P2.pose_from_coordinates(q)
     same = all(np.array_equal(getattr(a, k), getattr(x, k)) for x in (b, c)
                for k in ('rotation', 'translation', 'centroid_m', 'segment_motion'))
@@ -236,10 +273,15 @@ def main() -> int:
         Pp = np.concatenate(pts)
         bones[s] = Pp[:: max(1, len(Pp) // 40000)]
     opening = []
-    for jname, cname in (('walker_knee_r', 'knee_angle_r'), ('hip_l', 'hip_flexion_l'),
-                         ('elbow_r', 'elbow_flex_r'), ('acromial_l', 'arm_flex_l'),
-                         ('ankle_r', 'ankle_angle_r'), ('back', 'lumbar_extension'),
-                         ('radioulnar_r', 'pro_sup_r')):
+    opening_joints = (('walker_knee_r', 'knee_angle_r'), ('hip_l', 'hip_flexion_l'),
+                      ('elbow_r', 'elbow_flex_r'), ('acromial_l', 'arm_flex_l'),
+                      ('ankle_r', 'ankle_angle_r'), ('back', 'lumbar_extension'),
+                      ('radioulnar_r', 'pro_sup_r'))
+    if not base_plant:
+        opening_joints += (('thoracic', 'thoracic_extension'), ('neck', 'neck_extension'),
+                           ('atlantooccipital', 'head_extension'), ('subtalar_r', 'subtalar_angle_r'),
+                           ('radius_hand_r', 'wrist_flex_r'))
+    for jname, cname in opening_joints:
         pa, ch = piv[jname]['parent'], piv[jname]['child']
         a, b = bones[pa], bones[ch]
         dist, idx = cKDTree(b).query(a)
@@ -288,7 +330,7 @@ def main() -> int:
           f'{1000 * np.median(dev):.1f} mm, 95th pct {1000 * np.percentile(dev, 95):.1f}, max {1000 * dev.max():.1f} mm (gait-best)')
     nat = 0
     t2 = time.time()
-    for f in NATIVE:
+    for f in native_files:
         if (ROOT / f).exists():
             for fr in native_frames(json.loads((ROOT / f).read_text())):
                 P.pose_from_native(fr)
@@ -301,8 +343,116 @@ def main() -> int:
          skin_ms=f'{1000 * skin_s:.0f}')
     rec['timing'] = dict(pose_from_coordinates_s=per, skin_vertices_s=skin_s, gait_frames=len(frames),
                          native_frames=nat)
-    OUT.write_text(json.dumps(rec, indent=1, default=lambda o: getattr(o, 'tolist', str)()) + '\n')
-    print('wrote', OUT.relative_to(ROOT))
+
+    # ---- 9. mirrored pairs: labels, then motion; the control is the unsymmetrised binding
+    def pair_violations(poser):
+        names = {k: poser._binding['entities'][k]['name'] for k in poser.entity_ids}
+        seg = {k: poser.segments[poser.segment_of[poser.index[k]]] for k in poser.entity_ids}
+        by_name: dict = {}
+        for k, n in names.items():
+            by_name.setdefault(n, []).append(k)
+
+        def mseg(x):
+            return x[:-2] + ('_l' if x.endswith('_r') else '_r') if x.endswith(('_r', '_l')) else x
+        bad = []
+        for k, n in names.items():
+            if not re.search(r'\bleft\b', n):
+                continue
+            m = mirror_name(n)
+            if len(by_name.get(m, [])) != 1 or len(by_name[n]) != 1:
+                continue
+            if mseg(seg[k]) != seg[by_name[m][0]]:
+                bad.append((n, seg[k], seg[by_name[m][0]]))
+        return bad
+    Praw = AnatomyPoser.from_workspace(ROOT, plant, symmetric=False)
+    raw = pair_violations(Praw)
+    sym = pair_violations(P)
+    ent_name = {k: P._binding['entities'][k]['name'] for k in P.entity_ids}
+    name_count = Counter(ent_name.values())
+    # The population is the entities that HAVE a mirror: a sided name whose twin exists exactly
+    # once.  The first version of this gate (18 Sep 2026) compared every moved entity and FAILED
+    # on the base plant, 36 violations over 11 coordinate pairs -- all of them entities with no
+    # unique twin in the atlas (unsided names like "ulnopisiform ligament" or "set of plantar
+    # digital arteries proper" that exist once, on one side; one-sided vessels such as "right
+    # anterior tibial vein").  Those cannot be mirrored by any binding, so they are counted
+    # separately below, not gated; the v1 count is still printed.
+    paired = {n for n in name_count if re.search(r'\b(left|right)\b', n) and name_count[n] == 1
+              and name_count.get(mirror_name(n)) == 1}
+    def moved_sets(poser, names):
+        """coordinate -> entity ids it moves from the reference pose (the gate-3 sweep, one pose
+        at each end of the declared range is enough to separate moved from unmoved)."""
+        out_sets, base_pose = {}, poser.pose_from_coordinates({})
+        for c in names:
+            lo, hi = kin.coordinates[c]['range']
+            if not np.isfinite(lo) or hi - lo > 2 * np.pi:
+                lo, hi = -np.pi / 2, np.pi / 2
+            mv = np.zeros(len(poser.entity_ids), bool)
+            for v in (lo, hi):
+                pz = poser.pose_from_coordinates({c: float(v)})
+                mv |= (np.linalg.norm(pz.centroid_m - base_pose.centroid_m, axis=1) > MOVE_TOL) | \
+                      (np.abs(pz.rotation - base_pose.rotation).max(axis=(1, 2)) > MOVE_TOL)
+            out_sets[c] = [poser.entity_ids[i] for i in np.flatnonzero(mv)]
+        return out_sets
+
+    def motion_violations(sets):
+        bad, total_all = {}, 0
+        for cname in sorted(sets):
+            if not cname.endswith('_l') or cname[:-2] + '_r' not in sets:
+                continue
+            left = Counter(mirror_name(ent_name[k]) for k in sets[cname])
+            right = Counter(ent_name[k] for k in sets[cname[:-2] + '_r'])
+            diff = (left - right) + (right - left)
+            total_all += sum(diff.values())
+            diff = Counter({n: c for n, c in diff.items() if n in paired})
+            if diff:
+                bad[cname[:-2]] = sorted(diff)[:12]
+        return bad, total_all
+    motion_bad, v1_count = motion_violations(moved_by)
+    sided_coords = [c for c in moved_by if c.endswith(('_l', '_r'))]
+    control_bad, _ = motion_violations(moved_sets(Praw, sided_coords))
+    sided = [k for k in P.entity_ids if P.segments[P.segment_of[P.index[k]]].endswith(('_l', '_r'))]
+    unpaired = sorted({ent_name[k] for k in sided if ent_name[k] not in paired})
+    pairs_checked = sum(1 for c in moved_by if c.endswith('_l') and c[:-2] + '_r' in moved_by)
+    gate('mirrored pairs sit on mirrored segments, and each sided coordinate moves the mirror of its twin',
+         not sym and not motion_bad and len(raw) > 0 and len(control_bad) > 0, coordinate_pairs=pairs_checked, paired_names=len(paired),
+         pair_violations=len(sym), motion_violations=sum(len(v) for v in motion_bad.values()),
+         control_unsymmetrised_violations=len(raw),
+         control_unsymmetrised_motion=sum(len(v) for v in control_bad.values()),
+         overrides=len(P.symmetry_overrides))
+    print(f'      on sided segments with no unique twin (not gated): {len(unpaired)} names; the v1 '
+          f'instrument, which counted them, read {v1_count} (FAILED, 18 Sep 2026)')
+    rec['mirrored'] = dict(unsymmetrised=raw, symmetrised=sym, motion=motion_bad, coordinate_pairs=pairs_checked,
+                           paired_names=len(paired), unpaired_on_sided_segments=unpaired,
+                           v1_motion_violations_all_entities=v1_count)
+
+    # ---- 10. variant only: at the new coordinates' zero, the variant IS the base body
+    if not base_plant:
+        B = AnatomyPoser.from_workspace(ROOT)
+        common = [k for k in P.entity_ids if k in B.index]
+        iv = np.array([P.index[k] for k in common])
+        ib = np.array([B.index[k] for k in common])
+        worst_t = worst_r = 0.0
+        exact = 0
+        for q in frames:
+            pv, pb = P.pose_from_coordinates(q), B.pose_from_coordinates(q)
+            dt = np.abs(pv.translation[iv] - pb.translation[ib]).max(axis=1)
+            dr = np.abs(pv.rotation[iv] - pb.rotation[ib]).max(axis=(1, 2))
+            worst_t, worst_r = max(worst_t, float(dt.max())), max(worst_r, float(dr.max()))
+            exact += int(((dt == 0) & (dr == 0)).sum())
+        new_family = set(P.segments) - set(B.segments)
+        on_new = sum(P.segments[P.segment_of[P.index[k]]] in new_family for k in common)
+        gate('variant at its new coordinates\' zero reproduces the base poser, every entity, every gait frame',
+             worst_t < 1e-12 and worst_r < 1e-12 and len(common) == len(B.entity_ids),
+             entities=len(common), frames=len(frames), worst_translation_m=f'{worst_t:.1e}',
+             worst_rotation=f'{worst_r:.1e}', bit_identical_entity_frames=exact,
+             of=len(common) * len(frames), entities_on_new_segments=on_new)
+        rec['variant_equals_base_at_zero'] = dict(worst_translation_m=worst_t, worst_rotation=worst_r,
+                                                  bit_identical_entity_frames=exact,
+                                                  entity_frames=len(common) * len(frames))
+        rec['segment_counts'] = {s: int((P.segment_of == i).sum()) for i, s in enumerate(P.segments)}
+
+    out.write_text(json.dumps(rec, indent=1, default=lambda o: getattr(o, 'tolist', str)()) + '\n')
+    print('wrote', out.relative_to(ROOT))
     return 0 if all(g['passed'] for g in rec['gates']) else 1
 
 
