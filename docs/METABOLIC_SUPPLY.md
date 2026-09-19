@@ -163,11 +163,27 @@ energies, so `(h_new − h_old)/dt − 100` is round-off. The pre-registered ans
 Existing regressions still pass: `scripts.verify_embodied_runtime` (16),
 `scripts.verify_candidate_embodied_factory` + `scripts.verify_regional_embodied_factory` (7).
 
-**Not yet run: `--native`**, which drives the real native mechanical plant to check
-that the capped command reaches the engine for every muscle (scale 1 bit-identical to
-uncapped; scale 0 bit-identical to an all-zero command; scale 0.5 engine excitations
-equal half the requested held map). It was held because the shared machine had
-7–9 GB available against the 12 GB bar for native sessions.
+**Native mechanical plant (`--native`), 18 Sep 2026, passed.** One real
+`NativeMechanicalStream` (supine, 77.6122029 kg, 80 muscles), 5 × 20 ms intervals per
+arm from one checkpoint. 40 muscles commanded to 0.3; the other 40 left at the
+engine's held default excitation (0.01 for every muscle):
+
+| check | result |
+|---|---|
+| scale 1 vs the uncapped command: energies, all 80 excitations, every body transform | **bit-identical** |
+| scale 0 vs an explicit all-zero command | **bit-identical** |
+| scale 0: all 80 engine-reported excitations | **exactly 0.0** — including the 40 uncommanded muscles, which a commanded-only cap would leave at 0.01 |
+| scale 0.5: engine excitation of every muscle vs 0.5 × requested held map | equal (to 1e-15 absolute) |
+
+This shows that the cap's command reaches the real engine for every muscle and that
+full coverage costs nothing. It does NOT show the cap's dynamics against a real
+BioGears shortfall; nothing here drove the native physiology.
+
+The first `--native` launch failed before starting an engine:
+`NativeMechanicalStream` needs an output directory that does not yet exist, and the
+script passed it the directory `mkdtemp` had just created. The script now passes a
+fresh child of it. Report: `data/derived/metabolic-supply-verification/report.json`
+(not committed; `data/derived` is gitignored).
 
 ## 6. What would make this a physiological result
 

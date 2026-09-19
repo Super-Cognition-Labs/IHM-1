@@ -352,7 +352,7 @@ def main():
     if args.native:
         import tempfile
         args.output.mkdir(parents=True,exist_ok=True)
-        report['native']=native_check(Path(tempfile.mkdtemp(prefix='plant-',dir=args.output)))
+        report['native']=native_check(Path(tempfile.mkdtemp(prefix='plant-',dir=args.output))/'plant')
         report['passed']=report['passed'] and all(report['native'][k] for k in report['native'] if k.startswith('scale'))
     text=json.dumps(report,indent=1,default=lambda o:repr(o))
     print(text)
