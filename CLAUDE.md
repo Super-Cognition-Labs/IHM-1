@@ -222,6 +222,22 @@ And it was caught only because a ratio was suspiciously close to an integer. The
 agrees with the hypothesis you pre-registered is the one you are least likely to take apart** — so
 confirmation is the moment to check the instrument, not the moment to stop.
 
+## An amortised cost is a ratio, and its NUMERATOR can hold work the treatment never did
+
+The soft-tissue coupling's per-step cost was reported as the arm's whole wall clock over its
+steps: **552 ms** against a 10 ms plant step. The coupling had spent **53.9 ms**. The rest was
+the 22-segment scaffold's own contact solve, which a collapsing plant pays whether or not
+anything is coupled to it.
+
+It is the mirror of *"a ratio whose denominator the treatment also changes"*, and it is easier
+to miss, because a cost that looks too high reads as bad news about the thing you built and
+nobody audits bad news about their own work. The error was **10x**, in the direction that made
+the coupling look worse. Both numbers were true; only one measured the treatment.
+
+The check is one line and it is not "profile it": **subtract a run of the same fixture with the
+treatment off.** If you are quoting "X per step", say what X is a cost OF, and make sure the
+denominator's steps and the numerator's work belong to the same thing.
+
 ## A denominator read off a directory listing is not the denominator
 
 `register_pelvic_organs_batch.py` iterates the **manifest** (124 subjects). The organs directory
