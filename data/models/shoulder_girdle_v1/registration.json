@@ -1,0 +1,501 @@
+{
+  "schema": "ihm.shoulder-girdle-variant.v1",
+  "model_path": "data/models/shoulder_girdle_v1/model.osim",
+  "model_sha256": "59d3210034b2e79ffa6de5767d08838fc5651790d63d7189f581065a812909ab",
+  "catalog_path": "data/models/shoulder_girdle_v1/catalog.json",
+  "catalog_sha256": "7f01c5c5d50dbee6af8c1114507de16b73a3860a9d6290a465b0ea86f7b9254f",
+  "base_model_path": "data/models/articulated_spine_v1/model.osim",
+  "base_model_sha256": "b1b8d725d192b81e902b047fc70ec5bc329d67a265be0ef1d74923b6318cc0ea",
+  "sources": {
+    "data/models/engineering_stance_v1/model.osim": "be3baf542b44425c2802095439cabf976eccaad42406564338d20c2deb421d68",
+    "data/models/engineering_stance_v1/catalog.json": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+    "data/research/cervical_inertia/v2/manifest.json": "1dda3735d5887c5fa8951ccc87704dc947e9e38b2662ee4698e7faac8811f402",
+    "data/research/thoracic_mechanism/native_composition_v1/plan.json": "2098ca532f0d955b0fcc5fe6a8d0042931c297989edb0037632eaa4d3d9ad136",
+    "data/derived/canonical/anatomy.json": "874479e434e2637c08a1f5153de88fdaf138d33f55ae91a3bb7b1578ed891d5f",
+    "data/research/cervical/MASI_HMaleMuscle_HMaleMassDistr.osim": "191d1bfdd328273d644f5822d85457e5e8fefd5037459c17d7f24b27d8b2681a",
+    "data/raw/anatomy/opensim-models/source/Models/Rajagopal/RajagopalLaiUhlrich2023.osim": "8f30d0b64750b87eb7f705907862590535212b4afd7e919faa3fd7d1683d22ec",
+    "scripts/build_articulated_spine.py": "bead8e9142d46456322a948df2cbb0d6b060349438fd1a69cf0112080f7c6b18",
+    "ihm/assembly/cervical_inertia.py": "8b84dbef6321dc7e6fb4d02960bc7c28d9b2f777072f951253d0fe71da79eb69",
+    "data/models/articulated_spine_v1/model.osim": "b1b8d725d192b81e902b047fc70ec5bc329d67a265be0ef1d74923b6318cc0ea",
+    "data/models/articulated_spine_v1/catalog.json": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+    "data/models/articulated_spine_v1/registration.json": "39e7f35b984bf87ae62565c3445c98346327be47bd28a115436a14e85580d0de",
+    "data/raw/mechanics/opensim-core/OpenSim/Tests/shared/ThoracoscapularShoulderModel.osim": "892bd333a1e1e6a2b77902b54218f12727eefd2306ca82bbda81621c926271fe",
+    "data/models/shoulder_girdle_v1/donor_reference_frames.json": "9c007a0efba79f3a39e21d36b459c3adb7e1dfe379e0e57456ee85b7119c7d03",
+    "scripts/build_shoulder_girdle.py": "9195b3f23cd5a69f804fcf331f52e7e3bf9d27a3f430ad8f0106ba51c6590ee0",
+    "scripts/measure_shoulder_donor_frames.py": "b9f5ad00682db8b441890735f59527770a6cdc7108a796becf221f9daca116c3",
+    "data/models/shoulder_girdle_v1/model.osim": "59d3210034b2e79ffa6de5767d08838fc5651790d63d7189f581065a812909ab",
+    "data/models/shoulder_girdle_v1/catalog.json": "7f01c5c5d50dbee6af8c1114507de16b73a3860a9d6290a465b0ea86f7b9254f"
+  },
+  "muscle_count": 158,
+  "body_count": 29,
+  "default_enabled": false,
+  "native_acceptance_complete": false,
+  "donor": {
+    "path": "data/raw/mechanics/opensim-core/OpenSim/Tests/shared/ThoracoscapularShoulderModel.osim",
+    "sha256": "892bd333a1e1e6a2b77902b54218f12727eefd2306ca82bbda81621c926271fe",
+    "model": "Thoracoscapular Shoulder Model, Seth, Dong, Matias and Delp 2019, Front. Neurorobot. 13:90",
+    "licence": "CC BY 4.0 from the authors on SimTK (simtk.org/projects/thoracoscapular); Apache-2.0 as a file of opensim-core, the repository these bytes were read from. Both permit commercial use with attribution. See docs/SHOULDER_GIRDLE.md section 1.",
+    "attribution_required": "Seth A, Dong M, Matias R, Delp SL. Muscle contributions to upper-extremity movement and work from a musculoskeletal model of the human shoulder. Front. Neurorobot. 13:90 (2019).",
+    "not_used": "No number in this model comes from MoBL-ARMS 4.1, whose SimTK notice restricts it to non-commercial use."
+  },
+  "map": {
+    "s_lat": 1.3153489519566615,
+    "s_lat_basis": "this plant's glenohumeral half-width (acromial_r parent offset on torso, z) divided by the donor's glenohumeral centre in its thorax frame (z). Applied to the clavicle, the scapula and every donor thorax attachment.",
+    "s_long": 1.102364795064231,
+    "s_long_basis": "this plant's glenohumeral-to-elbow distance divided by the donor's, both from the models' own joint frames. Applied to donor humerus attachments only, because the humerus is this plant's own body.",
+    "delta_torso_frame_m": [
+      0.058290596211699276,
+      0.40654277409938316,
+      0.0
+    ],
+    "delta_basis": "x and y put the donor's glenohumeral centre exactly on this plant's; z is exactly zero, so the donor midline is this plant's midline and midline attachments stay on it.",
+    "our_glenohumeral_torso_m": [
+      0.0040867035257739995,
+      0.38515234020809996,
+      0.198768021792
+    ],
+    "donor_glenohumeral_thorax_m": [
+      -0.04120875498877594,
+      -0.016262174276615825,
+      0.15111428909896535
+    ],
+    "our_humerus_length_m": 0.3204855851242984,
+    "donor_humerus_length_m": 0.2907255262135116,
+    "donor_thorax_origin_in_torso_m": [
+      0.058290596211699276,
+      0.40654277409938316,
+      0.0
+    ],
+    "left_scapulothoracic_signs": {
+      "scapula_abduction": 1.0,
+      "scapula_elevation": -1.0,
+      "scapula_upward_rot": -1.0,
+      "scapula_winging": 1.0
+    },
+    "left_scapulothoracic_frame_flip": [
+      1.0,
+      -1.0,
+      1.0
+    ],
+    "left_scapulothoracic_convention_basis": "MEASURED over all 48 candidates by exact-mirror residual; see scripts/build_shoulder_girdle.py and docs/SHOULDER_GIRDLE.md. scapula_elevation_l and scapula_upward_rot_l run OPPOSITE to their right-side namesakes."
+  },
+  "partition": {
+    "instrument": "ihm.assembly.cervical_inertia.partition_body",
+    "parent_torso_xml_kg": 19.7075366916046,
+    "residual_torso_xml_kg": 18.188364076006206,
+    "new_bodies_xml_kg": {
+      "clavicle_r": 0.20849694475759684,
+      "scapula_r": 0.5510893630416,
+      "clavicle_l": 0.20849694475759684,
+      "scapula_l": 0.5510893630416
+    },
+    "mass_scale_used": 0.9101951537068372,
+    "reconstruction_residual": {
+      "mass_kg": 0.0,
+      "first_moment_kg_m": [
+        -6.837425310520159e-17,
+        0.0,
+        0.0
+      ],
+      "inertia_frobenius_kg_m2": 7.109278952066886e-16
+    },
+    "donor_masses_unscaled": true,
+    "inertia": {
+      "clavicle_r": {
+        "donor_mass_kg": 0.1897729086810468,
+        "donor_mass_scaled_to_this_body": false,
+        "donor_inertia_kg_m2": [
+          0.00026767372964065194,
+          0.00026767372964065194,
+          4.901323980777646e-05,
+          -2.0942636311609564e-05,
+          -7.717230909574294e-05,
+          5.9260645548665655e-05
+        ],
+        "donor_inertia_principal_moments": [
+          1.4384489067458208e-05,
+          0.0002471109214415571,
+          0.0003228652885800651
+        ],
+        "donor_inertia_second_moment_min_eigenvalue": -3.068493903552487e-05,
+        "donor_inertia_physically_realisable": false,
+        "replacement_geometry_entity": "body-bp3d-FJ3362",
+        "replacement_basis": "Uniform composite mass inside convex anatomical envelope; head includes intracranial/soft mass, not bone density",
+        "replacement_envelope_volume_m3": 8.377464423528651e-05,
+        "replacement_effective_density_kg_m3": 2265.278598474943,
+        "replacement_principal_moments": [
+          2.147400852001488e-05,
+          0.00030102831960365296,
+          0.00031218896925883967
+        ],
+        "hull_to_aabb_volume_ratio": 0.14258175556863437
+      },
+      "scapula_r": {
+        "donor_mass_kg": 0.5015988674998522,
+        "donor_mass_scaled_to_this_body": false,
+        "donor_inertia_kg_m2": [
+          0.0008856693355153217,
+          0.0008193403795735628,
+          0.0008856693355153217,
+          0.0003202000719139607,
+          0.0002915426512417284,
+          0.0001717929443700898
+        ],
+        "donor_inertia_principal_moments": [
+          0.0005089474016100672,
+          0.0006884567914894732,
+          0.0013932748575046657
+        ],
+        "donor_inertia_second_moment_min_eigenvalue": -9.793533220256278e-05,
+        "donor_inertia_physically_realisable": false,
+        "replacement_geometry_entity": "body-bp3d-FJ3384",
+        "replacement_basis": "Uniform composite mass inside convex anatomical envelope; head includes intracranial/soft mass, not bone density",
+        "replacement_envelope_volume_m3": 0.0004019017476620906,
+        "replacement_effective_density_kg_m3": 1248.0634145477381,
+        "replacement_principal_moments": [
+          0.00030291985704355035,
+          0.0008500006094495351,
+          0.0009871602220854624
+        ],
+        "hull_to_aabb_volume_ratio": 0.2051343135456865
+      },
+      "clavicle_l": {
+        "donor_mass_kg": 0.1897729086810468,
+        "donor_mass_scaled_to_this_body": false,
+        "donor_inertia_kg_m2": [
+          0.00026767372964065194,
+          0.00026767372964065194,
+          4.901323980777646e-05,
+          -2.0942636311609564e-05,
+          -7.717230909574294e-05,
+          5.9260645548665655e-05
+        ],
+        "donor_inertia_principal_moments": [
+          1.4384489067458208e-05,
+          0.0002471109214415571,
+          0.0003228652885800651
+        ],
+        "donor_inertia_second_moment_min_eigenvalue": -3.068493903552487e-05,
+        "donor_inertia_physically_realisable": false,
+        "replacement_geometry_entity": "body-bp3d-FJ3237",
+        "replacement_basis": "Uniform composite mass inside convex anatomical envelope; head includes intracranial/soft mass, not bone density",
+        "replacement_envelope_volume_m3": 8.363990149183037e-05,
+        "replacement_effective_density_kg_m3": 2268.927931479966,
+        "replacement_principal_moments": [
+          2.1433118745724045e-05,
+          0.00030053725347374175,
+          0.0003116568779543507
+        ],
+        "hull_to_aabb_volume_ratio": 0.1426870645712905
+      },
+      "scapula_l": {
+        "donor_mass_kg": 0.5015988674998522,
+        "donor_mass_scaled_to_this_body": false,
+        "donor_inertia_kg_m2": [
+          0.0008856693355153217,
+          0.0008193403795735628,
+          0.0008856693355153217,
+          0.0003202000719139607,
+          0.0002915426512417284,
+          0.0001717929443700898
+        ],
+        "donor_inertia_principal_moments": [
+          0.0005089474016100672,
+          0.0006884567914894732,
+          0.0013932748575046657
+        ],
+        "donor_inertia_second_moment_min_eigenvalue": -9.793533220256278e-05,
+        "donor_inertia_physically_realisable": false,
+        "replacement_geometry_entity": "body-bp3d-FJ3279",
+        "replacement_basis": "Uniform composite mass inside convex anatomical envelope; head includes intracranial/soft mass, not bone density",
+        "replacement_envelope_volume_m3": 0.000401792598633057,
+        "replacement_effective_density_kg_m3": 1248.4024574030163,
+        "replacement_principal_moments": [
+          0.00030289096874155263,
+          0.0008499737481073369,
+          0.0009871588353919684
+        ],
+        "hull_to_aabb_volume_ratio": 0.2051134574272791
+      }
+    }
+  },
+  "acromial_parent_offsets": {
+    "r": {
+      "translation_m": [
+        -0.01256150986218419,
+        -0.04472365865116966,
+        0.01183396019245793
+      ],
+      "orientation_rad": [
+        -0.10925725939719644,
+        -0.27000026825521906,
+        -0.2013750190138161
+      ]
+    },
+    "l": {
+      "translation_m": [
+        -0.01256150986218419,
+        -0.04472365865116966,
+        -0.01183396019245793
+      ],
+      "orientation_rad": [
+        0.10925725939719644,
+        0.27000026825521906,
+        -0.2013750190138161
+      ]
+    }
+  },
+  "new_coordinates": {
+    "clav_prot_r": [
+      -0.6489575958924583,
+      0.04917410490527352
+    ],
+    "clav_elev_r": [
+      -0.4138031030505472,
+      0.2843285977471846
+    ],
+    "scapula_abduction_r": [
+      -0.6606269880423579,
+      0.037504712755373926
+    ],
+    "scapula_elevation_r": [
+      -0.3995637212934281,
+      0.2985679795043037
+    ],
+    "scapula_upward_rot_r": [
+      -0.14086093885499912,
+      0.5572707619427326
+    ],
+    "scapula_winging_r": [
+      -0.07548065516985952,
+      0.6226510456278722
+    ],
+    "clav_prot_l": [
+      -0.6489575958924583,
+      0.04917410490527352
+    ],
+    "clav_elev_l": [
+      -0.4138031030505472,
+      0.2843285977471846
+    ],
+    "scapula_abduction_l": [
+      -0.6606269880423579,
+      0.037504712755373926
+    ],
+    "scapula_elevation_l": [
+      -0.2985679795043037,
+      0.3995637212934281
+    ],
+    "scapula_upward_rot_l": [
+      -0.5572707619427326,
+      0.14086093885499912
+    ],
+    "scapula_winging_l": [
+      -0.07548065516985952,
+      0.6226510456278722
+    ]
+  },
+  "range_basis": "EXPLICIT ENGINEERING BOUND, NOT MEASURED: the donor's own declaration is +-pi for five of the six and +-pi/2 for the sixth, which is the same placeholder as this plant's +-10 rad shoulder coordinates. Each range is the donor's default value +- 0.3490658503988659 rad, chosen narrow because narrow is the conservative side for a stop. Every one carries a CoordinateLimitForce at exactly that range in the model file.",
+  "added_muscles": [
+    "seth_TrapeziusScapula_M_r",
+    "seth_TrapeziusScapula_S_r",
+    "seth_TrapeziusScapula_I_r",
+    "seth_TrapeziusClavicle_S_r",
+    "seth_SerratusAnterior_I_r",
+    "seth_SerratusAnterior_M_r",
+    "seth_SerratusAnterior_S_r",
+    "seth_Rhomboideus_S_r",
+    "seth_Rhomboideus_I_r",
+    "seth_LevatorScapulae_r",
+    "seth_Coracobrachialis_r",
+    "seth_DeltoideusClavicle_A_r",
+    "seth_DeltoideusScapula_P_r",
+    "seth_DeltoideusScapula_M_r",
+    "seth_LatissimusDorsi_S_r",
+    "seth_LatissimusDorsi_M_r",
+    "seth_LatissimusDorsi_I_r",
+    "seth_PectoralisMajorClavicle_S_r",
+    "seth_PectoralisMajorThorax_I_r",
+    "seth_PectoralisMajorThorax_M_r",
+    "seth_TeresMajor_r",
+    "seth_Infraspinatus_I_r",
+    "seth_Infraspinatus_S_r",
+    "seth_PectoralisMinor_r",
+    "seth_TeresMinor_r",
+    "seth_Subscapularis_S_r",
+    "seth_Subscapularis_M_r",
+    "seth_Subscapularis_I_r",
+    "seth_Supraspinatus_P_r",
+    "seth_Supraspinatus_A_r",
+    "seth_TrapeziusScapula_M_l",
+    "seth_TrapeziusScapula_S_l",
+    "seth_TrapeziusScapula_I_l",
+    "seth_TrapeziusClavicle_S_l",
+    "seth_SerratusAnterior_I_l",
+    "seth_SerratusAnterior_M_l",
+    "seth_SerratusAnterior_S_l",
+    "seth_Rhomboideus_S_l",
+    "seth_Rhomboideus_I_l",
+    "seth_LevatorScapulae_l",
+    "seth_Coracobrachialis_l",
+    "seth_DeltoideusClavicle_A_l",
+    "seth_DeltoideusScapula_P_l",
+    "seth_DeltoideusScapula_M_l",
+    "seth_LatissimusDorsi_S_l",
+    "seth_LatissimusDorsi_M_l",
+    "seth_LatissimusDorsi_I_l",
+    "seth_PectoralisMajorClavicle_S_l",
+    "seth_PectoralisMajorThorax_I_l",
+    "seth_PectoralisMajorThorax_M_l",
+    "seth_TeresMajor_l",
+    "seth_Infraspinatus_I_l",
+    "seth_Infraspinatus_S_l",
+    "seth_PectoralisMinor_l",
+    "seth_TeresMinor_l",
+    "seth_Subscapularis_S_l",
+    "seth_Subscapularis_M_l",
+    "seth_Subscapularis_I_l",
+    "seth_Supraspinatus_P_l",
+    "seth_Supraspinatus_A_l"
+  ],
+  "excluded_donor_muscles": [
+    {
+      "donor_muscle": "TRIlong",
+      "reason": "attaches to a donor forearm body this plant does not take from this donor; its elbow muscles would duplicate the arm26 set already in the plant",
+      "donor_bodies": [
+        "scapula",
+        "ulna"
+      ]
+    },
+    {
+      "donor_muscle": "BIC_long",
+      "reason": "attaches to a donor forearm body this plant does not take from this donor; its elbow muscles would duplicate the arm26 set already in the plant",
+      "donor_bodies": [
+        "humerus",
+        "radius",
+        "scapula"
+      ]
+    },
+    {
+      "donor_muscle": "BIC_brevis",
+      "reason": "attaches to a donor forearm body this plant does not take from this donor; its elbow muscles would duplicate the arm26 set already in the plant",
+      "donor_bodies": [
+        "radius",
+        "scapula"
+      ]
+    }
+  ],
+  "frozen_moving_path_points": [
+    {
+      "donor_point": "LatissimusDorsi1-P3",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        -0.0012109956999933036,
+        -0.008154054576351242,
+        0.01395566959961105
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi1-P4",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        -0.001566994435912074,
+        -0.0014170094842641296,
+        0.008746792919733293
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi3-P3",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        0.0021279924439188778,
+        -0.0020190135135704054,
+        0.008918788847730784
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi3-P4",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        -0.001566994435912074,
+        -0.0014170094842641296,
+        0.008746792919733265
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi6-P3",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        0.008680740617508126,
+        0.0071586621674551605,
+        0.0034510630763465323
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi1-P3",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        -0.0012109956999933036,
+        -0.008154054576351242,
+        0.01395566959961105
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi1-P4",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        -0.001566994435912074,
+        -0.0014170094842641296,
+        0.008746792919733293
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi3-P3",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        0.0021279924439188778,
+        -0.0020190135135704054,
+        0.008918788847730784
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi3-P4",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        -0.001566994435912074,
+        -0.0014170094842641296,
+        0.008746792919733265
+      ]
+    },
+    {
+      "donor_point": "LatissimusDorsi6-P3",
+      "donor_body": "thorax",
+      "frozen_at": "shoulder_elv = 0 (arm hanging)",
+      "donor_travel_to_shoulder_elv_pi_m": [
+        0.008680740617508126,
+        0.0071586621674551605,
+        0.0034510630763465323
+      ]
+    }
+  ],
+  "scope": "articulated_spine_v1 plus a Seth 2019 shoulder girdle: clavicle and scapula per side, sternoclavicular and scapulothoracic joints, the acromioclavicular point constraint, the arm re-parented onto the scapula, and 30 donor muscles per side. No linearization, no stance acceptance, no controller.",
+  "not_claimed": [
+    "No linearization.npz. The identified stance plant was solved on 22 bodies and 33 coordinates; this one has 29 and 60.",
+    "The girdle coordinate ranges are an engineering bound with no measured provenance. No donor on disk declares a scapular or clavicular range.",
+    "The left side is the right reflected in z. The donor has one arm.",
+    "Donor muscle forces are unscaled: the donor model states no body mass.",
+    "The clavicle and scapula inertia tensors are NOT the donor's: the donor's are not physically realisable, so they are convex-envelope priors of this body's own anatomy at the donor's stated mass. The mass centres ARE the donor's, scaled.",
+    "The three latissimus dorsi via-points are moving points in the donor, a function of its shoulder_elv; they are frozen at shoulder_elv = 0 here.",
+    "Display geometry is unchanged: the scapulae and clavicles still ride the thorax mesh in data/derived/anatomy-segment-binding.",
+    "Capacity measured from this model is Sum(Fmax * moment arm) at one pose. It is an upper bound on torque, and it is not demonstrated behaviour."
+  ]
+}

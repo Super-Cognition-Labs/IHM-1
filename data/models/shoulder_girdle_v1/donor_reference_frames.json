@@ -1,0 +1,154 @@
+{
+  "schema": "ihm.shoulder-donor-reference-frames.v1",
+  "measured_by": "scripts/measure_shoulder_donor_frames.py",
+  "instrument": "OpenSim data/runtime/opensim/native_polynomial_path_fit via data/runtime/opensim/native_polynomial_path_fit `sample`; path length of two-point PathActuator rulers at the donor model's own default state, with model.assemble() satisfying the AC PointConstraint.",
+  "donor_path": "data/raw/mechanics/opensim-core/OpenSim/Tests/shared/ThoracoscapularShoulderModel.osim",
+  "donor_sha256": "892bd333a1e1e6a2b77902b54218f12727eefd2306ca82bbda81621c926271fe",
+  "binary_sha256": "e70933cb2ad1b95085f7dc33c0f35ebc4d2cdd2465231afb64c1aa2ae47d51d8",
+  "anchor_stations_thorax_m": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.3,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.3,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.3
+    ]
+  ],
+  "target_stations_m": [
+    [
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.1,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.1,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.1
+    ]
+  ],
+  "frames": {
+    "clavicle": {
+      "body_to_thorax_reference": [
+        [
+          0.9550063450391693,
+          -0.06739888469340152,
+          -0.28882567627725403,
+          0.006324976528009341
+        ],
+        [
+          0.050325113941174,
+          0.9965400089076089,
+          -0.0661467576925034,
+          0.006930043409770631
+        ],
+        [
+          0.29228455970464023,
+          0.04863538823231961,
+          0.95509388814386,
+          0.02546443168745127
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "trilateration_worst_residual_m": 5.551115123125783e-17,
+      "axis_station_orthonormality_max_abs_error": 1.3322676295501878e-15,
+      "raw_axis_matrix_determinant": 0.9999999999999997,
+      "rotation_projection_max_abs_change": 7.494005416219807e-16,
+      "distance_reproduction_worst_m": 9.71445146547012e-17
+    },
+    "scapula": {
+      "body_to_thorax_reference": [
+        [
+          0.9442954040181686,
+          -0.17032742009298266,
+          0.28159325260849594,
+          -0.04051559497825058
+        ],
+        [
+          0.19277031076478254,
+          0.9797677011532129,
+          -0.05380389451143394,
+          0.01937627395397786
+        ],
+        [
+          -0.26673169522539447,
+          0.10508958912003101,
+          0.9580242069075137,
+          0.14352103240336977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "trilateration_worst_residual_m": 5.551115123125783e-17,
+      "axis_station_orthonormality_max_abs_error": 1.8138751324435656e-15,
+      "raw_axis_matrix_determinant": 1.0000000000000004,
+      "rotation_projection_max_abs_change": 1.7486012637846216e-15,
+      "distance_reproduction_worst_m": 1.6653345369377348e-16
+    },
+    "humerus": {
+      "body_to_thorax_reference": [
+        [
+          0.3318445931058367,
+          -0.26201746019364125,
+          0.9062152153766208,
+          -0.04120875498877593
+        ],
+        [
+          -0.2056334522644332,
+          0.917457405743556,
+          0.3405683366904714,
+          -0.01626217427661586
+        ],
+        [
+          -0.920648711146783,
+          -0.2993639243462323,
+          0.25057372460772986,
+          0.15111428909896538
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "trilateration_worst_residual_m": 6.938893903907228e-17,
+      "axis_station_orthonormality_max_abs_error": 1.5543122344752192e-15,
+      "raw_axis_matrix_determinant": 1.0000000000000002,
+      "rotation_projection_max_abs_change": 6.661338147750939e-16,
+      "distance_reproduction_worst_m": 8.326672684688674e-17
+    }
+  },
+  "scope": "Rigid pose of each donor body in the donor THORAX frame at the donor's own default coordinate values. Not a claim about any other configuration, and not a registration onto this plant."
+}
