@@ -42,9 +42,14 @@ public:
         std::string extra;if(input>>extra)throw std::runtime_error("trailing surface foundation input");
     }
     void select(const std::string& path){
-        std::ifstream input(path);int count;
-        if(!(input>>count)||count<0||count>128)throw std::runtime_error("invalid selected skin sensor count");
-        std::set<int> selected;for(int i=0;i<count;i++){int index;if(!(input>>index)||index<0||!selected.insert(index).second)throw std::runtime_error("invalid selected skin sensor index");}
+        // The bound is the quadrature's OWN size, not a magic number. It used to be 128,
+        // which made a whole body's cutaneous afference 128 numbers for no stated reason;
+        // the only real limit is that you cannot select a point that does not exist, and
+        // every index is checked against the quadrature below anyway.
+        std::size_t available=0;for(const auto& group:groups)available+=group.points.size();
+        std::ifstream input(path);long long count;
+        if(!(input>>count)||count<0||static_cast<std::size_t>(count)>available)throw std::runtime_error("invalid selected skin sensor count");
+        std::set<int> selected;for(long long i=0;i<count;i++){int index;if(!(input>>index)||index<0||!selected.insert(index).second)throw std::runtime_error("invalid selected skin sensor index");}
         std::string extra;if(input>>extra)throw std::runtime_error("trailing skin sensor selection");
         for(auto& group:groups)for(auto& point:group.points)if(selected.erase(point.index)){point.selected=true;group.has_sensors=true;}
         if(!selected.empty())throw std::runtime_error("selected skin sensor outside quadrature");

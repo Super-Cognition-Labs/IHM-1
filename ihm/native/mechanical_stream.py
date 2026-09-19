@@ -41,7 +41,7 @@ class NativeMechanicalStream:
     its fidelity as an end, and never report what it did as what the body did.
     See docs/ACTUATION_STAGES.md.
     """
-    def __init__(self,root,output,*,environment='supine',target_mass_kg,augmented_registration=None,surface_contact_manifest=None,surface_sensor_indices=(),bed_material=None,instance_mass_variant=None,initial_pose=None,coordinate_limits=None,scene_objects=None,scene_contact_material=None,segment_contact_meshes=None,segment_contact_material=None,segment_contact_replaces_source_feet=False,tissue_ligaments=None,tissue_ligament_classes=None,tissue_ligament_stiffness_scale=1.0,tissue_ligament_admissible_only=False):
+    def __init__(self,root,output,*,environment='supine',target_mass_kg,augmented_registration=None,surface_contact_manifest=None,surface_sensor_indices=(),bed_material=None,instance_mass_variant=None,initial_pose=None,support_plane_source_x_m=None,coordinate_limits=None,scene_objects=None,scene_contact_material=None,segment_contact_meshes=None,segment_contact_material=None,segment_contact_replaces_source_feet=False,tissue_ligaments=None,tissue_ligament_classes=None,tissue_ligament_stiffness_scale=1.0,tissue_ligament_admissible_only=False):
         self.root=Path(root).resolve();self.output=Path(output).resolve()
         if self.output.exists() or not self.output.is_relative_to(self.root):raise ValueError('Fresh owned native output directory required')
         if environment not in ('free','supine','upright') or finite(target_mass_kg)<=0:raise ValueError('Invalid native environment or mass')
@@ -109,7 +109,10 @@ class NativeMechanicalStream:
                 if relative.is_absolute() or '..' in relative.parts or sha(self.root/relative)!=surface_manifest[key+'_sha256']:raise ValueError('Surface foundation artifact identity mismatch')
             surface_input=(self.root/surface_manifest['native_input_path']).read_bytes()
             selected=list(surface_sensor_indices)
-            if len(selected)>128 or len(set(selected))!=len(selected) or any(type(i)!=int or not 0<=i<surface_manifest['points'] for i in selected):raise ValueError('At most 128 unique valid skin sensor indices required')
+            # The bound is the quadrature's own size. It was 128, which capped a whole body's
+            # cutaneous afference at 128 numbers for no stated reason (docs/WORKBENCH_AUTHENTICITY.md
+            # Tier 2); the engine checks the same bound.
+            if len(selected)>surface_manifest['points'] or len(set(selected))!=len(selected) or any(type(i)!=int or not 0<=i<surface_manifest['points'] for i in selected):raise ValueError(f"At most {surface_manifest['points']} unique valid skin sensor indices required")
             with np.load(self.root/surface_manifest['arrays_path']) as arrays:
                 for index in selected:self.surface_sensor_identity[index]={'manifest_sha256':hashlib.sha256(surface_bytes).hexdigest(),'quadrature_index':index,'triangle_index':int(arrays['face_indices'][index])}
         elif surface_sensor_indices:raise ValueError('Skin sensor selection requires surface contact manifest')
@@ -120,6 +123,15 @@ class NativeMechanicalStream:
             bed=load_bed(self.root,bed_material)
             bed['implementation_sha256']=sha(self.root/'ihm/assembly/bed_compression.py')
         self.output.mkdir(parents=True);source=self.output/'inputs';source.mkdir()
+        # Pin the support plane instead of hanging it under the lowest inertia-derived
+        # proxy sphere. The default ties the floor's position to segment INERTIA, so a mass
+        # repartition moves the floor (48.5 mm on the spine variant) and reads as a joint
+        # failure. Pinning holds the floor and varies only the mass.
+        plane_override=None
+        if support_plane_source_x_m is not None:
+            if environment=='upright':raise ValueError('The upright environment sets its floor from the source contacts, not the proxy plane')
+            plane_override=finite(support_plane_source_x_m)
+            (source/'support_plane_override.txt').write_text(repr(plane_override)+'\n')
         stops=None
         if coordinate_limits is not None:
             stops=[]
@@ -320,6 +332,11 @@ class NativeMechanicalStream:
                    'tissue_ligament_stiffness_scale':None if ligaments is None else float(tissue_ligament_stiffness_scale),
                    'tissue_ligament_admissible_only':bool(ligaments is not None and tissue_ligament_admissible_only),
                    'tissue_ligament_basis':'Blankevoort1991Ligament force elements over two-ended attachments derived from each structure\'s OWN surface by scripts/build_tissue_force_elements.py: the anatomy binding assigns an entity to one segment, but its per-vertex nearest-bone-group vote partitions the surface between two, and each side\'s tip centroid is an attachment site. Slack length is the separation at the binding\'s reference pose; linear stiffness is E*A with E the body\'s own declared ligament along-fibre modulus and A the structure\'s own tissue volume over its own derived length. A CONSTRUCTION from mesh geometry and a published cadaver modulus, not measured insertion footprints and not a subject-specific ligament property. These forces are internal to the model: they can change how the plant moves and cannot change its momentum balance.',
+                   'support_plane_override_x_m':plane_override,
+                   'support_plane_basis':('Plane PINNED by the caller; it is not derived from this body\'s inertia, so a '
+                                          'mass change does not move the floor. Use only to separate those two.' if plane_override is not None
+                                          else 'Plane hung under the lowest proxy sphere, whose radius is inscribed in that segment\'s '
+                                               'inertia ellipsoid -- so segment mass/inertia determines the floor position.'),
                    'coordinate_limits':stops,'coordinate_limits_basis':'Joint stops at the coordinate ranges the source model already declares; nothing else in this plant enforces them. The LIMIT is the model\'s own -- the stiffness, damping and transition width are explicit engineering constants stated by the caller, not measured ligament properties.',
                    'initial_pose':pose,'initial_pose_basis':'Explicit source coordinate initialization after contact reference construction, before muscle equilibrium and energy reference; no ongoing pose constraint or equilibrium claim',
                    'instance_mass_variant':self.instance_mass_variant,'mass_reference_id':self.identity if self.instance_mass_variant is not None else None,'bed_material':bed,'surface_contact_manifest':surface_manifest,'augmented_registration':augmentation,'checkpoint_scope':'Complete in-process SimTK State including effective mass/inertia, excitation/load commands, work accumulators and local mass owner inventory/sequence/receipt; native process must remain alive. Call release(checkpoint) after accepted intervals.',

@@ -215,6 +215,17 @@ int main(int argc,char** argv){try{
    double radius=std::sqrt(radius2);proxy_radius[b.getName()]=radius;
    support_plane=std::min(support_plane,b.findStationLocationInGround(initial,b.getMassCenter())[0]-radius);
   }
+  // OPTIONAL: pin the plane instead of hanging it under the lowest proxy sphere.
+  // The default couples the floor's position to the segments' INERTIA: repartitioning
+  // the torso grew its ball 0.258 -> 0.309 m and dropped the plane 48.5 mm, which read
+  // as a joint failure (docs/FOOT_JOINTS.md). Pinning it lets a caller hold the floor
+  // fixed and vary only the mass, which is the run that separates the two.
+  if(fs::exists(source/"support_plane_override.txt")){
+   std::ifstream pin(source/"support_plane_override.txt");double value;
+   if(!(pin>>value)||!std::isfinite(value))throw std::runtime_error("invalid support plane override");
+   std::string extra;if(pin>>extra)throw std::runtime_error("trailing support plane override");
+   support_plane=value;
+  }
   auto* plane=new ContactHalfSpace(SimTK::Vec3(support_plane,0,0),SimTK::Vec3(0,0,SimTK::Pi),model.getGround());plane->setName("supine_plane");model.addContactGeometry(plane);
   for(const auto& b:model.getComponentList<Body>()){
    auto* sphere=new ContactSphere(proxy_radius.at(b.getName()),b.getMassCenter(),b);sphere->setName("posterior_"+b.getName());model.addContactGeometry(sphere);

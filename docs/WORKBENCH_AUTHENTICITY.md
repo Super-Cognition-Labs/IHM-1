@@ -478,9 +478,26 @@ programme needs.
 
 Further limits on the skin path that is there:
 
-* **at most 128 skin sensor points** may be selected per session
-  (`mechanical_stream.py:110`). A whole body's cutaneous afference is 128 numbers.
+* ~~at most **128** skin sensor points per session~~ — **FIXED 18 Sep 2026.** The cap
+  was a magic number with no stated basis, and it made a whole body's cutaneous
+  afference 128 numbers. Both sides now bound the selection by the quadrature's OWN
+  size: **21,382 points**. Measured: 500 sensors bind and all 500 are emitted in a
+  frame (`surface_foundation.sensor_points`), where 129 used to be refused; asking for
+  more points than exist is refused by name. A plant that selects no sensors is
+  bit-identical across the change (`scripts/verify_engine_options.py`).
 * no self-contact, no skin-on-skin, no sliding, no volume preservation.
+
+**And the supine skin foundation could not be loaded at all.** The environment
+catalogue's `bed-support-skin-quadrature` selection pins
+`data/derived/supine-surface-contact-exmzq9pq/manifest.json`, whose `source_files`
+hashes no longer match: `canonical/mechanics.json` (last written 8 Sep) and
+`scripts/build_supine_surface_contact.py` (changed 9 Sep) both moved, so
+`NativeMechanicalStream` refuses it with `Surface foundation source identity
+mismatch`. **This predates all of today's work by ten days** — the single most
+authentic contact in the workbench, the bed foundation, has been unselectable. The
+artefact regenerates in **3.1 s** (`scripts/build_supine_surface_contact.py`) and the
+fresh one loads; what still points at the stale path is the catalogue, which is
+rebuilt by `scripts/build_environment_catalogue.py`.
 
 *To close:* Tier 1's wiring gives upright the skin layer. Beyond that: a
 deformable skin with self-contact, and an afferent allocation that is not capped
