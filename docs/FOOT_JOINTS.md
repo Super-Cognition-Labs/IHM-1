@@ -1,8 +1,7 @@
 # the foot's joints: why the ankle collapses on the spine variant, and what the toe hinges cost
 
-Two open questions, both about the foot, both carried by the SCAFFOLD (the
-22/25-body plant), never by the body. Nothing below is a statement about a human
-foot.
+Three questions, all about the foot, all carried by the SCAFFOLD (the 22/25-body
+plant), never by the body. Nothing below is a statement about a human foot.
 
 1. **The ankle.** On `articulated_spine_v1` the ankle leaves its declared range
    by 1.36 rad (kinematic variant) and still by 1.14 / 0.87 rad once the
@@ -14,6 +13,11 @@ foot.
    while its muscle paths were fitted with them welded, so edl/ehl/fdl/fhl have
    exactly 0 arm about `mtp_angle` (`docs/WORKBENCH_AUTHENTICITY.md` §0.2a).
    What does that cost, and what would each fix change?
+3. **The plane.** Q1 below found the ankle collapse is carried by the TRUNK
+   REPARTITION, and named the supine contact proxy's plane as the leading
+   candidate mechanism — but could not separate the plane's 48.5 mm drop from the
+   mass change that caused it, because the engine computed the plane. The engine
+   now takes an option for it. Q3 is the separating run.
 
     build arms   OPENBLAS_NUM_THREADS=1 .venv/bin/python -m scripts.build_foot_joint_arms --check
     run          OPENBLAS_NUM_THREADS=1 nohup nice -n 10 .venv/bin/python -u \
@@ -150,6 +154,140 @@ appear, disappear, or change coordinate.
 **Not measured, and not claimed**: upright stance, walking, the identified
 linearization. `linearization.npz` was solved with mtp free, so a plant with mtp
 welded is not the identified plant, whatever these numbers say.
+
+## PRE-REGISTRATION — Q3, the plane against the mass (written and committed before any arm below ran)
+
+Q1 left one thing unseparated and said so: *"whether the plane drop (contact) or
+the mass redistribution itself drives the fold. `tweld` changes both, and the
+plane position is computed inside the engine, which this work may not edit."*
+
+**The engine option now exists.** `NativeMechanicalStream(...,
+support_plane_source_x_m=<float>)` PINS the supine plane instead of hanging it
+under the lowest inertia-inscribed proxy sphere; it is refused in the upright
+environment, pinning it at the default reproduces the default exactly, and
+`execution.json` records `support_plane_override_x_m` and a basis string
+(`scripts/verify_engine_options.py`). Nothing else about any plant changes.
+
+Nothing in this section is edited after the runs. Results go in their own
+section, in a separate commit.
+
+    run   OPENBLAS_NUM_THREADS=1 nohup nice -n 10 .venv/bin/python -u \
+              -m scripts.run_plane_arms > logs/plane_arms.log 2>&1 &
+
+**Protocol, bar and scoring are Q1's, unchanged**: supine, 0.02 tonic excitation
+on every muscle, 200 x 10 ms, worst excursion past each coordinate's declared
+range; the bar is the base model's own worst under the identical protocol
+measured in the same run (expected 0.2202 rad, `knee_angle_r`); an arm
+**recovers** iff BOTH ankle excursions are <= the bar, otherwise it
+**collapses**; A = max(ankle_r, ankle_l).
+
+`P0` is the base plant's OWN derived plane and `PT` the repartitioned trunk's,
+each taken at full precision from the engine in this run, not from the 5-dp
+prints (expected -0.40350 and -0.45201; if they do not reproduce, the run is
+void against the prior numbers).
+
+### Arms
+
+Plane DERIVED, exactly as every Q1 arm ran — these carry the bar and the
+instrument checks, and they are re-run because **the engine has been rebuilt
+since Q1** (`build-cx6s8y89` -> `build-8crm1_k9`) and a rebuilt engine is a
+changed instrument until it reprints the same numbers:
+
+| arm | plant | role |
+|---|---|---|
+| `base`, `base_repeat` | `engineering_stance_v1` | the bar; and *call it twice* |
+| `t0w0s0` | base -> unweld(S,W) -> reweld(S,W) | round-trip control, must equal `base` |
+| `t1w1s1` | the committed variant | must reproduce 1.3563 / 1.3522 |
+| `foot_paths` | `registration_foot_paths.json` | must reproduce 1.1399 / 0.8709 |
+| `tweld` | T's bodies and masses, all seven new joints welded | the repartition with no articulation; must reproduce 1.4014 / 1.2876 |
+| `t1w0s0` | T alone in the factorial | must reproduce 1.3851 / 1.2663 |
+
+Plane PINNED — the new arms:
+
+| arm | plant | plane | role |
+|---|---|---|---|
+| `base@P0` | base | pinned at its own `P0` | **control**: pinning at the default must be a no-op, bit-equal to `base` |
+| `tweld@PT` | `tweld` | pinned at its own `PT` | **control**: bit-equal to `tweld` |
+| **`tweld@P0`** | `tweld` | **raised 48.5 mm to the base's** | **primary A** — repartitioned trunk on the base plant's floor: does the ankle recover? |
+| **`base@PT`** | base | **lowered 48.5 mm to the variant's** | **primary B** — base trunk, no mass change at all: does the ankle collapse? |
+| `t1w0s0@P0` | `t1w0s0` | raised to `P0` | secondary: is A a property of `tweld` alone, or of the repartition? |
+| `base@P0-d` | base | `P0` lowered by d = 12.125, 24.25, 36.375 mm | the **ladder**: does the fold track plane depth continuously? d = 0 is `base@P0` and d = 48.5 is `base@PT`, so the ladder is five points |
+
+### A hazard declared before the run, and it is asymmetric
+
+Pinning `tweld`'s plane UP to `P0` puts its 0.309 m torso proxy sphere **48.5 mm
+inside the plane at t = 0**. Lowering the base plant's plane to `PT` starts it
+48.5 mm **above** the floor, which is a clean free fall. So **primary B is clean
+and primary A carries an initial-penetration artefact**, and there is no arm that
+raises a floor without one, because the plane is by construction the lowest
+sphere's tangent.
+
+Therefore: every arm reports the signed gap from every proxy sphere to the plane
+at t = 0, reconstructed from the engine's own emitted mass properties
+(`radius^2 = 5(I1 + I2 - I0)/2m`), and the contact force on every traced body at
+t = 0 and at its peak. If `tweld@P0`'s torso contact at t = 0 is large, its
+verdict is **weaker evidence than B's**, and the LADDER — every point of which is
+a clean drop with no penetration — carries the dose reading. This is said now so
+it cannot be said afterwards only if it is convenient.
+
+### Instrument checks — the run is void against Q1's numbers if any of 1-7 fails
+
+Internal comparisons within this run would still stand and would be reported as
+such.
+
+1. `base` == `base_repeat`, every worst excursion bit-equal
+2. `t0w0s0` == `base`, bit-equal
+3. the bar reproduces F2's 0.2202 (within 5e-5, the rounding of a 4-dp print)
+4. / 5. `t1w1s1` reproduces 1.3563 / 1.3522
+6. / 7. `foot_paths` reproduces G-S's 1.1399 / 0.8709
+
+Three more, new, and **each can fail for the reason it exists**:
+
+8. `base@P0` bit-equal to `base` AND `tweld@PT` bit-equal to `tweld` — pinning at
+   the default is a no-op. (A pin that silently did nothing at all would also pass
+   this, which is why 9 is separate.)
+9. the engine's reported `support_plane_source_x_m` equals the pinned value
+   **exactly** in every pinned arm, and the arm's own `execution.json` carries
+   `support_plane_override_x_m` and the pinned basis string — read back out of the
+   run's own record, never inferred from the flag passed. A pinned arm whose plane
+   differs from an unpinned one by 48.5 mm proves the pin bites.
+10. the plane rule reconstructed from the engine's own snapshot: for every
+    DERIVED-plane arm, `min over bodies of (com_ground_x - r) - plane == 0` to
+    1e-12, the lowest body is `torso`, and its radius reads 0.2577 m on the base
+    and 0.3090 m under the repartition. This is the check that the reconstruction
+    used to report gaps is the engine's own rule and not a story about it.
+
+Reported separately, not among the seven: `tweld` and `t1w0s0` reproducing
+1.4014 / 1.2876 and 1.3851 / 1.2663.
+
+### What each outcome would mean — all four, including the one where neither explains it
+
+| `tweld@P0` (repartitioned mass, floor HELD up) | `base@PT` (base mass, floor LOWERED) | reading |
+|---|---|---|
+| **recovers** | **collapses** | **THE PLANE.** The 48.5 mm drop is sufficient on an unchanged mass and necessary under the repartition. The collapse is the contact proxy's plane placement, and `FOOT_JOINTS.md`'s leading candidate is confirmed. |
+| **collapses** | **recovers** | **THE MASS.** The plane drop is neither sufficient nor necessary. The leading candidate is **withdrawn**: something in the repartitioned inertia does it, and the next question is what. |
+| **recovers** | **recovers** | **NEITHER ALONE.** The collapse needs both terms together; each is necessary and neither is sufficient. The single-factor story is wrong and the candidate is downgraded to "one of two jointly necessary terms", not confirmed. |
+| **collapses** | **collapses** | **OVER-DETERMINED, and this experiment cannot assign it.** The plane drop alone collapses the base plant AND holding the floor up does not rescue the repartition. Reported as two independently sufficient routes, or as a third cause common to both; not as a separation. |
+
+And the fifth outcome, which is not in the table because it voids it: **if any of
+checks 8-10 fails the option is not doing what it says, and nothing here is
+reported as a separation.** Recorded as VOID.
+
+**The ladder's reading**, A against plane depth on the base plant at
+d = 0, 12.125, 24.25, 36.375, 48.5 mm: monotone and graded -> the fold tracks fall
+height continuously; flat then a jump -> a threshold, and where; non-monotone ->
+reported as non-monotone, with nothing fitted to it.
+
+### What is NOT separated by this run, whatever it returns
+
+* The plane's **position** is separated from the mass. The proxy **spheres** are
+  not: `tweld@P0` still carries the 0.309 m torso ball and the three new balls,
+  just against a higher floor. "The plane" below always means its position.
+* A pinned plane is an **instrument**, not a better model of a bed. It is no more
+  anatomical than a derived one.
+* G-S and F2 stay **FAILED** and are not rescored, whatever this finds.
+* Nothing here is a statement about a human foot, ankle or trunk. It is the
+  scaffold throughout.
 
 ## Results — run 18 Sep 2026, after the pre-registration commit (`e00844d`)
 

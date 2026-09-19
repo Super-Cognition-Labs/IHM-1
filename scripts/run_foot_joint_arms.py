@@ -66,7 +66,12 @@ Q2_MATERIAL_RAD = 0.022
 SIDES = ('r', 'l')
 TRACE_COORDS = tuple('%s_%s' % (c, s) for s in SIDES for c in
                      ('ankle_angle', 'subtalar_angle', 'mtp_angle', 'knee_angle', 'hip_flexion'))
-TRACE_BODIES = tuple('%s_%s' % (b, s) for s in SIDES for b in ('tibia', 'talus', 'calcn', 'toes'))
+#: The trunk bodies come first because a PINNED support plane can start a trunk
+#: proxy inside the floor (docs/FOOT_JOINTS.md Q3's declared hazard), and a body
+#: whose contact force is not traced cannot be checked for it.  Bodies a given
+#: arm does not have simply read 0.
+TRACE_BODIES = ('torso', 'pelvis', 'thorax', 'cervical', 'head') + tuple(
+    '%s_%s' % (b, s) for s in SIDES for b in ('tibia', 'talus', 'calcn', 'toes'))
 TRACE_MUSCLES = tuple('%s_%s' % (m, s) for s in SIDES for m in
                       ('soleus', 'gasmed', 'gaslat', 'tibpost', 'perlong', 'perbrev',
                        'fhl', 'fdl', 'tibant', 'edl', 'ehl'))
@@ -106,14 +111,42 @@ def model_of(registration):
     return ROOT / json.loads((ROOT / registration).read_text())['model_path']
 
 
-def open_stream(registration, environment, stops=None, pose=None):
+def open_stream(registration, environment, stops=None, pose=None,
+                support_plane_source_x_m=None):
+    """`support_plane_source_x_m` PINS the supine support plane instead of hanging
+    it under the lowest inertia-inscribed proxy sphere.  None is the engine's own
+    default and the only value any Q1/Q2 arm ever passes."""
     wait_for_memory()
     out = 'data/derived/foot-joint-arms/sessions/' + uuid.uuid4().hex[:12]
     stream = NativeMechanicalStream(ROOT, ROOT / out, environment=environment,
                                     target_mass_kg=TARGET_MASS_KG,
                                     augmented_registration=registration,
-                                    coordinate_limits=stops, initial_pose=pose)
+                                    coordinate_limits=stops, initial_pose=pose,
+                                    support_plane_source_x_m=support_plane_source_x_m)
     return stream, out
+
+
+def proxy_spheres(snapshot, plane):
+    """The engine's OWN supine contact proxies, reconstructed from the snapshot the
+    engine emits: radius^2 = 5*(I1 + I2 - I0)/(2m) on each body's baseline mass
+    properties, centred at its mass centre (native_mechanical_stream.cpp:211-217).
+
+    Known answer: when the plane is DERIVED, the smallest gap here must be exactly
+    0, because that is the rule that placed it.  When the plane is PINNED the same
+    number is the initial penetration (negative) or clearance (positive), which is
+    the quantity a pinned arm has to be read against."""
+    out = {}
+    for name, b in snapshot['bodies'].items():
+        base = b['model_baseline_mass_properties']
+        m = base['mass_kg']
+        i0, i1, i2 = base['inertia_moments_kg_m2']
+        radius = math.sqrt(5.0 * (i1 + i2 - i0) / (2.0 * m))
+        t = b['transform_ground']
+        c = base['mass_center_local_m']
+        x = t[0][3] + sum(t[0][j] * c[j] for j in range(3))
+        out[name] = {'radius_m': radius, 'mass_center_ground_x_m': x,
+                     'lowest_point_x_m': x - radius, 'gap_to_plane_m': (x - radius) - plane}
+    return out
 
 
 def close(stream, out):
@@ -149,14 +182,19 @@ def row(state, t):
 
 
 # ------------------------------------------------------------------ protocols
-def supine_tonic(registration, stops=None):
-    """F2's `tonic_excursions`, line for line, plus a trace."""
+def supine_tonic(registration, stops=None, support_plane_source_x_m=None):
+    """F2's `tonic_excursions`, line for line, plus a trace.  `support_plane_source_x_m`
+    pins the plane; None (every Q1/Q2 arm) leaves the engine's own rule alone."""
     model = model_of(registration)
     declared = {k: v for k, v in coordinates(model).items() if v is not None}
-    stream, out = open_stream(registration, 'supine', stops=stops)
+    stream, out = open_stream(registration, 'supine', stops=stops,
+                              support_plane_source_x_m=support_plane_source_x_m)
+    # read back out of the run's OWN record, never inferred from the flag passed
+    record = json.loads((ROOT / out / 'execution.json').read_text())
     try:
         first = stream.snapshot()
         plane = first['support_plane_source_x_m']
+        spheres = proxy_spheres(first, plane)
         excitation = {m: TONIC for m in first['muscles']}
         worst, extrema, trace = {}, {}, [row(first, 0.0)]
         started = time.time()
@@ -175,6 +213,11 @@ def supine_tonic(registration, stops=None):
             'stopped': stops is not None, 'n_stops': 0 if stops is None else len(stops),
             'support_plane_source_x_m': plane, 'worst_excursion_rad': worst,
             'extrema_rad': extrema, 'declared': declared,
+            'support_plane_requested_x_m': support_plane_source_x_m,
+            'support_plane_override_x_m': record.get('support_plane_override_x_m'),
+            'support_plane_basis': record.get('support_plane_basis'),
+            'engine_build': record.get('build', {}).get('path'),
+            'proxy_spheres': spheres,
             'wall_s_per_advance': seconds}, trace
 
 
