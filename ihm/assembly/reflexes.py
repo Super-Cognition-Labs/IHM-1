@@ -167,3 +167,116 @@ class BodyReflex:
             if type(n) is not int or not 0<n<=serial or (arrival,n)<=previous:raise ValueError('Invalid sample order')
             sample=finite(event[2],1e-12,1e6,'sample length');previous=(arrival,n);events.append((arrival,n,sample))
         self.time_s=time;self.activation=a;self.arrived_length=length;self.serial=serial;self.events=events
+
+
+# ---------------------------------------------------------------------------
+# Geyer & Herr 2010, the whole stance/swing reflex set, transcribed from the
+# retained, hash-pinned PDF (ihm.assembly.sensorimotor.SOURCE_SHA256):
+#
+#   H. Geyer, H. Herr, "A muscle-reflex model that encodes principles of legged
+#   mechanics produces human walking dynamics and muscle activities," IEEE Trans
+#   Neural Syst Rehabil Eng 18(3):263-273, 2010. doi:10.1109/TNSRE.2010.2047592
+#
+# The file is retrieved from a URL named `song.pdf`; the paper it holds is Geyer
+# & Herr 2010, not Song & Geyer. Values: Table I (p. 269). Laws: Appendix I
+# (p. 270), "Stance Reflexes" and "Swing reflexes". Every number below was read
+# off the rendered page at 300 dpi, none reconstructed from memory.
+# ---------------------------------------------------------------------------
+GEYER_HERR_2010_DOI='10.1109/TNSRE.2010.2047592'
+GEYER_HERR_2010_TABLE_I={
+    # left column of Table I
+    'G_SOL':1.2,'G_TA':1.1,'l_off_TA':.71,'G_SOLTA':.3,'G_GAS':1.1,'S0_VAS':.09,'G_VAS':1.15,
+    'k_phi':2.,'phi_k_off':2.97,'S0_BAL':.05,'k_p':1.91,
+    # right column of Table I
+    'theta_ref':.105,'k_d':.25,'k_bw':1.2,'delta_S':.25,'G_HAM':.65,'G_GLU':.4,'G_HFL':.35,
+    'l_off_HFL':.6,'G_HAMHFL':4.,'l_off_HAM':.85,'k_lean':1.15,
+    # caption: "Prestimulations S0,m are 0.01 (not shown) except for the stance
+    # values S0,VAS and S0,BAL of the VAS and of the trunk balance muscles HAM, GLU
+    # and HFL"; Appendix I: "All stimulations are limited from 0.01 to 1".
+    'S0':.01,'S_min':.01,'S_max':1.,
+    # Appendix I, stance S_GLU: "0.68 k_p" -- a literal in the law, not in Table I.
+    'GLU_kp_fraction':.68,
+}
+# Appendix I: t_l = t-20 ms (SOL, TA, GAS), t_m = t-10 ms (VAS), t_s = t-5 ms
+# (HAM, GLU, HFL and every trunk/load/contra term). Reported beside the delay the
+# controller actually realises; the controller has ONE afferent/efferent split.
+GEYER_HERR_2010_DELAYS_S={'SOL':.02,'TA':.02,'GAS':.02,'VAS':.01,'HAM':.005,'GLU':.005,'HFL':.005}
+# Source anomalies, recorded rather than silently resolved:
+GEYER_HERR_2010_SOURCE_NOTES=(
+    'Table I prints k_bw = 1.2 with tolerance "1.3 ... 5.0", which excludes its own value; 1.2 (the value column) is used.',
+    'Appendix I prints stance S_HFL = S0,HFL + {k_p[theta-theta_ref] + k_d dtheta}_- k_bw|F_ipsi| + dS DSup, '
+    'with {}_- defined as "only negative values". Read literally the trunk term can only LOWER hip-flexor '
+    'stimulation, contradicting the same paper on p. 265 ("S_GLU/HFL ~ +/-[k_p(theta-theta_ref)+k_d dtheta]", '
+    'HFL taking the minus sign) and Fig. 1(d) (trunk driven by HFL and GLU/HAM). The p. 265 reading is used: '
+    'HFL receives max(0, -(k_p[theta-theta_ref]+k_d dtheta)) k_bw|F_ipsi|. Resolved from the same source, not by analogy.',
+    'Appendix I gives the swing HFL trunk bias {k_lean[theta-theta_ref]}_PTO as the value at the previous take-off; '
+    'before the first observed take-off it is undefined and contributes 0 (reported as takeoff_defined=False).',
+)
+# Lumped source groups -> plant muscles. The source has ONE MTU per group; the plant
+# splits it. Membership follows the source's own articulation (Section II, Table III):
+# VAS knee-only extensors; HAM BIarticular hip-extensor/knee-flexor; GLU hip
+# extensor; HFL hip flexor. Excluded, stated so it can be argued with: bfsh (HAM is
+# biarticular; bfsh is knee-only), glmed/glmin (abductors, not the sagittal GLU),
+# recfem/sart/tfl (biarticular or not the source's monoarticular HFL), addmag*
+# (hip extensor by moment arm, but an adductor the source never names).
+GEYER_HERR_2010_GROUPS={'SOL':('soleus',),'TA':('tibant',),'GAS':('gasmed','gaslat'),
+    'VAS':('vasint','vaslat','vasmed'),'HAM':('semimem','semiten','bflh'),
+    'GLU':('glmax1','glmax2','glmax3'),'HFL':('iliacus','psoas')}
+GEYER_HERR_2010_LUMPING=('Group force = sum(tendon force)/sum(Fmax) over members (the existing lumped-GAS rule); '
+    'group length = Fmax-weighted mean of member l/l_opt. Both are engineering reductions of one source MTU onto '
+    'several plant muscles, UNMEASURED; comparing member-resolved against lumped laws on EMG would measure them. '
+    'Every member receives its group stimulation.')
+
+
+def geyer_herr_2010_stimulation(group,*,stance,force,length,side_state):
+    """One group's source stimulation S (before the 0.01..1 limit) and its S0.
+
+    `force` / `length`: normalized lumped values keyed by group, already delayed.
+    `side_state`: this leg's delayed posture: load_bw, contra_load_bw, dsup,
+    knee_phi, knee_phi_rate, theta, theta_rate, theta_takeoff (None if undefined).
+    Returns (S, S0), or None when the group's OWN input has not arrived. A missing
+    cross-group input (SOL force in TA, HAM length in swing HFL) drops that term.
+    """
+    c=GEYER_HERR_2010_TABLE_I
+    def need(mapping,key):
+        value=mapping.get(key)
+        if value is None:raise LookupError(key)
+        return value
+    try:
+        if stance:
+            if group=='SOL':return c['S0']+c['G_SOL']*need(force,'SOL'),c['S0']
+            if group=='TA':
+                # Cross-group term: a missing (e.g. blocked) soleus afferent removes the
+                # inhibition, not TA's own length loop -- as the retained ankle code does.
+                sol=force.get('SOL')
+                return c['S0']+c['G_TA']*(need(length,'TA')-c['l_off_TA'])-(0. if sol is None else c['G_SOLTA']*sol),c['S0']
+            if group=='GAS':return c['S0']+c['G_GAS']*need(force,'GAS'),c['S0']
+            if group=='VAS':
+                phi=need(side_state,'knee_phi');rate=need(side_state,'knee_phi_rate')
+                inhibit=c['k_phi']*(phi-c['phi_k_off']) if (phi>c['phi_k_off'] and rate>0) else 0.
+                return (c['S0_VAS']+c['G_VAS']*need(force,'VAS')-inhibit
+                        -c['k_bw']*need(side_state,'contra_load_bw')*float(need(side_state,'dsup'))),c['S0_VAS']
+            theta=need(side_state,'theta');rate=need(side_state,'theta_rate');load=need(side_state,'load_bw')
+            dsup=float(need(side_state,'dsup'))
+            if group=='HAM':
+                return c['S0_BAL']+max(0.,c['k_p']*(theta-c['theta_ref'])+c['k_d']*rate)*c['k_bw']*load,c['S0_BAL']
+            if group=='GLU':
+                return (c['S0_BAL']+max(0.,c['GLU_kp_fraction']*c['k_p']*(theta-c['theta_ref'])+c['k_d']*rate)*c['k_bw']*load
+                        -c['delta_S']*dsup),c['S0_BAL']
+            if group=='HFL':
+                return (c['S0_BAL']+max(0.,-(c['k_p']*(theta-c['theta_ref'])+c['k_d']*rate))*c['k_bw']*load
+                        +c['delta_S']*dsup),c['S0_BAL']
+        else:
+            if group in ('SOL','GAS','VAS'):return c['S0'],c['S0']
+            if group=='TA':return c['S0']+c['G_TA']*(need(length,'TA')-c['l_off_TA']),c['S0']
+            if group=='HAM':return c['S0']+c['G_HAM']*need(force,'HAM'),c['S0']
+            if group=='GLU':return c['S0']+c['G_GLU']*need(force,'GLU'),c['S0']
+            if group=='HFL':
+                takeoff=side_state.get('theta_takeoff')
+                lean=0. if takeoff is None else c['k_lean']*(takeoff-c['theta_ref'])
+                ham=length.get('HAM')  # cross-group L- from HAM; dropped if HAM afference is absent
+                return (c['S0']+c['G_HFL']*(need(length,'HFL')-c['l_off_HFL'])
+                        -(0. if ham is None else c['G_HAMHFL']*(ham-c['l_off_HAM']))+lean),c['S0']
+    except LookupError:
+        return None
+    raise ValueError(f'Unknown Geyer-Herr group {group}')
