@@ -146,3 +146,75 @@ zero descending drive, and that every new law has the sign its source equation g
 
 It does not establish that any of this improves anything. That needs a measurement
 against data, which is the next section.
+
+## Comparison against EMG
+
+### Pre-registration (committed before the first scoring run)
+
+Written after a `--dry-run` of the harness, which reads no EMG and scores nothing. It
+exercised the replay plant only: the DGF constants match the on-disk opensim-core
+header; mean vertical GRF / model weight = 0.983; harness fibre lengths stay in
+0.52–1.26 l_opt; trunk pitch runs 0.077–0.139 rad, centred on the source's
+θ_ref = 0.105; and **the rate decoder's dial moves only between 1.005 and 1.103
+over the trial.**
+
+**Data.** One measured walking trial on the model the plant is built from
+(opensim-core `example3DWalking`: `subject_walk_scaled.osim`, IK `coordinates.sto`,
+force-plate `grf_walk.mot`, right-leg EMG envelope `electromyography.sto`, all from
+one trial; sha256s are written into the report). There is one subject and about one
+stride. Nothing here generalises beyond that, and the report must say so.
+
+**Replay plant, declared.** The native engine has no prescribed-motion interface, and
+its static evaluator gives zero-speed fibre length and no tendon force, so the
+measurement cannot run on the native plant. Kinematics are prescribed from the
+trial. Muscles use the configuration opensim-core's own MocoInverse example uses for
+this trial: DeGroote–Fregly 2016 curves, rigid tendon, no passive fibre force,
+active width ×1.5, fibre damping 0.01, activation 10/40 ms. The loop closes at the
+muscle (excitation → activation → force → afference). Trunk pitch is planar, from
+pelvis_tilt + lumbar_extension. This is a kinematically prescribed replay, not
+closed-loop locomotion.
+
+**Arms**, each a fresh controller at 5 ms exchanges, with no descending drive (none
+exists for this task): B1 rate+ankle (today), B2 rate+Geyer–Herr, B3 pool+ankle,
+B4 pool+Geyer–Herr. **Trivial baselines:** A0 zero; A1 train-block mean; A2
+*contact phase*: an affine map of the right foot's stance indicator (GRF > 5 N).
+A2 is the one that matters, because a stance muscle's EMG is largely "on in stance".
+**Control arm:** C1 = B2's prediction circularly shifted by half the window.
+
+**Channels → muscles** (members share one group stimulation): soleus→soleus_r;
+gastrocnemius→gasmed_r, gaslat_r; tibialis_anterior→tibant_r;
+medial_hamstrings→semimem_r, semiten_r; biceps_femoris→bflh_r;
+vastus_lateralis→vaslat_r; vastus_medius→vasmed_r; gluteus_maximus→glmax1–3_r. No
+source law: rectus_femoris→recfem_r, gluteus_medius→glmed1–3_r.
+
+**Scoring.** Window 0.55–1.795 s (the first 100 ms are excluded as warm-up). The
+prediction at time t is the excitation applied from t. Pearson r and amplitude ratio
+are computed with no fit. Skill = 1 − SSE/SSE_baseline after a per-channel affine map,
+because EMG is normalised to its own maximum and its scale is arbitrary. The map is
+fitted on alternate 100 ms blocks and scored on the others, then the folds swap, and
+the script asserts that every scored sample is predicted by a map fitted without it.
+Skill is reported against A1 (train mean) and against A0 (zero). Uncertainty comes
+from 2,000 bootstrap resamples of the **blocks** (the items, about 13), paired between
+arms, with one generator (seed 20260918) drawn in `main()` and asserted by its only
+consumer.
+
+**Verdict rules, fixed now:**
+
+- **P1, reflexes past the ankle.** On the five knee/hip channels with a source law,
+  the mean skill of B2 against A2 (contact phase) is compared. **PASS** if the paired
+  95% CI of B2 − A2 lies above 0. Beating the train mean without beating A2 is
+  reported as "carries no more than the contact phase", and P1 is still FAILED.
+- **P2, decoder.** On all eight channels with a law, B4 − B2 mean skill is compared.
+  "Measurable" if the paired 95% CI excludes 0. **Predicted before scoring:** the two
+  differ only through the dial, which stays within 1.005–1.103 here, so the difference
+  should be small. A null here is a statement about this task (a reflex replay with no
+  descending drive), where the pool is inert by construction. It is not a statement
+  about the pool.
+- **P3, context, not a gate.** Ankle channels: B1 − A2.
+- **Controls; if any fails, the run is void and is reported as void.** C1 must score
+  below 0 on the knee/hip channels. The no-law channels must be constant in every
+  reflex arm. B2 run twice must be bit-identical.
+
+A gate that fails is recorded as FAILED. The instrument may change after a failure,
+but these thresholds may not, and a changed instrument is a new run reported beside
+this one.
