@@ -59,9 +59,12 @@ def main():
         check('index served and the default is unchanged', f'{ids}, default={index["default_palette"]}')
 
         served = {}
+        # The count comes from the display manifest the palettes were built from, not a literal: it
+        # was 7390 when this was written and 8979 on 2026-09-18, and the literal failed every run.
+        expected = len(json.loads((root/MANIFEST_INPUT).read_bytes())['structures'])
         for ident in ids:
             palette = read_palette(root, ident)
-            assert palette['id'] == ident and len(palette['colours']) == 7390
+            assert palette['id'] == ident and len(palette['colours']) == expected
             served[ident] = len(palette['colours'])
         check('every declared palette is served in full', served)
 

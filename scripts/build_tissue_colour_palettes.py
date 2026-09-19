@@ -9,7 +9,7 @@ hash is recorded. The manifest does not list itself.
       --output data/derived/tissue-colour-palette-candidate-v1
 
 What this produces
-  1 A tissue-class assignment for all 7390 display structures. One rule fires per structure and
+  1 A tissue-class assignment for every display structure (7390 at first build, 8979 on 2026-09-18). One rule fires per structure and
     the rule text is recorded, so the assignment is auditable rather than hand-listed.
   2 Palettes, each a {class -> colour} table plus {structure_id -> colour} overrides, resolved
     into a flat {structure_id -> hex} map so a viewer applies one lookup.
@@ -64,67 +64,25 @@ TIERS = {
 
 
 # ---------------------------------------------------------------- colour space
+#
+# The conversion lives in ihm/colorimetry.py and is tested against published known answers by
+# scripts/test_colorimetry.py (Pascale 2006 ColorChecker tables, D50 -> Bradford -> sRGB). Nothing
+# here does colour arithmetic of its own.
 
-# CIE 1931 2-degree and 1964 10-degree tristimulus values of the standard illuminants, x100.
-WHITE = {'D65_2': (95.047, 100.0, 108.883), 'D50_2': (96.422, 100.0, 82.521),
-         'C_2': (98.074, 100.0, 118.232), 'A_2': (109.850, 100.0, 35.585),
-         'D65_10': (94.811, 100.0, 107.304), 'D50_10': (96.720, 100.0, 81.427),
-         'C_10': (97.285, 100.0, 116.145)}
-BRADFORD = np.array([[0.8951, 0.2664, -0.1614], [-0.7502, 1.7135, 0.0367], [0.0389, -0.0685, 1.0296]])
-# IEC 61966-2-1 sRGB, D65 white, linear XYZ -> linear RGB.
-M_XYZ2RGB = np.array([[3.2404542, -1.5371385, -0.4985314],
-                      [-0.9692660, 1.8760108, 0.0415560],
-                      [0.0556434, -0.2040259, 1.0572252]])
+from ihm import colorimetry  # noqa: E402
 
-
-def lab_to_xyz(lab, white):
-    L, a, b = lab
-    fy = (L+16)/116
-    fx, fz = fy+a/500, fy-b/200
-    f = lambda t: t**3 if t**3 > 216/24389 else (116*t-16)/(24389/27)
-    return np.array([f(fx)*white[0], f(fy)*white[1], f(fz)*white[2]])/100.0
-
-
-def bradford_adapt(xyz, src, dst):
-    s = BRADFORD@(np.array(src)/100.0)
-    d = BRADFORD@(np.array(dst)/100.0)
-    return np.linalg.inv(BRADFORD)@np.diag(d/s)@BRADFORD@xyz
+WHITE = colorimetry.WHITE
 
 
 def lab_to_srgb(lab, illuminant='D65_2'):
-    """CIE L*a*b* under the stated illuminant/observer -> 8-bit sRGB hex.
-
-    sRGB is defined on D65/2 degree. A value measured under any other white point is chromatically
-    adapted with the Bradford transform before encoding, and the adaptation is reported so a
-    reader can tell an unadapted conversion from an adapted one.
-    """
-    if illuminant not in WHITE:
-        raise ValueError('Unknown illuminant/observer: '+illuminant)
-    xyz = lab_to_xyz(lab, WHITE[illuminant])
-    adapted = illuminant != 'D65_2'
-    if adapted:
-        xyz = bradford_adapt(xyz, WHITE[illuminant], WHITE['D65_2'])
-    linear = M_XYZ2RGB@xyz
-    out_of_gamut = bool(np.any(linear < -1e-6) or np.any(linear > 1+1e-6))
-    excursion = float(max(0.0, float(np.max(np.abs(np.clip(linear, 0, 1)-linear)))))
-    linear = np.clip(linear, 0, 1)
-    encoded = np.where(linear <= 0.0031308, 12.92*linear, 1.055*linear**(1/2.4)-0.055)
-    eight = np.clip(np.round(encoded*255), 0, 255).astype(int)
-    return ('#%02x%02x%02x' % tuple(int(v) for v in eight),
-            {'illuminant_observer': illuminant, 'chromatic_adaptation': 'bradford_to_D65_2' if adapted else 'none',
-             'transfer': 'IEC 61966-2-1 sRGB', 'out_of_srgb_gamut': out_of_gamut,
-             'gamut_clip_linear_excursion': round(excursion, 6)})
+    """CIE L*a*b* under the stated illuminant/observer -> (8-bit sRGB hex, receipt)."""
+    out = colorimetry.lab_to_srgb(lab, illuminant)
+    return out['hex'], dict(out['receipt'])
 
 
 def hex_to_lab(hex_colour):
-    """Round-trip helper used by the self-test only; sRGB D65/2 -> L*a*b*."""
-    v = np.array([int(hex_colour[i:i+2], 16)/255 for i in (1, 3, 5)])
-    linear = np.where(v <= 0.04045, v/12.92, ((v+0.055)/1.055)**2.4)
-    xyz = np.linalg.inv(M_XYZ2RGB)@linear*100.0
-    w = np.array(WHITE['D65_2'])
-    r = xyz/w
-    f = np.where(r > 216/24389, np.cbrt(r), (24389/27*r+16)/116)
-    return (float(116*f[1]-16), float(500*(f[0]-f[1])), float(200*(f[1]-f[2])))
+    """sRGB hex -> L*a*b* under D65/2."""
+    return colorimetry.srgb_to_lab(hex_colour)
 
 
 # ---------------------------------------------------------------- tissue classes
@@ -365,6 +323,12 @@ def builder_record(relative):
 
 def resolve_colour(entry):
     """A colour table entry -> hex plus the conversion receipt."""
+    if 'lch' in entry:
+        # Published as L*C*h(ab); a* and b* are computed here, in code, never typed into the table.
+        lab = colorimetry.lch_to_lab(*entry['lch'])
+        hexed, receipt = lab_to_srgb(lab, entry['illuminant_observer'])
+        return hexed, {'basis': 'converted_from_cielch', 'lch': list(entry['lch']),
+                       'lab': [round(v, 4) for v in lab], **receipt}
     if 'lab' in entry:
         hexed, receipt = lab_to_srgb(tuple(entry['lab']), entry.get('illuminant_observer', 'D65_2'))
         return hexed, {'basis': 'converted_from_cielab', 'lab': list(entry['lab']), **receipt}
@@ -374,7 +338,7 @@ def resolve_colour(entry):
                                    'illuminant_observer': 'D65_2', 'chromatic_adaptation': 'none',
                                    'transfer': 'IEC 61966-2-1 sRGB', 'out_of_srgb_gamut': False,
                                    'gamut_clip_linear_excursion': 0.0}
-    raise ValueError('Colour entry carries neither lab nor srgb_hex: '+repr(entry))
+    raise ValueError('Colour entry carries none of lch, lab or srgb_hex: '+repr(entry))
 
 
 def build_classes(structures):
@@ -421,6 +385,8 @@ def build_palettes(structures, rows, tables, skin_tone):
         roles[cls] = {'label': entry['label'], 'srgb_hex': hexed, 'tier': chosen['tier'],
                       'tier_basis': chosen['tier_basis'], 'note': entry.get('note'),
                       'sources': chosen.get('sources', []), 'conversion': receipt,
+                      'illuminant_observer_basis': chosen.get('illuminant_observer_basis'),
+                      'rejected_measurement': entry.get('rejected_measurement'),
                       'measured_state': entry.get('state')}
         tier_of[cls] = chosen['tier']
     colours, tiers = {}, {}
@@ -552,6 +518,8 @@ def build(out_dir, skin_tone='not_applied'):
                 'python': sys.version,
                 'builder': builder_record(str(Path(__file__).resolve().relative_to(ROOT))),
                 'colour_tables': builder_record(str(tables_path.relative_to(ROOT))),
+                'colour_conversion': builder_record('ihm/colorimetry.py'),
+                'colour_conversion_test': builder_record('scripts/test_colorimetry.py'),
                 'inputs_sha256': inputs,
                 'referenced_sha256': referenced,
                 'referenced_note': 'Hashed for the record, not gated: this build reads the tier vocabulary of '
@@ -566,7 +534,15 @@ def build(out_dir, skin_tone='not_applied'):
                 'source_count': len(tables.SOURCES),
                 'verified_source_count': sum(1 for s in tables.SOURCES.values() if s.get('resolution_verified')),
                 'tier_counts': {t: sum(1 for v in palettes['realistic']['tiers'].values() if v == t)
-                                for t in sorted(TIERS)}}
+                                for t in sorted(TIERS)},
+                'tier_counts_basis': 'per display structure; role_tier_counts is per tissue-class role',
+                'role_tier_counts': {t: sum(1 for r in palettes['realistic']['roles'].values() if r['tier'] == t)
+                                     for t in sorted(TIERS)},
+                'measured_roles_by_illuminant_observer_basis': {
+                    basis: sorted(k for k, r in palettes['realistic']['roles'].items()
+                                  if r['tier'] == 'measured' and r['illuminant_observer_basis'] == basis)
+                    for basis in sorted({r['illuminant_observer_basis'] for r in palettes['realistic']['roles'].values()
+                                         if r['tier'] == 'measured'}, key=str)}}
     manifest['self_test'] = self_test(out, palettes, rows, tables, manifest)
     (out/'manifest.json').write_bytes(json.dumps(manifest, indent=1).encode()+b'\n')
     return palettes, manifest
@@ -623,10 +599,28 @@ def self_test(out, palettes, rows, tables, manifest):
     check('sRGB -> L*a*b* inverts the forward transform', roundtrip < 0.02,
           f'max |dL*,da*,db*| = {roundtrip:.4f} over the reference set (8-bit quantisation floor)')
 
+    # The published known answer: Pascale 2006 Table 3, ColorChecker 2005 L*a*b* (D50) -> 16-bit sRGB
+    # through Bradford. scripts/test_colorimetry.py holds the table and the full test.
+    from test_colorimetry import PASCALE_T3, TOL_A_16BIT
+    worst16 = max(int(np.max(np.abs(np.round(colorimetry.lab_to_srgb(lab, 'D50_2')['encoded']*65535)
+                                    - np.array(rgb16)))) for _, _, lab, rgb16 in PASCALE_T3)
+    check('conversion reproduces a published L*a*b* -> sRGB table (Pascale 2006, D50 via Bradford)',
+          worst16 <= TOL_A_16BIT, f'25 patches, max |d| = {worst16} of 65535 (tolerance {TOL_A_16BIT})')
+
     d50 = lab_to_srgb((100.0, 0.0, 0.0), 'D50_2')
     check('a non-D65 measurement is chromatically adapted before encoding',
           d50[0] == '#ffffff' and d50[1]['chromatic_adaptation'] == 'bradford_to_D65_2',
           f'D50/2 perfect diffuser -> {d50[0]} via {d50[1]["chromatic_adaptation"]}')
+
+    converted = {k: c for k, c in tables.COLOURS.items() if 'lab' in c or 'lch' in c}
+    check('every colour converted from published colorimetry says whether its illuminant/observer was '
+          'stated or assumed', all(c.get('illuminant_observer_basis') for c in converted.values()),
+          sorted(k for k, c in converted.items() if not c.get('illuminant_observer_basis')) or
+          f'{len(converted)} converted entries declare it')
+
+    check('no synthesized colour carries a converted L*a*b* (an invented L*a*b* would dress an assertion as '
+          'colorimetry)', not any(c['tier'] == 'synthesized' for c in converted.values()),
+          sorted(k for k, c in converted.items() if c['tier'] == 'synthesized') or 'none')
 
     measured = [c for c in tables.COLOURS.values() if c['tier'] == 'measured']
     check('every measured colour cites at least one source that resolved',

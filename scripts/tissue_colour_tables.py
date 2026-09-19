@@ -16,10 +16,18 @@ Palette intent: FRESH, IN VIVO, PERFUSED TISSUE under neutral white light, as at
 Not a formalin-fixed cadaver (desaturated, browner, blood drained), not a plastinate, not an
 atlas plate, not a histological stain.
 
-The honest summary: three tissue classes in this table have real human in-vivo colorimetry of
-that tissue -- lip vermilion, gingiva and tooth enamel. Everything visceral has none; the search
-for it is recorded in UNMEASURED_SEARCHED. The evidence palette exists so that split is visible
-on the model rather than buried in this file.
+The honest summary (updated 2026-09-18, after a second literature campaign recorded in
+docs/TISSUE_COLORIMETRY.md): five tissue classes carry human in-vivo colorimetry of that tissue --
+lip vermilion, gingiva, palm, nail and tooth enamel -- and only THREE of those (lip, palm, enamel)
+come from a source that states both its illuminant and its observer; gingiva and nail rest on an
+assumed D65/2 degree and say so in `illuminant_observer_basis`. Five classes are transfers. Nothing
+visceral has any usable colorimetry; the search for it is recorded in UNMEASURED_SEARCHED and in
+the doc. The evidence palette exists so that split is visible on the model rather than buried in
+this file.
+
+Conversion is never done by hand here. Entries give the published numbers (`lab` or `lch`) and
+the published illuminant/observer; ihm/colorimetry.py converts them, and scripts/test_colorimetry.py
+checks that conversion against published known answers.
 
 A note on synthesized values. They are given directly as sRGB hex, not as an invented L*a*b*,
 because converting a made-up L*a*b* would dress an assertion up as colorimetry. The builder
@@ -97,8 +105,12 @@ SOURCES = {
                        'a* 13.4-31.7, b* 9.2-22.2). By group: African-American 50.6/20.4/14.3; Asian '
                        '50.8/24.8/15.7; Caucasian 54.7/23.3/14.4; Hispanic 53.8/24.1/15.1. Largest '
                        'inter-group dE* = 5.0. Ethnicity and age significant, sex not.',
-        'caveat': 'The paper does not state an illuminant or standard observer. D65/2 degree is assumed '
-                  'for the conversion here and that assumption is carried in the palette record.'},
+        'caveat': 'The paper does not state an illuminant or standard observer (full text re-read '
+                  '2026-09-18: no illuminant, light source, D65 or observer statement anywhere, captions '
+                  'included). D65/2 degree is assumed for the conversion here and that assumption is carried '
+                  'in the palette record. Corroborated independently by Hosoki 2007 (D55 stated): attached '
+                  'gingiva L*49.9 a*24.9 b*14.8, about 3.4 dE*ab from this value after both are carried to '
+                  'D65/2 -- see docs/TISSUE_COLORIMETRY.md.'},
 
     'gomezpolo2024gingiva': {
         'citation': 'Gomez-Polo C, et al. Explaining the colour of natural healthy gingiva. Odontology. '
@@ -163,12 +175,15 @@ SOURCES = {
                   'at baseline, NOT healthy controls.',
         'instrument': 'KIOM computerized tongue image analysis system with in-frame ColorChecker calibration',
         'illuminant_observer_stated': False,
-        'measurement': 'Baseline means (SE): body L*53.6 (0.278), a*25.3 (0.291); coating L*51.1, a*13.0; '
-                       'centre L*56.6, a*23.0; tip a*28.6; side a*26.9; root a*18.6. b* not reported by '
-                       'region. The tongue is reddest at the tip and desaturates posteriorly; coating drops '
-                       'a* by about 12 units.',
-        'caveat': 'Oncology cohort at baseline, not a healthy reference. No b* is published, so any b* used '
-                  'with these numbers comes from elsewhere and the entry that does so is a transfer.'},
+        'measurement': 'Visit-1 (baseline) means +/- SE, Supplementary File 1 (read 2026-09-18): body L*53.6 '
+                       'a*25.3 b*11.1; centre 56.6/23.0/11.3; tip 50.9/28.6/11.8; side 52.0/26.9/11.9; root '
+                       '51.4/18.6/11.1; coating 51.1/13.0/11.6. The main text says only that b* did not change; '
+                       'the values are in the supplement. The tongue is reddest at the tip and desaturates '
+                       'posteriorly; coating drops a* by about 12 units.',
+        'caveat': 'Oncology cohort at baseline, not a healthy reference. Camera-derived: RGB converted to '
+                  'L*a*b* with in-frame ColorChecker calibration, and the white point and observer of that '
+                  'conversion are not stated, so these numbers have no defined conversion to sRGB. Used for '
+                  'the regional gradient only, never as a colour.'},
 
     'tian2024tongue': {
         'citation': 'Tian Z, et al. Association between color value of tongue and T2DM based on '
@@ -192,12 +207,22 @@ SOURCES = {
         'pmid': '17682458', 'doi': '10.5357/koubyou.74.108',
         'resolution_verified': True, 'resolution_note': _NCBI,
         'species': 'human', 'state': 'in vivo oral mucosa at multiple sites including buccal mucosa',
-        'cohort': 'n=62 nonsmokers and 56 smokers, 30-83 y, Japan',
-        'instrument': 'colorimeter, CIE L*a*b*',
-        'illuminant_observer_stated': False,
-        'measurement': 'DIRECTION ONLY (J-Stage returned HTTP 500; tables not retrieved): significant '
-                       'differences in lip and gingival L* and a*, and buccal mucosa L* and b*. Smoking '
-                       'lowers luminosity and shifts toward blue.'},
+        'cohort': 'n=62 nonsmokers and 56 smokers, 30-83 y, Japan; healthy volunteers',
+        'instrument': 'Konica Minolta CS-100 non-contact chroma meter with close-up lens No.122 (spot 3.2-4.3 mm), '
+                      'DP-101 data processor; site lit at 45 degrees from 1 m by a SOLAX XC-100 artificial-sunlight '
+                      'lamp and read perpendicular (45/0); user calibration each session on a dental-mirror white '
+                      'standard under the same conditions; 5 readings averaged per site',
+        'illuminant_observer_stated': True, 'illuminant_observer': 'D55_2',
+        'illuminant_observer_note': 'Illuminant stated verbatim ("the light source used was illuminant D55"). The '
+                                    'standard observer is NOT stated; the 2 degree observer is assumed for the '
+                                    'conversion. The size of a 2- vs 10-degree ambiguity is measured in '
+                                    'scripts/test_colorimetry.py (0.125 dE*ab at D65 over tissue colours).',
+        'measurement': 'Read in full on 2026-09-18 from the J-STAGE PDF (koubyou1952/74/2/74_2_108); Table 6 read '
+                       'from the page image. Nonsmokers (n=62), mean (SD): lower lip (just lateral of centre) '
+                       'L*49.6 (2.22) a*22.5 (2.91) b*14.3 (4.59); attached gingiva L*49.9 (3.16) a*24.9 (3.86) '
+                       'b*14.8 (4.68); tongue margin (lateral border, mid) L*42.2 (4.21) a*24.6 (3.00) b*14.2 '
+                       '(4.18); buccal mucosa (centre) L*58.9 (3.16) a*28.7 (3.03) b*19.4 (4.60). Smokers (n=56) '
+                       'buccal L*57.1 a*27.8 b*16.7. Smoking lowers L* and shifts toward blue.'},
 
     'yamashiro1996munsell': {
         'citation': 'Yamashiro M. [A study on colorimetry of oral mucosal lesions]. Kokubyo Gakkai Zasshi. '
@@ -423,11 +448,14 @@ SOURCES = {
         'state': 'in vivo palm (thenar eminence), inner upper arm, thumbnail, lower lip and lower palpebral '
                  'conjunctiva',
         'cohort': 'n=92 Japanese outpatients, mean age 68.5+/-15.5, 51 % men; 67 non-anaemic, 25 anaemic',
-        'instrument': 'Konica Minolta CM-700d. The palpebral conjunctival value alone is indirect: '
-                      'photographed against a CASMATCH chart, colour-corrected, inkjet-printed and the print '
-                      'measured, because direct contact was avoided for infection control and retinal light '
-                      'safety.',
+        'instrument': 'Konica Minolta CM-700d. Palm, nail and inner arm were measured directly. The LIP and '
+                      'the palpebral conjunctiva were both measured INDIRECTLY: photographed beside a CASMATCH '
+                      'chart, colour-corrected in Photoshop CS6, printed on a Canon Pixus MG7530 inkjet and the '
+                      'PRINT measured (re-read 2026-09-18; this record previously said only the conjunctiva was '
+                      'indirect, which was wrong). The authors: "this method cannot measure the true color of '
+                      'mucosa". Neither indirect value may be used as a tissue colour.',
         'illuminant_observer_stated': False, 'illuminant_observer_assumed': 'D65_2',
+        'illuminant_observer_note': 'Full text re-read 2026-09-18: no illuminant, D65 or observer statement anywhere.',
         'measurement': 'Non-anaemic group: palm (thenar) L*62.9+/-2.9 a*7.2+/-2.2 b*16.7+/-2.8; inner upper '
                        'arm 65.4+/-3.9 / 5.0+/-1.2 / 15.8+/-2.5; thumbnail 55.4+/-9.3 / 4.6+/-1.5 / '
                        '11.1+/-2.4; lower lip 59.1+/-12.6 / 34.6+/-6.2 / 12.7+/-8.9; lower palpebral '
@@ -644,6 +672,55 @@ SOURCES = {
                        'dehydration, a* is non-monotonic.',
         'caveat': 'Recorded but not applied: no urine-filled lumen is a separate entity in this body.'},
 
+    'wang2017skinsites': {
+        'citation': 'Wang Y, Luo MR, Wang M, Xiao K, Pointer M. Spectrophotometric measurement of human skin '
+                    'colour. Color Res Appl. 2017;42(6):764-774.',
+        'pmid': None, 'doi': '10.1002/col.22143',
+        'resolution_verified': True, 'resolution_note': _CROSSREF.replace('2026-09-07', '2026-09-18'),
+        'species': 'human', 'state': 'in vivo skin at eight sites including the palm',
+        'cohort': 'n=47 from 17 countries: 20 Chinese (10 M / 10 F), 10 Caucasian, 10 Pakistani, 7 dark-skinned. '
+                  'The palm value used here is the Chinese FEMALE group, n=10.',
+        'instrument': 'Datacolor 600 spectrophotometer, de:8 geometry, 8 mm aperture (also a 45:0 SpectroEye '
+                      'and a JETI tele-spectroradiometer, not used here)',
+        'illuminant_observer_stated': True, 'illuminant_observer': 'D65_10',
+        'measurement': 'Read in full (accepted manuscript, eprints.whiterose.ac.uk/116965) on 2026-09-18. '
+                       '"the CIELAB colorimetric coordinates were calculated for each set of spectral '
+                       'reflectance data under CIE D65 illuminant and the CIE 1964 standard colorimetric '
+                       'observer." Table 3 (de:8 data), Chinese female: palm L*66.69 C*ab 16.92 hab 69.78; '
+                       'ventral forearm 68.62/15.62/76.18; forehead 59.27/20.92/58.52. Male minus female, palm: '
+                       'dL* -3.60 dC* 0.13 dh -1.71 (dE 3.64). No SDs are published.',
+        'caveat': 'Small (n=10), one population, no SDs. Chosen over Horibata 2025 (n=67) because it is the only '
+                  'palm colorimetry located that states both illuminant and observer.'},
+
+    'itou2019hair': {
+        'citation': 'Itou T, Ito S, Wakamatsu K. Effects of aging on hair color, melanosome morphology, and '
+                    'melanin composition in Japanese females. Int J Mol Sci. 2019;20(15):3739.',
+        'pmid': '31370161', 'doi': '10.3390/ijms20153739',
+        'resolution_verified': True, 'resolution_note': _CROSSREF.replace('2026-09-07', '2026-09-18'),
+        'species': 'human', 'state': 'cut, untreated scalp hair tresses, grey fibres removed',
+        'cohort': 'n=25 Japanese females aged 4-68',
+        'instrument': 'Konica Minolta CR-400 chroma meter, at least five locations per bundle',
+        'illuminant_observer_stated': False, 'illuminant_observer': 'D65 (observer not stated)',
+        'measurement': 'Per-subject L*a*b* in Supplementary Table S1 (e.g. age 24: 17.5/4.2/5.3). "a chroma '
+                       'meter (CR-400; Konica Minolta, Tokyo, Japan) with the illuminant D65" -- the observer '
+                       'is not stated.',
+        'caveat': 'NOT USED: illuminant stated, observer not, so it does not meet this build\'s bar for a '
+                  'measured colour; and it describes black East Asian hair only, while hair is a parameter '
+                  'still to be built. Recorded as the nearest miss for hair.'},
+
+    'itou2022hair': {
+        'citation': 'Itou T, Ito S, Wakamatsu K. Effects of aging on hair color, melanosomes, and melanin composition in '
+                    'Japanese males and their sex differences. Int J Mol Sci. 2022;23(22):14459.',
+        'pmid': None, 'doi': '10.3390/ijms232214459',
+        'resolution_verified': True, 'resolution_note': _CROSSREF.replace('2026-09-07', '2026-09-18'),
+        'species': 'human', 'state': 'cut, washed scalp hair tresses',
+        'cohort': 'n=42 Japanese males aged 4-72',
+        'instrument': 'Konica Minolta CR-400 chroma meter',
+        'illuminant_observer_stated': False, 'illuminant_observer': 'D65 (observer not stated)',
+        'measurement': 'Per-subject L*a*b* in Supplementary Table S1; "chroma meter (CR-400 ...) with illuminant '
+                       'D65"; observer not stated.',
+        'caveat': 'NOT USED, for the same reasons as itou2019hair.'},
+
     # ======================================================== non-human, used as explicit transfers
     'papanikolopoulou2025beef': {
         'citation': 'Papanikolopoulou V, et al. Impact of breed and slaughter hygiene on beef carcass '
@@ -671,6 +748,40 @@ SOURCES = {
         'illuminant_observer_stated': False,
         'measurement': 'Instrument agreement r=0.80-0.85 for L*, a*, b*. Correlations, not means. Retained '
                        'as method support for the transferred muscle value, not as a colour.'},
+
+    'knecht2021pork': {
+        'citation': 'Knecht D, Duzinski K, Jankowska-Makosa A. Bloom time effect depends on muscle type and may '
+                    'determine the results of pH and color instrumental evaluation. Animals (Basel). '
+                    '2021;11(5):1282.',
+        'pmid': '33947084', 'doi': '10.3390/ani11051282',
+        'resolution_verified': True, 'resolution_note': _CROSSREF.replace('2026-09-07', '2026-09-18'),
+        'species': 'PORCINE', 'state': 'six muscles cut 24 h post-mortem, measured at 0 min (unbloomed) and 30 min',
+        'cohort': '270 samples, commercial pigs about 110 kg',
+        'instrument': 'Minolta CR-400, 11 mm aperture, "D65 illuminant, calibrated against a white tile"',
+        'illuminant_observer_stated': False, 'illuminant_observer': 'D65 (observer not stated)',
+        'measurement': 'Table 1, 0 min bloom, mean +/- SE: longissimus dorsi L*55.52 a*15.12 b*6.43; '
+                       'semimembranosus 46.46/18.19/6.87; iliacus 50.67/16.91/6.39.',
+        'caveat': 'NOT USED. Considered as a replacement for the bovine muscle transfer: unbloomed is arguably '
+                  'nearer the in-situ state, but it is still chilled post-mortem meat, the observer is unstated '
+                  '(the bovine source states C/2 degree), and the six muscles span 13 L* units, so choosing one '
+                  'would be choosing a colour.'},
+
+    'parkinson2024fat': {
+        'citation': 'Parkinson JT, Cochran HJ, Kieffer JD, Relling AE, Boyles SL, Kopec RE, Garcia LG. The effects of different feeding strategies providing different levels '
+                    'of vitamin A on animal performance, carcass traits, and the conversion rate of subcutaneous '
+                    'fat color in cull-cows. Transl Anim Sci. 2024;8:txae071.',
+        'pmid': '38863594', 'doi': '10.1093/tas/txae071',
+        'resolution_verified': True, 'resolution_note': _CROSSREF.replace('2026-09-07', '2026-09-18'),
+        'species': 'BOVINE (cull cows)', 'state': 'subcutaneous carcass fat, 48 h post-mortem, posterior-dorsal shortloin',
+        'cohort': 'n=49 per diet (low and high vitamin A)',
+        'instrument': 'Konica Minolta CR-410, 50 mm aperture, "D65 illuminant"; observer not stated',
+        'illuminant_observer_stated': False, 'illuminant_observer': 'D65 (observer not stated)',
+        'measurement': 'Table 2, least-squares means (SEM): L* 73.50 / 73.24 (0.78); a* 10.30 / 10.08 (0.39); '
+                       'b* 17.23 / 19.96 (0.69) for low / high vitamin A.',
+        'caveat': 'REJECTED as a transfer for adipose. The authors themselves report that the slaughter-plant '
+                  'steam cabinet (73-82 C) "can, and will, affect fat color resulting in lighter shades" and '
+                  'that this was found only after the data were analysed; the fat was also chilled 48 h. A '
+                  'colour the source says was altered by processing is not a proxy for living fat.'},
 
     'dunne2009fat': {
         'citation': "Dunne PG, Monahan FJ, O'Mara FP, Moloney AP. Colour of bovine subcutaneous adipose "
@@ -802,11 +913,13 @@ COLOURS = {
     'mucosa_lip_vermilion': {
         'label': 'Lip vermilion',
         'state': 'healthy adult lower lip vermilion, in vivo',
-        'lab': [41.9, 19.565, 13.197], 'illuminant_observer': 'D65_10',
+        'lch': [41.9, 23.6, 34.0], 'illuminant_observer': 'D65_10',
+        'illuminant_observer_basis': 'stated (D65, CIE 1964 10 degree)',
         'tier': 'measured',
         'tier_basis': 'Vergnaud 2024, n=410 women across four ethnic cohorts, hyperspectral imaging, '
-                      'D65/10 degree. The paper reports L*C*h; a* and b* here are C*cos(h) and C*sin(h) '
-                      'of the overall mean L*41.9 C*23.6 h=34.0 deg, computed in this build.',
+                      'D65/10 degree. The paper reports L*C*h; the overall mean L*41.9 C*23.6 h=34.0 deg is '
+                      'entered as published and converted by ihm.colorimetry.lch_to_lab (a*=C*cos h, '
+                      'b*=C*sin h), then D65/10 -> D65/2 white by Bradford, then IEC sRGB.',
         'sources': ['vergnaud2024lip', 'vergnaud2023lipdevice', 'wang2025lipage', 'thibodeau1997lip'],
         'note': 'The manifest entity is FMA "lip", the whole lip including its cutaneous part; the '
                 'vermilion is not separately meshed, so a vermilion colour is applied to a region that is '
@@ -821,6 +934,7 @@ COLOURS = {
         'label': 'Gingiva',
         'state': 'healthy keratinized attached and marginal gingiva, in vivo',
         'lab': [52.9, 23.3, 14.9], 'illuminant_observer': 'D65_2',
+        'illuminant_observer_basis': 'ASSUMED: the source states neither illuminant nor observer',
         'tier': 'measured',
         'tier_basis': 'Ho 2015, n=238 adults across four ethnic groups, PR-670 spectroradiometer. The paper '
                       'states no illuminant or observer; D65/2 degree is assumed for the conversion and the '
@@ -836,45 +950,83 @@ COLOURS = {
     'mucosa_palatal': {
         'label': 'Palatal mucosa',
         'state': 'healthy soft palate and uvula, in vivo',
-        'lab': [52.9, 23.3, 14.9], 'illuminant_observer': 'D65_2',
+        'lab': [58.9, 28.7, 19.4], 'illuminant_observer': 'D55_2',
+        'illuminant_observer_basis': 'illuminant stated (D55), observer not stated (2 degree assumed)',
         'tier': 'transferred',
-        'tier_basis': 'Gingival colorimetry (Ho 2015) transferred verbatim to palatal mucosa. Both are '
-                      'masticatory mucosa: keratinized stratified squamous epithelium bound down to '
-                      'periosteum, with the same vascular architecture. No palatal colorimetry exists -- a '
-                      'full-text search of the open-access corpus for palatal mucosa with CIELAB returned '
-                      'zero hits, and every relevant PubMed record measures graft or prosthesis colour '
-                      'match rather than absolute mucosal coordinates.',
-        'sources': ['ho2015gingiva', 'yamashiro1996munsell'],
-        'note': 'No offset was invented. The soft palate is in fact lining mucosa rather than masticatory '
-                'mucosa and is probably redder than this; nothing measured sets the magnitude.'},
+        'tier_basis': 'Buccal mucosa transferred to the soft palate and uvula. '
+                      'Hosoki M. Analysis of color changes of oral mucosa by smoking. Kokubyo Gakkai Zasshi (J Stomatol Soc Jpn). '
+                      '2007;74(2):108-118. doi:10.5357/koubyou.74.108, PMID 17682458. n=62 healthy nonsmokers aged 30-83, '
+                      'Japan, in vivo. Konica Minolta CS-100 non-contact chroma meter, 3.2-4.3 mm spot, 45/0 under a SOLAX '
+                      'XC-100 artificial-sunlight lamp, calibrated each session on a white standard. Illuminant STATED as '
+                      'D55; standard observer NOT stated, 2 degree assumed. '
+                      'Table 6, '
+                      'buccal mucosa, nonsmokers: L*58.9 (SD 3.16) a*28.7 (3.03) b*19.4 (4.60). Conversion: '
+                      'ihm.colorimetry.lab_to_srgb(lab, "D55_2") -- L*a*b* -> XYZ on the D55 2-degree white '
+                      '(ASTM E308-01), Bradford D55 -> D65, IEC 61966-2-1 sRGB. WHY IT TRANSFERS: the oral '
+                      'surface of the soft palate and the uvula are LINING mucosa -- non-keratinized '
+                      'stratified squamous epithelium over a loose, vascular lamina propria -- the same class '
+                      'as the buccal mucosa and a different class from the keratinized, bound-down gingiva this '
+                      'entry previously borrowed. No palatal colorimetry exists (searched: PubMed and Europe PMC '
+                      'full text for hard/soft palate and palatal mucosa with CIELAB, SpectroShade, Easyshade, '
+                      'spectrophotometer or spectroradiometer).',
+        'sources': ['hosoki2007smoking', 'ho2015gingiva', 'yamashiro1996munsell'],
+        'note': 'Replaces the previous transfer from gingiva (Ho 2015), which borrowed a masticatory mucosa for '
+                'a lining one. The hard palate IS masticatory mucosa, but it has no entity here. Site '
+                'difference (cheek vs palate) is not corrected for: nothing measured sets it.'},
 
     'mucosa_lingual': {
         'label': 'Tongue, dorsal mucosa',
         'state': 'healthy tongue dorsum, in vivo',
-        'lab': [53.6, 25.3, 14.9], 'illuminant_observer': 'D65_2',
+        'lab': [42.2, 24.6, 14.2], 'illuminant_observer': 'D55_2',
+        'illuminant_observer_basis': 'illuminant stated (D55), observer not stated (2 degree assumed)',
         'tier': 'transferred',
-        'tier_basis': 'Composite. L*=53.6 and a*=25.3 are the tongue-body baseline of Cho 2025, measured in '
-                      'an oncology cohort at baseline rather than in healthy controls. That paper publishes '
-                      'no b*, so b*=14.9 is transferred from the gingival measurement. The illuminant is '
-                      'not stated in either source; D65/2 degree is assumed.',
-        'sources': ['cho2025tongue', 'ho2015gingiva', 'tian2024tongue'],
-        'note': 'The tongue is reddest at the tip (a*28.6) and desaturates to the root (a*18.6), and the '
-                'coating drops a* by about 12 units. One flat colour on one mesh cannot carry that '
-                'gradient. The larger Tian 2024 healthy cohort (n=1448) was rejected: L*69.5 with b*4.0 is '
-                'far lighter and less yellow than any contact-spectrophotometer mucosal reading and is '
-                'almost certainly a white-balance artefact of its RGB pipeline.'},
+        'tier_basis': 'Tongue MARGIN transferred to the tongue as a whole. '
+                      'Hosoki M. Analysis of color changes of oral mucosa by smoking. Kokubyo Gakkai Zasshi (J Stomatol Soc Jpn). '
+                      '2007;74(2):108-118. doi:10.5357/koubyou.74.108, PMID 17682458. n=62 healthy nonsmokers aged 30-83, '
+                      'Japan, in vivo. Konica Minolta CS-100 non-contact chroma meter, 3.2-4.3 mm spot, 45/0 under a SOLAX '
+                      'XC-100 artificial-sunlight lamp, calibrated each session on a white standard. Illuminant STATED as '
+                      'D55; standard observer NOT stated, 2 degree assumed. '
+                      'Table 6, tongue '
+                      'margin (lateral border, mid), nonsmokers: L*42.2 (SD 4.21) a*24.6 (3.00) b*14.2 (4.18). '
+                      'Conversion: ihm.colorimetry.lab_to_srgb(lab, "D55_2") -- XYZ on the D55 2-degree white, '
+                      'Bradford D55 -> D65, IEC sRGB. WHY IT TRANSFERS: same organ and the same healthy cohort, '
+                      'measured with an instrument under a stated illuminant, but a different site: the lateral '
+                      'border rather than the papillated dorsum that dominates the visible surface. No healthy '
+                      'tongue-dorsum colorimetry with a stated illuminant was found.',
+        'sources': ['hosoki2007smoking', 'cho2025tongue', 'tian2024tongue'],
+        'note': 'Replaces the previous composite (Cho 2025 L* and a* with a b* borrowed from gingiva). Cho 2025 '
+                'does publish b* -- 11.1 for the tongue body, in its Supplementary File 1 -- but its L*a*b* is '
+                'camera-derived with no stated white point, so it has no defined conversion and is kept for the '
+                'regional gradient only: reddest at the tip (a*28.6), desaturating to the root (a*18.6), '
+                'coating about 12 a* units lower. Cho reads about 10 L* lighter than Hosoki at the tongue side; '
+                'that gap is device, not tissue, and is why a camera value is not mixed with an instrument one. '
+                'Tian 2024 (n=1448) is rejected as before: L*69.5 with b*4.0 is a white-balance artefact.'},
 
     'mucosa_pharyngeal': {
         'label': 'Pharyngeal mucosa',
         'state': 'healthy naso-, oro- and laryngopharyngeal mucosa, in vivo',
-        'srgb_hex': '#a2605c',
-        'tier': 'synthesized',
-        'tier_basis': 'No pharyngeal colorimetry exists. Built from the description of pharyngeal lining '
-                      'mucosa as deeper and more saturated red than oral masticatory mucosa, placed near '
-                      'L*48 a*26 b*14 -- inside the measured oral-mucosa envelope, on its red-dark side.',
-        'sources': _DESC+['yamashiro1996munsell'],
-        'note': 'Held inside the Munsell-derived normal oral mucosa envelope (value 3.5-6.0, i.e. roughly '
-                'L* 35-60) so it is at least consistent with what was measured for neighbouring mucosa.'},
+        'lab': [58.9, 28.7, 19.4], 'illuminant_observer': 'D55_2',
+        'illuminant_observer_basis': 'illuminant stated (D55), observer not stated (2 degree assumed)',
+        'tier': 'transferred',
+        'tier_basis': 'Buccal mucosa transferred to the pharynx. '
+                      'Hosoki M. Analysis of color changes of oral mucosa by smoking. Kokubyo Gakkai Zasshi (J Stomatol Soc Jpn). '
+                      '2007;74(2):108-118. doi:10.5357/koubyou.74.108, PMID 17682458. n=62 healthy nonsmokers aged 30-83, '
+                      'Japan, in vivo. Konica Minolta CS-100 non-contact chroma meter, 3.2-4.3 mm spot, 45/0 under a SOLAX '
+                      'XC-100 artificial-sunlight lamp, calibrated each session on a white standard. Illuminant STATED as '
+                      'D55; standard observer NOT stated, 2 degree assumed. '
+                      'Table 6, buccal mucosa, '
+                      'nonsmokers: L*58.9 (SD 3.16) a*28.7 (3.03) b*19.4 (4.60). Conversion: '
+                      'ihm.colorimetry.lab_to_srgb(lab, "D55_2"). WHY IT TRANSFERS: the oropharynx and '
+                      'laryngopharynx are lined by the same non-keratinized stratified squamous lining mucosa as '
+                      'the cheek, continuous with it across the palatoglossal arch. It does NOT transfer well to '
+                      'the nasopharynx, which is respiratory (pseudostratified ciliated) epithelium; that entity '
+                      'carries this colour anyway because the class is one role. No pharyngeal colorimetry '
+                      'exists (searched: PubMed and Europe PMC for pharynx, oropharynx, posterior pharyngeal '
+                      'wall, tonsil with colorimetry, L*a*b*, chromaticity, reflectance).',
+        'sources': ['hosoki2007smoking', 'yamashiro1996munsell'],
+        'note': 'Previously synthesized at about L*48 a*26 b*14 on the assertion that pharyngeal mucosa is '
+                'darker and redder than oral mucosa. That assertion had no measurement behind it and is dropped '
+                'rather than applied as an offset.'},
 
     'mucosa_nasal': {
         'label': 'Nasal respiratory mucosa',
@@ -901,6 +1053,7 @@ COLOURS = {
         'label': 'Glans penis and inner prepuce',
         'state': 'healthy glans, in vivo',
         'lab': [49.67, 27.74, 17.52], 'illuminant_observer': 'D65_2',
+        'illuminant_observer_basis': 'ASSUMED: the source states neither illuminant nor observer',
         'tier': 'transferred',
         'tier_basis': 'Female external genital mucosa (labia) transferred to the glans. Sommers 2013, 210 '
                       'colposcopic images colour-corrected against a Munsell ColorChecker Mini in a light- '
@@ -969,13 +1122,23 @@ COLOURS = {
 
     'skin_palmoplantar': {
         'label': 'Palmar and plantar skin',
-        'state': 'in vivo palm, thenar eminence',
-        'lab': [62.9, 7.2, 16.7], 'illuminant_observer': 'D65_2',
+        'state': 'in vivo palm',
+        'lch': [66.69, 16.92, 69.78], 'illuminant_observer': 'D65_10',
+        'illuminant_observer_basis': 'stated (D65, CIE 1964 10 degree)',
         'tier': 'measured',
-        'tier_basis': 'Horibata 2025, thenar eminence, n=67 non-anaemic Japanese adults, Konica Minolta '
-                      'CM-700d. The paper states no illuminant or observer; D65/2 degree is assumed.',
-        'sources': ['horibata2025sites', 'lu2025issadata'],
-        'note': 'A single Japanese cohort, and it deliberately does NOT co-vary with the selected skin '
+        'tier_basis': 'Wang Y, Luo MR, Wang M, Xiao K, Pointer M. Spectrophotometric measurement of human skin '
+                      'colour. Color Res Appl. 2017;42(6):764-774. doi:10.1002/col.22143. n=10 healthy Chinese '
+                      'women, in vivo palm. Datacolor 600 spectrophotometer, de:8 geometry, 8 mm aperture. '
+                      'Illuminant and observer STATED: "under CIE D65 illuminant and the CIE 1964 standard '
+                      'colorimetric observer". Table 3: palm L*66.69 C*ab 16.92 hab 69.78 deg (no SD published). '
+                      'Conversion: ihm.colorimetry.lch_to_lab (a*=C* cos h, b*=C* sin h), then L*a*b* -> XYZ on '
+                      'the D65 10-degree white, Bradford to the D65 2-degree white (an observer approximation, '
+                      'measured at 0.125 dE*ab in scripts/test_colorimetry.py), IEC sRGB.',
+        'sources': ['wang2017skinsites', 'horibata2025sites', 'lu2025issadata'],
+        'note': 'Replaces Horibata 2025 thenar (L*62.9 a*7.2 b*16.7, n=67), which states no illuminant or '
+                'observer; the two agree to about 4-5 L* and the new value is within the range of the old '
+                'cohort. The male palm in the same study is darker by dL* 3.60 at nearly the same chroma. '
+                'A single Chinese female group, and it deliberately does NOT co-vary with the selected skin '
                 'option. That is a known limitation, not an oversight: the palm-to-dorsum lightness contrast '
                 'scales with constitutive pigmentation rather than being a fixed offset, so a single global '
                 '"palms are lighter" rule is wrong at both ends of the range. No colorimetry of the sole was '
@@ -985,6 +1148,7 @@ COLOURS = {
         'label': 'Nail plate',
         'state': 'in vivo thumbnail, plate over a perfused nail bed',
         'lab': [55.4, 4.6, 11.1], 'illuminant_observer': 'D65_2',
+        'illuminant_observer_basis': 'ASSUMED: the source states neither illuminant nor observer',
         'tier': 'measured',
         'tier_basis': 'Horibata 2025, thumbnail, n=67 non-anaemic Japanese adults, Konica Minolta CM-700d. '
                       'The paper states no illuminant or observer; D65/2 degree is assumed.',
@@ -1002,13 +1166,23 @@ COLOURS = {
         'sources': _DESC,
         'note': 'Hair colour spans a range at least as wide as skin and is deliberately NOT parameterized '
                 'here. Treat this as a placeholder, not a claim, and parameterize it the way skin is '
-                'parameterized before anyone reads it as the body having brown hair.'},
+                'parameterized before anyone reads it as the body having brown hair.',
+        'rejected_measurement': {
+            'source': 'itou2019hair',
+            'value': 'per-subject L*a*b* of black Japanese scalp hair, CR-400, "illuminant D65", e.g. age 24: '
+                     'L*17.5 a*4.2 b*5.3 (Itou 2019 Table S1; Itou 2022 gives the male series)',
+            'reason': 'The nearest miss for hair: an instrument, a stated illuminant, per-subject tables. It '
+                      'fails this build\'s bar only because the standard observer is not stated -- an ambiguity '
+                      'worth about 0.1 dE*ab at D65 -- and because it covers one hair colour, while hair should '
+                      'be an option set like skin. A later build that builds that option set can take its '
+                      'darkest option from here if the observer bar is relaxed on the record.'}},
 
     # ============================================ musculoskeletal
     'skeletal_muscle': {
         'label': 'Skeletal muscle',
         'state': 'living, perfused muscle at operation',
         'lab': [38.725, 20.15, 7.6], 'illuminant_observer': 'C_2',
+        'illuminant_observer_basis': 'stated (illuminant C, 2 degree)',
         'tier': 'transferred',
         'tier_basis': 'Bovine longissimus dorsi, four-breed mean of Papanikolopoulou 2025 (n=159 carcasses, '
                       'Konica Minolta CR-410, illuminant C / 2 degree, chromatically adapted to D65 here). '
@@ -1017,7 +1191,15 @@ COLOURS = {
                       'colour coordinates.',
         'sources': ['papanikolopoulou2025beef', 'schelkopf2021beefmethod'],
         'note': 'Bloomed post-mortem beef is oxymyoglobin-rich at the cut surface, drained and pH-shifted. '
-                'Living perfused human muscle is darker and less saturated, so this transfer errs bright.'},
+                'Living perfused human muscle is darker and less saturated, so this transfer errs bright.',
+        'rejected_measurement': {
+            'source': 'knecht2021pork',
+            'value': 'porcine muscle 24 h post-mortem, unbloomed, CR-400, D65: longissimus dorsi L*55.52 a*15.12 '
+                     'b*6.43; semimembranosus 46.46/18.19/6.87',
+            'reason': 'Considered as a replacement transfer. Kept the bovine value: the pork observer is '
+                      'unstated where the bovine source states C/2 degree, and six pork muscles span 13 L* units, '
+                      'so picking one would be picking a colour. No human skeletal-muscle colorimetry was found '
+                      'in a second search on 2026-09-18.'}},
 
     'cardiac_muscle': {
         'label': 'Myocardium',
@@ -1096,6 +1278,7 @@ COLOURS = {
         'label': 'Tooth enamel',
         'state': 'vital unrestored maxillary central incisor, in vivo',
         'lab': [73.5, 2.2, 11.9], 'illuminant_observer': 'D65_2',
+        'illuminant_observer_basis': 'stated (D65, CIE 1931 2 degree)',
         'tier': 'measured',
         'tier_basis': 'Wee 2023, n=120 subjects across four ethnic groups and five age bands, PR-705 '
                       'spectroradiometer, 0/45 geometry, D65 and the CIE 2 degree observer, enamel at '
@@ -1134,7 +1317,14 @@ COLOURS = {
                       'b*32. The high-b* direction is mechanistically supported: adipose yellowness tracks '
                       'carotenoid content (r=0.79) in the bovine review, and the same carotenoid reservoir '
                       'is what tints human fat. The magnitude is asserted.',
-        'sources': _DESC+['dunne2009fat']},
+        'sources': _DESC+['dunne2009fat'],
+        'rejected_measurement': {
+            'source': 'parkinson2024fat',
+            'value': 'bovine subcutaneous carcass fat, 48 h post-mortem, CR-410, D65: L*73.50/73.24 a*10.30/10.08 '
+                     'b*17.23/19.96 (low/high vitamin A, n=49 each)',
+            'reason': 'Considered as a transfer (cattle, like humans, store carotenoids in fat). Rejected: the '
+                      'authors report that the slaughter-plant steam cabinet lightens fat colour and that they '
+                      'found this only after analysis, the fat was chilled 48 h, and the observer is unstated.'}},
 
     # ============================================ vessels, blood, lymph
     'artery_wall': {
@@ -1502,8 +1692,8 @@ COLOURS = {
                 'the whole visible sclera including lid shadow and vessels; converting it gives an '
                 'implausibly dark sclera and it was rejected as a value. The bulbar conjunctiva that '
                 'overlies the sclera is not a separate entity in this body, so the conjunctiva could not be '
-                'coloured from the mucosal set even though a cohort measurement of palpebral conjunctiva '
-                'exists. See UNMAPPED.'},
+                'coloured from the mucosal set. The one cohort number for palpebral conjunctiva (Horibata '
+                '2025) was measured on an inkjet print of a photograph, not on tissue. See UNMAPPED.'},
 
     'cornea': {
         'label': 'Cornea',
@@ -1636,6 +1826,8 @@ def _measured_skin(key, label, lab, source, cohort, instrument, illuminant, assu
                       'The source states no illuminant or observer; '+illuminant+' is assumed for the '
                       'conversion and the assumption is carried in the palette record.'),
             'colour': {'lab': lab, 'illuminant_observer': illuminant,
+                       'illuminant_observer_basis': ('ASSUMED: the source states neither illuminant nor observer'
+                                                     if assumed else 'stated (D65, CIE 1931 2 degree)'),
                        'tier': 'measured',
                        'tier_basis': 'cohort mean CIE L*a*b* of constitutive human skin measured by '
                                      'reflectance spectrophotometry; see basis',
@@ -1794,9 +1986,10 @@ UNMAPPED = [
      'status': 'no entity',
      'reason': 'No conjunctival entity exists. The sclera is present and is the structure the bulbar '
                'conjunctiva overlies, but sclera is not mucosa and colouring it from the mucosal set would '
-               'be wrong. This is the one unmapped target for which a cohort measurement DOES exist -- '
-               'Horibata 2025 measured lower palpebral conjunctiva at L*50.0 a*36.7 b*21.5 in 67 '
-               'non-anaemic adults -- so the gap here is geometry, not evidence. Even with an entity, a '
+               'be wrong. A cohort number exists -- Horibata 2025 reports lower palpebral conjunctiva at '
+               'L*50.0 a*36.7 b*21.5 in 67 non-anaemic adults -- but it was measured on an inkjet PRINT of '
+               'a colour-corrected photograph, not on tissue (the authors: "this method cannot measure the '
+               'true color of mucosa"), so the gap here is geometry AND evidence. Even with an entity, a '
                'flat colour would be a poor representation: conjunctival redness is driven by vessel '
                'coverage (R2=0.93) far more than by any tissue colour variable (best R2=0.62).',
      'nearest_entities': ['left sclera', 'right sclera'],
@@ -1888,4 +2081,16 @@ UNMEASURED_SEARCHED = [
     'limbus and caruncle',
     # classification
     'mean L*a*b* per Individual Typology Angle class (the classes are (L*,b*) regions only)',
+    # second campaign, 2026-09-18 (docs/TISSUE_COLORIMETRY.md has the queries and the near misses)
+    'kidney, spleen, pancreas, gallbladder, bowel serosa, peritoneum, omentum, lung surface (human, any '
+    'colour system with a stated illuminant; the in-vivo reflectance work is graphs only or starts at 500+ nm)',
+    'thyroid, parathyroid, adrenal, thymus, pituitary, pineal, salivary glands (spectra plotted, never tabulated)',
+    'testis, epididymis, prostate, seminal vesicle, penile tunica, bladder and ureter serosa',
+    'myocardium, valve leaflet, pericardium; tendon, ligament, fascia, dura; fresh cortical bone; meniscus',
+    'fresh brain, peripheral nerve, choroid plexus, CSF, lymph node, lymph, vessel adventitia',
+    'human whole blood in CIELAB versus saturation (only an impala dataset, no illuminant)',
+    'sclera, cornea, lens, choroid, ciliary body, humours in CIELAB with a stated illuminant; iris (camera '
+    'only); fundus (spectra from 445 nm through the ocular media only)',
+    'plantar skin, perianal skin, scrotum, areola, auricle in CIELAB with a stated illuminant',
+    'nasal turbinate (chromaticity x,y only, no luminance), gastric mucosa (camera-derived, no white point)',
 ]
