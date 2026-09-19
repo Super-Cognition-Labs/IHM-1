@@ -3,6 +3,18 @@ import hashlib
 from pathlib import Path
 import xml.etree.ElementTree as ET
 SOURCE_MODEL='data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/example3DWalking/subject_walk_scaled.osim'
+# Schemas that describe a separately materialized native body. Both are real
+# registered plants: `upperbody-registration.v1` is the base model plus the 12
+# bilateral Arm26 actuators (92 muscles, the EmbodiedRuntime default), and
+# `lumbar-muscle-variant.v1` is that body plus a 6-muscle Gait2392 trunk insert
+# (98 muscles, what every stance controller forces via
+# `data/models/engineering_stance_v1`). `ihm/assembly/embodied.py` has accepted
+# both since the variant existed; this reader accepted only the first, so the
+# fail-closed catalog and `peripheral_coverage` could not see the 98-muscle body
+# the live stance path actually integrates. Two readers disagreeing about what a
+# registered body is, is the disagreement itself -- keep this tuple and
+# `_prepare_mechanical_registration` in step.
+REGISTERED_EFFECTOR_SCHEMAS=('ihm.upperbody-registration.v1','ihm.lumbar-muscle-variant.v1')
 
 def native_muscle_catalog(root):
     path=Path(root)/SOURCE_MODEL
@@ -35,7 +47,7 @@ def whole_body_effector_catalog(root,manifest):
     """
     import json
     root=Path(root).resolve()
-    if not isinstance(manifest,dict) or manifest.get('schema')!='ihm.upperbody-registration.v1':
+    if not isinstance(manifest,dict) or manifest.get('schema') not in REGISTERED_EFFECTOR_SCHEMAS:
         raise ValueError('Invalid registered effector manifest')
     def verified(relative,digest):
         if not isinstance(relative,str) or Path(relative).is_absolute():raise ValueError('Source path must be root-relative')
@@ -46,6 +58,19 @@ def whole_body_effector_catalog(root,manifest):
     model_path=verified(manifest['model_path'],manifest['model_sha256'])
     catalog_path=verified(manifest['catalog_path'],manifest['catalog_sha256'])
     for path,digest in manifest['sources'].items():verified(path,digest)
+    if manifest['schema']=='ihm.lumbar-muscle-variant.v1':
+        # A variant is a base model plus a ForceSet insert, so BOTH halves have to
+        # be named and hash-verified here. Verifying only `model_path` would
+        # certify a 98-muscle body while knowing where just the file came from and
+        # not what was added to it. The base is required to be one of the already
+        # verified `sources` rather than trusted from its own field, so the base
+        # cannot be a path this function never hashed.
+        insert_path=verified(manifest['insert_path'],manifest['insert_sha256'])
+        base=manifest['base_model_path']
+        if not isinstance(base,str) or manifest['sources'].get(base) is None:
+            raise ValueError('Variant base model is not a verified registered source')
+        if insert_path==model_path or (root/base).resolve()==model_path:
+            raise ValueError('Variant model must differ from its base and insert')
     rows=json.loads(catalog_path.read_text())
     if not isinstance(rows,list) or len(rows)!=manifest['muscle_count'] or len({r['id'] for r in rows})!=len(rows):
         raise ValueError('Invalid materialized effector identities')

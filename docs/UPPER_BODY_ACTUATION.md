@@ -1,0 +1,351 @@
+# What actuates the upper body, measured
+
+`docs/WORKBENCH_AUTHENTICITY.md` item 0.1 says *"There are no muscles above the
+pelvis"* and names the plant's 13 `CoordinateActuator` torque motors as what drives
+the torso and arms. **That is true of the source model and false of the plant that
+runs.** This file records what the live plant actually carries, measured on
+18 September 2026, and what is genuinely missing — which is a narrower and more
+specific thing than 0.1 claims.
+
+Everything below came from the native engine, not from reading XML. Scripts:
+
+```sh
+OPENBLAS_NUM_THREADS=1 prlimit --as=4294967296 -- nice -n 10 \
+  .venv/bin/python scripts/measure_upper_body_actuation.py \
+    --registration <manifest> --output <fresh dir>
+
+OPENBLAS_NUM_THREADS=1 prlimit --as=4294967296 -- nice -n 10 \
+  .venv/bin/python scripts/probe_upper_body_muscle_drive.py \
+    --group <elbow_r|triceps_r|shoulder_r|lumbar_ext> --output <fresh dir>
+```
+
+One native session at a time.
+
+---
+
+## 1. The premise of 0.1 is about a file nobody loads
+
+Three different bodies are reachable, and the bare source model is the only one
+without upper-body muscle. Measured muscle counts from `snapshot()['muscles']`:
+
+| plant | muscles | above pelvis | who loads it |
+|---|---:|---:|---|
+| `subject_walk_scaled.osim`, no augmentation | **80** | 0 | nothing on the live path; only bare `NativeMechanicalStream(...)` calls that pass no registration |
+| `data/derived/mechanics/whole_body_arm26_v2` | **92** | **12** | **the `EmbodiedRuntime` default** (`embodied.py:365`, `augmented_registration or 'data/derived/mechanics/whole_body_arm26_v2/registration.json'`) |
+| `data/models/engineering_stance_v1` | **98** | **18** | **forced** for every controller in `STANCE_KINDS` (`embodied.py`, `controller_selection.py`) |
+
+The 12 are `arm26_{TRIlong,TRIlat,TRImed,BIClong,BICshort,BRA}_{r,l}`, Thelen2003,
+registered from the Arm26 donor. The further 6 are
+`gait2392_{ercspn,intobl,extobl}_{r,l}`, a Gait2392 trunk insert.
+
+And the torque motors are not driving anything. `NativeMechanicalStream.advance`
+documents that the `CoordinateActuator` ports *"start at zero"* and stay at the
+previous command; `coordinate_actuation` is passed by exactly four offline scripts
+(`crawl.py`, `walk_gait.py`, `scene_object_contact.py`, `measure_tissue_mechanics.py`)
+and by **nothing** in `ihm/app/` or `ihm/assembly/`. So on the live
+path all 13 torque ports sit at zero for the whole session and the upper body is
+moved by muscle or by nothing.
+
+**So 0.1's sentence should read: the plant has 12 upper-body muscles by default and
+18 under the stance controllers, covering the elbow, three shoulder axes and three
+lumbar axes — and it has none at all for the wrist, the hand, the neck (there is no
+neck), the shoulder girdle (there is no scapula or clavicle) or forearm rotation.**
+
+---
+
+## 2. Moment-arm census: which coordinates a muscle actually crosses
+
+`NativeMechanicalStream.moment_arms` queried against every rotational coordinate,
+for all muscles, at the plant's own initial state.
+`+bound`/`−bound` are `Σ Fmax·|r|` over the muscles pulling each way.
+
+**92-muscle default plant** (`whole_body_arm26_v2`, zero arm pose):
+
+| coordinate | muscles | +bound N·m | −bound N·m | authority | torque port |
+|---|---:|---:|---:|---|---|
+| arm_flex_{r,l} | 3 | 18.7 | 31.8 | bidirectional | shoulder_flex |
+| arm_add_{r,l} | 3 | 37.0 | 10.7 | bidirectional | shoulder_add |
+| arm_rot_{r,l} | 3 | 5.6 | 2.9 | bidirectional | shoulder_rot |
+| elbow_flex_{r,l} | 6 | 22.9 | 43.7 | bidirectional | elbow_flex |
+| pro_sup_{r,l} | 2 | 2.3 | 0.0 | **unidirectional, 2.16 mm arm** | pro_sup |
+| lumbar_extension | **0** | 0 | 0 | **none** | lumbar_ext |
+| lumbar_bending | **0** | 0 | 0 | **none** | lumbar_bend |
+| lumbar_rotation | **0** | 0 | 0 | **none** | lumbar_rot |
+
+**98-muscle stance bundle** (`engineering_stance_v1`, at its identified pose):
+
+| coordinate | muscles | +bound N·m | −bound N·m | authority |
+|---|---:|---:|---:|---|
+| arm_flex_{r,l} | 3 | 21.1 | 31.0 | bidirectional |
+| arm_add_{r,l} | 3 | 38.1 | 9.5 | bidirectional |
+| arm_rot_{r,l} | 3 | 5.1 | 3.7 | bidirectional |
+| elbow_flex_{r,l} | 6 | 44.7 | 52.4 | bidirectional |
+| lumbar_extension | 6 | 213.4 | 208.1 | bidirectional |
+| lumbar_bending | 6 | 235.7 | 235.7 | bidirectional |
+| lumbar_rotation | 6 | 80.1 | 80.1 | bidirectional |
+| pro_sup_{r,l} | **0** | 0 | 0 | **none** |
+
+Reports: `data/derived/upper-body-actuation-arm26v2/report.json`,
+`data/derived/upper-body-actuation-stance98/report.json`.
+
+### The bound is an upper bound and only its zeros are decisive
+
+`Fmax·|r|` at one pose ignores force–length, force–velocity, tendon state and
+activation dynamics, and a per-axis sum is not a tension-feasible 3-D torque cone.
+`docs/research/LUMBAR_SHOULDER_MUSCLE_COVERAGE.md` warns about exactly this
+multiplication. **Read the zeros, not the magnitudes.** A column of zeros means no
+path crosses the joint at all, which no modelling assumption can rescue.
+
+### Two controls, both passed
+
+* **Idempotence.** `moment_arms` was called twice at the identical state and the
+  two dictionaries compared bit-equal, in both runs. A native query that is not a
+  function of its arguments produces confident wrong conclusions (IHM-1 `CLAUDE.md`,
+  *"Call it twice at the same input"*).
+* **Known answer.** The ankle must read as a muscle-driven ankle. It does:
+  `soleus_r` returns a plantarflexion moment arm of **−49.7 mm** (92-plant) and
+  **−47.0 mm** (98-plant), inside the 40–60 mm the anatomy requires, with 11 muscles
+  crossing each ankle. The lumbar arms also reproduce
+  `LUMBAR_SHOULDER_MUSCLE_COVERAGE.md`'s independently computed table exactly —
+  `ercspn` 42.69 mm, `intobl` −52.82 mm, `extobl` −62.79 mm — so the trunk transfer
+  landed where its own audit said it would.
+
+### `pro_sup` is effectively unactuated, and the two runs show why
+
+The 92-plant reports 2 muscles at 2.16 mm; the 98-plant reports none. Both are
+right: the moment arm is pose-dependent and the stance bundle starts at
+`pro_sup = 0.164 rad`, where it falls under the 1 mm floor. A real biceps
+supination moment arm is 15–20 mm. 2.16 mm is a **consequence of the Arm26 donor
+fusing ulna, radius and hand into one body**; `UPPERBODY_EFFECTOR_REGISTRATION.md`
+records that the biceps insertion was then assigned to the native radius by hand.
+Treat forearm rotation as having no muscle actuation.
+
+---
+
+## 3. The upper body moves under muscle drive alone
+
+A moment arm says a path crosses a joint; it does not say the joint moves. Each run
+below holds the stance bundle's own 98 equilibrium excitations, drives one agonist
+group to excitation 1.0, integrates 40 steps of 10 ms, and reports the excursion as
+a **paired difference against an identical null run** with the equilibrium unchanged.
+`coordinate_actuation` is never passed, so all 13 torque ports are at zero.
+
+| drive | watched | driven Δ | contralateral Δ | ratio |
+|---|---|---:|---:|---:|
+| BIClong+BICshort+BRA (r) | elbow_flex_r | **+105.98°** | +0.10° | 1015× |
+| TRIlong+TRIlat+TRImed (r) | elbow_flex_r | **−32.82°** | +0.27° | 120× |
+| BICshort+TRIlong (r) | arm_add_r | **+10.38°** | −0.91° | 11× |
+| ercspn (bilateral) | lumbar_extension | **+120.10°** | pelvis_tilt −6.70° | 18× |
+
+The null arms moved 9×10⁻⁹ to 2×10⁻⁸ rad over the same interval, so the equilibrium
+is genuinely static and the excursion is the drive. Agonist and antagonist move the
+elbow in opposite directions with the right signs. Reports under
+`data/derived/upper-body-drive-*/report.json`.
+
+**This is the answer to "can a muscle move the upper body": yes, measured, with
+every torque motor at zero.**
+
+### Two cautions that ride with those numbers
+
+* **The lumbar drive blew through the declared range and nothing stopped it.**
+  `lumbar_extension` reached **2.096 rad = 120.1°** against a declared
+  `range` of ±1.5708 rad with `clamped=true` — **30.1° outside**, because no
+  `coordinate_limits` were passed and the model holds zero `CoordinateLimitForce`
+  (`docs/NATIVE_JOINT_LIMITS.md`, IHM-1 `CLAUDE.md`). The excursion demonstrates
+  torque authority and is **not** a physiological range of motion. This is exactly
+  the Tier-1 `coordinate_limits` wiring the register already asks for.
+* **The shoulder coordinates declare a meaningless range.** `arm_flex`, `arm_add`
+  and `arm_rot` each carry `range = ±10 rad` — **±573°**. There is nothing to clamp
+  them to even when clamping is switched on. Any self-righting search will find this.
+
+### Scale: these muscles can hold an arm, not press a body up
+
+The model's own right arm is **4.196 kg** (humerus 2.302, ulna 0.688, radius 0.688,
+hand 0.518), so **41.2 N**. The measured shoulder-flexion bound of 21.1 N·m is
+41.2 N at 0.51 m — comfortably more than the arm's own COM demands, and an upper
+bound. Pressing the trunk up off the floor is a demand of a different order and
+**nothing here bounds it**. Do not read §3 as "the body can push itself up".
+
+---
+
+## 4. What is missing, precisely
+
+| capability | status |
+|---|---|
+| elbow flexion / extension | **muscle, bidirectional, verified moving** |
+| shoulder flexion / adduction / rotation | **muscle, bidirectional** — but from 3 muscles per axis, all of them biceps/triceps heads |
+| lumbar extension / bending / rotation | **muscle** in the 98-plant only; **absent** in the 92-muscle default |
+| forearm pro/supination | **none** (2.16 mm at best; donor fuses the forearm) |
+| deltoid, rotator cuff, pectoralis, latissimus | **none** — no such actuator exists in any loaded plant |
+| shoulder girdle | **no scapula and no clavicle body**; the plant's 22 bodies are pelvis, 6 leg segments per side, torso, and 4 arm segments per side |
+| wrist, fingers | **none**; `radius_hand_{l,r}` is a `WeldJoint` |
+| neck, head | **no body at all** |
+
+The honest one-line version: **the arms have an elbow and a crude sagittal
+shoulder, the trunk has an optional three-axis one, and everything that makes a
+shoulder a shoulder is missing.**
+
+---
+
+## 5. What is on disk
+
+A census of every `.osim` under `data/raw/` (215 files) plus `data/research/`:
+
+| model | where | muscles | girdle | usable? |
+|---|---|---|---|---|
+| Arm26 | `data/raw/anatomy/opensim-models/source/Models/Arm26/` | 6 Thelen2003 | no | **already registered and running** (the 12) |
+| Gait2392 trunk | `.../Models/Gait2392_Simbody/` | 92 Thelen2003 | no | **already registered** (the 6) |
+| **MoBL-ARMS 4.1** (Saul/Murray 2015) | `data/research/shoulder_complement/MOBL_ARMS_41.osim` | **50 Millard2012** | **thorax, clavicle, scapula** | **acquired, extracted, not installed** |
+| Thoracoscapular shoulder (Seth 2019) | `data/raw/mechanics/opensim-core/OpenSim/Tests/shared/ThoracoscapularShoulderModel.osim` | 33 Millard2012 | **clavicle + scapula, 4 scapular coordinates** | on disk, unexamined by this repo |
+| `PushUpToesOnGroundWithMuscles.osim` | `data/raw/mechanics/opensim-core/OpenSim/Simulation/tests/resources/` | **100 Schutte1993_Deprecated + 54 Thelen2003**, 81 bodies, bilateral DELT1-3/SUPSP/INFSP/SUBSC/TMIN/TMAJ/PECM1-3/LAT1-3/CORB | **yes, full** | **deprecated muscle law and `<credits>Model authors names..</credits>` — a placeholder. Corroborating routes only; not a citable source** |
+| Rajagopal2016 / RajagopalLaiUhlrich2023 | `.../Models/Rajagopal/` | 80–81 Millard2012, **0 above the pelvis** | no | 18 `CoordinateActuator`s incl. both wrists — **the same gap one joint further out, not a fix** |
+| Hamner 2010 full body | `.../Models/Hamner/` | 93 Thelen2003 | no | lower limb + trunk only |
+| WristModel (Gonzalez 1997) | `.../Models/WristModel/` | 25 Schutte1993_Deprecated | — | includes `ECU_pre-`/`post-surgery` alternatives; deprecated law |
+| Neck3dof fixture | `.../OpenSim/Tools/tests/resources/` | 5 Schutte1993 | — | engine fixture, placeholder credits (`CERVICAL_MODEL_SOURCE_AUDIT.md`) |
+| MASI, Mortensen2018 cervical | `data/research/cervical/` | 78 Thelen2003 / 72 Millard2012 | skull, clavicle, scapula | acquired; **geometry not acquired** (login wall) |
+
+**Correction to a retained record.** `data/sources/sensorimotor/upperbody_sources.json`
+still carries `unacquired_richer_source: {url: simtk.org/projects/upexdyn, status:
+"web tool returned 403; no model bytes acquired; do not count as model data"}`.
+That was true when written and is **stale**: `MOBL_ARMS_41.osim` was acquired on
+2026-09-06 through the CEINMS-RT mirror and its 15 shoulder compartments are already
+extracted to `data/research/shoulder_complement/shoulder_forces.xml`. The record
+should be updated to point at the acquisition, with the mirror-vs-official caveat
+that `data/sources/shoulder_complement.json` already carries
+(`mirror_equals_official_release_verified: false`).
+
+---
+
+## 6. Verdict
+
+The register offered three outcomes. The true answer is **(a) for the arms and the
+trunk, and (b) for the shoulder** — and (c) is false: nothing needs acquiring.
+
+* **(a) — already on disk and already wired.** 12 arm muscles are the live default
+  and 18 run under every stance controller. They load, they integrate, they carry
+  real Thelen states, and they move the joints they cross. §1–§3 are the evidence.
+  Item 0.1's premise — that the upper body is torque-motor driven — does not
+  describe the running plant.
+* **(a), unwired until now.** The trunk muscles existed and the fail-closed loader
+  could not read them. Fixed; see §7.
+* **(b) — a suitable source exists and needs registration work.** MoBL-ARMS 4.1 is
+  acquired, licensed as a local research candidate, and blocked on a shoulder
+  girdle the plant does not have. Scoped in §8.
+* **(c) — does not apply.** No acquisition is required for the shoulder. The one
+  genuine acquisition gap left is *geometry*, for the cervical donors.
+
+---
+
+## 7. What was wired
+
+`ihm/assembly/sensorimotor_catalog.py::whole_body_effector_catalog` accepted only
+`ihm.upperbody-registration.v1`. Every 98-muscle body — `whole_body_lumbar_current`,
+`engineering_stance_v1`, `engineering_supported_rest_v1` — declares
+`ihm.lumbar-muscle-variant.v1` and was **rejected outright**:
+
+```
+ 92 whole_body_arm26_v2            OK 92 rows   coverage OK 92
+ 98 whole_body_lumbar_current      REJECTED: Invalid registered effector manifest
+ 98 engineering_stance_v1          REJECTED: Invalid registered effector manifest
+ 98 engineering_supported_rest_v1  REJECTED: Invalid registered effector manifest
+```
+
+`ihm/assembly/embodied.py::_prepare_mechanical_registration` has accepted **both**
+schemas since the variant existed. So the two readers disagreed about what a
+registered body is, and the consequence was concrete: `build_peripheral_coverage`
+could not audit the ports of the body the live stance path actually integrates — the
+six trunk effectors had no coverage row anywhere.
+
+The loader now accepts both schemas and, for a variant, additionally verifies the
+two fields the variant schema adds: `insert_path`/`insert_sha256` is hashed, and
+`base_model_path` is required to be one of the manifest's already-verified `sources`
+rather than trusted from its own field. After the change all four load, with 92, 98,
+98 and 98 rows and matching coverage reports; `lumbar_trunk` effectors now appear in
+the audit.
+
+It stays fail-closed. `scripts/verify_registered_effector_variants.py` pins it:
+nine manifest mutations are each refused, including `base_model_path` swapped for
+`whole_body_arm26_v2/subject_with_arms.osim` — **a real, parseable, genuinely
+registered model that simply is not one of this manifest's sources**, so a loader
+that checked only existence would pass it. A control that can pass for the wrong
+reason is worse than none. Restoring the old one-schema tuple makes the new tests
+fail, so the tests can fail.
+
+```sh
+OPENBLAS_NUM_THREADS=1 prlimit --as=2147483648 -- nice -n 10 \
+  .venv/bin/python -m scripts.verify_registered_effector_variants   # 6 tests
+  .venv/bin/python -m scripts.verify_upperbody_effectors            # 1 test, unchanged
+  .venv/bin/python -m scripts.verify_peripheral_coverage            # 5 tests, unchanged
+```
+
+**What was NOT wired, deliberately.** The 98-muscle variant was not made the
+default. Its own catalog rows say `native_control_ready: false` and
+`default_excitation_assignment: null`, its manifest says `default_enabled: false`,
+and §3 shows its trunk drive leaving the declared lumbar range by 30°. It is
+reachable today as an explicit opt-in —
+`EmbodiedRuntime.from_workspace(..., augmented_registration='data/derived/mechanics/whole_body_lumbar_current/registration.json')` —
+and that is the right place for it until `coordinate_limits` are forwarded.
+
+---
+
+## 8. What installing the shoulder would take
+
+Not an acquisition. A registration, and the mass partition is the hard part.
+
+1. **Girdle bodies.** MoBL-ARMS routes 44 fixed, 13 moving and 8 conditional path
+   points across `thorax`, `clavicle`, `scapula` and `humerus`, over 23 wrap objects.
+   The plant has no `clavicle` and no `scapula`. Either add them — with the donor's
+   sternoclavicular/acromioclavicular couplers and its `shoulder0/1/2` decomposition —
+   or weld them to `torso` and declare a fixed-girdle approximation in the UI, in
+   which case pectoralis minor and every girdle-only path produce no joint torque.
+2. **Mass partition, once.** Donor clavicle 0.156 kg and scapula 0.70396 kg per side.
+   These must be **subtracted** from the torso's residual — mass, first moment and
+   origin inertia, in a common frame, with a positive-definiteness check — not added.
+   This has to be sequenced with the cervical/thoracic partition or the torso ledger
+   is split twice. The donor's 0.0001 kg phantom bodies are numerical and must never
+   become tissue.
+3. **Kinematic reconciliation before any force.** The donor's default elevation is
+   ~30° and its thorax sits ~−90° about y. The plant's three shoulder coordinates are
+   not the donor's Euler decomposition. The orientation and angular-velocity Jacobian
+   map must be defined and tested across the supported range including singularities.
+4. **Reconcile with what is already there.** `arm26_TRIlong/BIClong/BICshort` already
+   take registered `torso` origins. Adding DELT/PECM/LAT does not license duplicating
+   or silently replacing them, and Millard (donor) and Thelen (Arm26) laws stay distinct.
+5. **Gates.** Instantiate the unmodified donor first and reproduce its own path
+   lengths, conditional transitions, wrapping and moment arms; then the registered
+   variant against those; then a tension-feasible torque cone. `native_verified` stays
+   false until each passes. Left side is a reflection **prior** and needs explicit
+   validation of vectors, joint axes and wrap quadrants — not a name suffix.
+6. **Licence.** `data/sources/shoulder_complement.json` records conflicting terms —
+   SimTK noncommercial + BSD-3 wording, CEINMS mirror Apache-2.0, an older catalog
+   listing MIT — deliberately unresolved, with `official_model_zip_held: false` and
+   `mirror_equals_official_release_verified: false`. **Resolve the licence before
+   anything from this donor ships**, not at integration time.
+
+`docs/research/SHOULDER_COMPLEMENT_SOURCE_DESIGN.md` holds the parameter tables and
+the full gate list; this section is its summary with the plant-side blockers named.
+
+**Ordering.** Steps 1–2 are the same work as 0.2's shoulder girdle, and the mass
+partition is the same work as 0.3's single-mass reconciliation. Doing the shoulder
+first and the girdle later means partitioning torso mass twice.
+
+---
+
+## 9. Changes this implies elsewhere
+
+* `docs/WORKBENCH_AUTHENTICITY.md` 0.1 should be rewritten around §1 and §4: the
+  claim is not "no muscles above the pelvis" but "no girdle, no forearm rotation, no
+  wrist, no neck, and a shoulder built from three biceps/triceps heads per axis".
+  Its "*to close*" note already points at `whole_body_arm26_v2` and
+  `whole_body_effector_catalog` and was pointing at the right things.
+* `data/sources/sensorimotor/upperbody_sources.json`'s `unacquired_richer_source`
+  record is stale (§5).
+* `data/derived/mechanics/whole_body_arm26_v2/registration.json` carries
+  `native_verified: false` with the note that the mechanics owner must run a native
+  load. That load has now run (§1–§3) and the promoted bundles built on it already
+  carry `native_acceptance_complete: true`. The flag on the v2 manifest is stale;
+  it is immutable by design, so the correction belongs here and in whatever
+  supersedes it, not in an edit.
+* The register's ordering puts "upper-body muscles" at item 4. On this evidence the
+  arm and trunk halves are done, and what remains of 0.1 merges into 0.2's girdle
+  and 0.3's mass reconciliation.
