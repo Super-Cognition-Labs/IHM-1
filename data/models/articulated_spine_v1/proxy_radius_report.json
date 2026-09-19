@@ -1,0 +1,95 @@
+{
+  "schema": "ihm.proxy-radius-arms.v1",
+  "bar": 0.2202,
+  "arms": [
+    {
+      "arm": "base",
+      "registration": "data/models/engineering_stance_v1/registration.json",
+      "requested_torso_radius_m": null,
+      "ankle_r": 0.12288047711162375,
+      "ankle_l": 0.12069603904863024,
+      "plane_m": -0.40349898761606706,
+      "torso_radius_m": 0.25766126988396704,
+      "reconstructed_radius_m": 0.25766126988396704,
+      "override_in_record": null,
+      "basis": "Every proxy sphere radius is inscribed in its own segment's inertia ellipsoid, so a mass repartition changes the contact geometry."
+    },
+    {
+      "arm": "tweld",
+      "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+      "requested_torso_radius_m": null,
+      "ankle_r": 1.4014362998807766,
+      "ankle_l": 1.2875612095350912,
+      "plane_m": -0.4520127698239038,
+      "torso_radius_m": 0.3090014978960673,
+      "reconstructed_radius_m": 0.3090014978960673,
+      "override_in_record": null,
+      "basis": "Every proxy sphere radius is inscribed in its own segment's inertia ellipsoid, so a mass repartition changes the contact geometry."
+    },
+    {
+      "arm": "base@R0",
+      "registration": "data/models/engineering_stance_v1/registration.json",
+      "requested_torso_radius_m": 0.25766126988396704,
+      "ankle_r": 0.12288047711162375,
+      "ankle_l": 0.12069603904863024,
+      "plane_m": -0.40349898761606706,
+      "torso_radius_m": 0.25766126988396704,
+      "reconstructed_radius_m": 0.25766126988396704,
+      "override_in_record": {
+        "torso": 0.25766126988396704
+      },
+      "basis": "A named body's proxy sphere radius is PINNED, so its contact geometry no longer follows its inertia. Use only to separate a contact artefact from a mass change."
+    },
+    {
+      "arm": "tweld@RT",
+      "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+      "requested_torso_radius_m": 0.3090014978960673,
+      "ankle_r": 1.4014362998807766,
+      "ankle_l": 1.2875612095350912,
+      "plane_m": -0.4520127698239038,
+      "torso_radius_m": 0.3090014978960673,
+      "reconstructed_radius_m": 0.3090014978960673,
+      "override_in_record": {
+        "torso": 0.3090014978960673
+      },
+      "basis": "A named body's proxy sphere radius is PINNED, so its contact geometry no longer follows its inertia. Use only to separate a contact artefact from a mass change."
+    },
+    {
+      "arm": "tweld@R0",
+      "registration": "data/derived/foot-joint-arms/tweld/registration.json",
+      "requested_torso_radius_m": 0.25766126988396704,
+      "ankle_r": 1.375733111070085,
+      "ankle_l": 1.2929615674587964,
+      "plane_m": -0.40067254181180356,
+      "torso_radius_m": 0.25766126988396704,
+      "reconstructed_radius_m": 0.3090014978960673,
+      "override_in_record": {
+        "torso": 0.25766126988396704
+      },
+      "basis": "A named body's proxy sphere radius is PINNED, so its contact geometry no longer follows its inertia. Use only to separate a contact artefact from a mass change."
+    },
+    {
+      "arm": "base@RT",
+      "registration": "data/models/engineering_stance_v1/registration.json",
+      "requested_torso_radius_m": 0.3090014978960673,
+      "ankle_r": 1.4627978516360347,
+      "ankle_l": 1.4493327390987258,
+      "plane_m": -0.4548392156281673,
+      "torso_radius_m": 0.3090014978960673,
+      "reconstructed_radius_m": 0.25766126988396704,
+      "override_in_record": {
+        "torso": 0.3090014978960673
+      },
+      "basis": "A named body's proxy sphere radius is PINNED, so its contact geometry no longer follows its inertia. Use only to separate a contact artefact from a mass change."
+    }
+  ],
+  "instrument_checks": {
+    "pin at own radius reproduces base bitwise": true,
+    "pin at own radius reproduces tweld bitwise": true,
+    "base reprints Q1/Q3": true,
+    "tweld reprints Q1/Q3": true,
+    "override read back from each run record": true,
+    "pinned runs declare a pinned basis": true
+  },
+  "verdict": "BOTH independently sufficient"
+}

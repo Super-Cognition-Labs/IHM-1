@@ -218,6 +218,13 @@ def supine_tonic(registration, stops=None, support_plane_source_x_m=None, proxy_
             'support_plane_requested_x_m': support_plane_source_x_m,
             'support_plane_override_x_m': record.get('support_plane_override_x_m'),
             'support_plane_basis': record.get('support_plane_basis'),
+            # The proxy radius the ENGINE actually used, read out of its own contact
+            # element -- NOT proxy_spheres(), which recomputes the default rule from
+            # inertia and therefore cannot see a pinned radius.
+            'proxy_radius_override_m': record.get('proxy_radius_override_m'),
+            'proxy_radius_basis': record.get('proxy_radius_basis'),
+            'engine_contact_radius_m': {c['name']: c.get('radius_m') for c in first.get('contacts', [])
+                                        if c.get('radius_m') is not None},
             'engine_build': record.get('build', {}).get('path'),
             'proxy_spheres': spheres,
             'wall_s_per_advance': seconds}, trace

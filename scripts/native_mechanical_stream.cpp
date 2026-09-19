@@ -208,13 +208,32 @@ int main(int argc,char** argv){try{
   // derived from source mass/inertia, placed at retained segment COM. Contact
   // material law is explicitly transferred from the source foot model, not a
   // calibrated mattress or surface-anatomy reconstruction.
+  // OPTIONAL: pin a named body's proxy radius instead of deriving it from that
+  // body's inertia. The derived radius is what makes this contact model respond to a
+  // MASS repartition: the spine variant's torso ball grows 0.2577 -> 0.3090 m, which
+  // survived pinning the plane (docs/FOOT_JOINTS.md Q3) and is one of the two
+  // candidates still standing for its ankle collapse. Pinning the radius separates
+  // "the proxy got bigger" from "the inertia changed".
+  std::map<std::string,double> radius_override;
+  if(fs::exists(source/"proxy_radius_override.txt")){
+   std::ifstream pin(source/"proxy_radius_override.txt");std::string body;double value;
+   while(pin>>body>>value){
+    if(!std::isfinite(value)||value<=0)throw std::runtime_error("proxy radius override must be positive and finite");
+    if(!radius_override.emplace(body,value).second)throw std::runtime_error("duplicate proxy radius override: "+body);
+   }
+   if(!pin.eof())throw std::runtime_error("malformed proxy radius override");
+  }
   support_plane=1e10;
   for(const auto& b:model.getComponentList<Body>()){
    auto moments=b.getInertia().getMoments();double radius2=5*(moments[1]+moments[2]-moments[0])/(2*b.getMass());
    if(!(radius2>0))throw std::runtime_error("source inertia cannot support ellipsoid posterior radius");
-   double radius=std::sqrt(radius2);proxy_radius[b.getName()]=radius;
+   double radius=std::sqrt(radius2);
+   auto pinned=radius_override.find(b.getName());
+   if(pinned!=radius_override.end())radius=pinned->second;
+   proxy_radius[b.getName()]=radius;
    support_plane=std::min(support_plane,b.findStationLocationInGround(initial,b.getMassCenter())[0]-radius);
   }
+  for(const auto& row:radius_override)if(!proxy_radius.count(row.first))throw std::runtime_error("proxy radius override names no body: "+row.first);
   // OPTIONAL: pin the plane instead of hanging it under the lowest proxy sphere.
   // The default couples the floor's position to the segments' INERTIA: repartitioning
   // the torso grew its ball 0.258 -> 0.309 m and dropped the plane 48.5 mm, which read

@@ -738,3 +738,42 @@ its OWN derived value must reproduce the unpinned run bit-identically; `base` an
 read back out of each run's own `execution.json`, never inferred from the flag passed;
 and the support plane must move exactly as the pinned radius dictates, since the plane
 still hangs under the lowest ball.
+
+## Q4 — result: BOTH are independently sufficient
+
+Run against the pre-registration above, all six instrument checks passing.
+
+| arm | torso ball | plane | ankle r / l | |
+|---|---:|---:|---:|---|
+| `base` | 0.2577 derived | −0.403499 | 0.1229 / 0.1207 | fine |
+| `tweld` | 0.3090 derived | −0.452013 | 1.4014 / 1.2876 | collapses |
+| `base@R0` | 0.2577 **pinned** | −0.403499 | 0.1229 / 0.1207 | instrument: bitwise `base` |
+| `tweld@RT` | 0.3090 **pinned** | −0.452013 | 1.4014 / 1.2876 | instrument: bitwise `tweld` |
+| **`tweld@R0`** | **0.2577 pinned** | −0.400673 | **1.3757 / 1.2930** | **still collapses** |
+| **`base@RT`** | **0.3090 pinned** | −0.454839 | **1.4628 / 1.4493** | **collapses** |
+
+**Neither candidate is the cause, because each is sufficient on its own.** Shrinking
+the repartitioned trunk's ball back to the base radius does not rescue it (1.3757
+against 1.4014 — worth 0.026 rad). Growing the base trunk's ball to the repartitioned
+radius, with **no mass change anywhere**, collapses a body that was fine — to 1.4628,
+*worse* than the real repartition manages. So the pre-registered reading is the fourth
+one: report both, claim neither alone.
+
+**What that says about the contact proxy.** A 51.3 mm change in the radius of a sphere
+that exists nowhere in the anatomy — it is inscribed in an inertia ellipsoid — is by
+itself enough to destroy the ankle of an otherwise untouched body. The proxy is not a
+neutral stand-in for contact: it is a load-bearing modelling choice with its own
+failure mode, and any result measured through it inherits that. This is the third
+mechanism examined on this question and the first that reproduces the collapse from a
+standing start.
+
+**An instrumentation defect, recorded because it nearly published a wrong column.**
+The first Q4 run reported the torso ball from `run_foot_joint_arms.proxy_spheres()`,
+which **recomputes** the radius from inertia — it reproduces the engine's default rule
+and therefore *cannot see a pinned radius*. Every pinned arm's ball column was wrong
+(it printed the derived value while the plane had already moved by the pinned
+difference). The two instrument checks that read the override out of each run's own
+`execution.json` **failed**, which is what stopped the result being read. The harness
+now exposes `engine_contact_radius_m`, read from the engine's own contact element, and
+the reconstruction is kept beside it under its own name. The arms themselves were
+unaffected: the ankle numbers are identical across both runs.

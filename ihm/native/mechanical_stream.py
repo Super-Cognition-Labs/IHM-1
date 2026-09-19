@@ -41,7 +41,7 @@ class NativeMechanicalStream:
     its fidelity as an end, and never report what it did as what the body did.
     See docs/ACTUATION_STAGES.md.
     """
-    def __init__(self,root,output,*,environment='supine',target_mass_kg,augmented_registration=None,surface_contact_manifest=None,surface_sensor_indices=(),bed_material=None,instance_mass_variant=None,initial_pose=None,support_plane_source_x_m=None,coordinate_limits=None,scene_objects=None,scene_contact_material=None,segment_contact_meshes=None,segment_contact_material=None,segment_contact_replaces_source_feet=False,tissue_ligaments=None,tissue_ligament_classes=None,tissue_ligament_stiffness_scale=1.0,tissue_ligament_admissible_only=False):
+    def __init__(self,root,output,*,environment='supine',target_mass_kg,augmented_registration=None,surface_contact_manifest=None,surface_sensor_indices=(),bed_material=None,instance_mass_variant=None,initial_pose=None,support_plane_source_x_m=None,proxy_radius_m=None,coordinate_limits=None,scene_objects=None,scene_contact_material=None,segment_contact_meshes=None,segment_contact_material=None,segment_contact_replaces_source_feet=False,tissue_ligaments=None,tissue_ligament_classes=None,tissue_ligament_stiffness_scale=1.0,tissue_ligament_admissible_only=False):
         self.root=Path(root).resolve();self.output=Path(output).resolve()
         if self.output.exists() or not self.output.is_relative_to(self.root):raise ValueError('Fresh owned native output directory required')
         if environment not in ('free','supine','upright') or finite(target_mass_kg)<=0:raise ValueError('Invalid native environment or mass')
@@ -132,6 +132,19 @@ class NativeMechanicalStream:
             if environment=='upright':raise ValueError('The upright environment sets its floor from the source contacts, not the proxy plane')
             plane_override=finite(support_plane_source_x_m)
             (source/'support_plane_override.txt').write_text(repr(plane_override)+'\n')
+        # Pin a named body's proxy sphere radius instead of deriving it from that body's
+        # inertia -- the term that makes this contact model respond to a mass repartition.
+        radius_pins=None
+        if proxy_radius_m is not None:
+            if environment=='upright':raise ValueError('The upright environment uses the source foot contacts, not the proxy spheres')
+            if not isinstance(proxy_radius_m,dict) or not proxy_radius_m:raise ValueError('proxy_radius_m must be a non-empty {body: radius_m}')
+            radius_pins={}
+            for body,value in proxy_radius_m.items():
+                if not isinstance(body,str) or re.fullmatch(r'[A-Za-z0-9_]+',body) is None:raise ValueError('Invalid proxy radius body name')
+                radius=finite(value)
+                if radius<=0:raise ValueError('Proxy radius must be positive')
+                radius_pins[body]=radius
+            (source/'proxy_radius_override.txt').write_text(''.join(f'{b} {r!r}\n' for b,r in sorted(radius_pins.items())))
         stops=None
         if coordinate_limits is not None:
             stops=[]
@@ -332,6 +345,12 @@ class NativeMechanicalStream:
                    'tissue_ligament_stiffness_scale':None if ligaments is None else float(tissue_ligament_stiffness_scale),
                    'tissue_ligament_admissible_only':bool(ligaments is not None and tissue_ligament_admissible_only),
                    'tissue_ligament_basis':'Blankevoort1991Ligament force elements over two-ended attachments derived from each structure\'s OWN surface by scripts/build_tissue_force_elements.py: the anatomy binding assigns an entity to one segment, but its per-vertex nearest-bone-group vote partitions the surface between two, and each side\'s tip centroid is an attachment site. Slack length is the separation at the binding\'s reference pose; linear stiffness is E*A with E the body\'s own declared ligament along-fibre modulus and A the structure\'s own tissue volume over its own derived length. A CONSTRUCTION from mesh geometry and a published cadaver modulus, not measured insertion footprints and not a subject-specific ligament property. These forces are internal to the model: they can change how the plant moves and cannot change its momentum balance.',
+                   'proxy_radius_override_m':radius_pins,
+                   'proxy_radius_basis':('A named body\'s proxy sphere radius is PINNED, so its contact geometry no '
+                                         'longer follows its inertia. Use only to separate a contact artefact from a '
+                                         'mass change.' if radius_pins else
+                                         'Every proxy sphere radius is inscribed in its own segment\'s inertia ellipsoid, '
+                                         'so a mass repartition changes the contact geometry.'),
                    'support_plane_override_x_m':plane_override,
                    'support_plane_basis':('Plane PINNED by the caller; it is not derived from this body\'s inertia, so a '
                                           'mass change does not move the floor. Use only to separate those two.' if plane_override is not None
