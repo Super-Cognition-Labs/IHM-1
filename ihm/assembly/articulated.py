@@ -132,7 +132,8 @@ class ArticulatedBodyPlant:
         fidelity_kwargs,self.mechanical_fidelity=resolve_fidelity(self.root,mechanical_fidelity,environment=environment)
         self.native=NativeMechanicalStream(self.root,self.output/'native',environment=environment,target_mass_kg=target,augmented_registration=augmented_registration,surface_contact_manifest=surface_contact_manifest,surface_sensor_indices=surface_sensor_indices,bed_material=bed_material,instance_mass_variant=instance_mass_variant,**fidelity_kwargs,**({'initial_pose':initial_pose} if initial_pose is not None else {}))
         try:
-            self.registration=CanonicalRegistration(payload,self.native.snapshot());self.muscle_catalog=self.native.muscle_catalog or native_muscle_catalog(self.root)
+            self.anatomy_plant,registration_payload,self.registration_extension=self._registration_for_native(payload)
+            self.registration=CanonicalRegistration(registration_payload,self.native.snapshot());self.muscle_catalog=self.native.muscle_catalog or native_muscle_catalog(self.root)
             self.surface_binding=ContinuousSurfaceBinding.from_root(self.root,self.registration)
             (self.output/'surface_binding.json').write_text(json.dumps(self.surface_binding.manifest(),indent=2)+'\n')
             self.source_registration_manifest=self.registration.manifest();(self.output/'registration.json').write_text(json.dumps(self.source_registration_manifest,indent=2)+'\n')
@@ -140,6 +141,7 @@ class ArticulatedBodyPlant:
                           'mass_change_basis':'Explicit uniform scaling of source segment masses and inertias; source proportions retained; no second canonical inertial owner'}
             (self.output/'identity.json').write_text(json.dumps(self.identity,indent=2)+'\n')
             (self.output/'mechanical_fidelity.json').write_text(json.dumps(self.mechanical_fidelity,indent=2)+'\n')
+            if self.registration_extension is not None:(self.output/'registration_extension.json').write_text(json.dumps(self.registration_extension,indent=2)+'\n')
             # THE DISPLAY POSE, and why it is not `entities`.
             # `registration.project()` is a MATERIAL EMBEDDING: its transforms are
             # relative to the plant's own reference bodies, so force routing, the
@@ -158,7 +160,9 @@ class ArticulatedBodyPlant:
             if display_pose is not None:
                 if display_pose not in ('opensim','anatomical'):raise ValueError('Unknown display pivot')
                 from .anatomy_pose import AnatomyPoser
-                self.display_poser=AnatomyPoser.from_workspace(self.root,pivot=display_pose)
+                from .anatomy_pose import PLANTS
+                self.display_pose_plant=self.anatomy_plant
+                self.display_poser=AnatomyPoser.from_workspace(self.root,self.display_pose_plant,pivot=display_pose)
                 # static for the session: which segment carries each entity, and each
                 # entity's rest centroid. A client applies segment_motion[segment_of[i]]
                 # to entity i and gets the per-entity pose back exactly.
@@ -171,7 +175,7 @@ class ArticulatedBodyPlant:
                     'apply':'x_now = R[segment_of[i]] @ x_rest + t[segment_of[i]], with R and t '
                             'the 3x3 and 3x1 blocks of segment_motion[segment_of[i]]'}
                 (self.output/'display_pose_map.json').write_text(json.dumps(self.display_pose_map)+'\n')
-                self.display_pose_basis={'registration':'data/derived/anatomy-segment-binding/binding.json',
+                self.display_pose_basis={'plant':self.display_pose_plant,'registration':PLANTS[self.display_pose_plant][1],
                     'pivot':display_pose,'frame':'bodyparts3d-display-m',
                     'verification':'scripts/verify_anatomy_pose.py -- forward kinematics to 7.8e-16 of '
                                    "Simbody's own transform_ground over 12 native frames, rest pose to "
@@ -195,6 +199,49 @@ class ArticulatedBodyPlant:
                 (self.output/'garment_identity.json').write_text(json.dumps(self.garments.identity,indent=2)+'\n')
             self.state=self._project(self.native.snapshot(),0.)
         except BaseException:self.native.close();raise
+    def _registration_for_native(self,payload):
+        """Which anatomy plant this engine integrates, and a force-frame registration for it.
+
+        Chosen by BODY SET, not by a path convention: an augmented registration adds
+        muscles, not bodies, so a base-model plant matches the 22-body model and the
+        spine variant only its own 25. canonical/mechanics.json registers exactly the
+        22 base bodies, so a variant used to die here -- 'Native segment has no
+        retained canonical bone anchors: thorax' -- before it could run at all.
+
+        A body the payload does not register is anchored on the bones its plant's own
+        binding NAMES for it (`segment_named_bones`: the curated list taken from the
+        inertial records that set the variant's mass, not a vote), and those bones are
+        removed from every other body so none has two owners. A base plant has every
+        body registered, so it gets the payload back unchanged -- the same object, and
+        therefore the same force frame to the bit.
+        """
+        from .anatomy_pose import PLANTS
+        import xml.etree.ElementTree as ET
+        native_bodies=set(self.native.snapshot()['bodies'])
+        matches=[name for name,(model,_) in PLANTS.items()
+                 if {b.get('name') for b in ET.parse(self.root/model).getroot().iter('Body')}==native_bodies]
+        if len(matches)!=1:raise ValueError('No single anatomy plant declares exactly this engine\'s bodies: '+(', '.join(matches) or 'none'))
+        plant=matches[0];registered=payload.get('registration',{})
+        missing=sorted(native_bodies-set(registered))
+        if not missing:return plant,payload,None
+        binding=json.loads((self.root/PLANTS[plant][1]).read_text())
+        named=binding.get('segment_named_bones') or {}
+        specs={e['id'] for e in payload['entities']}
+        extended=copy.deepcopy(registered);moved={}
+        for body in missing:
+            bones=[b for b in named.get(body,[]) if b in specs]
+            if not bones:raise ValueError('Variant body has no named bones in its binding to anchor on: '+body)
+            for other in extended.values():
+                if 'canonical_bones' in other:other['canonical_bones']=[b for b in other['canonical_bones'] if b not in bones]
+            extended[body]={'canonical_bones':bones}
+            moved[body]=len(bones)
+        registration_payload=dict(payload);registration_payload['registration']=extended
+        return plant,registration_payload,{'plant':plant,'bodies_added':missing,'bones_anchored':moved,
+            'source':PLANTS[plant][1]+' segment_named_bones',
+            'basis':'Bodies canonical/mechanics.json does not register are anchored on the bones the '
+                    'plant\'s own binding names for them, and those bones leave every other body. '
+                    'The force frame is still ONE shared global rigid fit, now over more correspondences.'}
+
     def _display_pose(self,native):
         """The anatomy's pose this frame, as 22 segment motions rather than 3,995 poses.
 
