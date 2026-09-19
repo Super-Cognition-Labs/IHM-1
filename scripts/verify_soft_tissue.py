@@ -50,6 +50,53 @@ MEASURED -- reported, not gated, because the answer is not known in advance
       an order of magnitude softer, so no bar is set on it here.
   M3  Mesh convergence of the heel force at 6 mm over spacing 6/5/4 mm.
 
+ADDED 2026-09-18, WRITTEN HERE BEFORE ANY FITTED, LOCAL-DEPTH OR FAST RESULT EXISTED
+(the body-fitted surface, the local depth rule and the fast path were coded, compiled and not yet
+run when these lines were written; the only numbers already seen are the voxel ones above and the
+cost profile of the old Newton step)
+
+  Body-fitted boundary (soft_tissue_layer.fitted_layer_mesh)
+  G1  closest_points is exact: against a brute-force closest point over EVERY face, 2,000 seeded
+      points around the heel, max |d - d_brute| <= 1e-12 m; and it is a function (called twice:
+      bitwise).
+  G2  The fitted heel at 5 mm has no inverted element (minimum volume ratio > 0), and every skin
+      node and every interface node sits within 1e-3 x spacing of its surface (5 um at 5 mm: 170x
+      below the smallest staircase offset measured, 0.85 mm).
+  G3  Fitted heel mesh built twice: bitwise identical.
+
+  Convergence -- the question M3 could not answer.  Fixture: M3's own (calcn_l at the bundle
+  frame pose, plane 6 mm above the skin's lowest point, confined reading).  Spacings 6/5/4/3 mm,
+  and 2.5 mm if its build and solve fit the 4 GiB budget (if it does not, that is recorded and
+  the gates are judged on 6/5/4/3; this rule is written before any fitted force is seen).
+  CV1 fitted surface, segment-median depth: the successive force differences have ONE sign.
+  CV2 same: their magnitudes strictly decrease.
+  CV3/CV4 the same two gates for the fitted surface with the LOCAL depth rule.
+  Reported beside them, not gated: observed order from the last three spacings, the Richardson
+  estimate, and the last relative change.  A monotone, shrinking sequence is what a converging
+  discretisation must show; how small the last change is was not predicted, so it is measured.
+
+  Depth (the local rule, scripts/build_soft_tissue_local_depth.py)
+  D1  The artefact the layer reads passed its own known answers: every depth point on a bundle
+      vertex (<= 1e-6 m) and each segment's median exactly its declared thickness.
+  M4  MEASURED: the core's height above the LOCAL sole under the heel and under the forefoot, for
+      the voxel, fitted-median and fitted-local layers.
+
+  The fast path (method='fast')
+  S1  Its gradient is DeformableRegion.energy_gradient's: max rel <= 1e-12 (only the summation
+      order differs).
+  S2  Its Hessian-vector product is element_hessians(project=False), assembled, times v:
+      max rel <= 1e-10.
+  S3  Same force as method='newton' at 2/6/12 mm on the fitted-local heel: |dF| <= 2 x solved DOF x
+      force tolerance, the most two solves that each meet the projected-gradient tolerance can
+      differ by (derived, not chosen).
+  S4  Call it twice, and again after clear_cache(): bitwise identical.
+  S5  A warm start from the previous step's shape reaches the same force as a cold start, within
+      S3's bound.
+  S6  Faster than method='newton' at each of 2/6/12 mm (wall, same process, same machine).
+  RT1 RECORDED (a target, not a correctness check, so excluded from the exit status): along a
+      pose ramp stepping 0.5 mm per 10 ms plant step, warm-started, the median per-step wall is
+      < 10 ms.  Printed FAILED if it is not.
+
 RECORDED
   R1  The Saint-Venant crop must put <= 1% of the load on the truncation at radius 3h, heel,
       6 mm.  This bar was written AFTER development runs showed 17-100% on this segment, so it
@@ -78,7 +125,7 @@ from ihm.assembly.mechanics_backend import DeformableRegion, tetra_box  # noqa: 
 from ihm.assembly.supine_contact import foundation                      # noqa: E402
 
 REPORT = ROOT / 'data/derived/soft-tissue-layer-v1/report.json'
-RECORDED_FAILURES = {'R1'}
+RECORDED_FAILURES = {'R1', 'RT1'}
 HEEL = 'calcn_l'
 results, failures = {}, []
 
