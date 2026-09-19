@@ -2349,3 +2349,92 @@ no threshold, and exactly right in principle. Its known answer failed: the skin'
 OUTSIDE. The detector was not at fault. **The canonical skin has 1,512 boundary edges and is an OPEN
 surface**, so a ray through a hole flips the parity and containment is undefined on it. The
 precondition was never checked before the test was written.
+
+### The 36 mm between the skin and the floor is the skin's, all of it (2026-09-18)
+
+Two artefacts disagreed about where the floor is under the foot and the disagreement had
+never been taken apart. `plant_options.SEGMENT_CONTACT_BUNDLES` and
+`docs/WORKBENCH_AUTHENTICITY.md` 1.1 say *the skin never reaches the floor in the stance
+pose*; `docs/SOFT_BODY.md` measured it as **36.3 mm above the floor while the source foot
+spheres carry 616 N**. Four explanations were available — the source spheres sit below the
+skin by construction, the bundle's stations were cut at the wrong reference pose, the floor
+is placed by a rule that ignores the meshes, or the skin is misplaced — and this is the
+measurement that separates them. `scripts/verify_skin_contact.py`, one frame at
+`engineering_stance_v1/initial_pose.json`, receipt `out/verify_skin_contact.json`.
+
+**The chain, in ground, at the stance pose:**
+
+| | y, floor = 0 |
+|---|---:|
+| lowest source foot sphere (`medialMidfoot_l`), bottom | **−9.201 mm** (into the floor, under load) |
+| the 12 source spheres' radius | 35.0 mm, centres on the calcn frame's own y = 0 |
+| lowest `calcn_l` **bone** vertex | **+15.407 mm** |
+| lowest `calcn_l` **skin** vertex, shipped `skin` bundle | **+35.700 mm** |
+| this body's own plantar pad under the heel | **14.91 / 14.82 mm** median |
+
+**So 35.700 = 15.407 + 20.293, and only the second term is an error.**
+
+* **15.407 mm is the source spheres doing their job.** They hold the calcaneus that far off
+  the floor under the body's whole weight, and this body's OWN soft-tissue depth map reads
+  **14.91 mm** (left) and **14.82 mm** (right) median over the plantar band — the lowest 10%
+  of the depth-map points whose nearest structure is the calcaneus. The sphere proxy's loaded
+  stand-off is inside the specimen's own heel pad, to half a millimetre. Over the whole
+  calcaneus patch the median depth is 19.6 mm; that includes the sides and the back of the
+  heel and is not what stands on a floor, which is why the plantar subset is the one measured.
+* **20.293 mm is the skin sitting ABOVE the bone**, which is not a thing a body can do. In the
+  `calcn_l` frame — a rigid-body fact, independent of pose — the shipped bundle's seat is
+  **+20.139 mm**, and the bundle recorded that number itself when it was built.
+
+**Put the two together and the disagreement disappears.** A skin seated at this body's own
+declared pad would sit at 15.407 − 14.91 = **+0.5 mm**: on the floor, within half a
+millimetre of where the source spheres put it. **The source foot spheres and a correctly
+seated skin agree about where the floor is.** The whole 36 mm is the skin's placement at the
+foot.
+
+**The other three candidates are excluded by measurement, not by argument:**
+
+* **The floor rule.** The upright engine adds the source `ContactGeometrySet` verbatim and
+  places no plane of its own: `floor` is a `ContactHalfSpace` on `/ground` at y = 0, read out
+  of the file. Only the SUPINE branch hangs a plane under the lowest inertia-inscribed sphere
+  (`native_mechanical_stream.cpp`, the two branches). Cross-checked in the engine: every
+  sphere with its bottom below y = 0 carries a positive vertical force and every one above
+  carries zero, and the total is **761.38 N against mg = 761.38 N**.
+* **The reference pose.** The binding bundles take their segment frames at
+  `binding.json reference_pose_rad`, which is the pose that similarity was jointly fitted at —
+  not the zero pose. The FK the builder uses (`render_body_3d.OsimModel.forward`) agrees with
+  the verified `ihm/assembly/anatomy_pose.OsimKinematics` to **0.000000 mm** on `calcn`,
+  `toes`, `talus` and `tibia` at that pose. (It is 4.28 / 4.71 mm out on the patellae, the
+  spline defect `CLAUDE.md` already records; no foot number depends on it.) The manifest's
+  `reference_pose_basis` string describes the CANONICAL branch's zero pose and is wrong for
+  every binding bundle — corrected in the builder.
+* **The partition.** The `calcn_l` piece owns its own sole: of the 817 exterior skin vertices
+  in the column under the 24 lowest calcaneus vertices, **728 belong to `calcn_l`** and the
+  other 89 to `tibia_l`. The sole is not in the toes piece.
+
+**And the caveat that stands in three places is stale.** *The skin never reaches the floor in
+the stance pose* is true of `skin-canonical` — its toes hover **+96.7 mm** — and false of the
+bundle that actually ships. Measured on the shipped `skin` bundle at the stance pose,
+`toes_l` reaches **−8.5 mm** and `toes_r` **−8.0 mm**: the forefoot is through the floor plane
+while the heel is 35.7 mm above it. The body does not stand on its skin because the plantar
+surface is not level, not because it cannot reach.
+
+**The seat, every bundle on disk, against gate 3's band** (`[−25, −5] mm`, fixed 2026-09-10,
+not touched here; in vivo pad 9.6–17.7 mm, Teng 2022):
+
+| bundle | calcn_l | calcn_r | toes_l | toes_r | gate 3 |
+|---|---:|---:|---:|---:|---|
+| `skin`, `skin-layer-map-v1` (binding map) | **+20.139** | **+19.955** | −9.453 | −9.257 | **FAIL** |
+| `skin-canonical` | +83.963 | +83.513 | +94.606 | +93.837 | **FAIL** |
+| `skin-warp-v1` | −6.685 | −6.560 | −29.692 | −27.837 | PASS (the run it came from is FAILED on gates 2 and 4 and stays FAILED) |
+| `skin-warp-v2` | −5.750 | **−4.098** | −29.467 | −28.359 | **FAIL** on calcn_r |
+
+**The instrument's controls**, because a measurement of a placement is worth nothing if the
+ruler moves: called twice at the same input it is **identical**; the seat recomputed from the
+meshes on disk reproduces each bundle's own recorded `skin_minus_bone_minimum_y_m` to
+**4.9e-7 mm**; lowering one skin piece by exactly 10.000 mm moves the seat by exactly
+**−10.000000 mm** (a control that can fail — an instrument reading a constant would pass
+everything else here); and the known-WRONG canonical map still prints its recorded
+**+84.0 / +94.6 mm** hover, so a ruler that could not see an 84 mm error is not certifying a
+20 mm one.
+
+This is the 22-segment scaffold's foot, not a human foot.
