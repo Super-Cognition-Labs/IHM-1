@@ -201,13 +201,25 @@ apart, and the explanation it gave is **withdrawn**:
   0.03 rad; `tweld@P0` lands *softer* than `tweld` and folds anyway. Heel impact is a
   co-symptom.
 
-  **What survives.** Pinning the plane does not pin the BALL: the repartitioned torso's
-  proxy sphere is **0.3090 m against 0.2577 m** at every arm, wherever the floor is, so
-  that trunk's contact point sits 51.3 mm further from its own mass centre. Two
-  candidates remain and this run does not choose between them — the **proxy radius**
-  (still a contact artefact) or the **repartitioned inertia itself**. The separating arm
-  needs an engine option for the per-body proxy radius: run `tweld` with the torso ball
-  pinned at 0.2577 m.
+  **Q4 settled it, and the answer is that neither is "the cause".** The per-body
+  proxy-radius option (`ffb33a8`) pinned the ball, pre-registered in `7607337`, and
+  **each candidate is independently sufficient**:
+
+  | arm | torso ball | ankle r / l |
+  |---|---|---|
+  | repartitioned trunk, ball pinned at the **base** 0.2577 m | pinned | **1.3757 / 1.2930 — still collapses** |
+  | base trunk, ball pinned at the **repartitioned** 0.3090 m, **no mass change** | pinned | **1.4628 / 1.4493 — collapses** |
+
+  Shrinking the ball is worth 0.026 rad; growing it on an otherwise untouched body is
+  worth **+1.34 rad**, *worse* than the real repartition manages.
+
+  **So the contact proxy is not a neutral stand-in.** A 51.3 mm change in the radius of
+  a sphere that exists nowhere in the anatomy — it is inscribed in an inertia ellipsoid
+  — is by itself enough to destroy an otherwise healthy ankle. Every result measured
+  through this contact model inherits that sensitivity, which is the strongest argument
+  in this register for §1's real skin surfaces. Three mechanisms have now been examined
+  on this one question (subtalar, plane, ball), two excluded and the third sufficient
+  but not necessary.
 
 * **F2's bar compares plants lying on planes 48.5 mm apart.** Recorded; F2 stays
   FAILED and is not rescored.
@@ -1079,12 +1091,12 @@ worker's report.
 
 **Open, in order**
 
-1. **Finish the ankle-collapse mechanism.** The factor is the torso repartition
-   (§0.2). Two mechanisms have been **excluded by purpose-built arms** — the subtalar,
-   then the support plane. What survives: the proxy sphere radius (0.2577 → 0.3090 m,
-   unchanged by pinning the floor) against the repartitioned inertia itself. Needs a
-   per-body proxy-radius engine option, then `tweld` with the torso ball pinned at
-   0.2577 m. **Queued for the next sequenced engine batch.**
+1. ~~Finish the ankle-collapse mechanism~~ — **done** (§0.2, Q4). Subtalar and support
+   plane excluded; the proxy ball and the repartitioned inertia are **each independently
+   sufficient**, so neither is the cause. What this leaves is a real item: **the
+   inertia-ellipsoid contact proxy is load-bearing and fragile** — growing one sphere
+   51 mm collapses an untouched body — so replacing it with the real skin surfaces
+   (§1.1) is now a correctness matter, not a fidelity upgrade.
 2. **Make the soft-tissue coupling implicit, and affordable.** It is IN the loop now
    (§2.1), contact-gated, and free when unloaded. Two things it is not. Sub-cycling was
    measured against a per-step reference and **refused**: the reaction grows at
