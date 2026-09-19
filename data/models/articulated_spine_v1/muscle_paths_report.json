@@ -1,0 +1,1637 @@
+{
+  "schema": "ihm.articulated-spine-muscle-paths.v1",
+  "model": "data/models/articulated_spine_v1/model.osim",
+  "model_sha256": "b1b8d725d192b81e902b047fc70ec5bc329d67a265be0ef1d74923b6318cc0ea",
+  "shipped_pathset": "data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/example3DWalking/subject_walk_scaled_FunctionBasedPathSet.xml",
+  "shipped_pathset_sha256": "932ac403e4d6d0d10d9a9da551e43d0ded94dd2b99c370f9b25053ee9232f8a5",
+  "arm_floor_m": 0.0001,
+  "trajectories": {
+    "source": "data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/example3DWalking/coordinates.sto",
+    "fit": {
+      "frames": 1350,
+      "driven": [
+        "mtp_angle_l",
+        "mtp_angle_r",
+        "subtalar_angle_l",
+        "subtalar_angle_r"
+      ],
+      "defaulted": [
+        "head_bending",
+        "head_extension",
+        "head_rotation",
+        "neck_bending",
+        "neck_extension",
+        "neck_rotation",
+        "thoracic_bending",
+        "thoracic_extension",
+        "thoracic_rotation",
+        "wrist_dev_l",
+        "wrist_dev_r",
+        "wrist_flex_l",
+        "wrist_flex_r"
+      ]
+    },
+    "held_out": {
+      "frames": 27,
+      "driven": [
+        "mtp_angle_l",
+        "mtp_angle_r",
+        "subtalar_angle_l",
+        "subtalar_angle_r"
+      ],
+      "defaulted": [
+        "head_bending",
+        "head_extension",
+        "head_rotation",
+        "neck_bending",
+        "neck_extension",
+        "neck_rotation",
+        "thoracic_bending",
+        "thoracic_extension",
+        "thoracic_rotation",
+        "wrist_dev_l",
+        "wrist_dev_r",
+        "wrist_flex_l",
+        "wrist_flex_r"
+      ]
+    },
+    "fit_sine_amplitude_rad_omega_rad_s_phase": [
+      0.5,
+      10.0,
+      0.0
+    ],
+    "held_out_sine_amplitude_rad_omega_rad_s_phase": [
+      0.45,
+      7.0,
+      1.1
+    ],
+    "note": "The reference trajectory carries 31 of this model's 48 coordinates. The two foot coordinates it omits are driven by a sine -- the upstream example's own treatment of mtp_angle, reused for subtalar_angle and NOT a measured trajectory -- and the thirteen spine and wrist coordinates are held at the model's declared default, which is honest because no muscle in this model crosses any of them (see classification)."
+  },
+  "classification": {
+    "thoracic_extension": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "thoracic_bending": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "thoracic_rotation": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "neck_extension": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "neck_bending": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "neck_rotation": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "head_extension": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "head_bending": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "head_rotation": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "wrist_flex_r": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "wrist_dev_r": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "wrist_flex_l": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "wrist_dev_l": {
+      "verdict": "topology",
+      "muscles_crossing_in_geometry": [],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {},
+      "peak_fitted_arm_m": 0.0
+    },
+    "subtalar_angle_r": {
+      "verdict": "representation",
+      "muscles_crossing_in_geometry": [
+        "edl_r",
+        "ehl_r",
+        "fdl_r",
+        "fhl_r",
+        "gaslat_r",
+        "gasmed_r",
+        "perbrev_r",
+        "perlong_r",
+        "soleus_r",
+        "tibant_r",
+        "tibpost_r"
+      ],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [
+        "edl_r",
+        "ehl_r",
+        "fdl_r",
+        "fhl_r",
+        "gaslat_r",
+        "gasmed_r",
+        "perbrev_r",
+        "perlong_r",
+        "soleus_r",
+        "tibant_r",
+        "tibpost_r"
+      ],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {
+        "edl_r": 0.018532,
+        "ehl_r": 0.010466,
+        "fdl_r": 0.024596,
+        "fhl_r": 0.021266,
+        "gaslat_r": 0.014106,
+        "gasmed_r": 0.01181,
+        "perbrev_r": 0.033448,
+        "perlong_r": 0.028865,
+        "soleus_r": 0.01226,
+        "tibant_r": 0.020511,
+        "tibpost_r": 0.023017
+      },
+      "peak_fitted_arm_m": 0.0
+    },
+    "subtalar_angle_l": {
+      "verdict": "representation",
+      "muscles_crossing_in_geometry": [
+        "edl_l",
+        "ehl_l",
+        "fdl_l",
+        "fhl_l",
+        "gaslat_l",
+        "gasmed_l",
+        "perbrev_l",
+        "perlong_l",
+        "soleus_l",
+        "tibant_l",
+        "tibpost_l"
+      ],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [
+        "edl_l",
+        "ehl_l",
+        "fdl_l",
+        "fhl_l",
+        "gaslat_l",
+        "gasmed_l",
+        "perbrev_l",
+        "perlong_l",
+        "soleus_l",
+        "tibant_l",
+        "tibpost_l"
+      ],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {
+        "edl_l": 0.020832,
+        "ehl_l": 0.007306,
+        "fdl_l": 0.023661,
+        "fhl_l": 0.020476,
+        "gaslat_l": 0.014366,
+        "gasmed_l": 0.012186,
+        "perbrev_l": 0.033462,
+        "perlong_l": 0.028843,
+        "soleus_l": 0.013434,
+        "tibant_l": 0.016374,
+        "tibpost_l": 0.024599
+      },
+      "peak_fitted_arm_m": 0.0
+    },
+    "mtp_angle_r": {
+      "verdict": "representation",
+      "muscles_crossing_in_geometry": [
+        "edl_r",
+        "ehl_r",
+        "fdl_r",
+        "fhl_r"
+      ],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [
+        "edl_r",
+        "ehl_r",
+        "fdl_r",
+        "fhl_r"
+      ],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {
+        "edl_r": 0.005263,
+        "ehl_r": 0.025409,
+        "fdl_r": 0.00885,
+        "fhl_r": 0.016771
+      },
+      "peak_fitted_arm_m": 0.0
+    },
+    "mtp_angle_l": {
+      "verdict": "representation",
+      "muscles_crossing_in_geometry": [
+        "edl_l",
+        "ehl_l",
+        "fdl_l",
+        "fhl_l"
+      ],
+      "muscles_with_a_fitted_arm": [],
+      "muscles_spanning_the_joint_by_path_point_body": [
+        "edl_l",
+        "ehl_l",
+        "fdl_l",
+        "fhl_l"
+      ],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {
+        "edl_l": 0.005263,
+        "ehl_l": 0.025409,
+        "fdl_l": 0.00885,
+        "fhl_l": 0.016771
+      },
+      "peak_fitted_arm_m": 0.0
+    },
+    "ankle_angle_r": {
+      "verdict": "expressed",
+      "muscles_crossing_in_geometry": [
+        "edl_r",
+        "ehl_r",
+        "fdl_r",
+        "fhl_r",
+        "gaslat_r",
+        "gasmed_r",
+        "perbrev_r",
+        "perlong_r",
+        "soleus_r",
+        "tibant_r",
+        "tibpost_r"
+      ],
+      "muscles_with_a_fitted_arm": [
+        "edl_r",
+        "ehl_r",
+        "fdl_r",
+        "fhl_r",
+        "gaslat_r",
+        "gasmed_r",
+        "perbrev_r",
+        "perlong_r",
+        "soleus_r",
+        "tibant_r",
+        "tibpost_r"
+      ],
+      "muscles_spanning_the_joint_by_path_point_body": [
+        "edl_r",
+        "ehl_r",
+        "fdl_r",
+        "fhl_r",
+        "gaslat_r",
+        "gasmed_r",
+        "perbrev_r",
+        "perlong_r",
+        "soleus_r",
+        "tibant_r",
+        "tibpost_r"
+      ],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {
+        "edl_r": 0.04179,
+        "ehl_r": 0.046034,
+        "fdl_r": 0.019315,
+        "fhl_r": 0.02513,
+        "gaslat_r": 0.054655,
+        "gasmed_r": 0.054355,
+        "perbrev_r": 0.014372,
+        "perlong_r": 0.015147,
+        "soleus_r": 0.052732,
+        "tibant_r": 0.050744,
+        "tibpost_r": 0.020245
+      },
+      "peak_fitted_arm_m": 0.05661726776324831
+    },
+    "ankle_angle_l": {
+      "verdict": "expressed",
+      "muscles_crossing_in_geometry": [
+        "edl_l",
+        "ehl_l",
+        "fdl_l",
+        "fhl_l",
+        "gaslat_l",
+        "gasmed_l",
+        "perbrev_l",
+        "perlong_l",
+        "soleus_l",
+        "tibant_l",
+        "tibpost_l"
+      ],
+      "muscles_with_a_fitted_arm": [
+        "edl_l",
+        "ehl_l",
+        "fdl_l",
+        "fhl_l",
+        "gaslat_l",
+        "gasmed_l",
+        "perbrev_l",
+        "perlong_l",
+        "soleus_l",
+        "tibant_l",
+        "tibpost_l"
+      ],
+      "muscles_spanning_the_joint_by_path_point_body": [
+        "edl_l",
+        "ehl_l",
+        "fdl_l",
+        "fhl_l",
+        "gaslat_l",
+        "gasmed_l",
+        "perbrev_l",
+        "perlong_l",
+        "soleus_l",
+        "tibant_l",
+        "tibpost_l"
+      ],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {
+        "edl_l": 0.0413,
+        "ehl_l": 0.046883,
+        "fdl_l": 0.01724,
+        "fhl_l": 0.022691,
+        "gaslat_l": 0.058221,
+        "gasmed_l": 0.057417,
+        "perbrev_l": 0.012652,
+        "perlong_l": 0.013844,
+        "soleus_l": 0.055772,
+        "tibant_l": 0.050822,
+        "tibpost_l": 0.018337
+      },
+      "peak_fitted_arm_m": 0.05671499139198837
+    },
+    "knee_angle_r": {
+      "verdict": "expressed",
+      "muscles_crossing_in_geometry": [
+        "bflh_r",
+        "bfsh_r",
+        "gaslat_r",
+        "gasmed_r",
+        "grac_r",
+        "recfem_r",
+        "sart_r",
+        "semimem_r",
+        "semiten_r",
+        "tfl_r",
+        "vasint_r",
+        "vaslat_r",
+        "vasmed_r"
+      ],
+      "muscles_with_a_fitted_arm": [
+        "bflh_r",
+        "bfsh_r",
+        "gaslat_r",
+        "gasmed_r",
+        "grac_r",
+        "recfem_r",
+        "sart_r",
+        "semimem_r",
+        "semiten_r",
+        "tfl_r",
+        "vasint_r",
+        "vaslat_r",
+        "vasmed_r"
+      ],
+      "muscles_spanning_the_joint_by_path_point_body": [
+        "bflh_r",
+        "bfsh_r",
+        "gaslat_r",
+        "gasmed_r",
+        "grac_r",
+        "recfem_r",
+        "sart_r",
+        "semimem_r",
+        "semiten_r",
+        "tfl_r",
+        "vasint_r",
+        "vaslat_r",
+        "vasmed_r"
+      ],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {
+        "bflh_r": 0.036885,
+        "bfsh_r": 0.031304,
+        "gaslat_r": 0.028057,
+        "gasmed_r": 0.026821,
+        "grac_r": 0.04795,
+        "recfem_r": 0.049546,
+        "sart_r": 0.036909,
+        "semimem_r": 0.044953,
+        "semiten_r": 0.057701,
+        "tfl_r": 0.017559,
+        "vasint_r": 0.046148,
+        "vaslat_r": 0.046116,
+        "vasmed_r": 0.045013
+      },
+      "peak_fitted_arm_m": 0.057490338258752674
+    },
+    "lumbar_extension": {
+      "verdict": "expressed",
+      "muscles_crossing_in_geometry": [
+        "gait2392_ercspn_l",
+        "gait2392_ercspn_r",
+        "gait2392_extobl_l",
+        "gait2392_extobl_r",
+        "gait2392_intobl_l",
+        "gait2392_intobl_r"
+      ],
+      "muscles_with_a_fitted_arm": [
+        "gait2392_ercspn_l",
+        "gait2392_ercspn_r",
+        "gait2392_extobl_l",
+        "gait2392_extobl_r",
+        "gait2392_intobl_l",
+        "gait2392_intobl_r"
+      ],
+      "muscles_spanning_the_joint_by_path_point_body": [
+        "gait2392_ercspn_l",
+        "gait2392_ercspn_r",
+        "gait2392_extobl_l",
+        "gait2392_extobl_r",
+        "gait2392_intobl_l",
+        "gait2392_intobl_r"
+      ],
+      "topology_agrees_with_measurement": true,
+      "spans_but_no_measured_arm": [],
+      "measured_arm_but_does_not_span": [],
+      "peak_geometrypath_arm_m": {
+        "gait2392_ercspn_l": 0.040881,
+        "gait2392_ercspn_r": 0.041407,
+        "gait2392_extobl_l": 0.082859,
+        "gait2392_extobl_r": 0.074615,
+        "gait2392_intobl_l": 0.054878,
+        "gait2392_intobl_r": 0.055989
+      },
+      "peak_fitted_arm_m": 0.08285870153060486
+    }
+  },
+  "diagnosis": {
+    "representation": [
+      "mtp_angle_l",
+      "mtp_angle_r",
+      "subtalar_angle_l",
+      "subtalar_angle_r"
+    ],
+    "topology": [
+      "head_bending",
+      "head_extension",
+      "head_rotation",
+      "neck_bending",
+      "neck_extension",
+      "neck_rotation",
+      "thoracic_bending",
+      "thoracic_extension",
+      "thoracic_rotation",
+      "wrist_dev_l",
+      "wrist_dev_r",
+      "wrist_flex_l",
+      "wrist_flex_r"
+    ],
+    "expressed": [
+      "ankle_angle_l",
+      "ankle_angle_r",
+      "knee_angle_r",
+      "lumbar_extension"
+    ]
+  },
+  "refit": {
+    "settings": {
+      "row_stride": 10,
+      "max_order": 5,
+      "min_order": 2,
+      "samples_per_frame": 10,
+      "stepwise": 1,
+      "path_length_tolerance": 0.001,
+      "moment_arm_tolerance": 0.001,
+      "global_bounds": [
+        -30.0,
+        30.0
+      ],
+      "bounds": {
+        "/jointset/hip_r/hip_flexion_r": [
+          -15.0,
+          15.0
+        ],
+        "/jointset/hip_l/hip_flexion_l": [
+          -15.0,
+          15.0
+        ]
+      }
+    },
+    "paths_fitted_total": 98,
+    "paths_installed": 80,
+    "paths_dropped_keeping_their_GeometryPath": [
+      "arm26_BIClong_l",
+      "arm26_BIClong_r",
+      "arm26_BICshort_l",
+      "arm26_BICshort_r",
+      "arm26_BRA_l",
+      "arm26_BRA_r",
+      "arm26_TRIlat_l",
+      "arm26_TRIlat_r",
+      "arm26_TRIlong_l",
+      "arm26_TRIlong_r",
+      "arm26_TRImed_l",
+      "arm26_TRImed_r",
+      "gait2392_ercspn_l",
+      "gait2392_ercspn_r",
+      "gait2392_extobl_l",
+      "gait2392_extobl_r",
+      "gait2392_intobl_l",
+      "gait2392_intobl_r"
+    ],
+    "subtalar_sampled_span_rad": [
+      -0.610865238198015,
+      0.610865238198015
+    ],
+    "muscles_whose_coordinate_set_changed": [
+      "edl_l",
+      "edl_r",
+      "ehl_l",
+      "ehl_r",
+      "fdl_l",
+      "fdl_r",
+      "fhl_l",
+      "fhl_r",
+      "gaslat_l",
+      "gaslat_r",
+      "gasmed_l",
+      "gasmed_r",
+      "perbrev_l",
+      "perbrev_r",
+      "perlong_l",
+      "perlong_r",
+      "soleus_l",
+      "soleus_r",
+      "tibant_l",
+      "tibant_r",
+      "tibpost_l",
+      "tibpost_r"
+    ],
+    "muscles_that_gained_subtalar_r": [
+      "edl_r",
+      "ehl_r",
+      "fdl_r",
+      "fhl_r",
+      "gaslat_r",
+      "gasmed_r",
+      "perbrev_r",
+      "perlong_r",
+      "soleus_r",
+      "tibant_r",
+      "tibpost_r"
+    ],
+    "muscles_that_gained_mtp_r": [
+      "edl_r",
+      "ehl_r",
+      "fdl_r",
+      "fhl_r"
+    ],
+    "coordinates_appearing_in_any_installed_path": [
+      "ankle_angle_l",
+      "ankle_angle_r",
+      "hip_adduction_l",
+      "hip_adduction_r",
+      "hip_flexion_l",
+      "hip_flexion_r",
+      "hip_rotation_l",
+      "hip_rotation_r",
+      "knee_angle_l",
+      "knee_angle_r",
+      "mtp_angle_l",
+      "mtp_angle_r",
+      "subtalar_angle_l",
+      "subtalar_angle_r"
+    ]
+  },
+  "attempt_1": {
+    "gates": {
+      "accuracy_against_the_models_own_GeometryPaths": {
+        "note": "Held-out frames, refit and shipped set scored against the SAME truth. A raw RMS alone would say nothing; the shipped set is the baseline and the refit must not be worse than 1.5x it.",
+        "held_out_frames": 27,
+        "refit_length_rms_m": 0.0002813532175229949,
+        "shipped_length_rms_m": 0.00529996708534358,
+        "refit_moment_arm_rms_m": 0.00266294793423765,
+        "shipped_moment_arm_rms_m": 0.002978287369064735,
+        "refit_worst_actuator": "/forceset/gaslat_r",
+        "refit_worst_actuator_rms_m": 0.0018265868921434468,
+        "passed": true
+      },
+      "the_representation_class_is_recovered": {
+        "note": "Every muscle the GeometryPath truth says crosses subtalar or mtp must now carry a nonzero fitted arm, and its peak must sit within 5 mm of the truth. 5 mm is not a physiological bar: it is the scale at which \"the arm is there\" stops being the claim and \"the arm is right\" starts, and the measured worst is reported beside it.",
+        "coordinates": {
+          "subtalar_angle_r": {
+            "muscles_expected": 11,
+            "muscles_now_nonzero": 11,
+            "worst_peak_arm_error_m": 0.0006524902620914409,
+            "worst_muscle": "fdl_r",
+            "per_muscle_m": {
+              "edl_r": {
+                "geometrypath": 0.018532,
+                "refit": 0.018624
+              },
+              "ehl_r": {
+                "geometrypath": 0.010466,
+                "refit": 0.010274
+              },
+              "fdl_r": {
+                "geometrypath": 0.024596,
+                "refit": 0.023943
+              },
+              "fhl_r": {
+                "geometrypath": 0.021266,
+                "refit": 0.020914
+              },
+              "gaslat_r": {
+                "geometrypath": 0.014106,
+                "refit": 0.014253
+              },
+              "gasmed_r": {
+                "geometrypath": 0.01181,
+                "refit": 0.011198
+              },
+              "perbrev_r": {
+                "geometrypath": 0.033448,
+                "refit": 0.033076
+              },
+              "perlong_r": {
+                "geometrypath": 0.028865,
+                "refit": 0.02895
+              },
+              "soleus_r": {
+                "geometrypath": 0.01226,
+                "refit": 0.012081
+              },
+              "tibant_r": {
+                "geometrypath": 0.020511,
+                "refit": 0.020525
+              },
+              "tibpost_r": {
+                "geometrypath": 0.023017,
+                "refit": 0.022469
+              }
+            }
+          },
+          "subtalar_angle_l": {
+            "muscles_expected": 11,
+            "muscles_now_nonzero": 11,
+            "worst_peak_arm_error_m": 0.0007977180337721684,
+            "worst_muscle": "edl_l",
+            "per_muscle_m": {
+              "edl_l": {
+                "geometrypath": 0.020832,
+                "refit": 0.020035
+              },
+              "ehl_l": {
+                "geometrypath": 0.007306,
+                "refit": 0.007096
+              },
+              "fdl_l": {
+                "geometrypath": 0.023661,
+                "refit": 0.023539
+              },
+              "fhl_l": {
+                "geometrypath": 0.020476,
+                "refit": 0.020191
+              },
+              "gaslat_l": {
+                "geometrypath": 0.014366,
+                "refit": 0.014476
+              },
+              "gasmed_l": {
+                "geometrypath": 0.012186,
+                "refit": 0.011887
+              },
+              "perbrev_l": {
+                "geometrypath": 0.033462,
+                "refit": 0.033247
+              },
+              "perlong_l": {
+                "geometrypath": 0.028843,
+                "refit": 0.029028
+              },
+              "soleus_l": {
+                "geometrypath": 0.013434,
+                "refit": 0.013605
+              },
+              "tibant_l": {
+                "geometrypath": 0.016374,
+                "refit": 0.016637
+              },
+              "tibpost_l": {
+                "geometrypath": 0.024599,
+                "refit": 0.024441
+              }
+            }
+          },
+          "mtp_angle_r": {
+            "muscles_expected": 4,
+            "muscles_now_nonzero": 4,
+            "worst_peak_arm_error_m": 0.0008876549381442965,
+            "worst_muscle": "fhl_r",
+            "per_muscle_m": {
+              "edl_r": {
+                "geometrypath": 0.005263,
+                "refit": 0.005643
+              },
+              "ehl_r": {
+                "geometrypath": 0.025409,
+                "refit": 0.025339
+              },
+              "fdl_r": {
+                "geometrypath": 0.00885,
+                "refit": 0.008039
+              },
+              "fhl_r": {
+                "geometrypath": 0.016771,
+                "refit": 0.017659
+              }
+            }
+          },
+          "mtp_angle_l": {
+            "muscles_expected": 4,
+            "muscles_now_nonzero": 4,
+            "worst_peak_arm_error_m": 0.0009057249196279607,
+            "worst_muscle": "fhl_l",
+            "per_muscle_m": {
+              "edl_l": {
+                "geometrypath": 0.005263,
+                "refit": 0.005639
+              },
+              "ehl_l": {
+                "geometrypath": 0.025409,
+                "refit": 0.025345
+              },
+              "fdl_l": {
+                "geometrypath": 0.00885,
+                "refit": 0.008038
+              },
+              "fhl_l": {
+                "geometrypath": 0.016771,
+                "refit": 0.017677
+              }
+            }
+          }
+        },
+        "passed": true
+      },
+      "the_coordinates_that_already_worked_still_work": {
+        "note": "A refit that recovered subtalar by wrecking the ankle would pass the gate above. These are coordinates the shipped set already carried; the refit must not be worse than it was.",
+        "coordinates": {
+          "ankle_angle_r": {
+            "muscles": 11,
+            "refit_worst_error_m": 0.001040320793609344,
+            "refit_worst_muscle": "perbrev_r",
+            "shipped_worst_error_m": 0.004045024983672884
+          },
+          "ankle_angle_l": {
+            "muscles": 11,
+            "refit_worst_error_m": 0.0011786654410333927,
+            "refit_worst_muscle": "gasmed_l",
+            "shipped_worst_error_m": 0.0018915781104102414
+          },
+          "knee_angle_r": {
+            "muscles": 13,
+            "refit_worst_error_m": 0.0016562766933878523,
+            "refit_worst_muscle": "gasmed_r",
+            "shipped_worst_error_m": 0.0009053468455399449
+          },
+          "lumbar_extension": {
+            "muscles": 6,
+            "refit_worst_error_m": 0.0,
+            "refit_worst_muscle": "gait2392_intobl_r",
+            "shipped_worst_error_m": 0.0
+          }
+        },
+        "passed": false
+      },
+      "the_topology_class_is_still_zero": {
+        "note": "The control that can fail in the other direction. The nine spine and four wrist coordinates have NO muscle crossing them in the geometry, so a refit that reported an arm about one of them would be fitting noise, and every number in this file would be suspect.",
+        "coordinates": {
+          "thoracic_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "thoracic_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "thoracic_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_flex_r": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_dev_r": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_flex_l": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_dev_l": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          }
+        },
+        "passed": true
+      }
+    },
+    "passed": false,
+    "failed_gates": [
+      "the_coordinates_that_already_worked_still_work"
+    ],
+    "instrument": "ONE refit of all 80 source paths, installed whole."
+  },
+  "attempt_2_preregistration": {
+    "written": "2026-09-18, after attempt 1 FAILED, before any attempt-2 fit ran",
+    "attempt_1_verdict": "FAIL: the_coordinates_that_already_worked_still_work, on knee_angle_r. Worst muscle gasmed_r, peak-arm error 1.66 mm against a bar of 1.5 x the shipped set's worst (0.91 mm) = 1.36 mm. RECORDED, NOT RESCORED.",
+    "diagnosed_cause": "Draw noise in a nondeterministic fitter, on three pieces of evidence: gasmed_l, the mirror image fitted in the SAME run with the SAME added coordinate, is not among the six worst left knee muscles (so under 0.42 mm); recfem_r, which crosses no new joint at all, moved from 0.54 to 1.42 mm; and the pooled knee RMS over every knee muscle is unchanged (0.64 -> 0.65 mm). None of this is a rescore -- it is why the instrument changes, not a reason to move the bar.",
+    "instrument_change": "(1) Muscles whose fitted coordinate set did not change keep the SHIPPED coefficients byte for byte, so the refit cannot move them at all; they are the paths the identified plant runs on. (2) Muscles whose set grew get the coefficient-wise mean of 4 NEW refits; attempt 1's fit is excluded because it is the draw that suggested the change. Averaging divides the draw variance by 4 and involves no selection on the outcome.",
+    "why_4": "Cost, not measurement: each fit is ~3.3 min at 4 threads on this shared machine, and 4 halves the draw sd.",
+    "gates": "IDENTICAL code and bars to attempt 1 (function score()).",
+    "if_it_fails": "Recorded as FAILED, the path set is not installed, and subtalar stays undriven in this variant."
+  },
+  "attempt_2": {
+    "gates": {
+      "accuracy_against_the_models_own_GeometryPaths": {
+        "note": "Held-out frames, refit and shipped set scored against the SAME truth. A raw RMS alone would say nothing; the shipped set is the baseline and the refit must not be worse than 1.5x it.",
+        "held_out_frames": 27,
+        "refit_length_rms_m": 0.00029787478236620215,
+        "shipped_length_rms_m": 0.00529996708534358,
+        "refit_moment_arm_rms_m": 0.002662970315572562,
+        "shipped_moment_arm_rms_m": 0.002978287369064735,
+        "refit_worst_actuator": "/forceset/gaslat_r",
+        "refit_worst_actuator_rms_m": 0.0019635660150818983,
+        "passed": true
+      },
+      "the_representation_class_is_recovered": {
+        "note": "Every muscle the GeometryPath truth says crosses subtalar or mtp must now carry a nonzero fitted arm, and its peak must sit within 5 mm of the truth. 5 mm is not a physiological bar: it is the scale at which \"the arm is there\" stops being the claim and \"the arm is right\" starts, and the measured worst is reported beside it.",
+        "coordinates": {
+          "subtalar_angle_r": {
+            "muscles_expected": 11,
+            "muscles_now_nonzero": 11,
+            "worst_peak_arm_error_m": 0.000914718858352901,
+            "worst_muscle": "fdl_r",
+            "per_muscle_m": {
+              "edl_r": {
+                "geometrypath": 0.018532,
+                "refit": 0.018342
+              },
+              "ehl_r": {
+                "geometrypath": 0.010466,
+                "refit": 0.010392
+              },
+              "fdl_r": {
+                "geometrypath": 0.024596,
+                "refit": 0.023681
+              },
+              "fhl_r": {
+                "geometrypath": 0.021266,
+                "refit": 0.020955
+              },
+              "gaslat_r": {
+                "geometrypath": 0.014106,
+                "refit": 0.014358
+              },
+              "gasmed_r": {
+                "geometrypath": 0.01181,
+                "refit": 0.011252
+              },
+              "perbrev_r": {
+                "geometrypath": 0.033448,
+                "refit": 0.033142
+              },
+              "perlong_r": {
+                "geometrypath": 0.028865,
+                "refit": 0.028999
+              },
+              "soleus_r": {
+                "geometrypath": 0.01226,
+                "refit": 0.011946
+              },
+              "tibant_r": {
+                "geometrypath": 0.020511,
+                "refit": 0.02045
+              },
+              "tibpost_r": {
+                "geometrypath": 0.023017,
+                "refit": 0.023026
+              }
+            }
+          },
+          "subtalar_angle_l": {
+            "muscles_expected": 11,
+            "muscles_now_nonzero": 11,
+            "worst_peak_arm_error_m": 0.00040377602509952815,
+            "worst_muscle": "perbrev_l",
+            "per_muscle_m": {
+              "edl_l": {
+                "geometrypath": 0.020832,
+                "refit": 0.020839
+              },
+              "ehl_l": {
+                "geometrypath": 0.007306,
+                "refit": 0.007067
+              },
+              "fdl_l": {
+                "geometrypath": 0.023661,
+                "refit": 0.023473
+              },
+              "fhl_l": {
+                "geometrypath": 0.020476,
+                "refit": 0.020158
+              },
+              "gaslat_l": {
+                "geometrypath": 0.014366,
+                "refit": 0.014407
+              },
+              "gasmed_l": {
+                "geometrypath": 0.012186,
+                "refit": 0.011801
+              },
+              "perbrev_l": {
+                "geometrypath": 0.033462,
+                "refit": 0.033058
+              },
+              "perlong_l": {
+                "geometrypath": 0.028843,
+                "refit": 0.028646
+              },
+              "soleus_l": {
+                "geometrypath": 0.013434,
+                "refit": 0.013516
+              },
+              "tibant_l": {
+                "geometrypath": 0.016374,
+                "refit": 0.016514
+              },
+              "tibpost_l": {
+                "geometrypath": 0.024599,
+                "refit": 0.024376
+              }
+            }
+          },
+          "mtp_angle_r": {
+            "muscles_expected": 4,
+            "muscles_now_nonzero": 4,
+            "worst_peak_arm_error_m": 0.0008680598413511251,
+            "worst_muscle": "fdl_r",
+            "per_muscle_m": {
+              "edl_r": {
+                "geometrypath": 0.005263,
+                "refit": 0.005714
+              },
+              "ehl_r": {
+                "geometrypath": 0.025409,
+                "refit": 0.025351
+              },
+              "fdl_r": {
+                "geometrypath": 0.00885,
+                "refit": 0.007982
+              },
+              "fhl_r": {
+                "geometrypath": 0.016771,
+                "refit": 0.017626
+              }
+            }
+          },
+          "mtp_angle_l": {
+            "muscles_expected": 4,
+            "muscles_now_nonzero": 4,
+            "worst_peak_arm_error_m": 0.0008796171346840097,
+            "worst_muscle": "fhl_l",
+            "per_muscle_m": {
+              "edl_l": {
+                "geometrypath": 0.005263,
+                "refit": 0.005707
+              },
+              "ehl_l": {
+                "geometrypath": 0.025409,
+                "refit": 0.02535
+              },
+              "fdl_l": {
+                "geometrypath": 0.00885,
+                "refit": 0.007977
+              },
+              "fhl_l": {
+                "geometrypath": 0.016771,
+                "refit": 0.017651
+              }
+            }
+          }
+        },
+        "passed": true
+      },
+      "the_coordinates_that_already_worked_still_work": {
+        "note": "A refit that recovered subtalar by wrecking the ankle would pass the gate above. These are coordinates the shipped set already carried; the refit must not be worse than it was.",
+        "coordinates": {
+          "ankle_angle_r": {
+            "muscles": 11,
+            "refit_worst_error_m": 0.001227152213687556,
+            "refit_worst_muscle": "soleus_r",
+            "shipped_worst_error_m": 0.004045024983672884
+          },
+          "ankle_angle_l": {
+            "muscles": 11,
+            "refit_worst_error_m": 0.0010330039481666609,
+            "refit_worst_muscle": "gasmed_l",
+            "shipped_worst_error_m": 0.0018915781104102414
+          },
+          "knee_angle_r": {
+            "muscles": 13,
+            "refit_worst_error_m": 0.004499624823283269,
+            "refit_worst_muscle": "gaslat_r",
+            "shipped_worst_error_m": 0.0009053468455399449
+          },
+          "lumbar_extension": {
+            "muscles": 6,
+            "refit_worst_error_m": 0.0,
+            "refit_worst_muscle": "gait2392_intobl_r",
+            "shipped_worst_error_m": 0.0
+          }
+        },
+        "passed": false
+      },
+      "the_topology_class_is_still_zero": {
+        "note": "The control that can fail in the other direction. The nine spine and four wrist coordinates have NO muscle crossing them in the geometry, so a refit that reported an arm about one of them would be fitting noise, and every number in this file would be suspect.",
+        "coordinates": {
+          "thoracic_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "thoracic_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "thoracic_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_flex_r": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_dev_r": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_flex_l": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_dev_l": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          }
+        },
+        "passed": true
+      }
+    },
+    "passed": false,
+    "failed_gates": [
+      "the_coordinates_that_already_worked_still_work"
+    ],
+    "instrument": "HYBRID. The 58 muscles whose fitted coordinate set did not change keep the shipped coefficients byte for byte; the 22 whose set grew get the coefficient-wise mean of 4 NEW refits (attempt 1 excluded)."
+  },
+  "fitter_spread_on_the_failed_statistic": {
+    "fit_0": {
+      "knee_angle_r": {
+        "muscle": "gasmed_r",
+        "error_m": 0.0016562766933878523,
+        "gasmed_error_m": 0.0016562766933878523
+      },
+      "knee_angle_l": {
+        "muscle": "vasmed_l",
+        "error_m": 0.0011473293887105523,
+        "gasmed_error_m": 0.00015413690571886712
+      }
+    },
+    "fit_1": {
+      "knee_angle_r": {
+        "muscle": "recfem_r",
+        "error_m": 0.0014046474282291554,
+        "gasmed_error_m": 0.0002507082980479011
+      },
+      "knee_angle_l": {
+        "muscle": "vasmed_l",
+        "error_m": 0.0011384267569811632,
+        "gasmed_error_m": 0.00015166102079938043
+      }
+    },
+    "fit_2": {
+      "knee_angle_r": {
+        "muscle": "gasmed_r",
+        "error_m": 0.001640648119350708,
+        "gasmed_error_m": 0.001640648119350708
+      },
+      "knee_angle_l": {
+        "muscle": "vasmed_l",
+        "error_m": 0.001134125119895156,
+        "gasmed_error_m": 0.00014999108292732682
+      }
+    },
+    "fit_3": {
+      "knee_angle_r": {
+        "muscle": "gaslat_r",
+        "error_m": 0.020336732423651832,
+        "gasmed_error_m": 0.004388097981170461
+      },
+      "knee_angle_l": {
+        "muscle": "vasint_l",
+        "error_m": 0.0015259210524531386,
+        "gasmed_error_m": 9.672452715733804e-05
+      }
+    },
+    "fit_4": {
+      "knee_angle_r": {
+        "muscle": "recfem_r",
+        "error_m": 0.0014402062417185682,
+        "gasmed_error_m": 0.00021053231588609098
+      },
+      "knee_angle_l": {
+        "muscle": "vasmed_l",
+        "error_m": 0.0011731441524370917,
+        "gasmed_error_m": 0.0001572453970882133
+      }
+    }
+  },
+  "attempt_3_preregistration": {
+    "written": "2026-09-18, after attempt 2 FAILED, before attempt 3 was scored",
+    "attempt_2_verdict": "FAIL, same gate, worse: knee_angle_r worst gaslat_r 4.50 mm against the 1.36 mm bar. RECORDED, NOT RESCORED.",
+    "what_attempt_2_revealed": "The fitter's own log: of five fits, two removed 706 and 1,170 of 1,485 sample rows as NaN (the one that wrecked the mean fitted on ~21% of its samples, in 51 s against ~190 s). The other three removed none. A seeded probe of 675 fitter-like poses through the model's own GeometryPaths produced 0 NaN, so the cause is specific to the fitter's own design and was not isolated here. Among the three clean fits the right gastrocnemius knee error is still bimodal (1.66, 1.64, 0.21 mm). The fitter is not a stable instrument for these paths, and a third refit would be a third draw.",
+    "instrument": "NO FIT. The shipped path set with the 22 muscles whose geometry crosses subtalar or mtp REMOVED from it. The engine's replacePathsWithFunctionBasedPaths replaces only the paths the set names, so those 22 run on the model's own GeometryPaths -- the representation this plant already uses for its 18 arm and trunk muscles -- and the other 58 keep the shipped coefficients. 18 of the 22 are plain via-point paths; the 4 gastrocnemii carry two wrap objects each.",
+    "what_is_NOT_evidence": "The accuracy and recovery gates below pass BY CONSTRUCTION for the 22: the candidate IS the ground truth they are scored against. They are run and reported so the file is complete, and they are not counted as a result.",
+    "what_can_fail": "(a) the topology gate -- nothing may acquire an arm about a spine or wrist coordinate; (b) the engine must load and integrate it; (c) the DYNAMIC gate G-S in scripts/verify_articulated_spine.py, pre-registered in the same edit: under docs/NATIVE_JOINT_LIMITS.md's protocol ankle_angle_{l,r} and subtalar_angle_{l,r} must each stay within the F2 bar, the BASE model's own worst excursion measured in the same run. The wall clock per advance is measured and reported with no bar, because no bar for it has provenance here.",
+    "install_rule": "Installed as muscle_paths.xml if (a) and (b) hold. G-S is a measurement of whether the ankle regression is repaired and is recorded either way; it does not un-install the arms, which exist whether or not the tonic plant is quieter."
+  },
+  "attempt_3": {
+    "gates": {
+      "accuracy_against_the_models_own_GeometryPaths": {
+        "note": "Held-out frames, refit and shipped set scored against the SAME truth. A raw RMS alone would say nothing; the shipped set is the baseline and the refit must not be worse than 1.5x it.",
+        "held_out_frames": 27,
+        "refit_length_rms_m": 0.00011332490082688,
+        "shipped_length_rms_m": 0.00529996708534358,
+        "refit_moment_arm_rms_m": 0.002576161600907782,
+        "shipped_moment_arm_rms_m": 0.002978287369064735,
+        "refit_worst_actuator": "/forceset/glmax1_r",
+        "refit_worst_actuator_rms_m": 0.0004211596283611097,
+        "passed": true
+      },
+      "the_representation_class_is_recovered": {
+        "note": "Every muscle the GeometryPath truth says crosses subtalar or mtp must now carry a nonzero fitted arm, and its peak must sit within 5 mm of the truth. 5 mm is not a physiological bar: it is the scale at which \"the arm is there\" stops being the claim and \"the arm is right\" starts, and the measured worst is reported beside it.",
+        "coordinates": {
+          "subtalar_angle_r": {
+            "muscles_expected": 11,
+            "muscles_now_nonzero": 11,
+            "worst_peak_arm_error_m": 0.0,
+            "worst_muscle": "tibpost_r",
+            "per_muscle_m": {
+              "edl_r": {
+                "geometrypath": 0.018532,
+                "refit": 0.018532
+              },
+              "ehl_r": {
+                "geometrypath": 0.010466,
+                "refit": 0.010466
+              },
+              "fdl_r": {
+                "geometrypath": 0.024596,
+                "refit": 0.024596
+              },
+              "fhl_r": {
+                "geometrypath": 0.021266,
+                "refit": 0.021266
+              },
+              "gaslat_r": {
+                "geometrypath": 0.014106,
+                "refit": 0.014106
+              },
+              "gasmed_r": {
+                "geometrypath": 0.01181,
+                "refit": 0.01181
+              },
+              "perbrev_r": {
+                "geometrypath": 0.033448,
+                "refit": 0.033448
+              },
+              "perlong_r": {
+                "geometrypath": 0.028865,
+                "refit": 0.028865
+              },
+              "soleus_r": {
+                "geometrypath": 0.01226,
+                "refit": 0.01226
+              },
+              "tibant_r": {
+                "geometrypath": 0.020511,
+                "refit": 0.020511
+              },
+              "tibpost_r": {
+                "geometrypath": 0.023017,
+                "refit": 0.023017
+              }
+            }
+          },
+          "subtalar_angle_l": {
+            "muscles_expected": 11,
+            "muscles_now_nonzero": 11,
+            "worst_peak_arm_error_m": 0.0,
+            "worst_muscle": "tibpost_l",
+            "per_muscle_m": {
+              "edl_l": {
+                "geometrypath": 0.020832,
+                "refit": 0.020832
+              },
+              "ehl_l": {
+                "geometrypath": 0.007306,
+                "refit": 0.007306
+              },
+              "fdl_l": {
+                "geometrypath": 0.023661,
+                "refit": 0.023661
+              },
+              "fhl_l": {
+                "geometrypath": 0.020476,
+                "refit": 0.020476
+              },
+              "gaslat_l": {
+                "geometrypath": 0.014366,
+                "refit": 0.014366
+              },
+              "gasmed_l": {
+                "geometrypath": 0.012186,
+                "refit": 0.012186
+              },
+              "perbrev_l": {
+                "geometrypath": 0.033462,
+                "refit": 0.033462
+              },
+              "perlong_l": {
+                "geometrypath": 0.028843,
+                "refit": 0.028843
+              },
+              "soleus_l": {
+                "geometrypath": 0.013434,
+                "refit": 0.013434
+              },
+              "tibant_l": {
+                "geometrypath": 0.016374,
+                "refit": 0.016374
+              },
+              "tibpost_l": {
+                "geometrypath": 0.024599,
+                "refit": 0.024599
+              }
+            }
+          },
+          "mtp_angle_r": {
+            "muscles_expected": 4,
+            "muscles_now_nonzero": 4,
+            "worst_peak_arm_error_m": 0.0,
+            "worst_muscle": "fhl_r",
+            "per_muscle_m": {
+              "edl_r": {
+                "geometrypath": 0.005263,
+                "refit": 0.005263
+              },
+              "ehl_r": {
+                "geometrypath": 0.025409,
+                "refit": 0.025409
+              },
+              "fdl_r": {
+                "geometrypath": 0.00885,
+                "refit": 0.00885
+              },
+              "fhl_r": {
+                "geometrypath": 0.016771,
+                "refit": 0.016771
+              }
+            }
+          },
+          "mtp_angle_l": {
+            "muscles_expected": 4,
+            "muscles_now_nonzero": 4,
+            "worst_peak_arm_error_m": 0.0,
+            "worst_muscle": "fhl_l",
+            "per_muscle_m": {
+              "edl_l": {
+                "geometrypath": 0.005263,
+                "refit": 0.005263
+              },
+              "ehl_l": {
+                "geometrypath": 0.025409,
+                "refit": 0.025409
+              },
+              "fdl_l": {
+                "geometrypath": 0.00885,
+                "refit": 0.00885
+              },
+              "fhl_l": {
+                "geometrypath": 0.016771,
+                "refit": 0.016771
+              }
+            }
+          }
+        },
+        "passed": true
+      },
+      "the_coordinates_that_already_worked_still_work": {
+        "note": "A refit that recovered subtalar by wrecking the ankle would pass the gate above. These are coordinates the shipped set already carried; the refit must not be worse than it was.",
+        "coordinates": {
+          "ankle_angle_r": {
+            "muscles": 11,
+            "refit_worst_error_m": 0.0,
+            "refit_worst_muscle": "tibpost_r",
+            "shipped_worst_error_m": 0.004045024983672884
+          },
+          "ankle_angle_l": {
+            "muscles": 11,
+            "refit_worst_error_m": 0.0,
+            "refit_worst_muscle": "tibpost_l",
+            "shipped_worst_error_m": 0.0018915781104102414
+          },
+          "knee_angle_r": {
+            "muscles": 13,
+            "refit_worst_error_m": 0.0009053468455399449,
+            "refit_worst_muscle": "tfl_r",
+            "shipped_worst_error_m": 0.0009053468455399449
+          },
+          "lumbar_extension": {
+            "muscles": 6,
+            "refit_worst_error_m": 0.0,
+            "refit_worst_muscle": "gait2392_intobl_r",
+            "shipped_worst_error_m": 0.0
+          }
+        },
+        "passed": true
+      },
+      "the_topology_class_is_still_zero": {
+        "note": "The control that can fail in the other direction. The nine spine and four wrist coordinates have NO muscle crossing them in the geometry, so a refit that reported an arm about one of them would be fitting noise, and every number in this file would be suspect.",
+        "coordinates": {
+          "thoracic_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "thoracic_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "thoracic_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "neck_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_extension": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_bending": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "head_rotation": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_flex_r": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_dev_r": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_flex_l": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          },
+          "wrist_dev_l": {
+            "peak_refit_arm_m": 0.0,
+            "peak_truth_arm_m": 0.0
+          }
+        },
+        "passed": true
+      }
+    },
+    "passed": true,
+    "failed_gates": [],
+    "instrument": "NO FIT: the shipped set minus the 22 muscles whose geometry crosses subtalar or mtp, which therefore run on the model's own GeometryPaths.",
+    "muscles_on_their_own_GeometryPath": [
+      "edl_l",
+      "edl_r",
+      "ehl_l",
+      "ehl_r",
+      "fdl_l",
+      "fdl_r",
+      "fhl_l",
+      "fhl_r",
+      "gaslat_l",
+      "gaslat_r",
+      "gasmed_l",
+      "gasmed_r",
+      "perbrev_l",
+      "perbrev_r",
+      "perlong_l",
+      "perlong_r",
+      "soleus_l",
+      "soleus_r",
+      "tibant_l",
+      "tibant_r",
+      "tibpost_l",
+      "tibpost_r"
+    ],
+    "accuracy_gates_are_evidence": false,
+    "gate_that_can_fail_here": "the_topology_class_is_still_zero"
+  },
+  "passed": true,
+  "verdict": {
+    "attempt_1": "FAIL",
+    "attempt_2": "FAIL",
+    "attempt_3": "PASS (accuracy gates by construction; see preregistration)"
+  },
+  "installed": {
+    "path": "data/models/articulated_spine_v1/muscle_paths.xml",
+    "sha256": "2a470f945670598642212388e4d1bf216015782f4e59181f49dc875c674b55c8",
+    "attempt": 3
+  }
+}

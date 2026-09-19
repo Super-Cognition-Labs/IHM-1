@@ -16,6 +16,10 @@ plant was solved on 22 bodies and 33 coordinates and does not transfer to 25 and
                   .venv/bin/python -m unittest scripts.verify_articulated_spine -v
     select    NativeMechanicalStream(..., augmented_registration=
                   'data/models/articulated_spine_v1/registration.json')
+              (kinematic, as built; registration_foot_paths.json and
+               registration_muscled.json add muscles -- see "Making the joints
+               drivable" below, which also withdraws part of this document's
+               explanation of the ankle)
 
 ## What is there now
 
@@ -205,7 +209,9 @@ none of them spans a new joint either: `gait2392_ercspn_r` has +0.0427 m about
 `lumbar_extension` and 0 about `thoracic_extension`.
 
 So the subtalar is a free hinge that the plantarflexors load and cannot control,
-and the foot folds, and the ankle follows it. The nine spine coordinates are the
+and the foot folds, and the ankle follows it. *(Partly withdrawn 18 Sep: with
+real subtalar arms the ankle still leaves its range by 1.14 and 0.87 rad —
+gate G-S below. The missing arm is at most part of the cause.)* The nine spine coordinates are the
 same: a 4.39 kg head on a joint with a soft stop, viscous damping and nothing
 else. **This variant gives the body joints, not the ability to use them.** The
 muscles that would use them are `docs/UPPER_BODY_ACTUATION.md`'s subject, not a
@@ -227,6 +233,219 @@ This is a real change to the contact model and it is a CONFOUND on the gate
 above: in supine, part of the thoracic moment is the new head and thorax balls
 pressing on the plane, not the stop being soft. The two are not separable with
 this contact model.
+
+## Making the joints drivable: why the arms were zero, and what changed
+
+Added 18 September 2026. The kinematic registration above is **unchanged**: its
+model file, its F2 gate and every number in the sections above still describe
+it, and F2 still runs on it and still fails. The new plants are separate,
+opt-in registrations in the same directory:
+
+    registration_foot_paths.json   model.osim + muscle_paths.xml (foot paths only)
+    registration_muscled.json      model_muscled.osim + muscle_paths.xml (+50 neck muscles)
+
+    diagnose/install  .venv/bin/python -m scripts.refit_muscle_paths_articulated_spine --install
+    transfer          .venv/bin/python -m scripts.transfer_neck_muscle_paths
+    report            data/models/articulated_spine_v1/muscle_paths_report.json
+
+### "Exactly zero" was two different problems
+
+The sentence above ("fitted polynomials in the coordinates that existed when they
+were fitted") is true and does not separate two cases that need opposite fixes.
+Measured through OpenSim on the model's **own `GeometryPath`s**, wrap objects
+included, against the shipped fitted set at the same poses, and cross-checked by
+reading path-point bodies off the XML (two routes, no shared code; they agree
+on all 21 coordinates probed):
+
+| coordinates | muscles crossing in the geometry | fitted set | class |
+|---|---|---|---|
+| `subtalar_angle_{l,r}` | **11 per side**, peak 32.7 mm (perbrev) | 0 | **representation** |
+| `mtp_angle_{l,r}` | **4 per side**, peak 25.3 mm (ehl) | 0 | **representation, and it predates this variant** |
+| nine spine/neck, four wrist | **none** | 0 | **topology** |
+| `ankle_angle_r` (control) | 11 | 11 | expressed |
+
+*Representation*: the muscle's real path crosses the joint and the polynomial has
+no argument for it. The 11 per side are tibpost, perlong, perbrev, fdl, fhl, edl,
+ehl, tibant, soleus, gasmed, gaslat. All run tibia → calcn.
+
+*The mtp finding is about the base plant, not this variant.* `mtp_angle` is free and
+unlocked in `engineering_stance_v1`. The shipped path set was fitted upstream on a
+body with the toes **welded**: `exampleMocoInverse.cpp:51` and `exampleMocoTrack.cpp:51`
+apply `ModOpReplaceJointsWithWelds({"mtp_r","mtp_l"})` before
+`ModOpReplacePathsWithFunctionBasedPaths`. `native_mechanical_stream.cpp` does not
+weld them. So the identified plant has carried two free toe hinges that no muscle
+can control since the engine was built. This is not fixed there (do not touch that
+plant), but it is fixed in both new registrations here.
+
+*Topology*: no muscle in the plant has a path point above `torso` or beyond `radius`.
+No fit can change that. Only a new muscle can.
+
+### Subtalar: two refits FAILED, and what is installed instead
+
+`PolynomialPathFitter` discovers each path's coordinates from the geometry
+(`findIndependentCoordinates`), so a refit on this model picks subtalar up
+unaided. Every fit made here recovered all 11 + 4 arms to within 1 mm. The gate
+that failed was the one that stops a refit from recovering subtalar by damaging
+what already worked. It was written before the first fit ran, and its bar is 1.5×
+the shipped set's own worst peak-arm error per coordinate, on 27 held-out frames:
+
+| attempt | instrument | `knee_angle_r` worst | bar | verdict |
+|---|---|---|---:|---|
+| 1 | one refit of all 80 | gasmed_r 1.66 mm | 1.36 mm | **FAIL** |
+| 2 (pre-registered after 1) | shipped for 58 unchanged muscles; mean of 4 NEW refits for the 22 | gaslat_r **4.50 mm** | 1.36 mm | **FAIL** |
+
+Both are recorded and neither is rescored. The fitter's own log explains why
+attempt 2 was worse. Of its four fits, two discarded **706 and 1,170 of 1,485**
+sample rows as NaN. The one that broke the mean fitted on ~21% of its samples in
+51 s, against ~190 s for the others, and put gaslat_r's knee arm 20.3 mm off. A seeded probe of
+675 fitter-like poses through the model's own paths gave **0 NaN**, so the cause
+lies in the fitter's own design and was not isolated. Even the three clean fits put
+the right gastrocnemius knee error at 1.66, 1.64 or 0.21 mm: bimodal. **The fitter
+is not a stable instrument for wrapped biarticular paths with an added dimension,**
+and a third refit would have been a third draw.
+
+**Attempt 3 (pre-registered after 2, installed) is not a fit.** `muscle_paths.xml`
+is the shipped set with those 22 muscles *removed*. The engine replaces only the
+paths a set names, so the 22 run on the model's own `GeometryPath`s. That is the
+representation this plant already uses for its 18 arm and trunk muscles. 18 of the
+22 are via-point paths. The 4 gastrocnemii carry two wrap objects each. The other 58 keep
+the shipped coefficients string for string (M2). Its accuracy gates pass **by
+construction**, because the candidate is the truth they are scored against, and the
+pre-registration says in advance that they are not evidence.
+
+### Neck: the donor's own muscles, moved by the donor's own recipe
+
+MASI (`data/research/cervical/MASI_HMaleMuscle_HMaleMassDistr.osim`, 78 Thelen2003,
+plain path points, no wraps) is the donor the variant's neck ranges already came
+from. `data/research/cervical_registration/v2/recipe.json` already holds the rigid
+transform of every donor body into this torso frame, and its `cerv7` and `skull`
+origins **are** this variant's `neck` and `atlantooccipital` centres (to 1e-12 m,
+N1). The body map is kinematic: donor `spine`/`torso` → `thorax`, `cerv1–7` →
+`cervical`, `skull`/`jaw` → `head`. Nothing is authored. Force, optimal fibre
+length, tendon slack and pennation are the donor's text verbatim. The donor
+declares no other Thelen property and has no `<defaults>`, so OpenSim's class
+defaults apply, which is how the donor itself runs. Forces are unscaled
+50th-percentile male, as the gait2392 trunk insert's are.
+
+Which muscles, by rule:
+
+| | donor muscles (both sides) | why |
+|---|---:|---|
+| **transferred** | **50** | cross at least one of `neck`, `atlantooccipital` and touch no absent body. Includes sternocleidomastoid (sternal), splenius capitis and cervicis, semispinalis capitis and cervicis, longus colli and capitis, scalenes, longissimus, iliocostalis cervicis, suboccipitals, T-level multifidi |
+| excluded, girdle | 10 | cleidomastoid, cleido-occipital, trapezius (clavicular, acromial), levator scapulae: no clavicle or scapula body here. **Blocked on the same girdle as the shoulder.** |
+| excluded, internal | 18 | every point on the one lumped `cervical` body (C–C multifidi, obliquus capitis inferior, longus colli C1–C5, T2–T1). They cross no joint here and would add inert states |
+
+**Known answer (N3): every transferred path length equals the donor's own**,
+evaluated by OpenSim on the donor model at its reference pose, to **1.5e-11 m** over
+all 50. A wrong transform direction, a wrong body origin or a wrong body map would
+each move lengths by centimetres. (The donor file does not load in OpenSim 4 as
+shipped, because it has `/` in 36 component names. The verifier evaluates a copy with
+only those names changed and asserts that no other byte differs.)
+
+**Measured, not gated (N4): signs against the donor.** The donor's arm about
+`pitch2` is a generalized arm summed over seven coupled levels. Ours about
+`neck_extension` is one joint at C7/T1. These are different quantities, so no bar on
+their agreement is derivable. Where both exceed 0.1 mm, **160 of 168** pairs agree in
+sign. The 8 that disagree are 4 left/right pairs: the scalenus medius and posterior
+about neck extension, longus colli C5–T about neck rotation (donor |arm| ≤ 1.7 mm,
+i.e. near-cancelling across levels), and longissimus capitis about head rotation
+(4.4 vs 4.8 mm: the donor's joint is C2/C1, ours the occiput). **28 donor arms are
+lost to the lumping.** The largest is splenius capitis C6→skull's 40.4 mm about the
+lower neck, which our lumped `cervical` absorbs.
+
+**In the engine (D)**, `registration_muscled.json`: 25 bodies, **148 muscles**, 48
+coordinates, 77.6122029 kg, and a repeat `moment_arms` call is bit-equal. Controls:
+`soleus_r` about `ankle_angle_r` **−0.04977 m** (now its own GeometryPath; the fitted
+value was −0.0497). `ercspn`/`intobl`/`extobl` about `lumbar_extension` are
+42.69 / −52.82 / −62.79 mm, reproducing `LUMBAR_SHOULDER_MUSCLE_COVERAGE.md`'s
+table. What changed, all engine-read:
+
+| muscle | `neck_extension` | `head_extension` | anatomical reading |
+|---|---:|---:|---|
+| sternocleidomastoid (sternal) | −41.4 mm | +3.2 mm | flexes the lower neck, slightly extends the head at the occiput |
+| splenius capitis (T→skull) | +41.0 | +39.3 | extensor at both |
+| semispinalis capitis (T→skull) | +28.1 | +70.6 | extensor at both |
+| semispinalis cervicis (T→C3) | +31.5 | 0 | lower neck only |
+| rectus capitis post. major | 0 | +50.2 | occiput only |
+
+Every one of the 50 has an arm about the neck or head. The 22 foot muscles have
+one about subtalar and 4 per side about mtp. For all 148 muscles, every
+`thoracic_*` and `wrist_*` arm is below 1e-9 m.
+
+**Capacity, derived from the model's own records** (Σ Fmax × positive arm at the rest
+pose: full activation at optimal length, so an **upper bound**), against the
+gravitational moment of head plus cervical with the neck horizontal (prone), from
+the partition's own masses and centres:
+
+| joint | extension capacity | demand | flexion capacity |
+|---|---:|---:|---:|
+| `neck` | 53.2 N·m | 9.53 N·m | 17.4 N·m |
+| `atlantooccipital` | 50.8 N·m | 2.69 N·m | **1.12 N·m** |
+
+The one weak direction is **flexion at the occiput**. The only donor muscle
+flexing there is longus capitis, and 1.12 N·m is below the 2.69 N·m it would take to
+lift the head from supine at that joint alone. Rectus capitis anterior and
+lateralis are not in the donor. Holding the head up has not been demonstrated
+dynamically. This is capacity, not behaviour.
+
+### GATE G-S: the foot paths do NOT repair the ankle — FAILED
+
+Pre-registered before any plant carrying the foot paths was integrated. The
+protocol and bar are F2's, unchanged: supine, 0.02 tonic, 2 s, and the base
+model's own worst excursion measured in the same run (0.2202 rad). The plant is
+`registration_foot_paths.json`, so the result is attributable to the foot paths
+alone.
+
+| coordinate | base | kinematic variant | foot paths | muscled |
+|---|---:|---:|---:|---:|
+| `ankle_angle_r` | 0.1229 | 1.3563 | **1.1399** | 1.1366 |
+| `ankle_angle_l` | 0.1207 | 1.3522 | **0.8709** | 0.8710 |
+| `subtalar_angle_r` | — | 0.1263 | 0.1865 | 0.1866 |
+| `subtalar_angle_l` | — | 0.1716 | 0.1889 | 0.1888 |
+| `thoracic_extension` | — | 0.3940 | 0.3970 | 0.3979 |
+| `neck_extension` | — | 0.2084 | 0.2095 | 0.2130 |
+
+**VERDICT: FAIL on both ankles, 5.2× and 4.0× the bar.** The muscles now have real
+subtalar arms, and giving them those arms removes 16% and 36% of the ankle excursion,
+not the regression. **So "the plantarflexors load a hinge they cannot control" is at
+most part of why the ankle collapses.** The section above offered it as the cause;
+that is now withdrawn as a sole explanation, and what else causes it is **not
+measured**. The separating control not yet run is the kinematic variant with *only*
+the subtalar re-welded: if the ankle recovers, the cause is the subtalar's freedom
+itself (for example, contact geometry about a new axis). If it does not, the cause
+is elsewhere in the variant. The neck muscles at 0.02 tonic do not reduce supine
+neck excursion either. That is expected, since a tonic 2% drive is not posture
+control, and it is reported rather than read as a finding.
+
+Wall clock per 10 ms advance, same run: base **0.291 s**, foot paths **0.405 s**,
+muscled **0.412 s**. The 22 GeometryPaths cost more than the 50 neck muscles. This
+machine was at load 30–40 during the run, so the ratio is the usable number. No bar
+was set, because none has provenance here.
+
+### What is still blocked, and on what
+
+* **`thoracic_*`: topology class, no donor muscle transferred.** The only candidates
+  in the plant are the gait2392 trunk muscles. Their `torso` insertion (y = 0.11 m)
+  sits 32 mm above the thoracic joint centre, which is itself inherited from a
+  registration with 62 mm RMS proxy residual, so reassigning them to `thorax` is not
+  decidable from this data. It needs a thoracolumbar donor with per-level
+  attachments. None is registered here.
+* **Wrists: topology class, blocked on MoBL-ARMS 4.1, but not on the girdle.** The
+  wrist muscles (ECRL, ECRB, ECU, FCR, FCU, PL) originate on the humerus, ulna and
+  radius and insert on the hand, so they need no scapula or clavicle. They do need a
+  per-body registration of MoBL's humerus/ulna/radius/hand onto this model's:
+  the frames are **not** the same frames. The elbow joint frame is rotated
+  (−0.023, 0.228, 0.005) rad here and identity in MoBL, and MoBL's wrist is two
+  coupled joints through a `proximal_row` body where this one is a single
+  `UniversalJoint`. So a station copy is not possible. **It is the same donor as the
+  shoulder, with the same unresolved licence** (`docs/UPPER_BODY_ACTUATION.md` §5),
+  and a separable registration job. Forearm rotation stays effectively unactuated
+  (`pro_sup` 2.16 mm, the Arm26 fusion) until the same job is done.
+* **Girdle-anchored neck muscles** (10): the same girdle as the shoulder.
+* **Lower-neck extension lost to lumping** (splenius capitis 40 mm about `pitch2`,
+  and 27 more). This needs the full C1–C7 chain, which is the recipe's own
+  `required_before_native_acceptance`.
+* **The ankle regression**: cause open (G-S above).
 
 ## What I could not build, and why
 

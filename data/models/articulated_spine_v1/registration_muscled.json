@@ -1,0 +1,389 @@
+{
+  "schema": "ihm.articulated-spine-variant.v1",
+  "stage": "muscled",
+  "model_path": "data/models/articulated_spine_v1/model_muscled.osim",
+  "model_sha256": "e1ac8337d3b39651bf7b04cc255fe55660fb7417f0181912d0f7926df15f218d",
+  "catalog_path": "data/models/articulated_spine_v1/catalog_muscled.json",
+  "catalog_sha256": "3940c4057867a74bb5aa2340e151024270b66c38d431cb9f793042d60cacd6a4",
+  "kinematic_registration": "data/models/articulated_spine_v1/registration.json",
+  "base_model_path": "data/models/engineering_stance_v1/model.osim",
+  "base_model_sha256": "be3baf542b44425c2802095439cabf976eccaad42406564338d20c2deb421d68",
+  "body_count": 25,
+  "mass_scale_used": 0.9101951537068372,
+  "joint_centres_torso_frame_m": {
+    "thoracic": [
+      -0.02248832600074327,
+      0.07777191578711196,
+      0.0011903422328554166
+    ],
+    "neck": [
+      -0.03453595610910243,
+      0.37427292673540347,
+      0.0020482888231434077
+    ],
+    "atlantooccipital": [
+      -0.035054024242826415,
+      0.4941264741779331,
+      0.002618029860958802
+    ]
+  },
+  "partition_kg_mass_scaled": {
+    "head": 4.0,
+    "cervical": 3.418919568221101,
+    "thorax": 2.2980530088410562,
+    "torso": 17.93770438819818
+  },
+  "muscle_count": 148,
+  "added_muscles": [
+    "masi_stern_mast_r",
+    "masi_stern_mast_l",
+    "masi_scalenus_ant_r",
+    "masi_scalenus_ant_l",
+    "masi_scalenus_med_r",
+    "masi_scalenus_med_l",
+    "masi_scalenus_post_r",
+    "masi_scalenus_post_l",
+    "masi_long_cap_sklc4_r",
+    "masi_long_cap_sklc4_l",
+    "masi_long_col_c1thx_r",
+    "masi_long_col_c1thx_l",
+    "masi_long_col_c5thx_r",
+    "masi_long_col_c5thx_l",
+    "masi_splen_cap_sklc6_r",
+    "masi_splen_cap_sklc6_l",
+    "masi_splen_cap_sklthx_r",
+    "masi_splen_cap_sklthx_l",
+    "masi_splen_cerv_c3thx_r",
+    "masi_splen_cerv_c3thx_l",
+    "masi_semi_cap_sklc5_r",
+    "masi_semi_cap_sklc5_l",
+    "masi_semi_cap_sklthx_r",
+    "masi_semi_cap_sklthx_l",
+    "masi_semi_cerv_c3thx_r",
+    "masi_semi_cerv_c3thx_l",
+    "masi_longissi_cap_sklc6_r",
+    "masi_longissi_cap_sklc6_l",
+    "masi_longissi_cerv_c4thx_r",
+    "masi_longissi_cerv_c4thx_l",
+    "masi_iliocost_cerv_c5rib_r",
+    "masi_iliocost_cerv_c5rib_l",
+    "masi_rectcap_post_maj_r",
+    "masi_rectcap_post_maj_l",
+    "masi_rectcap_post_min_r",
+    "masi_rectcap_post_min_l",
+    "masi_obl_cap_sup_r",
+    "masi_obl_cap_sup_l",
+    "masi_supmult_T1_C4_r",
+    "masi_supmult_T1_C4_l",
+    "masi_supmult_T1_C5_r",
+    "masi_supmult_T1_C5_l",
+    "masi_supmult_T2_C6_r",
+    "masi_supmult_T2_C6_l",
+    "masi_deepmult_T1_C5_r",
+    "masi_deepmult_T1_C5_l",
+    "masi_deepmult_T1_C6_r",
+    "masi_deepmult_T1_C6_l",
+    "masi_deepmult_T2_C7_r",
+    "masi_deepmult_T2_C7_l"
+  ],
+  "source_overrides": {
+    "subject_walk_scaled_FunctionBasedPathSet.xml": {
+      "path": "data/models/articulated_spine_v1/muscle_paths.xml",
+      "sha256": "2a470f945670598642212388e4d1bf216015782f4e59181f49dc875c674b55c8"
+    }
+  },
+  "sources": {
+    "data/models/engineering_stance_v1/model.osim": "be3baf542b44425c2802095439cabf976eccaad42406564338d20c2deb421d68",
+    "data/models/engineering_stance_v1/catalog.json": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+    "data/research/cervical_inertia/v2/manifest.json": "1dda3735d5887c5fa8951ccc87704dc947e9e38b2662ee4698e7faac8811f402",
+    "data/research/thoracic_mechanism/native_composition_v1/plan.json": "2098ca532f0d955b0fcc5fe6a8d0042931c297989edb0037632eaa4d3d9ad136",
+    "data/derived/canonical/anatomy.json": "874479e434e2637c08a1f5153de88fdaf138d33f55ae91a3bb7b1578ed891d5f",
+    "data/research/cervical/MASI_HMaleMuscle_HMaleMassDistr.osim": "191d1bfdd328273d644f5822d85457e5e8fefd5037459c17d7f24b27d8b2681a",
+    "data/raw/anatomy/opensim-models/source/Models/Rajagopal/RajagopalLaiUhlrich2023.osim": "8f30d0b64750b87eb7f705907862590535212b4afd7e919faa3fd7d1683d22ec",
+    "scripts/build_articulated_spine.py": "bead8e9142d46456322a948df2cbb0d6b060349438fd1a69cf0112080f7c6b18",
+    "ihm/assembly/cervical_inertia.py": "8b84dbef6321dc7e6fb4d02960bc7c28d9b2f777072f951253d0fe71da79eb69",
+    "data/models/articulated_spine_v1/model.osim": "b1b8d725d192b81e902b047fc70ec5bc329d67a265be0ef1d74923b6318cc0ea",
+    "data/models/articulated_spine_v1/catalog.json": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+    "data/research/cervical_registration/v2/recipe.json": "f4ec901ff84e7cb8b1502a033158f4c7d343c77a865e5f5808f25d5fcdaceada",
+    "scripts/transfer_neck_muscle_paths.py": "1b04899865cf6f1f2174ed8261a89f2bdbb367a795164f2bcb4b00ae8abc26f1",
+    "data/models/articulated_spine_v1/registration.json": "39e7f35b984bf87ae62565c3445c98346327be47bd28a115436a14e85580d0de",
+    "data/models/articulated_spine_v1/muscle_paths.xml": "2a470f945670598642212388e4d1bf216015782f4e59181f49dc875c674b55c8",
+    "data/models/articulated_spine_v1/model_muscled.osim": "e1ac8337d3b39651bf7b04cc255fe55660fb7417f0181912d0f7926df15f218d",
+    "data/models/articulated_spine_v1/catalog_muscled.json": "3940c4057867a74bb5aa2340e151024270b66c38d431cb9f793042d60cacd6a4"
+  },
+  "default_enabled": false,
+  "native_acceptance_complete": false,
+  "transfer": {
+    "donor": "data/research/cervical/MASI_HMaleMuscle_HMaleMassDistr.osim",
+    "donor_sha256": "191d1bfdd328273d644f5822d85457e5e8fefd5037459c17d7f24b27d8b2681a",
+    "recipe": "data/research/cervical_registration/v2/recipe.json",
+    "recipe_sha256": "f4ec901ff84e7cb8b1502a033158f4c7d343c77a865e5f5808f25d5fcdaceada",
+    "body_map": {
+      "spine": "thorax",
+      "torso": "thorax",
+      "skull": "head",
+      "jaw": "head",
+      "cerv1": "cervical",
+      "cerv2": "cervical",
+      "cerv3": "cervical",
+      "cerv4": "cervical",
+      "cerv5": "cervical",
+      "cerv6": "cervical",
+      "cerv7": "cervical"
+    },
+    "transferred": 50,
+    "excluded": [
+      {
+        "donor_muscle": "cleid_mast",
+        "reason": "girdle",
+        "donor_bodies": [
+          "rclavicle",
+          "skull"
+        ]
+      },
+      {
+        "donor_muscle": "cleid_mast_l",
+        "reason": "girdle",
+        "donor_bodies": [
+          "lclavicle",
+          "skull"
+        ]
+      },
+      {
+        "donor_muscle": "cleid_occ",
+        "reason": "girdle",
+        "donor_bodies": [
+          "rclavicle",
+          "skull"
+        ]
+      },
+      {
+        "donor_muscle": "cleid_occ_l",
+        "reason": "girdle",
+        "donor_bodies": [
+          "lclavicle",
+          "skull"
+        ]
+      },
+      {
+        "donor_muscle": "long_col_c1c5",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv1",
+          "cerv2",
+          "cerv4",
+          "cerv5"
+        ]
+      },
+      {
+        "donor_muscle": "long_col_c1c5_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv1",
+          "cerv2",
+          "cerv4",
+          "cerv5"
+        ]
+      },
+      {
+        "donor_muscle": "trap_cl",
+        "reason": "girdle",
+        "donor_bodies": [
+          "rclavicle",
+          "skull"
+        ]
+      },
+      {
+        "donor_muscle": "trap_cl_l",
+        "reason": "girdle",
+        "donor_bodies": [
+          "lclavicle",
+          "skull"
+        ]
+      },
+      {
+        "donor_muscle": "trap_acr",
+        "reason": "girdle",
+        "donor_bodies": [
+          "cerv7",
+          "rscapula"
+        ]
+      },
+      {
+        "donor_muscle": "trap_acr_l",
+        "reason": "girdle",
+        "donor_bodies": [
+          "cerv7",
+          "lscapula"
+        ]
+      },
+      {
+        "donor_muscle": "levator_scap",
+        "reason": "girdle",
+        "donor_bodies": [
+          "cerv2",
+          "rscapula"
+        ]
+      },
+      {
+        "donor_muscle": "levator_scap_l",
+        "reason": "girdle",
+        "donor_bodies": [
+          "cerv2",
+          "lscapula"
+        ]
+      },
+      {
+        "donor_muscle": "obl_cap_inf",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv1",
+          "cerv2"
+        ]
+      },
+      {
+        "donor_muscle": "obl_cap_inf_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv1",
+          "cerv2"
+        ]
+      },
+      {
+        "donor_muscle": "supmult-C4/5-C2",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv2",
+          "cerv5"
+        ]
+      },
+      {
+        "donor_muscle": "supmult-C4/5-C2_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv2",
+          "cerv5"
+        ]
+      },
+      {
+        "donor_muscle": "supmult-C5/6-C2",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv2",
+          "cerv6"
+        ]
+      },
+      {
+        "donor_muscle": "supmult-C5/6-C2_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv2",
+          "cerv6"
+        ]
+      },
+      {
+        "donor_muscle": "supmult-C6/7-C2",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv2",
+          "cerv7"
+        ]
+      },
+      {
+        "donor_muscle": "supmult-C6/7-C2_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv2",
+          "cerv7"
+        ]
+      },
+      {
+        "donor_muscle": "deepmult-C4/5-C2",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv2",
+          "cerv5"
+        ]
+      },
+      {
+        "donor_muscle": "deepmult-C4/5-C2_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv2",
+          "cerv5"
+        ]
+      },
+      {
+        "donor_muscle": "deepmult-C5/6-C3",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv3",
+          "cerv6"
+        ]
+      },
+      {
+        "donor_muscle": "deepmult-C5/6-C3_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv3",
+          "cerv6"
+        ]
+      },
+      {
+        "donor_muscle": "deepmult-C6/7-C4",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv4",
+          "cerv7"
+        ]
+      },
+      {
+        "donor_muscle": "deepmult-C6/7-C4_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "cervical",
+        "donor_bodies": [
+          "cerv4",
+          "cerv7"
+        ]
+      },
+      {
+        "donor_muscle": "deepmult-T2-T1",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "thorax",
+        "donor_bodies": [
+          "spine"
+        ]
+      },
+      {
+        "donor_muscle": "deepmult-T2-T1_l",
+        "reason": "internal_to_one_lumped_body",
+        "our_body": "thorax",
+        "donor_bodies": [
+          "spine"
+        ]
+      }
+    ]
+  },
+  "scope": "articulated_spine_v1 plus the donor MASI neck muscles that cross a joint of the lumped neck, and -- when installed -- the 22 foot muscles crossing subtalar or mtp on their own GeometryPaths. No linearization, no stance acceptance.",
+  "not_claimed": [
+    "No muscle crosses thoracic_* or either wrist: those remain free coordinates with a passive stop and viscous damping only.",
+    "The neck muscles are placed exactly at the reference pose; under motion the lumped two-joint neck is not the donor's seven-level coupled chain, so arms differ from the donor's and are reported beside them.",
+    "Clavicle- and scapula-anchored neck muscles are absent (girdle).",
+    "Forces are the donor's unscaled 50th-percentile-male values."
+  ]
+}

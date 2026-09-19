@@ -25,6 +25,29 @@ at all would pass the second half alone.
      comes back nonzero
   G  the builder is a function: run twice, identical bytes
 
+Added 2026-09-18, making the new joints drivable (the F2 gate above is NOT
+re-scored; it still runs on the kinematic registration and still fails):
+
+  M1 WHY the arms were zero, measured through OpenSim on the model's OWN
+     GeometryPaths against the shipped fitted set at the same poses: subtalar and
+     mtp are REPRESENTATION (11 and 4 muscles cross them, the fit reads 0); the
+     nine spine and four wrist coordinates are TOPOLOGY (the geometry reads 0
+     too).  mtp is in the base plant and has read 0 since the engine existed.
+  M2 the installed foot path set keeps the shipped coefficients for every path it
+     names, and names none of the 22 muscles that cross subtalar or mtp
+  M3 with it, those 22 carry their true arms and nothing acquires an arm about a
+     spine or wrist coordinate
+  N1 the cervical recipe's frames ARE the variant's joint centres
+  N2 every one of the donor's 78 neck muscles is accounted for: 50 transferred,
+     10 excluded on the girdle, 18 internal to the lumped cervical body
+  N3 KNOWN ANSWER: every transferred path length equals the donor's own, evaluated
+     by OpenSim on the donor model, at the reference pose
+  N4 MEASURED, NOT GATED: moment-arm signs against the donor's generalized arms
+  N5 the transfer is a function: run twice, identical bytes
+  D  the muscled plant in the engine: 148 muscles, arms about the neck, head and
+     subtalar, the soleus and lumbar controls, bit-equal on a repeat call
+  G-S PRE-REGISTERED GATE on the foot-paths plant (see its docstring)
+
 Bounded run:
   cd <repo> && OPENBLAS_NUM_THREADS=1 nice -n 10 \
       .venv/bin/python -m unittest scripts.verify_articulated_spine -v
@@ -35,8 +58,12 @@ prlimit-capped at 4 GB by NativeMechanicalStream itself.
 from __future__ import annotations
 
 import json
+import math
+import re
 import shutil
 import sys
+import tempfile
+import time
 import unittest
 import uuid
 import xml.etree.ElementTree as ET
@@ -49,6 +76,8 @@ sys.path.insert(0, str(ROOT))
 
 from ihm.assembly.cervical_inertia import combine_bodies  # noqa: E402
 from ihm.native.mechanical_stream import NativeMechanicalStream  # noqa: E402
+from ihm.native import path_refitting as pf  # noqa: E402
+from scripts import transfer_neck_muscle_paths as neck  # noqa: E402
 from scripts.build_articulated_spine import (  # noqa: E402
     BASE, CERVICAL_INERTIA, HEAD_RANGE, MASS_SCALE, NECK_RANGE, OUT,
     STOP_STIFFNESS_NM_PER_RAD, SUBTALAR_RANGE, THORACIC_RANGE, WRIST_RANGE,
@@ -80,6 +109,28 @@ DISTAL = {
 
 MODEL = ROOT / OUT / 'model.osim'
 REGISTRATION = OUT + '/registration.json'
+MUSCLED_MODEL = ROOT / neck.MUSCLED_MODEL
+MUSCLED_REGISTRATION = neck.MUSCLED_REGISTRATION
+FOOT_REGISTRATION = neck.PATHS_REGISTRATION
+FOOT_PATHS = ROOT / neck.PATHS
+SHIPPED_PATHS = ROOT / ('data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/'
+                        'example3DWalking/subject_walk_scaled_FunctionBasedPathSet.xml')
+MASI = ROOT / neck.MASI
+SAMPLER_ARM_FLOOR_M = 1e-4
+
+#: The 22 muscles whose OWN GeometryPath crosses subtalar (11 per side) -- the 4
+#: that also cross mtp are among them.  Measured by M1, not assumed by it: M1
+#: re-derives this set from the geometry and must reproduce it.
+FOOT_CROSSING = sorted('%s_%s' % (m, side) for side in ('r', 'l') for m in (
+    'edl', 'ehl', 'fdl', 'fhl', 'gaslat', 'gasmed', 'perbrev', 'perlong',
+    'soleus', 'tibant', 'tibpost'))
+MTP_CROSSING = sorted('%s_%s' % (m, side) for side in ('r', 'l')
+                      for m in ('edl', 'ehl', 'fdl', 'fhl'))
+
+#: `docs/research/LUMBAR_SHOULDER_MUSCLE_COVERAGE.md`'s independently computed
+#: lumbar_extension arms, which docs/UPPER_BODY_ACTUATION.md already reproduced.
+LUMBAR_TABLE_M = {'gait2392_ercspn_r': 0.04269, 'gait2392_intobl_r': -0.05282,
+                  'gait2392_extobl_r': -0.06279}
 
 
 def coordinates(path):
@@ -208,6 +259,315 @@ class Idempotent(unittest.TestCase):
         self.assertEqual(MODEL.read_bytes(), before)
         self.assertEqual(json.loads((ROOT / OUT / 'registration.json').read_text()),
                          registration)
+
+
+def joint_paths(model_path):
+    """{coordinate name: /jointset/<joint>/<coordinate>} in model order."""
+    out = {}
+    for joint in ET.parse(model_path).getroot().find('.//JointSet/objects'):
+        for element in joint.iter('Coordinate'):
+            out[element.get('name')] = '/jointset/%s/%s' % (joint.get('name'), element.get('name'))
+    return out
+
+
+def probe_table(model_path, destination, names, offset=0.2):
+    """One row at rest, then +-offset rad on each named coordinate in turn."""
+    paths = joint_paths(model_path)
+    labels = ['time'] + [paths[n] + '/value' for n in names]
+    rows = [[0.0] + [0.0] * len(names)]
+    for index in range(len(names)):
+        for sign in (-1.0, 1.0):
+            row = [float(len(rows))] + [0.0] * len(names)
+            row[1 + index] = sign * offset
+            rows.append(row)
+    pf.write_sto(destination, labels, rows)
+    return ','.join(paths[n] for n in names)
+
+
+def peak_arms(csv_path):
+    """{(muscle, coordinate): peak |moment arm|} and {muscle: [lengths]}."""
+    arms, lengths = {}, {}
+    with open(csv_path) as handle:
+        next(handle)
+        for line in handle:
+            _row, _t, actuator, quantity, column, value = line.rstrip('\n').split(',')
+            muscle = actuator.rsplit('/', 1)[-1]
+            if quantity == 'length':
+                lengths.setdefault(muscle, []).append(float(value))
+            else:
+                key = (muscle, column.rsplit('/', 1)[-1])
+                arms[key] = max(arms.get(key, 0.0), abs(float(value)))
+    return arms, lengths
+
+
+def rest_values(csv_path):
+    """{(muscle, quantity, coordinate): value} for row 0 (the rest pose)."""
+    out = {}
+    with open(csv_path) as handle:
+        next(handle)
+        for line in handle:
+            row, _t, actuator, quantity, column, value = line.rstrip('\n').split(',')
+            if row == '0':
+                out[(actuator.rsplit('/', 1)[-1], quantity, column.rsplit('/', 1)[-1])] = float(value)
+    return out
+
+
+def crossing(arms, coordinate):
+    return sorted(m for (m, c), v in arms.items() if c == coordinate and v > SAMPLER_ARM_FLOOR_M)
+
+
+class MusclePaths(unittest.TestCase):
+    """M1-M3 -- why the arms were zero, and what the installed foot paths change.
+
+    Measured with `data/runtime/opensim/native_polynomial_path_fit sample`, which
+    evaluates the model's OWN GeometryPaths (wrap objects included) or, given a
+    path set, the fitted functions through OpenSim's own evaluator.  Nothing is
+    reimplemented in Python."""
+
+    PROBED = tuple(sorted(NEW_RANGES)) + ('mtp_angle_r', 'mtp_angle_l', 'ankle_angle_r')
+
+    @classmethod
+    def setUpClass(cls):
+        cls.work = Path(tempfile.mkdtemp(prefix='verify-muscle-paths-',
+                                         dir=ROOT / 'data/derived'))
+        table = cls.work / 'probe.sto'
+        cls.columns = probe_table(MODEL, table, cls.PROBED)
+        run = lambda name, pathset=None: pf.sample(  # noqa: E731
+            MODEL, table, cls.work / (name + '.csv'), pathset=pathset,
+            moment_arm_coordinates=cls.columns.split(','), log=cls.work / (name + '.log'))
+        run('truth')
+        run('shipped', SHIPPED_PATHS)
+        cls.truth, _ = peak_arms(cls.work / 'truth.csv')
+        cls.shipped, _ = peak_arms(cls.work / 'shipped.csv')
+        cls.installed = None
+        if FOOT_PATHS.exists():
+            run('installed', FOOT_PATHS)
+            cls.installed, _ = peak_arms(cls.work / 'installed.csv')
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.work, ignore_errors=True)
+
+    def test_the_zero_splits_into_representation_and_topology(self):
+        """M1.  The two classes need opposite fixes, so the split is measured,
+        per coordinate, by two routes that share no code: the arm OpenSim reports
+        on the model's own GeometryPaths, and whether a path has points on both
+        sides of the joint, read off the XML."""
+        topology = tuple(n for n in NEW_RANGES if not n.startswith('subtalar'))
+        for name in topology:
+            self.assertEqual(crossing(self.truth, name), [], '%s: geometry has an arm' % name)
+            self.assertEqual(crossing(self.shipped, name), [], name)
+        for side in ('r', 'l'):
+            real = crossing(self.truth, 'subtalar_angle_' + side)
+            self.assertEqual(real, [m for m in FOOT_CROSSING if m.endswith('_' + side)])
+            self.assertEqual(crossing(self.shipped, 'subtalar_angle_' + side), [],
+                             'the shipped fit cannot express subtalar')
+            real = crossing(self.truth, 'mtp_angle_' + side)
+            self.assertEqual(real, [m for m in MTP_CROSSING if m.endswith('_' + side)])
+            # mtp is a BASE-plant coordinate: this zero predates the variant.
+            self.assertEqual(crossing(self.shipped, 'mtp_angle_' + side), [])
+        # Control: a coordinate the fit DID carry reads the same set both ways.
+        self.assertEqual(crossing(self.truth, 'ankle_angle_r'),
+                         crossing(self.shipped, 'ankle_angle_r'))
+        self.assertEqual(len(crossing(self.truth, 'ankle_angle_r')), 11)
+        # The XML route: every muscle with a measured subtalar arm has path points
+        # distal (calcn/toes) AND proximal to the joint, and no other muscle does.
+        root = ET.parse(MODEL).getroot()
+        spanning = []
+        for force in root.find('.//ForceSet/objects'):
+            bodies = {p.findtext('socket_parent_frame').rsplit('/', 1)[-1]
+                      for p in force.iter('PathPoint')}
+            distal = bodies & {'calcn_r', 'toes_r'}
+            if distal and bodies - distal:
+                spanning.append(force.get('name'))
+        self.assertEqual(sorted(spanning), crossing(self.truth, 'subtalar_angle_r'))
+
+    def test_the_installed_foot_paths_keep_the_shipped_coefficients(self):
+        """M2.  The installed set is NOT a refit (two refits were
+        pre-registered and both FAILED; scripts/refit_muscle_paths_articulated_spine.py).
+        It is the shipped set minus the 22 muscles that cross subtalar or mtp.
+        Every path it does name must be the shipped path, coefficient string for
+        coefficient string."""
+        self.assertTrue(FOOT_PATHS.exists(), 'muscle_paths.xml is not installed')
+        read = lambda path: {  # noqa: E731
+            e.get('name').rsplit('/', 1)[-1]:
+            (e.findtext('coordinate_paths').split(),
+             e.findtext('length_function/MultivariatePolynomialFunction/coefficients').split())
+            for e in ET.parse(path).getroot().iter('FunctionBasedPath')}
+        installed, shipped = read(FOOT_PATHS), read(SHIPPED_PATHS)
+        self.assertEqual(sorted(set(shipped) - set(installed)), FOOT_CROSSING)
+        self.assertEqual(len(installed), 58)
+        for name, value in installed.items():
+            self.assertEqual(value, shipped[name], name)
+
+    def test_the_installed_set_gives_the_foot_its_true_arms(self):
+        """M3.  With the installed set, the 22 run on their own GeometryPaths,
+        so their subtalar and mtp arms must equal the geometry's exactly, and no
+        coordinate of the topology class may acquire one.  The first half passes
+        by construction and is here to catch a set that names a muscle it should
+        not; the second half can fail."""
+        self.assertIsNotNone(self.installed, 'muscle_paths.xml is not installed')
+        for side in ('r', 'l'):
+            for coordinate in ('subtalar_angle_' + side, 'mtp_angle_' + side):
+                for muscle in crossing(self.truth, coordinate):
+                    self.assertAlmostEqual(self.installed[(muscle, coordinate)],
+                                           self.truth[(muscle, coordinate)], places=12,
+                                           msg='%s about %s' % (muscle, coordinate))
+        for name in NEW_RANGES:
+            if not name.startswith('subtalar'):
+                self.assertEqual(crossing(self.installed, name), [], name)
+
+
+class NeckTransfer(unittest.TestCase):
+    """N1-N5 -- the donor's own neck muscles, moved by the donor's own recipe."""
+
+    #: Our lumped joints against the donor's two independent cervical joints.
+    PAIRS = {'neck_extension': 'pitch2', 'neck_bending': 'roll2', 'neck_rotation': 'yaw2',
+             'head_extension': 'pitch1', 'head_bending': 'roll1', 'head_rotation': 'yaw1'}
+    DONOR_JOINT = {'pitch2': 'auxt1jnt', 'roll2': 'auxt1jnt', 'yaw2': 'auxt1jnt',
+                   'pitch1': 'aux2jnt', 'roll1': 'aux2jnt', 'yaw1': 'aux2jnt'}
+
+    @classmethod
+    def setUpClass(cls):
+        cls.recipe = json.loads((ROOT / neck.RECIPE).read_text())
+        cls.registration = json.loads((ROOT / REGISTRATION).read_text())
+        cls.transferred, cls.excluded = neck.plan(ROOT)
+        # Both sides evaluated by OpenSim at the reference pose.  The donor file
+        # does not load in OpenSim 4 as shipped ('/' in component names), so a
+        # copy with ONLY those names changed is evaluated, and that no other byte
+        # moved is asserted in N3.
+        cls.work = Path(tempfile.mkdtemp(prefix='verify-neck-', dir=ROOT / 'data/derived'))
+        text = MASI.read_text()
+        cls.renamed = re.sub(r'name="([^"]*)"',
+                             lambda m: 'name="%s"' % m.group(1).replace('/', '_'), text)
+        cls.original = text
+        (cls.work / 'masi.osim').write_text(cls.renamed)
+        labels, values = ['time'], [0.0]
+        for joint in ET.parse(cls.work / 'masi.osim').getroot().iter():
+            if joint.tag.endswith('Joint') and re.fullmatch(r'aux(t1|\d)jnt', joint.get('name') or ''):
+                for element in joint.iter('Coordinate'):
+                    labels.append('/jointset/%s/%s/value' % (joint.get('name'), element.get('name')))
+                    values.append(0.0)
+        cls.donor_coordinates = len(labels) - 1
+        pf.write_sto(cls.work / 'donor.sto', labels, [values])
+        probe_table(MUSCLED_MODEL, cls.work / 'ours.sto', tuple(cls.PAIRS))
+        ours = joint_paths(MUSCLED_MODEL)
+        pf.sample(cls.work / 'masi.osim', cls.work / 'donor.sto', cls.work / 'donor.csv',
+                  moment_arm_coordinates=['/jointset/%s/%s' % (cls.DONOR_JOINT[c], c)
+                                          for c in cls.PAIRS.values()],
+                  log=cls.work / 'donor.log')
+        pf.sample(MUSCLED_MODEL, cls.work / 'ours.sto', cls.work / 'ours.csv',
+                  moment_arm_coordinates=[ours[c] for c in cls.PAIRS]
+                  + [ours[c] for c in NEW_RANGES if not c.startswith(('neck', 'head'))],
+                  log=cls.work / 'ours.log')
+        cls.donor_rest = rest_values(cls.work / 'donor.csv')
+        cls.ours_rest = rest_values(cls.work / 'ours.csv')
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.work, ignore_errors=True)
+
+    def test_the_recipe_frames_are_the_variants_joint_centres(self):
+        """N1.  The transfer re-expresses donor points relative to the variant's
+        joint centres, so the two must be the same points -- not close."""
+        centres = self.registration['joint_centres_torso_frame_m']
+        for donor, joint in (('cerv7', 'neck'), ('skull', 'atlantooccipital')):
+            origin = np.asarray(self.recipe['bodies'][donor]
+                                ['body_to_target_torso_reference'])[:3, 3]
+            self.assertLess(np.abs(origin - np.asarray(centres[joint])).max(), 1e-12, joint)
+
+    def test_every_donor_muscle_is_accounted_for(self):
+        """N2.  78 in the donor; each is transferred or excluded with a reason."""
+        donor = [m.get('name') for m in ET.parse(MASI).getroot().iter('Thelen2003Muscle')]
+        self.assertEqual(len(donor), 78)
+        accounted = [m['donor_muscle'] for m in self.transferred] + \
+            [e['donor_muscle'] for e in self.excluded]
+        self.assertEqual(sorted(accounted), sorted(donor))
+        reasons = {}
+        for e in self.excluded:
+            reasons.setdefault(e['reason'], []).append(e['donor_muscle'])
+        self.assertEqual(len(self.transferred), 50)
+        self.assertEqual(len(reasons['girdle']), 10)
+        self.assertEqual(len(reasons['internal_to_one_lumped_body']), 18)
+        # The minimal set the neck needs, by name: sternocleidomastoid (sternal
+        # head), splenius and semispinalis, both sides.
+        names = {m['donor_muscle'] for m in self.transferred}
+        for stem in ('stern_mast', 'splen_cap_sklthx', 'splen_cap_sklc6',
+                     'splen_cerv_c3thx', 'semi_cap_sklthx', 'semi_cap_sklc5',
+                     'semi_cerv_c3thx'):
+            self.assertIn(stem, names)
+            self.assertIn(stem + '_l', names)
+
+    def test_path_lengths_equal_the_donors_at_the_reference_pose(self):
+        """N3, the known answer.  One rigid transform per donor body, all from
+        one rigid fit, so at the reference pose every transferred path is the
+        donor's own path moved rigidly and its length cannot change.  A wrong
+        transform direction, a wrong body origin or a wrong body map each moves
+        lengths by centimetres."""
+        self.assertEqual(re.sub(r'name="[^"]*"', '', self.original),
+                         re.sub(r'name="[^"]*"', '', self.renamed))
+        self.assertEqual(self.donor_coordinates, 24)
+        worst = 0.0
+        for record in self.transferred:
+            theirs = self.donor_rest[(record['donor_muscle'].replace('/', '_'), 'length', '')]
+            ours = self.ours_rest[(record['id'], 'length', '')]
+            worst = max(worst, abs(theirs - ours))
+        print('\n  worst |transferred - donor| path length at the reference pose: %.3g m' % worst)
+        self.assertLess(worst, 1e-9)
+
+    def test_moment_arm_signs_against_the_donor_are_the_measured_ones(self):
+        """N4 -- MEASURED, NOT A GATE.  The donor's arm about pitch2 is a
+        GENERALIZED arm summed over seven coupled levels; ours about
+        neck_extension is one joint at C7/T1.  They are different quantities, so
+        no bar on their agreement is derivable, and none is set.  What is pinned
+        is the measurement itself, 2026-09-18, at the reference pose, counting
+        (muscle, coordinate) pairs where BOTH arms exceed 0.1 mm:
+
+            160 agree in sign, 8 disagree, 28 are the donor's only (an arm about a
+            level our lumped cervical body has absorbed), 0 are ours only.
+
+        All 8 disagreements are left/right pairs, i.e. structural, and all sit
+        where the donor's summed arm nearly cancels (|donor| <= 1.7 mm) except
+        longissimus capitis about head_rotation (4.4 vs 4.8 mm), whose donor
+        joint is C2/C1 and ours the occiput.  If this list changes, something
+        moved; read it before accepting the change."""
+        agree, disagree, donor_only, ours_only = 0, [], 0, 0
+        for record in self.transferred:
+            name = record['donor_muscle'].replace('/', '_')
+            for ours, theirs in self.PAIRS.items():
+                a = self.ours_rest[(record['id'], 'moment_arm', ours)]
+                b = self.donor_rest[(name, 'moment_arm', theirs)]
+                if abs(a) > SAMPLER_ARM_FLOOR_M and abs(b) > SAMPLER_ARM_FLOOR_M:
+                    if (a > 0) == (b > 0):
+                        agree += 1
+                    else:
+                        disagree.append((record['id'], ours))
+                elif abs(a) > SAMPLER_ARM_FLOOR_M:
+                    ours_only += 1
+                elif abs(b) > SAMPLER_ARM_FLOOR_M:
+                    donor_only += 1
+        self.assertEqual((agree, donor_only, ours_only), (160, 28, 0))
+        self.assertEqual(sorted(disagree), sorted(
+            [('masi_%s_%s' % (m, s), c) for s in ('r', 'l') for m, c in (
+                ('scalenus_med', 'neck_extension'), ('scalenus_post', 'neck_extension'),
+                ('long_col_c5thx', 'neck_rotation'), ('longissi_cap_sklc6', 'head_rotation'))]))
+
+    def test_no_neck_muscle_reaches_the_thoracic_joint(self):
+        """The most proximal body a transferred muscle touches is `thorax`, so
+        none may have an arm about thoracic_* -- that stays topology-class."""
+        for record in self.transferred:
+            for name in ('thoracic_extension', 'thoracic_bending', 'thoracic_rotation'):
+                self.assertLess(abs(self.ours_rest[(record['id'], 'moment_arm', name)]),
+                                1e-9, '%s about %s' % (record['id'], name))
+
+    def test_the_transfer_is_a_function(self):
+        """N5.  Run it twice; identical bytes."""
+        files = [ROOT / p for p in (neck.MUSCLED_MODEL, neck.MUSCLED_CATALOG,
+                                    neck.MUSCLED_REGISTRATION, neck.PATHS_REGISTRATION)
+                 if (ROOT / p).exists()]
+        before = [f.read_bytes() for f in files]
+        neck.build(ROOT)
+        self.assertEqual([f.read_bytes() for f in files], before)
 
 
 class Native(unittest.TestCase):
@@ -391,6 +751,127 @@ class Native(unittest.TestCase):
               % (bar, max(base, key=base.get)))
         print('  new coordinates over that bar: %r' % over)
         print('  EXISTING coordinates the variant made worse by >0.05 rad: %r' % drift)
+        self.assertEqual(over, {})
+
+    def timed_tonic_excursions(self, registration, model):
+        """The same protocol as `tonic_excursions`, also returning wall clock per
+        10 ms advance.  A separate method so F2's own code path is untouched."""
+        declared = {k: v for k, v in coordinates(model).items() if v is not None}
+        stream = self.open(environment='supine', registration=registration)
+        excitation = {m: 0.02 for m in stream.snapshot()['muscles']}
+        worst = {}
+        started = time.time()
+        for _ in range(200):
+            state = stream.advance(0.01, actuation=excitation)
+            for name, bounds in declared.items():
+                value = state['coordinates'][name]['value']
+                worst[name] = max(worst.get(name, -1e9),
+                                  bounds[0] - value, value - bounds[1])
+        seconds = (time.time() - started) / 200
+        self.drop()
+        return worst, seconds
+
+    def test_the_muscled_plant_has_arms_about_the_neck_and_the_foot(self):
+        """D.  The engine's verdict on the muscled plant, with the controls
+        docs/ARTICULATED_SPINE.md used: soleus_r about the ankle, the lumbar arms
+        against their independently computed table, and a repeat call that must
+        be bit-equal.  Then what changed: every transferred neck muscle has an
+        arm about the neck or head, the 22 foot muscles have one about subtalar,
+        and thoracic_* and both wrists stay at zero for all 148 muscles."""
+        stream = self.open(registration=MUSCLED_REGISTRATION)
+        state = stream.snapshot()
+        self.assertEqual(len(state['muscles']), 148)
+        self.assertEqual(len(state['bodies']), 25)
+        self.assertEqual(len(state['coordinates']), 48)
+        self.assertLess(abs(state['mass_kg'] - TARGET_MASS_KG), 1e-9)
+        muscles = sorted(state['muscles'])
+        query = sorted(NEW_RANGES) + ['ankle_angle_r', 'lumbar_extension', 'mtp_angle_r']
+        first = stream.moment_arms(muscles=muscles, coordinates=query)['moment_arms_m']
+        second = stream.moment_arms(muscles=muscles, coordinates=query)['moment_arms_m']
+        self.assertEqual(first, second, 'moment_arms is not a function of its input')
+        soleus = first['soleus_r']['ankle_angle_r']
+        print('\n  soleus_r about ankle_angle_r: %+.5f m' % soleus)
+        self.assertLess(abs(soleus - (-0.0497)), 5e-4)
+        for name, expected in LUMBAR_TABLE_M.items():
+            self.assertAlmostEqual(first[name]['lumbar_extension'], expected, delta=1e-5, msg=name)
+        neck_coordinates = [c for c in NEW_RANGES if c.startswith(('neck', 'head'))]
+        added = [m for m in muscles if m.startswith('masi_')]
+        self.assertEqual(len(added), 50)
+        for muscle in added:
+            self.assertGreater(max(abs(first[muscle][c]) for c in neck_coordinates),
+                               SAMPLER_ARM_FLOOR_M, muscle)
+        for side in ('r', 'l'):
+            moved = sorted(m for m in muscles
+                           if abs(first[m].get('subtalar_angle_' + side, 0.0)) > SAMPLER_ARM_FLOOR_M)
+            self.assertEqual(moved, [m for m in FOOT_CROSSING if m.endswith('_' + side)])
+        moved = sorted(m for m in muscles if abs(first[m]['mtp_angle_r']) > SAMPLER_ARM_FLOOR_M)
+        self.assertEqual(moved, [m for m in MTP_CROSSING if m.endswith('_r')])
+        for muscle in muscles:
+            for name in NEW_RANGES:
+                if name.startswith(('thoracic', 'wrist')):
+                    self.assertLess(abs(first[muscle][name]), 1e-9, '%s about %s' % (muscle, name))
+        # Extensors extend and the sternocleidomastoid flexes the lower neck: the
+        # anatomical sign, read from the engine rather than from the donor.
+        self.assertGreater(first['masi_splen_cap_sklthx_r']['neck_extension'], 0.01)
+        self.assertGreater(first['masi_semi_cap_sklthx_r']['head_extension'], 0.01)
+        self.assertLess(first['masi_stern_mast_r']['neck_extension'], -0.01)
+
+    def test_gate_the_foot_paths_repair_the_ankle(self):
+        """G-S, PRE-REGISTERED 2026-09-18, written before any plant carrying the
+        installed foot paths had been integrated.
+
+        What it answers: docs/ARTICULATED_SPINE.md measured that un-welding the
+        subtalar made the ankle leave its range by 1.36 rad instead of 0.12,
+        because the plantarflexors loaded a hinge no muscle could control.  With
+        the 22 foot muscles on their own GeometryPaths, that hinge has 11
+        muscles per side.  Does the regression go away?
+
+        Protocol: docs/NATIVE_JOINT_LIMITS.md's, unchanged -- supine, 0.02 tonic
+        on every muscle, 2 s, worst excursion past each declared range.
+        Bar: F2's bar, the BASE model's own worst excursion under the identical
+        protocol, measured in the same run.  No new constant is introduced.
+        Plant under test: registration_foot_paths.json -- model.osim UNCHANGED
+        plus only the path-set override, so a pass or a fail is attributable to
+        the foot paths and nothing else.
+        Coordinates gated: ankle_angle_{l,r} and subtalar_angle_{l,r}, the four
+        the intervention acts on.  Everything else is printed, not gated,
+        including thoracic_extension, which no muscle in any of these plants
+        crosses and on which F2 already failed.
+        The muscled plant (neck muscles added too) is measured and printed in the
+        same run, not gated.
+        If it fails: recorded FAILED; the threshold does not move and nothing is
+        tuned.
+
+        Measured 2026-09-18, same run as F2:
+            bar      0.2202 rad (base knee_angle_r)
+            ankle_angle_r    base 0.1229   kinematic variant 1.3563   foot paths 1.1399
+            ankle_angle_l    base 0.1207   kinematic variant 1.3522   foot paths 0.8709
+            subtalar_angle_r                                            foot paths 0.1865
+            subtalar_angle_l                                            foot paths 0.1889
+            wall clock per advance: base 0.291 s, foot paths 0.405 s, muscled 0.412 s
+        VERDICT: FAIL on both ankles, 5.2x and 4.0x the bar.  The subtalars stay
+        inside it.  The arms are real (M3, D) and giving them to the muscles
+        removes 16% and 36% of the ankle excursion, not the regression: the
+        cause of the ankle collapse is NOT only that subtalar had no arm, and
+        what else it is was not measured here.  The separating control not yet
+        run: the kinematic variant with ONLY the subtalar re-welded."""
+        base, base_s = self.timed_tonic_excursions(BASE + '/registration.json',
+                                                   ROOT / BASE / 'model.osim')
+        foot, foot_s = self.timed_tonic_excursions(FOOT_REGISTRATION, MODEL)
+        muscled, muscled_s = self.timed_tonic_excursions(MUSCLED_REGISTRATION, MUSCLED_MODEL)
+        bar = max(base.values())
+        gated = ('ankle_angle_r', 'ankle_angle_l', 'subtalar_angle_r', 'subtalar_angle_l')
+        print('\n  bar (base worst): %.4f rad (%s)' % (bar, max(base, key=base.get)))
+        print('  wall clock per 10 ms advance: base %.3f s, foot paths %.3f s, muscled %.3f s'
+              % (base_s, foot_s, muscled_s))
+        for name in gated + ('thoracic_extension', 'neck_extension', 'head_extension'):
+            print('  %-20s base %s  foot %.4f  muscled %.4f' % (
+                name, ('%.4f' % base[name]) if name in base else '   -  ',
+                foot[name], muscled[name]))
+        worse = {k: round(foot[k] - base[k], 4) for k in base if foot[k] - base[k] > 0.05}
+        print('  EXISTING coordinates the foot-path plant made worse by >0.05 rad: %r' % worse)
+        over = {k: round(foot[k], 4) for k in gated if foot[k] > bar}
+        print('  GATED coordinates over the bar: %r' % over)
         self.assertEqual(over, {})
 
 
