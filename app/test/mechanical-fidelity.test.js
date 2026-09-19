@@ -36,14 +36,18 @@ test('the note says what is NOT true of this body, not what is', () => {
 });
 
 test('a fully specified body says so without listing absences', () => {
-  const full = fidelityNote({ contact: 'skin', jointStops: true, tissue: true, displayPose: 'opensim' });
+  // "fully specified" now includes a COUPLED soft-tissue layer: a body whose segments
+  // are all rigid is still missing something, and the note must keep saying so.
+  const full = fidelityNote({ contact: 'skin', jointStops: true, tissue: true, displayPose: 'opensim',
+                              softTissue: 'layer_fitted_local_confined_coupled' });
   assert.doesNotMatch(full, /no joint limits/);
   assert.doesNotMatch(full, /^This body:/);
   assert.match(full, /all on/);
 });
 
 test('one control off is named, and the others are not claimed', () => {
-  const note = fidelityNote({ contact: 'skin', jointStops: true, tissue: true, displayPose: '' });
+  const note = fidelityNote({ contact: 'skin', jointStops: true, tissue: true, displayPose: '',
+                              softTissue: 'layer_fitted_local_confined_coupled' });
   assert.match(note, /does not move it to where the body is/);
   assert.doesNotMatch(note, /inertia ellipsoids/);
 });
@@ -54,4 +58,20 @@ test('real segment surfaces are offered only where the plant accepts them', () =
   assert.equal(contactAvailable('floor'), true);
   assert.equal(contactAvailable('bed'), false);
   assert.equal(contactAvailable('studio'), false);
+});
+
+test('the soft tissue layer is selectable, and an uncoupled layer says it is not in the loop', () => {
+  assert.deepEqual(fidelityConfiguration({ softTissue: 'layer_fitted_local_confined' }),
+    { mechanical_fidelity: { soft_tissue: 'layer_fitted_local_confined' } });
+  assert.deepEqual(fidelityConfiguration({ softTissue: 'layer_fitted_local_confined_coupled' }),
+    { mechanical_fidelity: { soft_tissue: 'layer_fitted_local_confined_coupled' } });
+  // the distinction the register spent a day establishing: a layer that deforms and a
+  // layer whose reaction reaches the body are not the same claim.
+  assert.match(fidelityNote({ softTissue: 'layer_fitted_local_confined' }), /NOT in the loop/);
+  assert.doesNotMatch(fidelityNote({ softTissue: 'layer_fitted_local_confined_coupled' }), /NOT in the loop/);
+  assert.match(fidelityNote({}), /every segment is rigid/);
+});
+
+test('soft tissue off sends no key at all, like every other control', () => {
+  assert.deepEqual(fidelityConfiguration({ softTissue: '' }), {});
 });
