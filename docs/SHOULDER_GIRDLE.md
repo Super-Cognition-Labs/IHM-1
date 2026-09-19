@@ -549,6 +549,11 @@ other direction, from three biceps and triceps heads doing duty as a shoulder.
   one, and the two disagree (§9) — a separate job.
 * **No actuator port on any new coordinate**, and no controller. The girdle is
   muscle-driven or nothing.
+* **`equilibrium_excitations.json` is the base plant's and names only its 98
+  muscles.** It is carried across unchanged, as `articulated_spine_v1` carries it
+  across for its own 148-muscle plant, so a caller that drives "every muscle at
+  its equilibrium excitation" will leave all sixty new ones at zero. That is the
+  right default for an unaccepted variant and it is not an equilibrium claim.
 * **No wrist or forearm muscle.** Unchanged: those are blocked on MoBL-ARMS and
   its licence, not on the girdle (`docs/ARTICULATED_SPINE.md`).
 
