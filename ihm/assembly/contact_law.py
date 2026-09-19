@@ -182,9 +182,23 @@ def foundation_geometry(vertices, faces, *, rotation=np.eye(3), translation=np.z
     force = integral * normal
     moment = np.cross(station - reference, weight[:, None] * normal[None, :]).sum(axis=0) \
         if inside.any() else np.zeros(3)
+    # The contact FOOTPRINT, in the support plane.  It is reported because the confined
+    # reading of the layer modulus (`soft_tissue_layer.LAYER_MODULUS_MAPPINGS`) is a
+    # statement about a load much WIDER than the layer is thick, and the in-vivo source card
+    # does not report the footprint-to-thickness ratio it was measured at.  The minor extent
+    # is the one that decides it: a long narrow strip is not a wide load.
+    footprint = (0.0, 0.0)
+    if int(inside.sum()) >= 2:
+        flat = np.delete(station, axis, axis=1)
+        flat = flat - flat.mean(axis=0)
+        basis = np.linalg.svd(flat, full_matrices=False)[2]
+        spread = np.ptp(flat @ basis.T, axis=0)
+        footprint = (float(spread.max()), float(spread.min()))
     return {'integral_m3': integral,
             'contact_faces': int(inside.sum()),
             'contact_area_m2': float(area[inside].sum()),
+            'footprint_major_m': footprint[0],
+            'footprint_minor_m': footprint[1],
             'total_area_m2': float(area.sum()),
             'maximum_depth_m': float(depth[inside].max()) if inside.any() else 0.0,
             'unit_force_n': force,

@@ -139,6 +139,52 @@ THREE OUTCOMES, all of them results, fixed before the data:
   (c) F1 fails -> the elastic foundation cannot represent this layer over this range.  The
       k_eff spread says by how much and where, and THAT is the deliverable.
 
+================================================================================
+AMENDMENT, written after run 1 and before run 2.  **NO BAR MOVES AND NO GATE IS RESCORED**:
+run 1's verdicts stand (`logs/measure_contact_law_fit.run1.log`, F1H PASS, F2H FAILED, F1U
+FAILED, F2U PASS) and run 2 must reproduce them gate for gate and number for number on
+everything that existed in run 1.  Five changes, each with its reason:
+
+  A1  THE BUNDLE IS ASSEMBLED BY THE PRE-REGISTERED OUTCOME RULE, which run 1 did not
+      implement.  Outcome (c) above says that when F1 fails "the elastic foundation cannot
+      represent this layer over this range ... and THAT is the deliverable" -- a measurement,
+      not a law.  So a segment whose F1 FAILED now gets NO fitted stiffness: its record keeps
+      the layer map's own k and says the fit was refused, with the numbers.  This is the rule
+      as written, applied; it is not a choice made after seeing which segment failed.
+  A2  A CORRECTION TO FIXTURE S.  As written -- identity rotation, plane measured from the
+      skin mesh's lowest VERTEX -- it presses vertex 780 on the rim of the cut between
+      `calcn_l` and the toes, which is the 1.7 mm seam wedge docs/SOFT_BODY.md WITHDREW every
+      earlier "heel" number for.  It is not P2's flat stance pose, which is the PLANT's own
+      `calcn_l` transform; citing P2 for it was wrong.  Run 1 measured the layer carrying
+      exactly 0 N at 0.5-2.0 mm there and 0.0909 N at 2.5 mm, which reproduces the withdrawn
+      fixture's own CV5/CV6 row (0/0/0/0.094/0.096 N).  **Fixture S and its 948% cross-fixture
+      figure are KEPT and RECORDED as measured, and are not used to judge the contact law**:
+      one loaded point on a seam wedge is a statement about the wedge.
+  A3  ADDED, FIXTURE H2: the same heel derivation at a 3 mm forefoot clearance instead of
+      6 mm (12.5921 deg for `calcn_l`, 12.7154 deg for `calcn_r`), which is a DIFFERENT pose
+      family that still presses the heel.  It is scored by the H fit and never trained on.
+      It replaces nothing: S stays.  The reason it is added is that a cross-fixture test must
+      land on the part of the segment the question is about -- the same correction
+      docs/SOFT_BODY.md made when it derived the heel fixture in the first place.
+  A4  ADDED, SEGMENT `calcn_r`, on its own heel fixture, by the same split and the same bars.
+      One segment is one segment; a heel result that holds on the other heel is worth more
+      than one that has only been seen once.
+  A5  ADDED, RECORDED, NEVER GATED: the contact FOOTPRINT (major and minor extent of the
+      contacting faces in the support plane) at every pose, and its minor extent against the
+      segment's declared layer thickness.  The confined reading of the layer modulus is a
+      statement about a load much WIDER than the layer is thick and the in-vivo source card
+      does not report the ratio it was measured at, so it is measured here.
+  A6  ADDED, RECORDED, NEVER GATED: a REFINEMENT ARM for a hypothesis run 1 raised.  Run 1's
+      k_eff outliers are exactly the poses where the LAYER's contact patch is resolved by a
+      handful of nodes (`ulna_l` steps 81/82: **4 contact nodes** against 68 foundation
+      faces; `calcn_l` at 0.5 mm: 11 nodes).  The hypothesis is that those k_eff values are
+      the layer's own discretisation and not a property of the contact law.  A factorial
+      names a factor and not a mechanism (CLAUDE.md), so the mechanism gets its own
+      instrument: `ulna_l` is rebuilt at 4 mm and 3 mm spacing and re-solved at the same
+      poses, and k_eff is reported at each.  If it moves toward the deep-pose value the
+      hypothesis survives; if it does not, it is excluded.  **This changes no verdict**:
+      F1U is FAILED and stays FAILED.
+
 WHAT THIS SCRIPT WRITES.  `data/derived/contact-law-fit-v1/`: `report.json`, and a
 selectable `ihm.segment-contact-meshes.v1` bundle (manifest + the same meshes, sha256
 verified against the source bundle) whose per-segment stiffness is the fitted one where a
@@ -239,6 +285,8 @@ def sample(layer, vertices, faces, rotation, translation, plane_value_m, tag):
             'foundation_faces': int(geometry['contact_faces']),
             'foundation_area_m2': float(geometry['contact_area_m2']),
             'foundation_max_depth_m': float(geometry['maximum_depth_m']),
+            'footprint_major_m': float(geometry['footprint_major_m']),
+            'footprint_minor_m': float(geometry['footprint_minor_m']),
             'unit_force_n': [float(v) for v in geometry['unit_force_n']],
             'unit_moment_nm': [float(v) for v in geometry['unit_moment_nm']]}
 
@@ -381,7 +429,7 @@ def k_eff_spread(rows):
                 float(np.abs(k / np.exp(np.mean(np.log(k))) - 1).max())}
 
 
-def write_bundle(fits, source_manifest, report):
+def write_bundle(fits, refusals, source_manifest, report):
     """A selectable ihm.segment-contact-meshes.v1 bundle carrying the fitted stiffness."""
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -395,12 +443,18 @@ def write_bundle(fits, source_manifest, report):
         (OUT / 'meshes' / record['mesh_file']).write_bytes(data)
         fit = fits.get(record['body'])
         if fit is None:
+            refused = refusals.get(record['body'])
             record['layer']['contact_law_fit'] = {
                 'fitted': False,
                 'stiffness_source': 'layer map (k = E_app/h), UNFITTED',
                 'basis': 'No deformable-layer measurement exists for this segment, so its '
                          'stiffness is the layer map\'s own and this bundle changes nothing '
-                         'about it.'}
+                         'about it.' if refused is None else
+                         'A layer measurement EXISTS for this segment and its fit FAILED its '
+                         'own bar (F1), so by this measurement\'s pre-registered outcome (c) '
+                         'the deliverable is the measurement and not a law. The layer map\'s '
+                         'own k is kept and is NOT endorsed by any fit.',
+                **({} if refused is None else {'fit_refused': refused})}
             continue
         record['layer']['layer_map_stiffness_pa_per_m'] = record['layer']['stiffness_pa_per_m']
         record['layer']['stiffness_pa_per_m'] = fit['fitted_stiffness_pa_per_m']
@@ -426,6 +480,9 @@ def write_bundle(fits, source_manifest, report):
         'layer_identity': IDENTITY,
         'fitted_bodies': sorted(fits),
         'unfitted_bodies': sorted(r['body'] for r in manifest['records'] if r['body'] not in fits),
+        'refused_bodies': sorted(refusals),
+        'refusal_basis': 'A segment whose fit failed F1 carries NO fitted stiffness: the '
+                         'pre-registered outcome (c) makes the measurement the deliverable.',
         'foundation_basis': cl.FOUNDATION_BASIS,
         'rate_basis': cl.RATE_BASIS,
         'measurement': 'scripts/measure_contact_law_fit.py',
@@ -440,6 +497,64 @@ def write_bundle(fits, source_manifest, report):
     return manifest
 
 
+def refinement_arm(vertices, faces, poses, steps, spacings=(0.005, 0.004, 0.003)):
+    """RECORDED (A6).  Is a k_eff outlier the LAYER's discretisation or the contact law?
+
+    The poses where run 1's k_eff was an outlier are exactly the poses where the layer's own
+    contact patch is carried by a handful of nodes.  That is a HYPOTHESIS about a mechanism,
+    and a factorial does not test a mechanism (CLAUDE.md), so it gets its own instrument:
+    rebuild the layer finer and re-solve THE SAME poses.  No gate, no bar.
+    """
+    print('\nA6  REFINEMENT ARM (recorded): is the k_eff outlier the LAYER\'s discretisation?',
+          flush=True)
+    by_step = {p['step']: np.asarray(p['transform_ground'], float) for p in poses}
+    out = []
+    for spacing in spacings:
+        try:
+            layer = stl.segment_layer(ROOT, 'ulna_l', surface='fitted', depth='local',
+                                      spacing_m=spacing)
+        except (MemoryError, ValueError, RuntimeError) as error:
+            print('      spacing %.1f mm: NOT BUILT: %s' % (spacing * 1e3, str(error)[:110]),
+                  flush=True)
+            out.append({'spacing_m': spacing, 'not_run': str(error)[:200]})
+            continue
+        row = {'spacing_m': spacing, 'dof': int(layer.dof), 'nodes': int(len(layer.local)),
+               'poses': {}}
+        for step in steps:
+            T = by_step[step]
+            try:
+                solved = layer.solve(rotation=T[:3, :3], translation=T[:3, 3],
+                                     plane_axis=PLANE_AXIS, plane_value_m=FLOOR_M,
+                                     plane_sign=PLANE_SIGN, method='fast')
+            except (ValueError, RuntimeError) as error:
+                print('      spacing %.1f mm  step %3d: NOT RUN: %s'
+                      % (spacing * 1e3, step, str(error)[:100]), flush=True)
+                row['poses'][str(step)] = {'not_run': str(error)[:200]}
+                continue
+            geometry = cl.foundation_geometry(vertices, faces, rotation=T[:3, :3],
+                                              translation=T[:3, 3], plane_axis=PLANE_AXIS,
+                                              plane_value_m=FLOOR_M, plane_sign=PLANE_SIGN)
+            force = float(np.linalg.norm(solved['segment_force_n']))
+            k_eff = force / geometry['integral_m3'] if geometry['integral_m3'] > 0 else float('nan')
+            row['poses'][str(step)] = {'force_n': force, 'k_eff_pa_per_m': k_eff,
+                                       'layer_contact_nodes': int(solved['contact_nodes'])}
+            print('      spacing %.1f mm (%6d DOF)  step %3d  layer %9.4f N  nodes %4d  '
+                  'k_eff %.4e Pa/m' % (spacing * 1e3, layer.dof, step, force,
+                                       solved['contact_nodes'], k_eff), flush=True)
+        out.append(row)
+        del layer
+    return out
+
+
+def heel_fixture_rows(body, layer, vertices, faces, deepest_m, tag):
+    rotation, theta = heel_rotation(vertices, deepest_m)
+    low = float((vertices @ rotation.T)[:, PLANE_AXIS].min())
+    print('\n%s  %s heel fixture at %.0f mm forefoot clearance: %.10f deg about z'
+          % (tag, body, deepest_m * 1e3, np.degrees(theta)), flush=True)
+    rows = fixture_calcn(layer, vertices, faces, rotation, DEPTHS_HEEL, low, tag)
+    return rows, rotation, low, float(theta)
+
+
 def main():
     began = time.perf_counter()
     print('THE CONTACT LAW THE LAYER IMPLIES: fit, held-out score, and the substitution cost',
@@ -448,6 +563,7 @@ def main():
           flush=True)
 
     manifest, calcn_record, calcn_v, calcn_f = bundle_mesh('calcn_l')
+    _, calcn_r_record, calcn_r_v, calcn_r_f = bundle_mesh('calcn_r')
     _, ulna_record, ulna_v, ulna_f = bundle_mesh('ulna_l')
     poisson = float(manifest['skin_material']['poissons_ratio'])
     uniform_k = cl.stiffness_from_material(manifest['skin_material']['youngs_modulus_pa'],
@@ -466,15 +582,14 @@ def main():
     poses = harvest_ulna_poses()
     report['ulna_poses_steps'] = len(poses)
 
-    # --- the layers ------------------------------------------------------------------------
+    # --- calcn_l: the heel fixture (H), the seam-wedge fixture (S), the 3 mm heel (H2) -------
     calcn = stl.segment_layer(ROOT, 'calcn_l', surface='fitted', depth='local')
-    rotation, theta = heel_rotation(calcn_v)
-    low_heel = float((calcn_v @ rotation.T)[:, PLANE_AXIS].min())
+    heel_rows, rotation, low_heel, theta = heel_fixture_rows('calcn_l', calcn, calcn_v, calcn_f,
+                                                             0.006, 'H')
+    report['heel_fixture_deg'] = {'calcn_l_6mm': np.degrees(theta)}
     low_flat = float(calcn_v[:, PLANE_AXIS].min())
-    print('\nH  calcn_l heel fixture: %.10f deg about z (bisection on the skin mesh)'
-          % np.degrees(theta), flush=True)
-    heel_rows = fixture_calcn(calcn, calcn_v, calcn_f, rotation, DEPTHS_HEEL, low_heel, 'H')
-    print('\nS  calcn_l flat stance fixture (identity rotation)', flush=True)
+    print('\nS  calcn_l at identity rotation -- the SEAM WEDGE fixture (amendment A2), recorded',
+          flush=True)
     flat_rows = fixture_calcn(calcn, calcn_v, calcn_f, np.eye(3), DEPTHS_FLAT, low_flat, 'S')
 
     # CALL IT TWICE: the instrument must be a function of its arguments (CLAUDE.md).
@@ -484,16 +599,32 @@ def main():
     gate('T1', 'call it twice at the same pose: layer force and foundation integral bitwise', twice)
     del again
 
+    h2_rows, _, _, theta2 = heel_fixture_rows('calcn_l', calcn, calcn_v, calcn_f, 0.003, 'H2')
+    report['heel_fixture_deg']['calcn_l_3mm'] = np.degrees(theta2)
+    del calcn
+
+    # --- calcn_r: the replication (A4) --------------------------------------------------------
+    calcn_r = stl.segment_layer(ROOT, 'calcn_r', surface='fitted', depth='local')
+    hr_rows, _, _, theta_r = heel_fixture_rows('calcn_r', calcn_r, calcn_r_v, calcn_r_f,
+                                               0.006, 'HR')
+    report['heel_fixture_deg']['calcn_r_6mm'] = np.degrees(theta_r)
+    del calcn_r
+
     ulna = stl.segment_layer(ROOT, 'ulna_l', surface='fitted', depth='local')
     print('\nU  ulna_l at those poses, solved COLD at each (never warm-started)', flush=True)
     ulna_rows = fixture_ulna(ulna, ulna_v, ulna_f, poses)
-    del calcn, ulna
+    del ulna
 
-    fixtures = {'H': ('calcn_l heel fixture', heel_rows, calcn_record),
-                'S': ('calcn_l flat stance fixture', flat_rows, calcn_record),
+    fixtures = {'H': ('calcn_l heel fixture, 6 mm forefoot clearance', heel_rows, calcn_record),
+                'H2': ('calcn_l heel fixture, 3 mm forefoot clearance (cross-fixture only)',
+                       h2_rows, calcn_record),
+                'HR': ('calcn_r heel fixture, 6 mm forefoot clearance', hr_rows, calcn_r_record),
+                'S': ('calcn_l identity rotation -- the SEAM WEDGE, recorded not judged',
+                      flat_rows, calcn_record),
                 'U': ('ulna_l, the plant\'s own collapse poses', ulna_rows, ulna_record)}
     kept = {}
-    for key, (label, rows, record) in fixtures.items():
+    for key in ('H', 'H2', 'HR', 'S', 'U'):
+        label, rows, record = fixtures[key]
         keep, dropped = usable(rows)
         kept[key] = keep
         report['fixtures'][key] = {'label': label, 'rows': rows,
@@ -507,13 +638,13 @@ def main():
         if keep:
             report['fixtures'][key]['k_eff'] = k_eff_spread(keep)
 
-    # --- the fits ---------------------------------------------------------------------------
+    # --- the fits -----------------------------------------------------------------------------
     print('\n' + '=' * 96, flush=True)
     print('THE FIT: one stiffness per segment, trained on one set of poses, scored on another',
           flush=True)
     print('=' * 96, flush=True)
     fits = {}
-    for key, body in (('H', 'calcn_l'), ('U', 'ulna_l')):
+    for key, body in (('H', 'calcn_l'), ('HR', 'calcn_r'), ('U', 'ulna_l')):
         rows = kept[key]
         if len(rows) < 4:
             gate('F1' + key, 'fixture %s has enough usable poses to fit and score' % key, False,
@@ -529,25 +660,31 @@ def main():
         report['fixtures'][key]['fit'] = out
         fits[body] = out
 
-    # --- CROSS-FIXTURE: the heel fit, on a pose family it never saw --------------------------
-    if 'calcn_l' in fits and kept['S']:
-        cross = score(kept['S'], fits['calcn_l']['fitted_stiffness_pa_per_m'])
-        cross_declared = score(kept['S'], calcn_record['layer']['stiffness_pa_per_m'])
-        report['cross_fixture_H_to_S'] = {'fit': cross, 'B2_declared_layer_map': cross_declared}
-        print('\n  CROSS-FIXTURE  the heel fit scored on every point of the FLAT stance fixture',
-              flush=True)
-        print('    fit       median |rel| %7.2f%%   max %7.2f%%   max |dF| %8.4f N'
-              % (100 * cross['median_absolute_relative'], 100 * cross['max_absolute_relative'],
-                 cross['max_absolute_n']), flush=True)
-        print('    declared  median |rel| %7.2f%%   max %7.2f%%   max |dF| %8.4f N'
-              % (100 * cross_declared['median_absolute_relative'],
-                 100 * cross_declared['max_absolute_relative'], cross_declared['max_absolute_n']),
-              flush=True)
+    # --- CROSS-FIXTURE: the heel fit on pose families it never saw ----------------------------
+    report['cross_fixture'] = {}
+    if 'calcn_l' in fits:
+        k_fit = fits['calcn_l']['fitted_stiffness_pa_per_m']
+        k_declared = calcn_record['layer']['stiffness_pa_per_m']
+        for key, note in (('H2', 'the 3 mm heel fixture -- a different pose family, still the heel'),
+                          ('S', 'the SEAM WEDGE fixture -- recorded, NOT used to judge the law')):
+            if not kept[key]:
+                continue
+            entry = {'note': note, 'fit': score(kept[key], k_fit),
+                     'B2_declared_layer_map': score(kept[key], k_declared),
+                     'points': len(kept[key])}
+            report['cross_fixture'][key] = entry
+            print('\n  CROSS-FIXTURE H -> %s  (%s; %d usable points)' % (key, note, entry['points']),
+                  flush=True)
+            for which, label in (('fit', 'fit     '), ('B2_declared_layer_map', 'declared')):
+                s = entry[which]
+                print('    %s  median |rel| %8.2f%%   max %8.2f%%   max |dF| %8.4f N'
+                      % (label, 100 * s['median_absolute_relative'],
+                         100 * s['max_absolute_relative'], s['max_absolute_n']), flush=True)
 
     # --- the gates ----------------------------------------------------------------------------
     print('\n' + '=' * 96, flush=True)
-    outcome = {}
-    for key, body in (('H', 'calcn_l'), ('U', 'ulna_l')):
+    outcome, refusals = {}, {}
+    for key, body in (('H', 'calcn_l'), ('HR', 'calcn_r'), ('U', 'ulna_l')):
         fit = fits.get(body)
         if fit is None:
             continue
@@ -561,8 +698,19 @@ def main():
                   % (held, declared, declared - held, BAR_F2))
         outcome[body] = {'F1': f1, 'F2': f2,
                          'outcome': 'a' if (f1 and f2) else ('b' if f1 else 'c'),
+                         'fixture': key,
+                         'fitted_stiffness_pa_per_m': fit['fitted_stiffness_pa_per_m'],
+                         'declared_stiffness_pa_per_m': fit['declared_stiffness_pa_per_m'],
                          'held_out_median_relative': held,
                          'declared_median_relative': declared}
+        if not f1:
+            # PRE-REGISTERED OUTCOME (c): the deliverable is the measurement, not a law.
+            refusals[body] = {'reason': 'F1 FAILED: the fit does not reproduce the layer on '
+                                        'held-out poses within the layer\'s own 10% bar',
+                              'held_out_median_relative': held,
+                              'k_eff_max_over_min': report['fixtures'][key]['k_eff']['max_over_min'],
+                              'would_have_been_pa_per_m': fit['fitted_stiffness_pa_per_m']}
+            fits.pop(body)
         gate('F3' + key, '%s: k_eff spread over the fixture (what a single k CANNOT follow)' % body,
              True, 'max/min %.4f, worst %.2f%% from the geometric mean'
              % (report['fixtures'][key]['k_eff']['max_over_min'],
@@ -570,14 +718,42 @@ def main():
              recorded=True)
     gate('F4', 'the layer is quasi-static: no rate term is fitted, dissipation is untouched',
          True, cl.RATE_BASIS[:80], recorded=True)
+
+    # --- A5: the footprint the confined reading assumes ---------------------------------------
+    print('\nA5  the contact FOOTPRINT against the declared layer thickness (recorded)', flush=True)
+    footprints = {}
+    for key, body in (('H', 'calcn_l'), ('HR', 'calcn_r'), ('U', 'ulna_l')):
+        record = fixtures[key][2]
+        thickness = record['layer']['thickness_m']
+        rows = [{'penetration_mm': r['penetration_m'] * 1e3,
+                 'major_mm': r['footprint_major_m'] * 1e3,
+                 'minor_mm': r['footprint_minor_m'] * 1e3,
+                 'minor_over_thickness': r['footprint_minor_m'] / thickness} for r in kept[key]]
+        footprints[body] = {'declared_thickness_m': thickness, 'rows': rows}
+        if rows:
+            print('      %-8s h %5.2f mm   footprint minor %5.1f - %5.1f mm   minor/h %.2f - %.2f'
+                  % (body, thickness * 1e3, min(r['minor_mm'] for r in rows),
+                     max(r['minor_mm'] for r in rows),
+                     min(r['minor_over_thickness'] for r in rows),
+                     max(r['minor_over_thickness'] for r in rows)), flush=True)
+    report['footprints'] = footprints
+    gate('A5', 'contact footprint minor extent over the declared thickness, per pose', True,
+         'recorded for %d segments' % len(footprints), recorded=True)
+
+    # --- A6: the refinement arm ----------------------------------------------------------------
+    report['refinement'] = refinement_arm(ulna_v, ulna_f, poses, (81, 98, 103))
+    gate('A6', 'refinement arm on the poses whose layer contact patch is a handful of nodes',
+         True, 'recorded at %d spacings' % len(report['refinement']), recorded=True)
+
     report['outcome'] = outcome
+    report['refused'] = refusals
     report['results'] = RESULTS
     report['wall_seconds'] = time.perf_counter() - began
     report['peak_rss_mb'] = peak_mb()
 
-    write_bundle(fits, manifest, report)
-    print('\nwrote %s  (%d fitted of %d records)' % (OUT, len(fits), len(manifest['records'])),
-          flush=True)
+    write_bundle(fits, refusals, manifest, report)
+    print('\nwrote %s  (%d fitted, %d refused, of %d records)'
+          % (OUT, len(fits), len(refusals), len(manifest['records'])), flush=True)
     print('wall %.1f s, peak RSS %.0f MB' % (report['wall_seconds'], report['peak_rss_mb']),
           flush=True)
     failed = [r['gate'] for r in RESULTS if not r['pass'] and not r['recorded']]
