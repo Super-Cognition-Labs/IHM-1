@@ -97,6 +97,17 @@ cost profile of the old Newton step)
       pose ramp stepping 0.5 mm per 10 ms plant step, warm-started, the median per-step wall is
       < 10 ms.  Printed FAILED if it is not.
 
+  AMENDMENT, same day, still before any fitted/local/fast number was produced (commit e140edf held
+  the text above).  The local rule puts the forefoot core 4-9 mm under the skin (the depth map's
+  plantar forefoot values, read while building the rule), and M3's fixture presses the forefoot
+  6 mm.  A plane that reaches the rigid core is refused ("bottomed out") or leaves the constitutive
+  domain, so CV3/CV4 and S3/S5/S6 at 6 and 12 mm may not be computable on the local layer.  The
+  lines above STAND and are judged as written (an uncomputable gate is printed FAILED).  Added:
+  CV5/CV6 CV3/CV4 at 2 mm (K5's depth) instead of 6 mm.
+  S3m/S6m S3 and S6 on the fitted-MEDIAN heel at 2/6/12 mm, where those depths are admissible.
+  RT1m    RT1 on the fitted-median heel, ramp 0 -> 12 mm; RT1 itself runs on the local heel,
+          ramp 0 -> 2 mm.  Both recorded.
+
 RECORDED
   R1  The Saint-Venant crop must put <= 1% of the load on the truncation at radius 3h, heel,
       6 mm.  This bar was written AFTER development runs showed 17-100% on this segment, so it
@@ -125,7 +136,7 @@ from ihm.assembly.mechanics_backend import DeformableRegion, tetra_box  # noqa: 
 from ihm.assembly.supine_contact import foundation                      # noqa: E402
 
 REPORT = ROOT / 'data/derived/soft-tissue-layer-v1/report.json'
-RECORDED_FAILURES = {'R1', 'RT1'}
+RECORDED_FAILURES = {'R1', 'RT1', 'RT1m'}
 HEEL = 'calcn_l'
 results, failures = {}, []
 
