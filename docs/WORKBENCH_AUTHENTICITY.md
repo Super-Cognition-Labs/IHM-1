@@ -566,9 +566,33 @@ doing the work.
 mechanical supply feedback is not yet supported'`. A body that cannot afford its
 own contraction aborts the run rather than fatiguing.
 
-*To close, in order:* upper-body effectors (0.1) → a recruitment model that is
-not a linear rate gain → reflexes beyond the ankle → metabolic supply as a force
-limit rather than an exception.
+**Partly closed, opt-in, 18 Sep 2026** (`228b154`, `765e649`, `docs/METABOLIC_SUPPLY.md`).
+The default is unchanged and still aborts with the original message.
+`metabolic_supply='energy_fraction'` instead scales the next interval's excitation, for
+every muscle including uncommanded ones, by the fraction of the movement's extra
+energy demand that native fuel actually covered, and books what supply did not
+cover in a separate "unsupplied" account rather than dropping it.
+
+**It is declared as an accounting rule, not physiology, because no published
+fatigue law runs on what this engine exposes.** Xia & Frey Law 2008 takes no
+metabolic input; Callahan, Umberger & Kent-Braun 2016 needs phosphate, pH and PCr,
+which BioGears does not model; Allen/Lamb/Westerblad 2008 and Ørtenblad et al. 2013
+describe mechanisms, not a law. "Unmet" means the muscle's glucose and its single
+whole-body glycogen store both ran out within one 20 ms interval, after amino acids,
+fat, and aerobic and anaerobic glucose and glycogen were drawn in that order
+(`Tissue.cpp` 1165–1484); every run on record reports zero unmet.
+
+Verified here, not taken from the report: `scripts/verify_metabolic_supply.py` 16 of
+16, including the default reproducing the pre-change `embodied.py` exactly, the energy
+ledger closing to 2.8e-14 J over 84 exchanges, and four fail-on-purpose controls that
+fire. **Two limits stand:** the cap acts one interval late (the engine cannot preview
+a step), and it scales excitation, not energy, so the next interval is not
+guaranteed to fit the supply. **Not measured:** behaviour when BioGears genuinely runs
+short, which needs a glycogen-depleted starting state; an oscillation near the 2 s
+exchange lag is expected and unmeasured.
+
+*Remaining, in order:* a fatigue law with a mechanism the engine can supply
+(phosphate and pH are not modelled) → a depleted-state run to see the cap act.
 
 ---
 
