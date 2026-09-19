@@ -428,15 +428,38 @@ What a live body can now be asked for, measured by constructing each plant:
 **What this does NOT establish, and an earlier draft of this entry wrongly claimed:
 that the body stands on its skin.** Installing 20 skin contact elements is not the
 same as those elements carrying the weight.
-`scripts/measure_segment_contact_meshes.py` records — and **excludes the arm from
-its own default run** for it — that *the skin never reaches the floor in the stance
-pose*. The foot's skin surface sits above the source foot spheres' effective plane,
-so replacing those spheres leaves a standing body with nothing under it, and it
-falls. That is a property of the pose, not of the skin. Both arms are therefore
-offered, neither is called the truth, and the selection carries the caveat: `skin`
-replaces the feet (the intended end state, which collapses from this pose) and
-`skin_carried` keeps them (the cost of carrying the geometry, separated from the
-cost of a plant that is collapsing — two things one number would mix).
+
+~~*The skin never reaches the floor in the stance pose.*~~ **WITHDRAWN 18 Sep 2026**,
+and the paragraph that stood here with it. That sentence is true of `skin-canonical`,
+whose toes hover **+96.7 mm**, and false of the bundle that ships: measured at the
+stance pose, `skin`'s `toes_l` reaches **−8.5 mm**, through the floor plane, while its
+`calcn_l` sits **+35.700 mm** above it. The body does not stand on its skin because the
+plantar surface is not **level**, not because it cannot reach.
+
+What the 36 mm is, taken apart in `docs/SEGMENT_CONTACT_SURFACES.md` and
+`scripts/verify_skin_contact.py`: **35.700 = 15.407 + 20.293.** The source foot spheres
+hold the calcaneus 15.407 mm off the floor under the body's whole weight and this body's
+**own** depth map reads **14.91 mm** median over the plantar band — the sphere proxy's
+loaded stand-off is inside the specimen's own heel pad to half a millimetre. The other
+20.293 mm is the skin seated **above** the bone by the global similarity. A skin at the
+declared pad would sit at **+0.5 mm**: the spheres and a correctly seated skin agree
+about where the floor is.
+
+**The repair was built, gated and is not sufficient.** `segment_contact:
+skin_per_segment` carries each piece by its own segment's similarity, seats the heel at
+**−10.360 mm** (inside the `[−25, −5] mm` band fixed 2026-09-10), and brings the plantar
+span from 44.2 mm to 5.5 mm. The body still falls: **671.8 mm in 1.00 s, onto its
+hands**, while every arm that keeps the source feet stands. The reason is measured and
+is no longer the seat — **every skin vertex that reaches the floor is behind the centre
+of mass** (19.2 mm on the shipped bundle, 87.5 mm on the repaired one) where the sphere
+set spans it by 122.3 mm behind and 116.0 mm in front. The hard partition puts the
+midfoot and forefoot skin on the `toes` rigid body, whose bone stands +16.746 mm up.
+The shipped `skin` arm's integrator **FAILED** at t = 0.887894 s and is recorded FAILED.
+
+So the arms are offered and none is called the truth: `skin` replaces the feet (the
+intended end state), `skin_carried` keeps them — and in that arm the **heel** skin cannot
+load however well it is seated, because the spheres stand the calcaneus 15.4 mm off the
+floor — and `skin_per_segment` is the seat repair.
 
 The bundle's **own declared skin material** now travels with it — E = 3000 Pa,
 ν = 0.45, thickness 6.6 mm, from this body's canonical skin-layer entities — so the

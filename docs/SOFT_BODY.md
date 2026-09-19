@@ -106,6 +106,20 @@ is not what any number here is measuring.
 | in a free drop from `pelvis_ty = 1.06`, peak foot load **770 N**, the skin still clears the floor by **32.4 mm** | |
 | → **a coupled layer on `calcn_l` returns exactly 0 N in every upright trajectory the scaffold can produce** | this is the skin bundle's own documented caveat, now measured for the deformable layer |
 
+**What the 36.3 mm is made of — measured 2026-09-18, `docs/SEGMENT_CONTACT_SURFACES.md`,
+`scripts/verify_skin_contact.py`.** The right-hand column above, *the spheres reach ~36 mm
+below the skin*, is true and reads as a fact about the spheres. It is not: **35.700 =
+15.407 + 20.293** at the stance pose. The spheres hold the calcaneus **15.407 mm** off the
+floor under the body's whole weight, and this body's own soft-tissue depth map reads
+**14.91 mm** median over the plantar band — the sphere proxy's loaded stand-off is *inside*
+the specimen's own heel pad. The remaining **20.293 mm** is the skin seated **above** the
+bone by the global similarity, which is not a thing a body can do. A skin at the declared
+pad would sit at **+0.5 mm**. So the conclusion here stands — a coupled layer on `calcn_l`
+returns 0 N — but the reason is the skin's placement, not the spheres, and it is repairable:
+`segment_contact: skin_per_segment` seats the heel at **−10.360 mm**, which would put the
+`calcn_l` skin **+5.079 mm** above the floor at this pose instead of +35.700. Still clear,
+so this fixture result does not change; the margin does.
+
 And if it did touch: at the flat stance pose `calcn_l`'s layer carries **0.119 / 0.430 / 1.278
 / 2.866 / 5.574 N** at 0.5 / 1 / 1.5 / 2 / 2.5 mm, and **leaves the constitutive domain at
 3.0 mm** (min J 0.180) — its rigid core is 3.76 mm under its lowest skin point there. Body
