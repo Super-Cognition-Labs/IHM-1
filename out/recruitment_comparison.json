@@ -1,0 +1,1204 @@
+{
+ "schema": "ihm.recruitment-comparison.v1",
+ "preregistration": "docs/MOTOR_RECRUITMENT.md#comparison-against-emg",
+ "seed": 20260918,
+ "dt_s": 0.005,
+ "window_s": [
+  0.55,
+  1.795
+ ],
+ "block_s": 0.1,
+ "bootstrap": 2000,
+ "samples_scored": 250,
+ "checks": {
+  "dgf_constants_match_opensim_source": true,
+  "mean_vertical_grf_over_model_weight": 0.9828216269931129,
+  "idempotent_B2_rerun": true
+ },
+ "controls": {
+  "C1_shifted_skill_knee_hip": -0.059026383415276704,
+  "C1_pass": true,
+  "C2_no_law_channels_constant_in_every_reflex_arm": true,
+  "C3_idempotent": true,
+  "bootstrap_items": 13,
+  "bootstrap_draws_shape": [
+   2000,
+   13
+  ]
+ },
+ "P1_reflexes_past_ankle": {
+  "B2_minus_A2_ci": [
+   -0.12419522379560116,
+   0.12633861228672785
+  ],
+  "B2_ci": [
+   -0.09400381698360426,
+   0.08396163186316127
+  ],
+  "B2": 0.023392423329592838,
+  "A2": 0.03985945716045991,
+  "B1": 0.0,
+  "B2_minus_B1_ci": [
+   -0.09400381698360426,
+   0.08396163186316127
+  ],
+  "verdict": "FAIL: knee/hip source reflexes do not beat the contact-phase baseline"
+ },
+ "P2_decoder": {
+  "B4_minus_B2_ci": [
+   -0.05289476798534499,
+   0.01864594843310236
+  ],
+  "B4": 0.20369133278535492,
+  "B2": 0.2177697279590693,
+  "max_abs_excitation_difference": 0.4849824132187388,
+  "mean_abs_excitation_difference": 0.013089795714392847,
+  "rate_dial_range": [
+   1.0048506838744593,
+   1.102932800094055
+  ],
+  "verdict": "decoder difference NOT distinguishable on this task"
+ },
+ "P3_ankle_context": {
+  "B1_minus_A2_ci": [
+   0.13266586901883298,
+   0.6636928529617949
+  ],
+  "B1": 0.5424387874345085,
+  "A2": 0.09117523844936881
+ },
+ "table": {
+  "B1_rate_ankle": {
+   "soleus": {
+    "skill_vs_train_mean": 0.7317103397732924,
+    "skill_vs_zero": 0.8631881117413481,
+    "r": 0.8543796887624792,
+    "amplitude_ratio": 0.8825129014531498,
+    "affine_fits": [
+     [
+      0.8870837756935698,
+      0.055945000215792254
+     ],
+     [
+      0.9474316627228044,
+      0.056788602989693
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gastrocnemius": {
+    "skill_vs_train_mean": 0.59436569508425,
+    "skill_vs_zero": 0.7442133212404214,
+    "r": 0.836019544496275,
+    "amplitude_ratio": 0.5989851633821837,
+    "affine_fits": [
+     [
+      1.7366502290068415,
+      0.0013729133180794392
+     ],
+     [
+      1.1851891741807952,
+      0.012099607818181111
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "tibialis_anterior": {
+    "skill_vs_train_mean": 0.3012403274459833,
+    "skill_vs_zero": 0.6171415040633013,
+    "r": 0.5555343858336582,
+    "amplitude_ratio": 0.6764327315135268,
+    "affine_fits": [
+     [
+      1.1551266590981861,
+      -0.015163360465403872
+     ],
+     [
+      1.279595027873318,
+      -0.01610759505413552
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "medial_hamstrings": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.4479601631327189,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.21040191998985378
+     ],
+     [
+      0.0,
+      0.22886029957319848
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "biceps_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.4393510360796766,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.2319096703523893
+     ],
+     [
+      0.0,
+      0.16951425445513696
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "vastus_lateralis": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.5531252460740312,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.24294786562923426
+     ],
+     [
+      0.0,
+      0.23294854080968525
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "vastus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6938930144191147,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.33187118603875343
+     ],
+     [
+      0.0,
+      0.2981361979859343
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "rectus_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.8084728999935956,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.5013756377917273
+     ],
+     [
+      0.0,
+      0.4589477308686866
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "gluteus_maximus": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.967583218977454,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.4767323551805194
+     ],
+     [
+      0.0,
+      0.5353298867301473
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "gluteus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6043808212430597,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.2521958242058365
+     ],
+     [
+      0.0,
+      0.2641511697120803
+     ]
+    ],
+    "prediction_constant": true
+   }
+  },
+  "B2_rate_geyer": {
+   "soleus": {
+    "skill_vs_train_mean": 0.7303893570640447,
+    "skill_vs_zero": 0.8625144885437322,
+    "r": 0.8537336010396962,
+    "amplitude_ratio": 0.8949954301879608,
+    "affine_fits": [
+     [
+      0.8717268187316697,
+      0.05673114075517592
+     ],
+     [
+      0.9337566491369271,
+      0.057192096786220455
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gastrocnemius": {
+    "skill_vs_train_mean": 0.5939119266569783,
+    "skill_vs_zero": 0.7439271819333382,
+    "r": 0.834875304186505,
+    "amplitude_ratio": 0.6068183311550132,
+    "affine_fits": [
+     [
+      1.7070167772671836,
+      0.0026294175181245487
+     ],
+     [
+      1.1686077523109524,
+      0.012541000749343084
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "tibialis_anterior": {
+    "skill_vs_train_mean": 0.30089442330356686,
+    "skill_vs_zero": 0.6169519791881468,
+    "r": 0.5554131323609646,
+    "amplitude_ratio": 0.6769147994868923,
+    "affine_fits": [
+     [
+      1.148985430346182,
+      -0.01370481766699944
+     ],
+     [
+      1.2773843731310939,
+      -0.015493522239858348
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "medial_hamstrings": {
+    "skill_vs_train_mean": 0.0654747177288818,
+    "skill_vs_zero": 0.48410481562670205,
+    "r": -0.2529486775369678,
+    "amplitude_ratio": 0.2349616679449114,
+    "affine_fits": [
+     [
+      -1.8534485784195158,
+      0.34492399100678234
+     ],
+     [
+      -2.1874888086885105,
+      0.37849707266421884
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "biceps_femoris": {
+    "skill_vs_train_mean": -0.09670079325642011,
+    "skill_vs_zero": 0.38513583653019123,
+    "r": -0.03716329181187566,
+    "amplitude_ratio": 0.26149407179132855,
+    "affine_fits": [
+     [
+      0.9270980657839398,
+      0.16462150638757525
+     ],
+     [
+      -1.6509861641021084,
+      0.28245117145005266
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "vastus_lateralis": {
+    "skill_vs_train_mean": 0.12798619776090647,
+    "skill_vs_zero": 0.6103190467043567,
+    "r": 0.3953226875373529,
+    "amplitude_ratio": 1.4266141590202213,
+    "affine_fits": [
+     [
+      0.32416078559248057,
+      0.14428866879562757
+     ],
+     [
+      0.21174917529339848,
+      0.15801932437161503
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "vastus_medius": {
+    "skill_vs_train_mean": 0.01720861411748731,
+    "skill_vs_zero": 0.6991606914126434,
+    "r": 0.2033936899108401,
+    "amplitude_ratio": 1.2098315723357937,
+    "affine_fits": [
+     [
+      0.18273883947039582,
+      0.27625413445892516
+     ],
+     [
+      0.09029794258419624,
+      0.26618351588255035
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "rectus_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.8084728999935956,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.5013756377917273
+     ],
+     [
+      0.0,
+      0.4589477308686866
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "gluteus_maximus": {
+    "skill_vs_train_mean": 0.0029933802971087164,
+    "skill_vs_zero": 0.9676802547310626,
+    "r": 0.20519012756840962,
+    "amplitude_ratio": 0.12233845381374556,
+    "affine_fits": [
+     [
+      0.47336955740619624,
+      0.45198870064661095
+     ],
+     [
+      0.4707941153393251,
+      0.5131409397430342
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gluteus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6043808212430597,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.2521958242058365
+     ],
+     [
+      0.0,
+      0.2641511697120803
+     ]
+    ],
+    "prediction_constant": true
+   }
+  },
+  "B3_pool_ankle": {
+   "soleus": {
+    "skill_vs_train_mean": 0.5678736402308665,
+    "skill_vs_zero": 0.7796410670601482,
+    "r": 0.7513874826585476,
+    "amplitude_ratio": 0.5042425738870786,
+    "affine_fits": [
+     [
+      1.4324911154183475,
+      0.05800922678711352
+     ],
+     [
+      1.5200388984228186,
+      0.06773526356173307
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gastrocnemius": {
+    "skill_vs_train_mean": 0.5454987519643119,
+    "skill_vs_zero": 0.7133985875497431,
+    "r": 0.7965379897273526,
+    "amplitude_ratio": 0.3683823635010886,
+    "affine_fits": [
+     [
+      2.811821965062165,
+      -0.009830078396194134
+     ],
+     [
+      1.933672968641723,
+      0.0063515919636140455
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "tibialis_anterior": {
+    "skill_vs_train_mean": 0.28575468633065315,
+    "skill_vs_zero": 0.6086567424222058,
+    "r": 0.5396308380637883,
+    "amplitude_ratio": 0.6437313640922332,
+    "affine_fits": [
+     [
+      1.3843592807417788,
+      -0.06555008355632595
+     ],
+     [
+      1.4599383056850808,
+      -0.05486495407944513
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "medial_hamstrings": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.4479601631327189,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.21040191998985378
+     ],
+     [
+      0.0,
+      0.22886029957319848
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "biceps_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.4393510360796766,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.2319096703523893
+     ],
+     [
+      0.0,
+      0.16951425445513696
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "vastus_lateralis": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.5531252460740312,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.24294786562923426
+     ],
+     [
+      0.0,
+      0.23294854080968525
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "vastus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6938930144191147,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.33187118603875343
+     ],
+     [
+      0.0,
+      0.2981361979859343
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "rectus_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.8084728999935956,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.5013756377917273
+     ],
+     [
+      0.0,
+      0.4589477308686866
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "gluteus_maximus": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.967583218977454,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.4767323551805194
+     ],
+     [
+      0.0,
+      0.5353298867301473
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "gluteus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6043808212430597,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.2521958242058365
+     ],
+     [
+      0.0,
+      0.2641511697120803
+     ]
+    ],
+    "prediction_constant": true
+   }
+  },
+  "B4_pool_geyer": {
+   "soleus": {
+    "skill_vs_train_mean": 0.5678736402308665,
+    "skill_vs_zero": 0.7796410670601482,
+    "r": 0.7513874826585476,
+    "amplitude_ratio": 0.5042425738870786,
+    "affine_fits": [
+     [
+      1.4324911154183475,
+      0.05800922678711352
+     ],
+     [
+      1.5200388984228186,
+      0.06773526356173307
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gastrocnemius": {
+    "skill_vs_train_mean": 0.5454987519643119,
+    "skill_vs_zero": 0.7133985875497431,
+    "r": 0.7965379897273526,
+    "amplitude_ratio": 0.3683823635010886,
+    "affine_fits": [
+     [
+      2.811821965062165,
+      -0.009830078396194134
+     ],
+     [
+      1.933672968641723,
+      0.0063515919636140455
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "tibialis_anterior": {
+    "skill_vs_train_mean": 0.28575468633065315,
+    "skill_vs_zero": 0.6086567424222058,
+    "r": 0.5396308380637883,
+    "amplitude_ratio": 0.6437313640922332,
+    "affine_fits": [
+     [
+      1.3843592807417788,
+      -0.06555008355632595
+     ],
+     [
+      1.4599383056850808,
+      -0.05486495407944513
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "medial_hamstrings": {
+    "skill_vs_train_mean": 0.07406452876810865,
+    "skill_vs_zero": 0.48884673351151764,
+    "r": -0.2668716419753267,
+    "amplitude_ratio": 0.22231916384467654,
+    "affine_fits": [
+     [
+      -2.231912534864037,
+      0.36339241154507396
+     ],
+     [
+      -2.2189793444974373,
+      0.37216357917879694
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "biceps_femoris": {
+    "skill_vs_train_mean": -0.08355980086850101,
+    "skill_vs_zero": 0.3925033202973629,
+    "r": -0.049805099736523036,
+    "amplitude_ratio": 0.2474239474866948,
+    "affine_fits": [
+     [
+      0.7466296509572247,
+      0.18073058715565163
+     ],
+     [
+      -1.7531805418311355,
+      0.2827359128757667
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "vastus_lateralis": {
+    "skill_vs_train_mean": 0.178026062956129,
+    "skill_vs_zero": 0.6326805991499604,
+    "r": 0.4476073316288552,
+    "amplitude_ratio": 1.0833424001524254,
+    "affine_fits": [
+     [
+      0.46298451877222835,
+      0.13292993915706333
+     ],
+     [
+      0.32586030670987287,
+      0.1485441795342397
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "vastus_medius": {
+    "skill_vs_train_mean": 0.0588075528147598,
+    "skill_vs_zero": 0.7118944171406295,
+    "r": 0.27894083628203253,
+    "amplitude_ratio": 0.9187220181906689,
+    "affine_fits": [
+     [
+      0.2923776943830987,
+      0.2623941595324578
+     ],
+     [
+      0.18744007311626948,
+      0.2495854560789507
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "rectus_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.8084728999935956,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.5013756377917273
+     ],
+     [
+      0.0,
+      0.4589477308686866
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "gluteus_maximus": {
+    "skill_vs_train_mean": 0.0030652400865114338,
+    "skill_vs_zero": 0.96768258419412,
+    "r": 0.20873162474762635,
+    "amplitude_ratio": 0.11796647069980461,
+    "affine_fits": [
+     [
+      0.4853973120408453,
+      0.45215425845372137
+     ],
+     [
+      0.5197837553313402,
+      0.5115903691964843
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gluteus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6043808212430597,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.2521958242058365
+     ],
+     [
+      0.0,
+      0.2641511697120803
+     ]
+    ],
+    "prediction_constant": true
+   }
+  },
+  "C1_B2_shifted_half_window": {
+   "soleus": {
+    "skill_vs_train_mean": 0.13841990047323227,
+    "skill_vs_zero": 0.5606450125482689,
+    "r": -0.44973069544220984,
+    "amplitude_ratio": 0.8949954301879609,
+    "affine_fits": [
+     [
+      -0.5435183195015134,
+      0.31184429431239413
+     ],
+     [
+      -0.478181345447542,
+      0.3768852819192162
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gastrocnemius": {
+    "skill_vs_train_mean": 0.31613618717133796,
+    "skill_vs_zero": 0.5687661243453336,
+    "r": -0.553975680404626,
+    "amplitude_ratio": 0.6068183311550132,
+    "affine_fits": [
+     [
+      -1.0705689598032324,
+      0.3414785815664365
+     ],
+     [
+      -0.8814675997520972,
+      0.30236932178766196
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "tibialis_anterior": {
+    "skill_vs_train_mean": 0.7349472007892186,
+    "skill_vs_zero": 0.8547745096983871,
+    "r": -0.8672111535073628,
+    "amplitude_ratio": 0.6769147994868923,
+    "affine_fits": [
+     [
+      -2.1082992077003153,
+      0.7688624530733346
+     ],
+     [
+      -1.7812160137638506,
+      0.6998328914640933
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "medial_hamstrings": {
+    "skill_vs_train_mean": -0.16459770202749313,
+    "skill_vs_zero": 0.3570956745567323,
+    "r": 0.21271858021356202,
+    "amplitude_ratio": 0.2349616679449114,
+    "affine_fits": [
+     [
+      3.7665183706992256,
+      -0.052177968186645426
+     ],
+     [
+      -0.49319401034359206,
+      0.2641284111571066
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "biceps_femoris": {
+    "skill_vs_train_mean": -0.01327860646806367,
+    "skill_vs_zero": 0.431906399121051,
+    "r": 0.09027877016287403,
+    "amplitude_ratio": 0.26149407179132855,
+    "affine_fits": [
+     [
+      1.226691298111232,
+      0.14639184402479977
+     ],
+     [
+      0.0761298825020778,
+      0.1640702362094926
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "vastus_lateralis": {
+    "skill_vs_train_mean": -0.0756251255606637,
+    "skill_vs_zero": 0.5193302866984891,
+    "r": -0.18363434083166377,
+    "amplitude_ratio": 1.426614159020221,
+    "affine_fits": [
+     [
+      -0.25370048129198947,
+      0.31259057109143457
+     ],
+     [
+      0.003974326632663486,
+      0.2314136935030211
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "vastus_medius": {
+    "skill_vs_train_mean": -0.035077660119495535,
+    "skill_vs_zero": 0.6831554976187051,
+    "r": -0.0758698882494758,
+    "amplitude_ratio": 1.2098315723357935,
+    "affine_fits": [
+     [
+      -0.12165871863214299,
+      0.3652674266192185
+     ],
+     [
+      0.03880459993496757,
+      0.2831502289901143
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "rectus_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.8084728999935956,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.5013756377917273
+     ],
+     [
+      0.0,
+      0.4589477308686866
+     ]
+    ],
+    "prediction_constant": true
+   },
+   "gluteus_maximus": {
+    "skill_vs_train_mean": -0.006552822900667499,
+    "skill_vs_zero": 0.9673707975524035,
+    "r": -0.2874617826909771,
+    "amplitude_ratio": 0.12233845381374554,
+    "affine_fits": [
+     [
+      -0.1817418509233391,
+      0.48589140394705504
+     ],
+     [
+      -0.933068280067068,
+      0.5812019278469382
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gluteus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6043808212430597,
+    "r": null,
+    "amplitude_ratio": 0.0,
+    "affine_fits": [
+     [
+      0.0,
+      0.2521958242058365
+     ],
+     [
+      0.0,
+      0.2641511697120803
+     ]
+    ],
+    "prediction_constant": true
+   }
+  },
+  "A2_contact": {
+   "soleus": {
+    "skill_vs_train_mean": 0.10629271081200242,
+    "skill_vs_zero": 0.5442620424469146,
+    "r": 0.40500789297195994,
+    "amplitude_ratio": 2.501003666896631,
+    "affine_fits": [
+     [
+      0.17447607500679763,
+      0.08578276642579108
+     ],
+     [
+      0.2674522446967654,
+      0.0840445342480959
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gastrocnemius": {
+    "skill_vs_train_mean": 0.1792076771150547,
+    "skill_vs_zero": 0.482421137271154,
+    "r": 0.41515150626680136,
+    "amplitude_ratio": 2.6948481396710404,
+    "affine_fits": [
+     [
+      0.2570882118395874,
+      0.021877948391810367
+     ],
+     [
+      0.1962947097133931,
+      0.03963949099484445
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "tibialis_anterior": {
+    "skill_vs_train_mean": -0.011974672578950685,
+    "skill_vs_zero": 0.44552738761600563,
+    "r": -0.2137256993968366,
+    "amplitude_ratio": 2.0980594203025387,
+    "affine_fits": [
+     [
+      -0.2427986394849314,
+      0.45050823180913835
+     ],
+     [
+      -0.05452636961163386,
+      0.3180875564154541
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "medial_hamstrings": {
+    "skill_vs_train_mean": -0.034334501369322146,
+    "skill_vs_zero": 0.42900615059787894,
+    "r": 0.06512601427839951,
+    "amplitude_ratio": 2.597051565551958,
+    "affine_fits": [
+     [
+      -0.025908907950053673,
+      0.2303318491822028
+     ],
+     [
+      0.093255723401384,
+      0.1666898173056094
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "biceps_femoris": {
+    "skill_vs_train_mean": 0.01910207441775491,
+    "skill_vs_zero": 0.4500605943107199,
+    "r": 0.10820946773945946,
+    "amplitude_ratio": 2.8903165119148264,
+    "affine_fits": [
+     [
+      0.04124779706811439,
+      0.20018059568460897
+     ],
+     [
+      0.0463822019652235,
+      0.1385927864783215
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "vastus_lateralis": {
+    "skill_vs_train_mean": 0.17989102942804847,
+    "skill_vs_zero": 0.6335140055831796,
+    "r": 0.4345363436619344,
+    "amplitude_ratio": 2.6516620117710747,
+    "affine_fits": [
+     [
+      0.18171456990515944,
+      0.10316742724065008
+     ],
+     [
+      0.2313026433021787,
+      0.07874677860823294
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "vastus_medius": {
+    "skill_vs_train_mean": 0.08219052340525734,
+    "skill_vs_zero": 0.7190521077820131,
+    "r": 0.2954623529313846,
+    "amplitude_ratio": 2.2487260488199188,
+    "affine_fits": [
+     [
+      0.0972524469810205,
+      0.2570616114379685
+     ],
+     [
+      0.1648345031742336,
+      0.18824652920311233
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "rectus_femoris": {
+    "skill_vs_train_mean": 0.07514782396844788,
+    "skill_vs_zero": 0.8228657447900642,
+    "r": 0.4296786734803837,
+    "amplitude_ratio": 1.59080206622731,
+    "affine_fits": [
+     [
+      0.33121209283893294,
+      0.24659710483870204
+     ],
+     [
+      0.12013261143479091,
+      0.3788593232454931
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gluteus_maximus": {
+    "skill_vs_train_mean": -0.04755184007943902,
+    "skill_vs_zero": 0.9660417413903797,
+    "r": 0.09638292223938309,
+    "amplitude_ratio": 1.6616765426734628,
+    "affine_fits": [
+     [
+      0.0034016840747341792,
+      0.47411567512303154
+     ],
+     [
+      0.04222035032603678,
+      0.5071829865127899
+     ]
+    ],
+    "prediction_constant": false
+   },
+   "gluteus_medius": {
+    "skill_vs_train_mean": 0.08188979795502627,
+    "skill_vs_zero": 0.636777995858599,
+    "r": 0.32174422495448685,
+    "amplitude_ratio": 2.5595445109884345,
+    "affine_fits": [
+     [
+      0.12305075046909503,
+      0.15754140076807105
+     ],
+     [
+      0.17843767285268974,
+      0.14519272114362067
+     ]
+    ],
+    "prediction_constant": false
+   }
+  },
+  "A1_train_mean": {
+   "soleus": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.4900590349138153
+   },
+   "gastrocnemius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.3694155655481226
+   },
+   "tibialis_anterior": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.4520884490409651
+   },
+   "medial_hamstrings": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.4479601631327189
+   },
+   "biceps_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.4393510360796766
+   },
+   "vastus_lateralis": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.5531252460740312
+   },
+   "vastus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6938930144191147
+   },
+   "rectus_femoris": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.8084728999935956
+   },
+   "gluteus_maximus": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.967583218977454
+   },
+   "gluteus_medius": {
+    "skill_vs_train_mean": 0.0,
+    "skill_vs_zero": 0.6043808212430597
+   }
+  },
+  "A0_zero": {
+   "soleus": {
+    "skill_vs_train_mean": -0.9610113100660402,
+    "skill_vs_zero": 0.0
+   },
+   "gastrocnemius": {
+    "skill_vs_train_mean": -0.585830454044159,
+    "skill_vs_zero": 0.0
+   },
+   "tibialis_anterior": {
+    "skill_vs_train_mean": -0.8251120974720352,
+    "skill_vs_zero": 0.0
+   },
+   "medial_hamstrings": {
+    "skill_vs_train_mean": -0.8114634727718308,
+    "skill_vs_zero": 0.0
+   },
+   "biceps_femoris": {
+    "skill_vs_train_mean": -0.7836472808359902,
+    "skill_vs_zero": 0.0
+   },
+   "vastus_lateralis": {
+    "skill_vs_train_mean": -1.2377634699982725,
+    "skill_vs_zero": 0.0
+   },
+   "vastus_medius": {
+    "skill_vs_train_mean": -2.2668316866482003,
+    "skill_vs_zero": 0.0
+   },
+   "rectus_femoris": {
+    "skill_vs_train_mean": -4.221193240886336,
+    "skill_vs_zero": 0.0
+   },
+   "gluteus_maximus": {
+    "skill_vs_train_mean": -29.84822022595321,
+    "skill_vs_zero": 0.0
+   },
+   "gluteus_medius": {
+    "skill_vs_train_mean": -1.5276833219816623,
+    "skill_vs_zero": 0.0
+   }
+  }
+ },
+ "sources_sha256": {
+  "coordinates.sto": "981e94b5d7bb6fcae403a381fee8c3011533d8c683b17460096b400d20044cdb",
+  "grf_walk.mot": "372d59855f80d7de81303cb7d3a5c5878ef8e0cb82a53a27cfce44e93357e42c",
+  "electromyography.sto": "0746a08b1107f816ef35183d7639ca46dc863b60e178404d822ddc42fbb58061",
+  "subject_walk_scaled.osim": "806ad1b248c6b2bc48ab43b58865915d1664e144b4ff6846457d80adacc23ce5",
+  "subject_walk_scaled_FunctionBasedPathSet.xml": "932ac403e4d6d0d10d9a9da551e43d0ded94dd2b99c370f9b25053ee9232f8a5",
+  "grf_walk.xml": "3c5313d5680c52fd130a0ed86620472fe3c576a5a9599ed08a53652b84dd82e6"
+ },
+ "arm_model_sha256": {
+  "B1_rate_ankle": "b3f6349cd228390792ce8ca46bb97d8f4da311a45fea097eaa286f5805072121",
+  "B2_rate_geyer": "0b5e3f6d93fcb460632afa61f4fb824f204f25ce34ac1726f0e6a9b96795e395",
+  "B3_pool_ankle": "3ea21a373ded49986f2a32054ffa3b7e8e064be03d2e08c362c7f2bb8ae05612",
+  "B4_pool_geyer": "3c0c7c93aeed4dca84cdfbab41540c137e67874e34c942a9099cc1531557d492"
+ },
+ "script_sha256": "e2f6a1791659713c611242db4886ab0c2cb1e44e08bf317b660ef327877e488c",
+ "replay_plant": "measured kinematics + GRF; rigid-tendon DGF muscles (MocoInverse example3DWalking configuration); NOT the native plant"
+}

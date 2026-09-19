@@ -218,3 +218,74 @@ consumer.
 A gate that fails is recorded as FAILED. The instrument may change after a failure,
 but these thresholds may not, and a changed instrument is a new run reported beside
 this one.
+
+### Result (run 1, script sha256 `e2f6a179…`, report `out/recruitment_comparison.json`)
+
+250 samples scored in 13 blocks. **All controls pass:** C1 (half-window shift)
+scores −0.059 on the knee/hip channels; the no-law channels are constant in every
+reflex arm; and B2 run twice is bit-identical. The mean vertical GRF equals 0.983 of
+the model's weight.
+
+**P1: FAILED.** The knee/hip source reflexes do not beat the contact-phase baseline.
+Mean skill against the train mean over the five knee/hip channels is B2 +0.023
+(95% CI −0.094 to +0.084), against A2 contact +0.040; B2 − A2 CI is −0.124 to +0.126.
+
+**P2: not distinguishable, as predicted.** B4 − B2 over the eight law channels has
+CI −0.053 to +0.019 (B4 0.204, B2 0.218). With no descending drive, the pool is
+inert and the arms differ only by the rate dial (1.005–1.103). Mean |Δexcitation| is
+0.013 and the maximum is 0.485.
+
+**P3, context: the eight ankle primitives carry real signal beyond phase.** B1 0.542
+against A2 0.091; the B1 − A2 CI is +0.133 to +0.664.
+
+Per channel, raw r (no fit), skill against the train mean, and amplitude ratio
+rms(pred)/rms(EMG):
+
+| channel | A2 contact skill | B1 rate+ankle r / skill / amp | B2 rate+GH r / skill / amp | B4 pool+GH r / skill / amp |
+|---|---|---|---|---|
+| soleus | +0.106 | +0.854 / +0.732 / 0.88 | +0.854 / +0.730 / 0.90 | +0.751 / +0.568 / 0.50 |
+| gastrocnemius | +0.179 | +0.836 / +0.594 / 0.60 | +0.835 / +0.594 / 0.61 | +0.797 / +0.545 / 0.37 |
+| tibialis anterior | −0.012 | +0.556 / +0.301 / 0.68 | +0.555 / +0.301 / 0.68 | +0.540 / +0.286 / 0.64 |
+| medial hamstrings | −0.034 | const / 0 | **−0.253** / +0.065 / 0.24 | **−0.267** / +0.074 / 0.22 |
+| biceps femoris | +0.019 | const / 0 | −0.037 / −0.097 / 0.26 | −0.050 / −0.084 / 0.25 |
+| vastus lateralis | +0.180 | const / 0 | +0.395 / +0.128 / 1.43 | +0.448 / +0.178 / 1.08 |
+| vastus medius | +0.082 | const / 0 | +0.203 / +0.017 / 1.21 | +0.279 / +0.059 / 0.92 |
+| gluteus maximus | −0.048 | const / 0 | +0.205 / +0.003 / 0.12 | +0.209 / +0.003 / 0.12 |
+
+**What the table says that the verdicts don't.**
+
+- **Medial hamstrings' positive skill is earned by an inverted predictor.** Both
+  folds fit a negative slope (−1.85, −2.19) and raw r is −0.25. The source's HAM law
+  (trunk PD in stance, force feedback in swing) predicts this EMG *backwards*, and an
+  affine map rescues the number by flipping the sign. **Skill after an affine fit can
+  reward a law that is wrong in sign; read the slope and the raw r beside it.** For
+  biceps femoris the fitted slope changes sign between folds (+0.93, −1.65), so
+  there is no signal.
+- **VAS has the right sign and nothing beyond phase.** Its r of 0.40–0.45 and skill of
+  0.13–0.18 match what the stance indicator alone gets (0.18). GLU correlates at 0.21,
+  but at 0.12× amplitude it has no skill.
+- **The ankle result is the strongest evidence here that the existing primitives are
+  doing something.** Soleus r = 0.85 and gastrocnemius r = 0.84, against 0.41 for
+  contact phase. This holds on one trial, in a replay, with harness muscles.
+
+**Post-hoc, NOT a result, and not tested.** The biggest decoder difference is on the
+ankle, and it favours the rate decoder: soleus skill is 0.73 against 0.57, amplitude
+0.88 against 0.50. It fits a mechanism that needs no cortex. The dial multiplies the
+soleus F+ loop (gain 1.2), and a 0.5–10% change in the gain of a positive-feedback
+loop moves its output a lot. If so, the "dial" is acting as a loop-gain adjustment,
+not as descending control. This was noticed after the data, and the pre-registered
+P2 set, which pools all eight channels, does not separate it. It needs a
+pre-registered test on a **different trial**, with this one excluded, before anyone
+quotes it. The retained Rajagopal pipeline has running EMG and GRF but no IK
+coordinates on this model, so there is no second trial ready.
+
+**What this does and does not show.** The recruitment model is implemented from its
+source and cannot be exercised by this task: a reflex replay has no descending drive,
+and the pool is exactly inert without one. **A task with a measured descending
+command is what would test it**; none is retained here. The knee/hip reflexes are
+transcribed faithfully and do not predict their muscles' EMG beyond gait phase on
+this trial. One is predicted in the wrong sign. That is a negative result about the
+source's hip laws on this subject in this replay, or about the lumping and
+membership reductions declared above. This run cannot tell those apart. A
+member-resolved variant (semimem, semiten and bflh each on its own length and
+force) would separate them.
