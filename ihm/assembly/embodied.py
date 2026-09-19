@@ -230,13 +230,16 @@ def _prepare_mechanical_registration(root,relative):
 
 class EmbodiedRuntime:
     @classmethod
-    def from_workspace(cls,root,output,*,environment='supine',state_path=None,surface_contact_manifest=None,cutaneous_configuration=None,bed_material=None,regional_skin=False,source_pin=DEFAULT_SOURCE,intake_mass=False,augmented_registration=None,native_afferent_allocation=None,environment_selection=None,controller=None,initial_pose=None,mechanical_fidelity=None,display_pose=None):
+    def from_workspace(cls,root,output,*,environment='supine',state_path=None,surface_contact_manifest=None,cutaneous_configuration=None,bed_material=None,regional_skin=False,source_pin=DEFAULT_SOURCE,intake_mass=False,augmented_registration=None,native_afferent_allocation=None,environment_selection=None,controller=None,initial_pose=None,mechanical_fidelity=None,display_pose=None,metabolic_supply=None):
         from .controller_selection import resolve_controller
         controller=resolve_controller(controller)
         if controller['kind']!='regional' and native_afferent_allocation is not None:
             raise ValueError('Selected controller does not yet support native afferent allocation')
         if type(regional_skin) is not bool:raise ValueError('regional_skin must be a bool')
         if type(intake_mass) is not bool:raise ValueError('intake_mass must be a bool')
+        if metabolic_supply is not None:
+            from .metabolic_supply import MODES as SUPPLY_MODES,LAW as SUPPLY_LAW
+            if metabolic_supply not in SUPPLY_MODES:raise ValueError('Unknown metabolic supply mode')
         from .environment_dynamics import EnvironmentDynamics, resolve_selection
         from . import rigid_contact, cloth_contact, cloth_stretch, cloth_cover, world_frame, world_exchange, control_exchange
         environment_selection, environment_options = resolve_selection(root,environment,environment_selection)
@@ -326,6 +329,7 @@ class EmbodiedRuntime:
         if intake_mass:names+=('ihm.assembly.intake_mass','ihm.native.instance_mass',)
         if native_afferent_allocation is not None:names+=('ihm.assembly.native_afferents','ihm.native.afferent_session',)
         if source_pin is not None:names+=('ihm.brain.candidate','ihm.brain.source_loader',)
+        if metabolic_supply is not None:names+=('ihm.assembly.metabolic_supply',)
         names+=controller_modules+('ihm.assembly.snapshot_data','ihm.assembly.control_exchange','ihm.assembly.selective_projection','ihm.assembly.surface_binding','ihm.assembly.continuous_surface_binding')
         receipts=[_loaded_source(sys.modules[name]) for name in names if name in sys.modules]
         frozen={r['path']:r['bytes'] for r in receipts}
@@ -426,9 +430,11 @@ class EmbodiedRuntime:
                     destination=output/'inputs'/relative
                     destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(raw)
                     hashes[relative]=digest
-            body=cls(plant,neural,native,exchange,respiratory,cutaneous=cutaneous,afferents=afferents,intake_mass_bridge=intake_bridge,intake_mass_binding=intake_binding,reference_identity=hashlib.sha256((output/'mechanics/native/execution.json').read_bytes()).hexdigest(),environment_dynamics=environment_owner,metabolic_reference=metabolic_reference)
+            body=cls(plant,neural,native,exchange,respiratory,cutaneous=cutaneous,afferents=afferents,intake_mass_bridge=intake_bridge,intake_mass_binding=intake_binding,reference_identity=hashlib.sha256((output/'mechanics/native/execution.json').read_bytes()).hexdigest(),environment_dynamics=environment_owner,metabolic_reference=metabolic_reference,
+                **({} if metabolic_supply is None else {'metabolic_supply':metabolic_supply}))
             if any(p.read_bytes()!=raw for p,raw in frozen.items()):raise ValueError('Embodied source changed during initialization; reopen with a stable revision')
-            (output/'manifest.json').write_text(json.dumps({'schema':'ihm.embodied-runtime.v1','sources':hashes,
+            supply_manifest={} if metabolic_supply is None else {'metabolic_supply':{'mode':metabolic_supply,'law':SUPPLY_LAW,'doc':'docs/METABOLIC_SUPPLY.md'}}
+            (output/'manifest.json').write_text(json.dumps({'schema':'ihm.embodied-runtime.v1','sources':hashes,**supply_manifest,
                 'loaded_code':{str(r['path'].relative_to(root)):r['loaded_code_sha256'] for r in receipts},
                 'source_receipts':{str(r['path'].relative_to(root)):{k:v for k,v in r.items() if k not in ('path','bytes')} for r in receipts},
                 'mechanical_registration_override':None if mechanical_manifest is None else {'path':augmented_registration,'sha256':hashlib.sha256(mechanical_frozen[root/augmented_registration]).hexdigest(),'model_sha256':mechanical_manifest['model_sha256'],'catalog_sha256':mechanical_manifest['catalog_sha256']},
@@ -453,7 +459,7 @@ class EmbodiedRuntime:
                 error.add_note(str(cleanup_error))
             raise
 
-    def __init__(self,plant,neural,native,exchange,respiratory_load,*,reference_identity=None,cutaneous=None,intake_mass_bridge=None,intake_mass_binding=None,afferents=None,environment_dynamics=None,metabolic_reference=None):
+    def __init__(self,plant,neural,native,exchange,respiratory_load,*,reference_identity=None,cutaneous=None,intake_mass_bridge=None,intake_mass_binding=None,afferents=None,environment_dynamics=None,metabolic_reference=None,metabolic_supply=None):
         self.plant,self.neural,self.native,self.exchange,self.respiratory_load=plant,neural,native,exchange,respiratory_load
         self.environment_dynamics=environment_dynamics
         self.time_s=0.;self.sequence=0;self.failed=False;self.closed=False;self.next_excitation={};self.frame=None
@@ -486,6 +492,12 @@ class EmbodiedRuntime:
         self.metabolic_exchange_tau_s=METABOLIC_EXCHANGE_TAU_S
         self.metabolic_filter={'m_w':0.,'h_w':0.}
         self.metabolic_pending_energy_j={'m_j':0.,'h_j':0.,'w_j':0.}
+        # None keeps the original behaviour exactly: unmet native muscle energy
+        # aborts the run. A mode makes supply a limit on delivered excitation.
+        self.metabolic_supply=None
+        if metabolic_supply is not None:
+            from .metabolic_supply import SupplyLimiter
+            self.metabolic_supply=SupplyLimiter(metabolic_supply,self.mechanical_state.get('muscles'))
         self.metabolic_reference_id=hashlib.sha256(json.dumps({'native_execution_sha256':reference_identity,'reference':self.metabolic_reference},sort_keys=True).encode()).hexdigest()
         if abs(self.native_state['elapsed_s'])>1e-9 or abs(self.mechanical_state['time_s'])>1e-9:
             raise ValueError('Fresh common native and mechanical clocks required')
@@ -585,16 +597,24 @@ class EmbodiedRuntime:
             neural_inputs=dict(descending=data.get('descending',{}),sensory_blocks=data.get('sensory_blocks',()),
                 motor_blocks=data.get('motor_blocks',()),physiology=physiology,additional_sensory_inputs_hz=additional)
             current_feedback=getattr(self.neural,'current_interval_actuation',False) is True
+            # The supply cap for this interval comes from the previous exchange's
+            # committed coverage; it is the only thing that touches excitation.
+            supply_cap=None if self.metabolic_supply is None else self.metabolic_supply.interval()
             if current_feedback:
                 from .control_exchange import advance_feedback_exchange
+                capped_plant=self.plant
+                if supply_cap is not None:
+                    from .metabolic_supply import CappedActuationPlant
+                    capped_plant=CappedActuationPlant(self.plant,supply_cap)
                 neural,mechanical,forces,mechanical_exchange=advance_feedback_exchange(
-                    self.plant,self.neural,self.environment_dynamics,dt,self.mechanical_state,forces,neural_inputs,object_forces,
+                    capped_plant,self.neural,self.environment_dynamics,dt,self.mechanical_state,forces,neural_inputs,object_forces,
                     respiratory_projector=lambda ports,entities:self.respiratory_load.project_load(ports,entities,v['lung_volume_ml']))
             else:
                 neural=self.neural.step(dt,self.mechanical_state,**neural_inputs)
                 # Legacy output belongs to the next exchange; current blocks
                 # still suppress already-delivered excitations now.
                 actuation={k:v for k,v in self.next_excitation.items() if k not in data.get('motor_blocks',())}
+                if supply_cap is not None:actuation=supply_cap(actuation)
                 mechanical_exchange={'interval_s':dt,'substeps':1}
                 if self.environment_dynamics is None:
                     mechanical=self.plant.advance(dt,forces=forces,actuation=actuation)
@@ -644,7 +664,12 @@ class EmbodiedRuntime:
                         raise
             native=self.native.signed_step(self.metabolic_reference_id,exchanged_m,exchanged_h,exchanged_w)
             unmet=finite(native['values']['coupling.muscle_unmet_kcal'],'unmet native muscle energy')
-            if unmet>1e-12:raise RuntimeError('Native muscle energy demand is unmet; mechanical supply feedback is not yet supported')
+            if self.metabolic_supply is None:
+                if unmet>1e-12:raise RuntimeError('Native muscle energy demand is unmet; mechanical supply feedback is not yet supported')
+            else:
+                from .metabolic_supply import assess_exchange
+                supply_assessment=assess_exchange(exchanged_m,exchanged_h,exchanged_w,dt,
+                    requested_kcal=native['values']['coupling.muscle_requested_kcal'],unmet_kcal=unmet)
             native['signal_metadata']=native_field_metadata(native['values'])
             if abs(native['elapsed_s']-end)>1e-8:raise RuntimeError('Native exchange clock diverged')
             if self.intake_mass_bridge is not None:
@@ -661,6 +686,15 @@ class EmbodiedRuntime:
                 refreshed['positive_muscle_work_j']=work
                 refreshed['world_exchange']=deepcopy(mechanical_exchange)
                 mechanical=refreshed
+            next_pending={
+                'm_j':self.metabolic_pending_energy_j['m_j']+(incremental_w-exchanged_m)*dt,
+                'h_j':self.metabolic_pending_energy_j['h_j']+(delta_h-exchanged_h)*dt,
+                'w_j':self.metabolic_pending_energy_j['w_j']+(delta_w-exchanged_w)*dt}
+            supply_state=supply_record=None
+            if self.metabolic_supply is not None:
+                # Raises, and so aborts, if raw = drawn + unsupplied + pending fails.
+                supply_state,supply_record=self.metabolic_supply.close(supply_cap,supply_assessment,
+                    raw_j={'m_j':incremental_w*dt,'h_j':delta_h*dt,'w_j':delta_w*dt},pending_j=next_pending)
             tissue=self.exchange.observe(native)
             geometry=self.respiratory_load.geometry(native['values']['lung_volume_ml'],mechanical['entities'],end)
             self.next_excitation={} if current_feedback else deepcopy(neural['motor_excitations'])
@@ -670,10 +704,8 @@ class EmbodiedRuntime:
                 next_afferent_receipt=endpoint_receipt(native,self.afferents.native_identity,self.afferents.source_sha256)
             self.afferent_receipt=next_afferent_receipt;self.afferent_input=afferent_input
             self.metabolic_filter={'m_w':exchanged_m,'h_w':exchanged_h}
-            self.metabolic_pending_energy_j={
-                'm_j':self.metabolic_pending_energy_j['m_j']+(incremental_w-exchanged_m)*dt,
-                'h_j':self.metabolic_pending_energy_j['h_j']+(delta_h-exchanged_h)*dt,
-                'w_j':self.metabolic_pending_energy_j['w_j']+(delta_w-exchanged_w)*dt}
+            self.metabolic_pending_energy_j=next_pending
+            if supply_state is not None:self.metabolic_supply.commit(supply_state)
             self.native_state=native;self.mechanical_state=mechanical;self.time_s=end;self.sequence+=1
             self.frame={'schema':'ihm.embodied-frame.v1','time_s':end,'sequence':self.sequence,'input_capabilities':self._input_capabilities(),
                 'environment_state':None if self.environment_dynamics is None else self.environment_dynamics.frame(),
@@ -694,6 +726,10 @@ class EmbodiedRuntime:
                     'storage_owners':{'articulation_muscle':'native mechanical plant','neural':'pinned IBM plus declared decoder/reflexes',
                         'blood_gas_nutrients_heat':'BioGears','tissue_views':'native-owned compartments, no duplicate storage'},
                     'rollback':'An uncertain native commit terminates this runtime; no serializer-exactness claim'}}
+            if supply_record is not None:
+                self.frame['coupling']['metabolic_supply']=supply_record
+                self.frame['coupling']['metabolic_law']=self.frame['coupling']['metabolic_law'].replace(
+                    'Rejects excessive decrement and unmet supply','Rejects excessive decrement; unmet supply caps next-interval excitation (docs/METABOLIC_SUPPLY.md)')
             self.cutaneous_state=cutaneous
             result=clone_snapshot_data(self.frame)
             if hasattr(self.plant,'release'):self.plant.release(p_checkpoint)
