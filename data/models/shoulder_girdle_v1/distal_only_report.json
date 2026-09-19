@@ -1,0 +1,47 @@
+{
+  "protocol": "one girdle coordinate set through OpenSim's own assembler; maximum station displacement in the torso frame, four stations per body",
+  "displacement_m": {
+    "clav_elev_r": {
+      "clavicle_r": 0.009017431015243826,
+      "scapula_r": 0.016638028898933177,
+      "humerus_r": 0.018627217998783974,
+      "hand_r": 0.03147525278057765,
+      "clavicle_l": 1.8041124150158794e-16,
+      "scapula_l": 2.7755575615628914e-16,
+      "humerus_l": 3.3306690738754696e-16,
+      "hand_l": 2.466936122024529e-06,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "head": 3.096300993377099e-11,
+      "femur_r": 4.117781116086405e-11
+    },
+    "scapula_upward_rot_r": {
+      "clavicle_r": 0.0031039748370047665,
+      "scapula_r": 0.01575162614346537,
+      "humerus_r": 0.01524055646522976,
+      "hand_r": 0.0553881052278925,
+      "clavicle_l": 1.8041124150158794e-16,
+      "scapula_l": 1.8388068845354155e-16,
+      "humerus_l": 3.3306690738754696e-16,
+      "hand_l": 2.466920730285647e-06,
+      "pelvis": 0.0,
+      "thorax": 0.0,
+      "head": 2.6361135496699717e-11,
+      "femur_r": 2.7046809236708214e-11
+    },
+    "scapula_abduction_l": {
+      "clavicle_r": 1.8735013540549517e-16,
+      "scapula_r": 5.551115123125783e-16,
+      "humerus_r": 3.885780586188048e-16,
+      "hand_r": 3.439602387957704e-06,
+      "clavicle_l": 0.0049969070597117304,
+      "scapula_l": 0.008723079097748184,
+      "humerus_l": 0.010380034328271495,
+      "hand_l": 0.02250198870221714,
+      "pelvis": 1.3877787807814457e-16,
+      "thorax": 0.0,
+      "head": 2.7628635490550835e-11,
+      "femur_r": 3.178486640553757e-11
+    }
+  }
+}
