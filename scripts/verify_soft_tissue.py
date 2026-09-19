@@ -78,6 +78,12 @@ cost profile of the old Newton step)
   Depth (the local rule, scripts/build_soft_tissue_local_depth.py)
   D1  The artefact the layer reads passed its own known answers: every depth point on a bundle
       vertex (<= 1e-6 m) and each segment's median exactly its declared thickness.
+      RESULT OF THE ARTEFACT'S OWN FIRST RUN, BEFORE THIS BATTERY RAN D1: it fails for radius_l (one
+      of 306 depth points sits on a vertex whose triangles the bundle gave to ulna_l: weights 0.401
+      vs 0.393).  D1 is therefore printed FAILED and moved to RECORDED_FAILURES, like R1, for that
+      reason alone; its bar is unchanged.
+  D1b WRITTEN AFTER D1's RESULT WAS KNOWN, so it is a control, not a prediction: the local rule is
+      REFUSED for every segment that failed A1/A2 (radius_l) and admitted for calcn_l.
   M4  MEASURED: the core's height above the LOCAL sole under the heel and under the forefoot, for
       the voxel, fitted-median and fitted-local layers.
 
@@ -108,6 +114,21 @@ cost profile of the old Newton step)
   RT1m    RT1 on the fitted-median heel, ramp 0 -> 12 mm; RT1 itself runs on the local heel,
           ramp 0 -> 2 mm.  Both recorded.
 
+  SECOND AMENDMENT, same day, before any fitted or local FORCE was computed (meshes only had been
+  built, to make the mesher work).  M3's fixture does not press the heel.  The skin's lowest point
+  is vertex 780 of skin_calcn_l.obj, ON THE JOINT CAP RIM where calcn_l is cut from the toes
+  (x 92.7 mm), and within 5 mm of it the tissue is at most 1.7 mm thick (exact distances, 1 mm
+  samples).  Every "heel" number in docs/SOFT_BODY.md and in M1/M2/M3 is that seam wedge.  CV1-CV6
+  STAND on that fixture as written.  Added, on a fixture that does press the heel:
+  HEEL FIXTURE  calcn_l rotated about its frame z axis by the LEAST angle that keeps every vertex
+          of the forefoot half (x at or above the bounding box's midpoint) out of the support when
+          the heel half is pressed to the deepest penetration tested here, 6 mm (bisection on the
+          skin mesh; no angle is typed).  Penetration is measured from the rotated skin's lowest
+          point.
+  CV7/CV8   CV1/CV2 on the heel fixture, fitted-median, 6 mm.
+  CV9/CV10  CV1/CV2 on the heel fixture, fitted-local, 2 mm.
+  Same spacings, same 2.5 mm memory rule.
+
 RECORDED
   R1  The Saint-Venant crop must put <= 1% of the load on the truncation at radius 3h, heel,
       6 mm.  This bar was written AFTER development runs showed 17-100% on this segment, so it
@@ -136,7 +157,7 @@ from ihm.assembly.mechanics_backend import DeformableRegion, tetra_box  # noqa: 
 from ihm.assembly.supine_contact import foundation                      # noqa: E402
 
 REPORT = ROOT / 'data/derived/soft-tissue-layer-v1/report.json'
-RECORDED_FAILURES = {'R1', 'RT1', 'RT1m'}
+RECORDED_FAILURES = {'R1', 'RT1', 'RT1m', 'D1'}
 HEEL = 'calcn_l'
 results, failures = {}, []
 
@@ -524,6 +545,268 @@ def r1_crop(heel, low):
             'solved_dof': [crop['solved_dof'], full['solved_dof']]}
 
 
+# ------------------------------------------------- added 2026-09-18 (pre-registered in the header)
+def _brute_closest(points, v, f):
+    a, b, c = v[f[:, 0]], v[f[:, 1]], v[f[:, 2]]
+    best = np.full(len(points), np.inf)
+    for s in range(0, len(points), 200):
+        p = points[s:s + 200]
+        pp = np.repeat(p, len(f), axis=0)
+        cp = stl._closest_on_triangles(pp, np.tile(a, (len(p), 1)), np.tile(b, (len(p), 1)), np.tile(c, (len(p), 1)))
+        best[s:s + 200] = np.linalg.norm(cp - pp, axis=1).reshape(len(p), len(f)).min(axis=1)
+    return best
+
+
+def g_fitted(mesh, record):
+    print('\nG1-G3  the body-fitted boundary', flush=True)
+    v, f = mesh
+    rng = np.random.default_rng(20260918)
+    span = v.max(0) - v.min(0)
+    pts = v.min(0) - 0.1 * span + rng.random((2000, 3)) * 1.2 * span
+    d, _, _ = stl.closest_points(pts, v, f)
+    d2, p2, f2 = stl.closest_points(pts, v, f)
+    _, p1, f1 = stl.closest_points(pts, v, f)
+    err = float(np.abs(d - _brute_closest(pts, v, f)).max())
+    gate('G1', 'closest_points exact against brute force over every face, and a function',
+         err <= 1e-12 and np.array_equal(d, d2) and np.array_equal(p1, p2) and np.array_equal(f1, f2),
+         f'max |d - brute| {err:.2e} m over 2000 points x {len(f)} faces')
+    began = time.perf_counter()
+    m1 = stl.fitted_layer_mesh(v, f, 0.005, HEEL, thickness_m=record['layer']['thickness_m'])
+    build = time.perf_counter() - began
+    fit = m1['fit']
+    print('      ' + ', '.join(f'{k} {v:.4g}' if isinstance(v, float) else f'{k} {v}' for k, v in fit.items()))
+    bar = 1e-3 * 0.005
+    gate('G2', 'fitted heel: no inversion, skin and interface nodes within 1e-3 cell of their surfaces',
+         fit['minimum_volume_ratio'] > 0 and fit['skin_residual_max_m'] <= bar and fit['interface_residual_max_m'] <= bar,
+         f'min volume ratio {fit["minimum_volume_ratio"]:.3f}, skin {fit["skin_residual_max_m"]*1e6:.3f} um, '
+         f'interface {fit["interface_residual_max_m"]*1e6:.3f} um; build {build:.1f} s')
+    m2 = stl.fitted_layer_mesh(v, f, 0.005, HEEL, thickness_m=record['layer']['thickness_m'])
+    gate('G3', 'fitted heel mesh built twice: bitwise identical',
+         all(np.array_equal(m1[k], m2[k]) for k in ('nodes_m', 'tetrahedra', 'base')))
+    return dict(fit, build_seconds=build)
+
+
+def d1_local_depth():
+    print('\nD1  the local depth artefact passed its own known answers', flush=True)
+    manifest = json.loads((ROOT / stl.LOCAL_DEPTH / 'manifest.json').read_text())
+    bad = [b for b, e in manifest['bodies'].items() if not (e['A1_max_gap_m'] <= 1e-6 and e['A2_median_equals_declared'])]
+    worst = max(e['A1_max_gap_m'] for e in manifest['bodies'].values())
+    gate('D1', 'every depth point on a bundle vertex, every median its declared thickness', not bad,
+         f'{len(manifest["bodies"])} segments; worst gap {worst:.2e} m; failing {bad}')
+    refused = []
+    for body in bad:
+        try:
+            stl.segment_layer(ROOT, body, surface='fitted', depth='local')
+        except ValueError as error:
+            refused.append('known answers' in str(error))
+    admitted = stl.local_depth(ROOT, HEEL, [r for r in json.loads((ROOT / stl.BUNDLE / 'manifest.json').read_text())['records']
+                                              if r['body'] == HEEL][0])[0]
+    gate('D1b', 'the local rule is refused for every segment that failed, admitted for the heel',
+         len(refused) == len(bad) and all(refused) and np.isfinite(admitted).any(), f'refused {bad}')
+
+
+def m4_core_height(layers, mesh):
+    print('\nM4  the core above the LOCAL sole (heel x 10-40 mm, forefoot x 80-100 mm)', flush=True)
+    v, _ = mesh
+    out = {}
+    for name, layer in layers.items():
+        row = {}
+        for site, (x0, x1) in (('heel', (0.010, 0.040)), ('forefoot', (0.080, 0.100))):
+            sole = v[(v[:, 0] >= x0) & (v[:, 0] < x1), 1].min()
+            base = layer.local[layer.base]
+            inside = (base[:, 0] >= x0) & (base[:, 0] < x1)
+            row[site + '_mm'] = float((base[inside, 1].min() - sole) * 1e3) if inside.any() else None
+        out[name] = row
+        fmt = lambda x: 'no core' if x is None else f'{x:5.1f} mm'
+        print(f'      {name:16s} heel {fmt(row["heel_mm"])}   forefoot {fmt(row["forefoot_mm"])}', flush=True)
+    return out
+
+
+def cv_convergence(rule, depth_m, keys, spacings=(0.006, 0.005, 0.004, 0.003, 0.0025), fixture='M3'):
+    print(f'\n{keys[0]}/{keys[1]}  convergence, fitted surface, {rule} depth, {fixture} fixture at {depth_m*1e3:.0f} mm', flush=True)
+    record = [r for r in json.loads((ROOT / stl.BUNDLE / 'manifest.json').read_text())['records'] if r['body'] == HEEL][0]
+    skin_v = stl.load_obj(ROOT / stl.BUNDLE / 'meshes' / record['mesh_file'])[0]
+    if fixture == 'M3':
+        rotation, low = np.eye(3), float(skin_v[:, 1].min())
+    else:
+        rotation, low, theta = heel_pose(skin_v)
+        print(f'      heel fixture: rotation {np.degrees(theta):.4f} deg about z', flush=True)
+    rows = []
+    for spacing in spacings:
+        began = time.perf_counter()
+        try:
+            layer = stl.segment_layer(ROOT, HEEL, spacing_m=spacing, surface='fitted', depth=rule)
+            build = time.perf_counter() - began
+            r = layer.solve(rotation=rotation, plane_axis=1, plane_value_m=low + depth_m, plane_sign=1)
+        except MemoryError as error:
+            rows.append({'spacing_mm': spacing * 1e3, 'not_run': 'memory: ' + str(error)[:120]})
+            print(f'      spacing {spacing*1e3:.1f} mm: NOT RUN (memory, 4 GiB budget)', flush=True)
+            if spacing == 0.0025:
+                continue
+            raise
+        except (ValueError, RuntimeError) as error:
+            rows.append({'spacing_mm': spacing * 1e3, 'not_run': str(error)[:200]})
+            print(f'      spacing {spacing*1e3:.1f} mm: NOT COMPUTABLE: {str(error)[:160]}', flush=True)
+            continue
+        rows.append({'spacing_mm': spacing * 1e3, 'dof': layer.dof, 'tetrahedra': int(len(layer.tets)),
+                     'force_n': r['segment_force_n'][1], 'converged': r['converged'], 'iterations': r['iterations'],
+                     'contact_nodes': r['contact_nodes'],
+                     'lowest_node_above_skin_um': float(((layer.local @ rotation.T)[:, 1].min() - low) * 1e6),
+                     'build_seconds': round(build, 1), 'wall_seconds': round(r['wall_seconds'], 2), 'peak_mb': round(peak_mb(), 1)})
+        c = rows[-1]
+        print(f'      spacing {spacing*1e3:.1f} mm: DOF {c["dof"]:6d}  F {c["force_n"]:.6f} N  lowest node '
+              f'{c["lowest_node_above_skin_um"]:+.1f} um from the skin  {c["iterations"]} it  build {c["build_seconds"]:.0f} s  '
+              f'solve {c["wall_seconds"]:.1f} s  peak {c["peak_mb"]:.0f} MB', flush=True)
+    ran = [r for r in rows if 'force_n' in r]
+    required = [r for r in rows if r['spacing_mm'] > 2.9]
+    complete = all('force_n' in r for r in required) and all(r['converged'] for r in ran)
+    f = np.array([r['force_n'] for r in ran])
+    diff = np.diff(f)
+    one_sign = complete and len(diff) >= 3 and (np.all(diff > 0) or np.all(diff < 0))
+    shrinking = complete and len(diff) >= 3 and bool(np.all(np.abs(diff[1:]) < np.abs(diff[:-1])))
+    detail = 'forces ' + ' / '.join(f'{x:.6f}' for x in f) + ' N; differences ' + ' / '.join(f'{x:+.6f}' for x in diff)
+    gate(keys[0], f'{rule}: successive force differences keep one sign', one_sign, detail)
+    gate(keys[1], f'{rule}: successive force differences shrink', shrinking,
+         'magnitudes ' + ' / '.join(f'{abs(x):.6f}' for x in diff))
+    summary = {'rows': rows}
+    if len(f) >= 3 and complete:
+        h = np.array([r['spacing_mm'] for r in ran])
+        # observed order from the last three (unequal ratios: solve (d1/d2) = (h1^p - h2^p)/(h2^p - h3^p))
+        h1, h2, h3 = h[-3:]
+        d1, d2 = f[-2] - f[-3], f[-1] - f[-2]
+        try:
+            p = brentq(lambda p: (h1 ** p - h2 ** p) / (h2 ** p - h3 ** p) - d1 / d2, 0.05, 8.0)
+            richardson = f[-1] - d2 * h3 ** p / (h2 ** p - h3 ** p)
+        except ValueError:
+            p, richardson = None, None
+        summary.update({'observed_order': p, 'richardson_n': richardson,
+                        'last_relative_change': float(abs(d2) / abs(f[-1]))})
+        print(f'      observed order {p if p is None else round(p, 2)}; Richardson {richardson}; '
+              f'last relative change {abs(d2)/abs(f[-1]):.2%}', flush=True)
+    return summary
+
+
+def heel_pose(vertices, deepest_m=0.006):
+    """The HEEL FIXTURE's rotation (header): least rotation about z keeping the forefoot half clear."""
+    x, y = vertices[:, 0], vertices[:, 1]
+    fore = x >= 0.5 * (x.min() + x.max())
+
+    def clearance(theta):
+        yp = x * np.sin(theta) + y * np.cos(theta)
+        return yp[fore].min() - (yp[~fore].min() + deepest_m)
+
+    if clearance(0.0) >= 0:
+        theta = 0.0
+    else:
+        theta = brentq(clearance, 0.0, np.pi / 3, xtol=1e-12)
+    c, s_ = np.cos(theta), np.sin(theta)
+    rotation = np.array([[c, -s_, 0.], [s_, c, 0.], [0., 0., 1.]])
+    low = float((vertices @ rotation.T)[:, 1].min())
+    return rotation, low, theta
+
+
+def s_fast(heel_local, heel_median, low):
+    print('\nS1-S6  the fast path', flush=True)
+    from ihm.assembly.mechanics_backend import DeformableRegion
+    layer = heel_local
+    rng = np.random.default_rng(20260918)
+    q = rng.normal(size=4)
+    q /= np.linalg.norm(q)
+    w, x, y, z = q
+    rot = np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                    [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                    [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]])
+    rest = layer.rest_world(rot, np.array([0.1, 0.2, 0.3]))
+    free_dof = ~np.repeat(layer.base[:, None], 3, axis=1)
+    active = free_dof.any(axis=1)[layer.tets].any(axis=1)
+    tets = layer.tets[active]
+    nodes = np.unique(tets)
+    index = np.full(len(rest), -1)
+    index[nodes] = np.arange(len(nodes))
+    posed = layer._kernel(active, nodes, index[tets], free_dof[nodes]).posed(rot)
+    region = DeformableRegion(rest[nodes], index[tets], mu_pa=layer.mu[active], lambda_pa=layer.lam[active], density_kg_m3=1.0)
+    ypos = rest[nodes] + rng.normal(scale=2e-4, size=(len(nodes), 3)) * free_dof[nodes]
+    e1, g1 = posed.energy_gradient(ypos)
+    e2, g2 = region.energy_gradient(ypos)
+    rel = max(float(np.abs(g1 - g2).max() / np.abs(g2).max()), abs(e1 - e2) / abs(e2))
+    gate('S1', 'fast gradient and energy = DeformableRegion.energy_gradient', rel <= 1e-12, f'max rel {rel:.2e}')
+    posed.prepare(ypos)
+    vec = rng.normal(size=ypos.shape)
+    hv = posed.hessian_vector(vec)
+    ref = (stl.assemble(region, stl.element_hessians(region, ypos, project=False)) @ vec.ravel()).reshape(-1, 3)
+    rel = float(np.abs(hv - ref).max() / np.abs(ref).max())
+    gate('S2', 'Hessian-vector product = assembled element_hessians(project=False) @ v', rel <= 1e-10, f'max rel {rel:.2e}')
+
+    def agree(layer_, depths, key3, key6):
+        rows, ok3, ok6 = [], True, True
+        for d in depths:
+            try:
+                n = layer_.solve(plane_axis=1, plane_value_m=low + d, plane_sign=1)
+                f = layer_.solve(plane_axis=1, plane_value_m=low + d, plane_sign=1, method='fast')
+            except (ValueError, RuntimeError) as error:
+                print(f'      {d*1e3:4.1f} mm: NOT COMPUTABLE: {str(error)[:150]}', flush=True)
+                ok3 = ok6 = False
+                rows.append({'penetration_mm': d * 1e3, 'not_run': str(error)[:200]})
+                continue
+            bound = 2 * f['solved_dof'] * f['force_tolerance_n']
+            dfn = float(np.linalg.norm(np.subtract(n['segment_force_n'], f['segment_force_n'])))
+            ok3 &= dfn <= bound and f['converged'] and n['converged']
+            ok6 &= f['wall_seconds'] < n['wall_seconds']
+            rows.append({'penetration_mm': d * 1e3, 'force_newton_n': n['segment_force_n'][1], 'force_fast_n': f['segment_force_n'][1],
+                         'difference_n': dfn, 'bound_n': bound, 'wall_newton_s': n['wall_seconds'], 'wall_fast_s': f['wall_seconds'],
+                         'iterations_newton': n['iterations'], 'iterations_fast': f['iterations'], 'fast_message': f['solver_message']})
+            print(f'      {d*1e3:4.1f} mm: Newton {n["segment_force_n"][1]:.6f} N {n["wall_seconds"]:6.2f} s ({n["iterations"]} it) | '
+                  f'fast {f["segment_force_n"][1]:.6f} N {f["wall_seconds"]:6.3f} s ({f["iterations"]} it; {f["solver_message"][-40:]}) | '
+                  f'|dF| {dfn:.2e} vs bound {bound:.2e}', flush=True)
+        gate(key3, 'fast force = Newton force within 2 x DOF x tolerance', ok3)
+        gate(key6, 'fast is faster than Newton at every depth', ok6)
+        return rows
+
+    print('      fitted-local heel', flush=True)
+    local_rows = agree(heel_local, (0.002, 0.006, 0.012), 'S3', 'S6')
+    print('      fitted-median heel', flush=True)
+    median_rows = agree(heel_median, (0.002, 0.006, 0.012), 'S3m', 'S6m')
+
+    a = heel_local.solve(plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast', return_positions=True)
+    b = heel_local.solve(plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast', return_positions=True)
+    heel_local.clear_cache()
+    c = heel_local.solve(plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast', return_positions=True)
+    gate('S4', 'fast solve twice, and after clear_cache(): bitwise identical',
+         all(np.array_equal(a['positions_m'], o['positions_m']) and a['segment_force_n'] == o['segment_force_n'] for o in (b, c)))
+    prev = heel_local.solve(plane_axis=1, plane_value_m=low + 0.0015, plane_sign=1, method='fast')
+    warm = heel_local.solve(plane_axis=1, plane_value_m=low + 0.002, plane_sign=1, method='fast',
+                            warm_start_local_m=prev['state']['positions_local_m'])
+    dfn = float(np.linalg.norm(np.subtract(warm['segment_force_n'], a['segment_force_n'])))
+    bound = 2 * a['solved_dof'] * a['force_tolerance_n']
+    gate('S5', 'a warm start reaches the cold start\'s force within the S3 bound', dfn <= bound and warm['converged'],
+         f'|dF| {dfn:.2e} N vs {bound:.2e}; warm {warm["wall_seconds"]*1e3:.1f} ms ({warm["iterations"]} it) vs cold '
+         f'{a["wall_seconds"]*1e3:.1f} ms')
+    return {'local': local_rows, 'median': median_rows}
+
+
+def rt_ramp(layer, low, top_m, key, label, step_m=0.0005):
+    print(f'\n{key}  plant-loop ramp, {label}: 0 -> {top_m*1e3:.0f} mm at {step_m*1e3:.1f} mm per 10 ms step, warm-started', flush=True)
+    state, walls, forces, iters = None, [], [], []
+    began_mb = peak_mb()
+    for k in range(1, int(round(top_m / step_m)) + 1):
+        t0 = time.perf_counter()
+        r = layer.solve(plane_axis=1, plane_value_m=low + k * step_m, plane_sign=1, method='fast',
+                        warm_start_local_m=None if state is None else state['positions_local_m'])
+        walls.append(time.perf_counter() - t0)
+        forces.append(r['segment_force_n'][1])
+        iters.append(r['iterations'])
+        state = r['state']
+        if not r['converged']:
+            print(f'      step {k}: NOT CONVERGED ({r["solver_message"]})', flush=True)
+    walls = np.array(walls)
+    print('      per-step wall ms: ' + ' '.join(f'{w*1e3:.0f}' for w in walls), flush=True)
+    print('      force N: ' + ' '.join(f'{x:.3f}' for x in forces), flush=True)
+    gate(key, 'median per-step wall < 10 ms (the plant step)', float(np.median(walls)) < 0.010,
+         f'median {np.median(walls)*1e3:.1f} ms, max {walls.max()*1e3:.1f} ms, first (cold) {walls[0]*1e3:.1f} ms; '
+         f'Newton iterations {iters}; peak {max(began_mb, peak_mb()):.0f} MB')
+    return {'wall_s': walls.tolist(), 'force_n': forces, 'iterations': iters}
+
+
 def main() -> int:
     began = time.perf_counter()
     report = {'bars_fixed_before_run': True, 'recorded_failures': sorted(RECORDED_FAILURES)}
@@ -554,6 +837,21 @@ def main() -> int:
     report['R1'] = r1_crop(heel, low)
     report['M3'] = m3_convergence(record, mesh)
     report['census'], report['census_total'] = k11_unanchored()
+    # --- added 2026-09-18 (pre-registered in the header before any of it ran)
+    report['G'] = g_fitted(mesh, record)
+    d1_local_depth()
+    heel_median = stl.segment_layer(ROOT, HEEL, surface='fitted', depth='segment_median')
+    heel_local = stl.segment_layer(ROOT, HEEL, surface='fitted', depth='local')
+    report['M4'] = m4_core_height({'voxel median': heel, 'fitted median': heel_median, 'fitted local': heel_local}, mesh)
+    report['S'] = s_fast(heel_local, heel_median, low)
+    report['RT1'] = rt_ramp(heel_local, low, 0.002, 'RT1', 'fitted-local heel')
+    report['RT1m'] = rt_ramp(heel_median, low, 0.012, 'RT1m', 'fitted-median heel')
+    del heel_median, heel_local
+    report['CV_median'] = cv_convergence('segment_median', 0.006, ('CV1', 'CV2'))
+    report['CV_local'] = cv_convergence('local', 0.006, ('CV3', 'CV4'))
+    report['CV_local_2mm'] = cv_convergence('local', 0.002, ('CV5', 'CV6'))
+    report['CV_heel_median'] = cv_convergence('segment_median', 0.006, ('CV7', 'CV8'), fixture='heel')
+    report['CV_heel_local'] = cv_convergence('local', 0.002, ('CV9', 'CV10'), fixture='heel')
     report['results'] = results
     report['failures'] = failures
     report['peak_memory_mb'] = peak_mb()
