@@ -19,13 +19,278 @@ the plant's integration loop; **the first section below puts it there, and measu
 that costs.** It is still not the whole participant mode: it is the part that was buildable
 from what was already on disk, with the reason each remaining part is blocked.
 
-Code: `ihm/assembly/soft_tissue_layer.py`. Selection: `ihm/assembly/plant_options.py`
-(`soft_tissue`: `layer_map_*` is the layer as first built, bit for bit; `layer_fitted_local_*`
-is the fitted, local-depth layer; `*_coupled` is the same layer, in the plant's loop).
+**And the coupling is not how the layer should reach the plant.** The first section below
+measures that an explicit reaction is 10x outside its own accuracy bar even at one solve per
+step; the section above it takes the consequence — the layer is used OFFLINE to calibrate the
+engine's own implicit contact element, which is solved inside the integrator at no per-step
+cost. That works on the heel to 4.8–6.1% and fails on the forearm at 39.8%, and both halves
+are results.
+
+Code: `ihm/assembly/soft_tissue_layer.py` (the layer) and `ihm/assembly/contact_law.py` (the
+fitted law). Selection: `ihm/assembly/plant_options.py` — `soft_tissue`: `layer_map_*` is the
+layer as first built, bit for bit; `layer_fitted_local_*` is the fitted, local-depth layer;
+`*_coupled` is the same layer, in the plant's loop; and `segment_contact: skin_layer_fitted`
+is the implicit law the layer implies.
 Batteries: `scripts/verify_soft_tissue.py` → `data/derived/soft-tissue-layer-v1/report.json`,
-and `scripts/verify_soft_tissue_coupled.py` → `data/derived/soft-tissue-coupled-v1/report.json`.
+`scripts/verify_soft_tissue_coupled.py` → `data/derived/soft-tissue-coupled-v1/report.json`,
+and `scripts/verify_contact_law_fit.py` → `data/derived/contact-law-fit-v1/verification.json`.
 Also: `scripts/build_soft_tissue_local_depth.py`, `scripts/census_soft_tissue_fitted.py`,
-`scripts/measure_soft_tissue_speed.py`.
+`scripts/measure_soft_tissue_speed.py`, `scripts/measure_contact_law_fit.py`.
+
+---
+
+## 2026-09-18 (later still): the contact law the layer IMPLIES, fitted offline and solved implicitly
+
+The section below this one ends on a negative that is really an instruction: the reaction
+grows at **1,472.86 N/s**, so a 10% bar allows a hold of **1.0 ms**, and *even one solve per
+plant step is 10x outside that bar* — an explicit coupling cannot be repaired by running it
+more often, it has to be **implicit**. It also costs 53.9 ms per 10 ms step on one segment.
+
+The engine already carries an implicit contact element: `ElasticFoundationForce` over a
+`ContactMesh`, solved inside the error-controlled integrator, which is what the segment
+contact bundles use. So the layer is used **offline as the ground truth** and that element's
+one elastic parameter is fitted to it. The answer is not uniform, and the shape of the split
+is the result:
+
+| | |
+|---|---|
+| **on the heel it works, on both heels** | a single stiffness reproduces the 3-D layer to **4.84%** (`calcn_l`) and **6.11%** (`calcn_r`) median on penetrations the fit never saw, inside the layer's own 10% convergence bar |
+| **and the shipped rule was already right there** | the bundle's own **unfitted** `k = E_app/h` reads **4.47%** on `calcn_l` — very slightly BETTER than the fit — and 16.00% on `calcn_r`. F2 FAILED on both: neither fit beats the trivial baseline by the √2·bar a measured baseline demands |
+| **on the forearm it does not work** | on `ulna_l`'s own collapse poses the fit is **39.84%** median and **470.71%** at worst, and `F_layer/G` spans **12.0x**. F1 FAILED, and by this measurement's own pre-registered outcome (c) `ulna_l` carries **no fitted stiffness at all** in the delivered bundle |
+| **and a single k is pose-dependent even within one segment** | the `calcn_l` stiffness fitted at the 17.26° heel pose is **22.76%** off at the 12.59° one. The two poses' effective stiffnesses are 1.031e7 and 1.352e7 Pa/m — **31% apart** |
+
+Code: `ihm/assembly/contact_law.py`. Measurement: `scripts/measure_contact_law_fit.py` →
+`data/derived/contact-law-fit-v1/report.json`. Battery:
+`scripts/verify_contact_law_fit.py` → `.../verification.json`, 22 gates, 1 FAILED and
+recorded. Selection: `plant_options.SEGMENT_CONTACT_BUNDLES['skin_layer_fitted']` and
+`['skin_layer_fitted_carried']`. Logs: `logs/measure_contact_law_fit.run{1-F2H-F1U-FAILED,2}.log`,
+`logs/verify_contact_law_fit.run{1-V1c-FAILED,2}.log`.
+
+### The law was read out of the engine's source, and the engine confirms it to 2.7e-15
+
+`data/raw/mechanics/simbody/Simbody/src/ElasticFoundationForce.cpp`: `springPosition[i]` is
+the face **centroid**, `springArea[i]` its area, and `processContact` skips any face whose
+centroid is not inside the other object and otherwise applies
+`f = k · area · distance · (1 + c·v_normal)` at the **nearest point on the support**.
+`areaScale` is 1 because OpenSim registers parameters only for a `ContactMesh`
+(`ElasticFoundationForce.cpp:86-92`) and the floor is a `ContactHalfSpace`. Against an
+axis-aligned half-space the nearest point is the perpendicular projection, so
+
+    F(pose, k) = k · Σ_{centroid inside} area_f · depth_f · n̂
+
+— **linear in k at a fixed pose**, which makes every fit here a one-parameter closed-form
+fit against a purely geometric integral `G(pose)`. No seed, no iteration, no generator.
+
+**The cross-implementation gate (V2).** A plant is built from the fitted bundle and read
+**at rest** — the run's own reported speeds are checked to be exactly zero rather than
+inferred from the fact that nothing has been advanced — because at rest `v_normal` and the
+slip velocity are identically zero and only the elastic term survives. Over ten contacting
+skin meshes at three heights and 72 to 5,519 faces, the Python law and OpenSim's own
+reported force agree to **2.72e-15** relative, and the engine reports back exactly the
+stiffness the artefact fitted. The control that can fail, a 1.5x stiffness, differs by
+0.5000.
+
+**In MOTION the same comparison is out by up to 3.2x, and that is not an error.** The
+engine's force there also carries friction and the dissipation factor. A quasi-static layer
+contains no information about either, so **only the elastic term is fitted** and the
+dissipation and friction coefficients stay the shipped engineering constants. That is a
+limit of what the layer can say, not a choice.
+
+### The fixtures, the split and the baselines
+
+Every fixture is one this repo had already chosen by measurement.
+
+| | fixture | penetrations |
+|---|---|---|
+| **H** | `calcn_l` **heel fixture** — least rotation about z keeping the forefoot half clear at 6 mm, by bisection on the skin mesh: **17.2552236013°** | 0.5 → 4.0 mm by 0.5 |
+| **H2** | the same derivation at **3 mm** forefoot clearance: **12.5920935886°**. Cross-fixture only, never trained on | 0.5 → 4.0 mm |
+| **HR** | `calcn_r` heel fixture: **17.8740180872°** | 0.5 → 4.0 mm |
+| **S** | `calcn_l` at identity rotation — **the seam wedge**, see the correction below | 0.5 → 2.5 mm |
+| **U** | `ulna_l` at **the plant's own poses**: a 140-step uncoupled collapse from `pelvis_ty = 1.03`, every step whose skin is below the floor, solved COLD at each so the measurement is a function of its own pose | steps 81–103, 1.65 → 10.37 mm |
+
+TRAIN on the odd-numbered penetrations, SCORE on the even ones — interleaved, so the
+held-out points are interpolation; `U` trains on even-indexed loaded poses and scores on the
+odd ones. A pose where the layer carries exactly zero, or where the foundation touches no
+face, is dropped and reported rather than weighted as zero. Baselines on every scored set:
+predict zero, predict the mean, **the bundle's own unfitted `k = E_app/h`** (the trivial one
+the brief asks for), and the uniform `skin_material` triple E = 3000 Pa, ν = 0.45,
+h = 6.6 mm → k = 1.7241e6 Pa/m.
+
+Bars fixed before any fit existed: **F1**, held-out median relative error ≤ **0.10**, which
+is the layer's own convergence bar (CV7–CV10) and the only place the number comes from;
+**F2**, beat the unfitted baseline by more than **√2 · 0.10 = 0.1414**, because that baseline
+was measured against the same uncertain layer and a bare "beats the baseline" compares one
+uncertain number with another.
+
+### What each segment came out at
+
+| | `calcn_l` (H) | `calcn_r` (HR) | `ulna_l` (U) |
+|---|---:|---:|---:|
+| fitted k (Pa/m) | **1.0517e7** | **9.5056e6** | 4.2623e5 |
+| as a Young modulus at the declared ν, h | 51.60 kPa, h 18.61 mm | 46.43 kPa, h 18.53 mm | 1.34 kPa, h 11.92 mm |
+| the bundle's unfitted k = E_app/h | 1.0347e7 | 1.0392e7 | 3.2826e6 |
+| fitted / declared | **1.016** | **0.915** | **0.130** |
+| held-out median, **fit** | **4.84%** | **6.11%** | 39.84% |
+| held-out max, fit | 8.84% | 12.10% | 470.71% |
+| held-out median, **unfitted k** | 4.47% | 16.00% | 374.93% |
+| held-out median, uniform E/ν/h | 82.81% | 80.75% | 149.45% |
+| skill vs predict-zero / predict-mean (fit) | 0.9985 / 0.9965 | 0.9980 / 0.9953 | 0.8478 / 0.7004 |
+| `F_layer/G` spread over the fixture | 1.37x | 1.45x | **12.0x** |
+| F1 / F2 | PASS / **FAILED** | PASS / **FAILED** | **FAILED** / PASS |
+| pre-registered outcome | (b) | (b) | **(c)** |
+
+Two heels, two segments, and they agree: the elastic foundation **can** carry the layer's
+heel response with one number, and the layer's own two heels differ from each other by 10%
+in fitted stiffness while the declared rule says they are the same to 0.4%. Both differences
+are inside the layer's 10% bar, which is the honest reading of all of it.
+
+**The uniform `skin_material` triple is 81–83% wrong on both heels** and is the baseline the
+per-segment layer map replaced; this measurement is the first independent confirmation that
+replacing it was right.
+
+### Where it fails, in newtons, and what the failure is NOT
+
+On `ulna_l` the effective stiffness `F_layer/G` reads, pose by pose:
+
+| step | penetration | layer | `G` | `F/G` | layer contact nodes |
+|---:|---:|---:|---:|---:|---:|
+| 81 | 1.654 mm | 0.0142 N | 1.844e-07 | **7.69e4** | **4** |
+| 82 | 1.732 mm | 0.0151 N | 2.017e-07 | **7.47e4** | **4** |
+| 98 | 1.999 mm | 0.4472 N | 4.991e-07 | 8.96e5 | 19 |
+| 99 | 3.921 mm | 1.6869 N | 2.359e-06 | 7.15e5 | 67 |
+| 100 | 5.741 mm | 4.0092 N | 5.818e-06 | 6.89e5 | 121 |
+| 101 | 7.436 mm | 7.3764 N | 1.084e-05 | 6.81e5 | 182 |
+| 102 | 8.984 mm | 11.7449 N | 1.689e-05 | 6.95e5 | 231 |
+| 103 | 10.371 mm | 16.9001 N | 2.407e-05 | 7.02e5 | 268 |
+| 104 | 11.604 mm | — | — | — | `SoftTissueLeftDomain`, min J 0.135 |
+
+From step 99 on, `F/G` is constant to **±2.5%** — a single k follows the layer there
+perfectly well. The 12x is two poses, and they are the two where the layer's own contact
+patch is **four nodes**. In absolute terms the whole disagreement at steps 81–82 is
+**0.014 N**; the fit's largest held-out error in newtons is **6.64 N** at step 103 against a
+16.90 N layer force, and the unfitted stiffness's is **62.11 N**.
+
+**A6, the arm built to test that, and what it actually established.** `ulna_l` was rebuilt
+at 4 mm and 3 mm spacing (14,874 → 27,555 → 58,071 DOF) and re-solved at the same poses.
+At step 81 `F/G` reads **7.69e4 / 6.30e4 / 6.43e4** — it does not move toward the deep-pose
+value. But the contact node count went **4 → 2 → 4**: refining the mesh globally did not
+refine the *contact patch*, so the arm **excludes a global mesh-coarseness effect and does
+not test the node-count hypothesis at all**. It is recorded as that, neither confirming nor
+excluding. The instrument that would settle it is a locally refined patch, and it does not
+exist. (The finer meshes also leave the constitutive domain at the deeper poses — min J
+0.018 at step 103, 4 mm — so the comparison cannot be carried there.)
+
+**Two mechanisms proposed for the forearm's 7.7x, one measured down and one excluded.**
+
+* *The declared thickness is a segment MEDIAN and the contact is not at the median.* Measured
+  from the depth map's own values at the skin vertices under the contact patch: `ulna_l`
+  reads **23.71 mm** (range 15.16–26.61) against its declared median of 11.92 mm — **2.0x**.
+  `k = E_app/h_local` is then 1.650e6 Pa/m, which is exactly **half** the declared 3.283e6
+  and accounts for a factor of 2.0 of the 7.7x. **The remaining 3.9x is not thickness.** The
+  same correction makes the heels slightly WORSE: their local depths under the contact are
+  15.79 and 16.57 mm against declared 18.61 and 18.53, giving 1.219e7 and 1.162e7 Pa/m
+  against fitted 1.052e7 and 0.951e7.
+* *The footprint is too narrow for the confined reading.* **Excluded.** The confined reading
+  of the layer modulus is a claim about a load much wider than the layer is thick, so the
+  contact footprint's minor extent was measured at every pose: `calcn_l` 8.9–41.1 mm over
+  h 18.61 (ratio **0.48–2.21**), `calcn_r` 10.9–38.5 over 18.53 (**0.59–2.08**), `ulna_l`
+  14.4–43.9 over 11.92 (**1.21–3.69**). The forearm's footprint is *wider* relative to its
+  thickness than the heel's and it is 7.7x softer anyway, so the footprint-to-thickness
+  reading does not explain it. What is left is the shape of the rigid core — a rounded
+  forearm lets the tissue escape around it in a way a broad flat heel does not — and that is
+  **a hypothesis with no instrument here**, stated as one.
+
+### A correction, and a fixture that landed on the wrong thing
+
+Fixture **S** was pre-registered as "`calcn_l`, the flat stance fixture (identity rotation)",
+citing the coupled battery's P2. **That citation was wrong.** P2's flat stance pose is the
+*plant's own* `calcn_l` transform; identity rotation with the plane taken from the skin
+mesh's lowest vertex is vertex 780 on the rim of the cut between `calcn_l` and the toes —
+**the 1.7 mm seam wedge this file already withdrew every earlier "heel" number for**. Run 1
+duly measured the layer carrying exactly **0 N at 0.5, 1.0, 1.5 and 2.0 mm** and 0.0909 N at
+2.5 mm, which reproduces the withdrawn fixture's own CV5/CV6 row (0 / 0 / 0 / 0.094 /
+0.096 N). Its cross-fixture figure is **948%** on the one loaded point.
+
+It is kept and recorded exactly as measured, and it is **not used to judge the contact law**:
+one loaded point on a seam wedge is a statement about the wedge. The cross-fixture test that
+does land on the heel was added beside it (H2, above) and reads 22.76%. The failure mode is
+worth the line it costs: *a cross-fixture test has to land on the part of the object the
+question is about* — the same correction this file made when it derived the heel fixture in
+the first place, made again, in the same place, by someone who had read it.
+
+### The per-step cost, and the one number that is NOT the substitution's cost
+
+| | ms per 10 ms plant step |
+|---|---:|
+| historical plant, inertia-ellipsoid COM spheres (`None`) | **132.9 / 138.2** — two bitwise-identical runs, so the noise floor here is ±4% |
+| the layer-map segment-contact bundle, 20 skin meshes, **unfitted** | **459.8** |
+| the same bundle, **fitted** | **455.1** |
+| the coupled LAYER, on ONE segment, ON TOP of its plant | **53.9** (this file, previous section) |
+
+**`fitted − unfitted` read +29.4 ms in run 1 of the battery and −4.7 ms in run 2. The sign
+flips, and that is the finding.** The fitted bundle adds no force element and no per-step
+evaluation: its meshes are byte-identical to the source bundle's by sha256 and its record
+set is the same, so the two plants differ by **exactly one constant**. A different stiffness
+gives a different trajectory and the error controller does different work on it — a
+numerator holding work the treatment never did, the same shape this repo has recorded twice
+before. **The difference is not attributable and is not quoted as a cost.**
+
+What IS attributable is structural and is the whole point: **the law is solved inside the
+integrator, so it costs nothing per step that the segment-contact bundle did not already
+cost.** Against the coupling it replaces — 53.9 ms per 10 ms step, for one segment, and a
+step behind by construction — that is the difference between 5.4x short of real time and not
+short at all. The bundle itself is not free (460 ms against the COM spheres' 133), but that
+is the price of contacting 20 real surfaces instead of 20 balls, and it is paid by
+`skin_layer_map` already.
+
+### A bug this work uncovered: the per-segment stiffness had never been selectable
+
+`{'segment_contact': 'skin_layer_map'}` **raised** at plant construction:
+`Bundle carries a per-segment layer map; a caller E, p or h would override it`.
+`plant_options.resolve_fidelity` decided "does this bundle carry a per-record layer map?"
+from a top-level manifest key that `skin-layer-map-v1` does not carry, while
+`NativeMechanicalStream` decides it from the **records**. So the resolver passed the uniform
+triple with every layer-map bundle and every such selection died. **This body's own measured
+per-segment stiffness — the bundle's entire reason to exist — had never been reachable
+through the resolver.** Both sides now read the same records, which is the only form of the
+fix that cannot drift apart again, and it is gated from both sides (V7: a layer-map bundle
+resolves without a triple, *and* a bundle without a layer map still receives one — fixing the
+first by dropping the material everywhere would have broken the second).
+
+### What the delivered bundle is, and what it is not
+
+`skin_layer_fitted` (feet replaced) and `skin_layer_fitted_carried` (source feet kept) are
+`ihm.segment-contact-meshes.v1` bundles whose meshes are byte-identical to
+`skin-layer-map-v1` and whose per-segment stiffness is:
+
+* **fitted**, for `calcn_l` and `calcn_r`, with each record carrying its held-out median and
+  max error and its ratio to the layer map's own number;
+* **refused**, for `ulna_l` — F1 failed, so by the pre-registered outcome (c) the deliverable
+  is the measurement and the record keeps the layer map's k and says so in words;
+* **unfitted**, for the other 17 records, marked as such, because no layer measurement exists
+  for them.
+
+Fitting the rest is compute, not a blocker: a segment's layer must be built (0.3 s for a
+heel, 2.7 s for `ulna_l`, 49.8 s for the torso) and solved at 8 poses, and the largest
+segments — pelvis 192,870 DOF, torso 183,729 — would not fit the 4 GiB budget at the
+spacings that matter.
+
+**Three things it is not**, and they are in the selection's own disclosure:
+
+1. It is a **fit to a layer converged to no better than ~10%**. No force from it is good to
+   better than that, and the two heels' 10% disagreement with each other is that bar being
+   visible.
+2. It **does not deform**. Each spring is independent; there is no lateral bulge and no load
+   sharing between neighbours. That is the whole physical difference between a foundation and
+   a continuum, and it is exactly what the `ulna_l` failure is made of.
+3. Only the **elastic** term is fitted. The dissipation and the friction coefficients are the
+   shipped engineering constants and this measurement says nothing about them.
+
+**And one gate is recorded FAILED.** V1c asked that re-ordering and re-winding the mesh's
+faces leave the foundation integral **bitwise** unchanged. It does not: 9.9e-23 m³ on
+3.55e-08, **2.79e-15 relative** — the summation order of four floats. A bitwise bar on a sum
+is a bar on the order of the sum. The bar was not moved; V1d was added beside it at 1e-14 and
+passes, and V1c still prints FAILED.
 
 ---
 
@@ -690,6 +955,10 @@ an observed failure, not a tested prediction. The script says so.
 
 ## What it is NOT
 
+- **A LAW fitted to it IS in the native integrator; the layer itself is not.** `skin_layer_fitted`
+  puts the elastic foundation's stiffness, calibrated offline against this layer, inside the
+  engine's own error-controlled step. That is a fit to a ~10%-converged layer, it does not
+  deform, and it is refused on the one segment where it failed its bar. See the third section.
 - **Still not in the native integrator, but now in the plant's LOOP.** The engine integrates
   the rigid scaffold and its own contact, and the layer is not one of its force elements. What
   changed 2026-09-18 (first section): a coupled identity (`*_coupled`) makes
@@ -721,7 +990,7 @@ an observed failure, not a tested prediction. The script says so.
 | wanted | blocked by | kind |
 |---|---|---|
 | ~~the layer in the plant's integration loop~~ | **DONE 2026-09-18**, first section. What remains is cost (53.9 ms per 10 ms step on one segment) and the fact that no cadence amortises it: the contact develops at 1,473 N/s and a 10% bar allows a 1.0 ms hold | — |
-| an **implicit** coupling (the layer inside the plant's own step, not held across it) | the engine's force port takes a force, not a stiffness, and an explicit reaction is a step behind by construction. Measured: even at one solve per plant step the coupling is 10x outside its own accuracy bar on a fast contact | solver + engine interface |
+| ~~an **implicit** coupling (the layer inside the plant's own step, not held across it)~~ | **ANSWERED SIDEWAYS 2026-09-18**, and the answer is not to put the layer in the step. The engine's force port takes a force and not a stiffness, so the layer itself cannot be implicit through it; what CAN be is a law CALIBRATED to the layer. `ElasticFoundationForce` fitted offline reproduces the heel layer to 4.8% (`calcn_l`) and 6.1% (`calcn_r`) held out, inside the layer's own 10% bar, and is solved inside the integrator at no per-step cost. It FAILS on `ulna_l` at 39.8% and that segment is refused a fitted number. What remains wanted is the layer itself implicit, which still needs a stiffness port | engine interface (for the layer); **done, with a measured domain, for the law** |
 | a coupled foot | the scaffold's source foot spheres reach 36 mm below the skin, so the layer never touches in any upright trajectory; and at the stance pose it carries 5.57 N at 2.5 mm and leaves the constitutive domain at 3.0 mm against 761 N of weight | geometry + model |
 | coupling without a double count | no option in this repo removes ONE segment's engine contact, so a coupled segment that has an engine contact element carries both. Visible in every frame, not removable from here | plant options |
 | real-time cost | Python/numpy at 7,296 DOF: triangular solves and element kernels take ~1 ms each, times 5–8 Newton iterations and 30–60 CG steps. The linear condensed reduction is fast but 2–27% wrong. Would need a compiled solver, or a nonlinear reduced basis that passes K2/K3 | compute (buildable) |

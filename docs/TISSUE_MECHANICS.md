@@ -1107,3 +1107,69 @@ exact label lookup (0.00%); cartilage inside bone measured by VOLUME rather than
 **Not to be used as contact geometry** until the joint space is resolved -- in this body's canonical
 bones, or by carrying the cartilage with the plant's own femur and tibia, which set the running
 joint's gap.
+
+---
+
+## The in-vivo layer modulus as a CONTACT STIFFNESS: right for a heel, 7.7x too stiff for a forearm (2026-09-18)
+
+`data/derived/segment-contact-meshes/skin-layer-map-v1` gives every segment a contact
+stiffness by one rule: **`k = E_app / h`**, with `E_app` the in-vivo apparent layer modulus
+from `data/sources/in-vivo-soft-tissue-compression.json` and `h` that segment's median
+soft-tissue depth. That rule has been the plant's skin stiffness since it was written, and
+nothing had ever tested it against a 3-D continuum. `ihm/assembly/soft_tissue_layer.py` is
+now that continuum, so it can be: solve the layer at poses that load it, and ask what single
+elastic-foundation stiffness reproduces its force. Full measurement, fixtures, held-out split
+and baselines in `docs/SOFT_BODY.md`; what belongs here is what it says about the **tissue**.
+
+| segment | `E_app` | declared `h` | `k = E_app/h` | k the LAYER implies | ratio |
+|---|---:|---:|---:|---:|---:|
+| `calcn_l` | 192.55 kPa (heel pad, Gefen 2001 / Teng 2022 / Yang 2022) | 18.61 mm | 1.0347e7 Pa/m | **1.0517e7** | **1.016** |
+| `calcn_r` | 192.55 kPa | 18.53 mm | 1.0392e7 Pa/m | **9.5056e6** | **0.915** |
+| `ulna_l` | 39.13 kPa (Linder-Ganz 2007 buttock fat, **UNSOURCED for this site**) | 11.92 mm | 3.2826e6 Pa/m | **4.2623e5** | **0.130** |
+
+**On the heel the rule is right, on both heels, and that is the first independent check it
+has ever had.** The fitted and declared stiffnesses agree to 1.6% and 8.5%, and the fitted
+law reproduces the layer's force to 4.84% and 6.11% median on penetrations it never saw —
+inside the layer's own 10% convergence bar. Where the tissue is thick, the pad is broad and
+the core beneath it is flat, a confined column with the measured layer modulus **is** what a
+3-D continuum does.
+
+**On the forearm it is 7.7x too stiff**, and the fit there fails its own bar (39.84% median,
+470.71% worst), so `ulna_l` is delivered with **no fitted stiffness at all**. Two candidate
+causes were put to instruments:
+
+* **The declared `h` is a segment MEDIAN and the contact is not at the median — worth a
+  factor of 2.0.** Read from the depth map's own values at the skin vertices under the
+  contact patch: `ulna_l` is **23.71 mm** deep there (15.16–26.61) against a declared median
+  of 11.92 mm. `E_app/h_local` is 1.650e6 Pa/m, exactly half the declared number. The same
+  correction makes the heels slightly worse — 15.79 and 16.57 mm locally against declared
+  18.61 and 18.53 — so **the median is the better number under a heel and the wrong one under
+  a forearm**, which is what a median over a whole segment does.
+* **The footprint is too narrow for the confined reading — EXCLUDED.** The confined mapping
+  (`soft_tissue_layer.LAYER_MODULUS_MAPPINGS`) is a claim about a load much wider than the
+  layer is thick, and the source card does not report the ratio the measurement was made at,
+  so it was measured: the contact footprint's minor extent over the declared thickness is
+  0.48–2.21 for `calcn_l`, 0.59–2.08 for `calcn_r` and **1.21–3.69 for `ulna_l`**. The
+  forearm's footprint is *wider* relative to its tissue than either heel's and it is 7.7x
+  softer anyway. The footprint-to-thickness reading does not account for it.
+
+The **3.9x that is left** is not thickness and not footprint width. The remaining candidate
+is the shape of the rigid core — a rounded forearm lets the tissue escape around it where a
+broad flat calcaneus does not — and **no instrument here tests that**; it is written down as
+a hypothesis, not a cause.
+
+**And the modulus itself is the weaker half of the pair.** `calcn_*` carries a heel-pad
+modulus measured in vivo on heels; `ulna_l` carries a **buttock-fat secant, recorded in the
+bundle's own manifest as UNSOURCED for this site**. The segment where the rule holds is the
+one whose modulus was measured on that tissue, and the segment where it fails by 7.7x is one
+where it was borrowed. That is a correlation over two sites and not a demonstration, but it
+is the ordering a borrowed constant would produce, and this repo has a standing note about
+parameters adopted by analogy.
+
+**What this does NOT close.** The fitted law is an elastic foundation: independent springs,
+no lateral bulge, no load sharing between neighbours. It closes none of the rows in the
+honest list above, and it is a fit to a layer that is itself converged to no better than
+about 10% — the two heels' own 10% disagreement with each other is that bar being visible.
+Code `ihm/assembly/contact_law.py`, measurement `scripts/measure_contact_law_fit.py`,
+battery `scripts/verify_contact_law_fit.py` (22 gates, 1 FAILED and recorded), selection
+`plant_options.SEGMENT_CONTACT_BUNDLES['skin_layer_fitted']`.
