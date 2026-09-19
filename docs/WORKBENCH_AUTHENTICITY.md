@@ -997,49 +997,60 @@ an honest label in the UI rather than only in the source.
 
 ## The register, ordered by what to do next
 
-Updated 18 Sep 2026. Items 1–3 are done and verified; the numbered order below is
-what remains, with what each one now actually requires.
+Rewritten 18 Sep 2026, end of day. "Done" means verified by a re-run here, not by a
+worker's report.
 
-**Done**
+**Closed today**
 
-1. ~~Forward the plant kwargs~~ — **done** (§1.1). Joint stops, real segment contact
-   surfaces including both skin arms, and the admissible 66 tissue elements are
-   reachable from a live session and from the workbench UI, with the bundle's own
-   declared material and a disclosure on every frame.
-   `scripts/verify_plant_fidelity.py`.
-2. ~~Call `AnatomyPoser`~~ — **done** (§4.1). The frame carries 22 segment motions
-   that reconstruct 3,995 entity poses exactly, at 8,111 bytes against 1,159,032.
-   `scripts/verify_display_pose.py`.
-3. ~~Delete or rename the reduced engine~~ — **done** (§6.1). It is
-   `/api/reduced-kinematics/sessions`, the old path is a 410 naming the body, and
-   every payload leads with `is_body_simulation: false`. Deleting the module
-   outright is blocked only by three non-solver things it owns; §6.2 has the
-   sequence.
+| | |
+|---|---|
+| §1.1 | plant kwargs forwarded — stops, real segment contact, 66 tissue elements, reachable from a live session and the UI |
+| §1.3 | the `CoordinateLimitForce` damping was **57.3×** its declared value; fixed with the plant bit-identical |
+| §4.1 | the verified `AnatomyPoser` is called; 22 segment motions, 8,111 bytes/frame, exact reconstruction |
+| §6.1 | the reduced engine cannot be mistaken for the body; old path 410s |
+| §0.3 | one source of truth for stature and mass — and `77.6122029` **has** a derivation: a BioGears patient's fed weight |
+| §3.1 | a size-principle recruitment pool and the source's knee/hip reflexes, default unchanged |
+| §3.4 | metabolic supply can limit force, opt-in, declared as accounting not physiology |
+| §7.1 | the colorimetry campaign ran; the literature measures almost none of the body |
+| — | the 25-body variant **runs end to end**: force frame, skin weights, display pose, all 23 checks |
+| — | the skin sensor cap is the quadrature (**21,382**), not 128 |
+| — | the bed skin foundation **loads again** — its manifest had been stale since 8 Sep |
+| — | nociception: cutaneous and visceral transduction, every constant cited |
+| — | soft tissue: a layer that deforms and pushes back on its bone (§2.1) |
 
-**Next, in order**
+**Open, in order**
 
-4. **Give the existing joints muscles that can drive them.** This displaced
-   "upper-body muscles": the plant already has 92–98 muscles with 12–18 above the
-   pelvis (§0.1, withdrawn and corrected). What it does not have is a shoulder
-   girdle, and — measured on the new spine variant — **no muscle has a moment arm
-   about any newly freed coordinate, exactly 0**, because the 80 source paths are
-   polynomials fitted in the coordinates that existed when they were fitted.
-   Un-welding a joint does not give a muscle a way to move it.
-5. **The shoulder girdle.** MoBL-ARMS 4.1 is already on disk; the blockers are
-   girdle bodies, a one-time torso mass partition, a coordinate map and an
-   **unresolved licence** that should be settled first
-   (`docs/UPPER_BODY_ACTUATION.md`).
-6. ~~Fix the `CoordinateLimitForce` damping conversion~~ — **done** (§1.3), and no
-   stopped run needs redoing: the constants were re-declared at the value the plant
-   ran, and the stopped plant is bit-identical across the fix.
-7. **Extend the segment binding past 22 segments** so the display can follow the
-   spine variant's new bodies; today the anatomy still rides `torso`.
-8. **One stature and one mass** (§0.3).
-9. **Recruitment instead of a rate gain; reflexes past the ankle** (§3.1).
-10. **Deformable skin with self-contact; afference past 128 points** (Tier 2, §4.2).
-11. **Metabolic supply as a force limit rather than an exception** (§3.4).
-12. **Posture in physiology; fix the evaporative defect** (Tier 5).
-13. **Colorimetry:** campaign run (§7.1) — 64 roles remain synthesized because the
-    literature does not measure them; progress now needs the nine library requests.
+1. **Finish the ankle-collapse mechanism.** The factor is the torso repartition
+   (§0.2). Two mechanisms have been **excluded by purpose-built arms** — the subtalar,
+   then the support plane. What survives: the proxy sphere radius (0.2577 → 0.3090 m,
+   unchanged by pinning the floor) against the repartitioned inertia itself. Needs a
+   per-body proxy-radius engine option, then `tweld` with the torso ball pinned at
+   0.2577 m. **Queued for the next sequenced engine batch.**
+2. **Couple the soft tissue into the integration loop.** It deforms, it is not in the
+   loop, and a loaded step costs 136–159 ms against the plant's 10 ms (§2.1). Needs a
+   cadence chosen by measurement, not taste.
+3. **The shoulder girdle.** MoBL-ARMS 4.1 is **non-commercial BSD-3 with two required
+   citations** (established from primary sources), and is already published in a public
+   repo — an owner decision, not an engineering one. The licence-clean alternative is
+   Seth 2019 (CC BY 4.0), whose provenance and completeness are being established.
+4. **Muscles for the joints that still have none.** The thoracic joint has no donor
+   muscles (candidate attachments sit 32 mm above a joint centre itself uncertain to
+   62 mm); the wrists wait on a forearm donor. The subtalar and neck are done, and the
+   toe joint's geometry is now corrected in a variant (§0.2a).
+5. **Decide the identified plant's toe joints** (§0.2a). Measured cost is negligible;
+   the corrected foot is 27.8 mm longer, so adopting it means re-identifying the plant.
+6. **A fatigue law.** Blocked on the engine: no published law runs on what BioGears
+   exposes (no phosphate, pH or PCr). Until then supply-limiting is bookkeeping.
+7. **Pain as a reward.** Transduction exists; the reward decision is deliberately not
+   made, and a damage stimulus **during motion** does not exist — contact binds only to
+   the supine reference pose.
+8. **Posture in physiology**, and the upstream evaporative defect (Tier 5).
+9. **Deformable skin with self-contact**, sliding for fascia and bursae, muscle as a
+   volumetric activation-coupled solid (§2.1).
+10. **Colorimetry:** 64 roles remain synthesized; progress needs the nine library
+    requests, not more searching (§7.1).
+11. **Two bodies of different stature and mass** stay two bodies (§0.3). Unifying them
+    is a modelling decision; the seam is now declared in one place.
 
-Items 4–7 are the body. Items 8–13 are the long tail.
+Items 1–5 are the body. Items 6–11 are the long tail. The milestone — the body pushing
+itself up off the floor — is gated on 3 and 4.
