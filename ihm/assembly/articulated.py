@@ -10,7 +10,17 @@ import numpy as np
 from ihm.native.mechanical_stream import NativeMechanicalStream,finite,vec
 from .sensorimotor_catalog import native_muscle_catalog
 from .snapshot_data import clone_snapshot_data
-from .continuous_surface_binding import ContinuousSurfaceBinding
+from .continuous_surface_binding import ContinuousSurfaceBinding,DEFAULT_ASSET
+
+# The skin's graph-diffused linear blend, one per anatomy plant (anatomy_pose.PLANTS), each
+# solved over that plant's OWN segments by scripts/build_continuous_surface_binding.py. The
+# blend is fitted to a set of segment supports and ContinuousSurfaceBinding.from_root refuses
+# any other set, so a 25-body variant cannot run on the 22-segment blend. The base entry is
+# the asset every result before 18 Sep 2026 used, passed exactly as the default was.
+SURFACE_BINDINGS={
+    'engineering_stance_v1':DEFAULT_ASSET,
+    'articulated_spine_v1':'data/derived/continuous-surface-binding-articulated-spine-v1/continuous_surface_binding.json.gz',
+}
 
 BASIS=np.array([[0.,0.,-1.],[0.,1.,0.],[1.,0.,0.]])
 
@@ -134,9 +144,17 @@ class ArticulatedBodyPlant:
         try:
             self.anatomy_plant,registration_payload,self.registration_extension=self._registration_for_native(payload)
             self.registration=CanonicalRegistration(registration_payload,self.native.snapshot());self.muscle_catalog=self.native.muscle_catalog or native_muscle_catalog(self.root)
-            self.surface_binding=ContinuousSurfaceBinding.from_root(self.root,self.registration)
-            (self.output/'surface_binding.json').write_text(json.dumps(self.surface_binding.manifest(),indent=2)+'\n')
+            # registration.json is written BEFORE the skin blend is loaded: it is the input the
+            # blend's builder takes, so a plant whose blend does not exist yet still leaves
+            # behind what is needed to build it. Its content does not depend on the blend.
             self.source_registration_manifest=self.registration.manifest();(self.output/'registration.json').write_text(json.dumps(self.source_registration_manifest,indent=2)+'\n')
+            self.surface_binding_asset=SURFACE_BINDINGS[self.anatomy_plant]
+            if not (self.root/self.surface_binding_asset).is_file():
+                raise FileNotFoundError('No skin blend for anatomy plant '+self.anatomy_plant+': '+self.surface_binding_asset+
+                    ' -- build it with scripts/build_continuous_surface_binding.py --plant '+self.anatomy_plant+
+                    ' --registration '+str(self.output/'registration.json'))
+            self.surface_binding=ContinuousSurfaceBinding.from_root(self.root,self.registration,asset=self.surface_binding_asset)
+            (self.output/'surface_binding.json').write_text(json.dumps(self.surface_binding.manifest(),indent=2)+'\n')
             self.identity={'canonical_mechanics_sha256':hashlib.sha256(raw).hexdigest(),'canonical_reference_mass_kg':canonical_mass,'effective_native_body_mass_kg':target,
                           'mass_change_basis':'Explicit uniform scaling of source segment masses and inertias; source proportions retained; no second canonical inertial owner'}
             (self.output/'identity.json').write_text(json.dumps(self.identity,indent=2)+'\n')
