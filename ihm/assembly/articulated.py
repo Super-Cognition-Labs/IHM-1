@@ -218,6 +218,40 @@ class ArticulatedBodyPlant:
                     'not_posed':'Entities with no rigid pose are listed on every frame; nothing is silently '
                                 'left at rest. One rigid segment per entity: no soft-tissue deformation, no '
                                 'volume preservation, no sliding, and entities straddling a joint tear at it.'}
+            # THE SOFT TISSUE LAYER, IN THE LOOP (docs/SOFT_BODY.md; ACTUATION_STAGES' "fully
+            # present participant" mode).  A coupled selection poses each named segment's
+            # deformable layer at that segment's OWN transform every step and applies what it
+            # transmits through the canonical force routing below -- the same `forces=` port a
+            # caller uses, so nothing about how a force reaches this plant is new.  An
+            # uncoupled selection (or None) builds no layer and emits no port, which is why
+            # `soft_tissue` still adds nothing to the native kwargs.
+            self.soft_coupling=None;self.soft_state=None;self.soft_receipt=None;self.soft_force_ids={}
+            soft=self.mechanical_fidelity.get('soft_tissue')
+            if soft and soft.get('coupling'):
+                from .soft_tissue_layer import SoftTissueCoupling,build_selected_layers
+                support=soft['support']
+                # The support the layer presses against is the plant's OWN, read from the
+                # engine: y=0 is the upright floor's ContactHalfSpace, and the supine plane is
+                # whatever that run resolved. Never a number typed here.
+                plane=0.0 if environment=='upright' else float(self.native.snapshot()['support_plane_source_x_m'])
+                layers=build_selected_layers(self.root,self.mechanical_fidelity,soft['coupled_segments'])
+                self.soft_coupling=SoftTissueCoupling(layers,plane_axis=support['axis'],plane_sign=support['sign'],
+                    plane_value_m=plane,resolve_interval_s=soft['coupling']['resolve_interval_s'],
+                    method=soft['coupling']['method'])
+                self.soft_state=self.soft_coupling.new_state()
+                # One canonical entity per coupled segment, so the layer's force goes through
+                # `registration.force` exactly as a caller's force does. It must be a NAMED
+                # bone of that segment: a named entity has a fixed owner, so the force cannot
+                # be re-attributed to a neighbour by a nearest-envelope vote.
+                for body in self.soft_coupling.bodies:
+                    ident=self.registration.groups[body]['canonical_bones'][0]
+                    if self.registration.rows[ident]['body']!=body:raise ValueError('Coupled segment force anchor is not owned by its segment: '+body)
+                    self.soft_force_ids[body]=ident
+                self.soft_identity={**self.soft_coupling.identity(),'support_plane_basis':
+                    'the plant\'s own upright floor (y=0)' if environment=='upright' else
+                    'the run\'s own support_plane_source_x_m',
+                    'force_anchor_entities':dict(self.soft_force_ids)}
+                (self.output/'soft_tissue_coupling.json').write_text(json.dumps(self.soft_identity,indent=2,default=str)+'\n')
             self.garments=None
             if enable_garments:
                 from .garment_feedback import GarmentFeedback
@@ -284,6 +318,26 @@ class ArticulatedBodyPlant:
                 'entity_segment_map':'display_pose_map.json',
                 'unbound':copy.deepcopy(self.display_poser.unbound)}
 
+    def _soft_frame(self,native):
+        """What the coupled layers did this step, and the engine's own force beside it.
+
+        A coupled segment that ALSO carries an engine contact element is a second path to
+        the floor. The double count is not hidden: the engine's own resultant on that
+        segment is reported next to the layer's, so a reader can see its size.
+        """
+        engine={}
+        for contact in native['contacts']:
+            body=contact['body_frame']
+            if body in self.soft_coupling.layers:
+                row=engine.setdefault(body,{'elements':[],'force_n':[0.,0.,0.]})
+                row['elements'].append(contact['name'])
+                row['force_n']=(np.asarray(row['force_n'])+np.asarray(contact['force_n'],float)).tolist()
+        return {**copy.deepcopy(self.soft_receipt or {'schema':'ihm.soft-tissue-coupling-frame.v1','pose_time_s':None,'segments':[],'ports':[]}),
+                'identity':copy.deepcopy(self.soft_identity),
+                'engine_contact_on_coupled_segments':engine,
+                'double_count_basis':'The layer does not replace the engine\'s own contact. Any '
+                    'segment listed above with a nonzero engine force is carrying BOTH, and the '
+                    'two are separate models of the same tissue.'}
     def _contact_scope(self):
         """What the body is actually touching the world with, on THIS plant.
 
@@ -324,6 +378,7 @@ class ArticulatedBodyPlant:
                          'constraint_velocity_error':native['constraint_velocity_error'],'external_work_j':native['external_work_j'],'external_power_w':native['external_power_w']},
                 'ownership':{'inertia':'Native source segments exclusively own body mass/inertia','tissues':'Canonical meshes attached to inferred native segment supports; no additional tissue mass integrated','muscle_activation':'Native muscle activation/tendon/fiber states'},
                 **({} if self.display_poser is None else {'display_pose':self._display_pose(native)}),
+                **({} if getattr(self,'soft_coupling',None) is None else {'soft_tissue_coupling':self._soft_frame(native)}),
                 'mechanical_fidelity':copy.deepcopy(self.mechanical_fidelity),
                 'limitations':['Canonical anatomical joint locations and surface continuity remain uncalibrated',*(['Garment partitioned face contact lacks CCD/self/edge/full containment validation'] if self.garments else ['Whole-garment feedback disabled for this plant']),'All-organ volumetric deformation/contact is not implemented by this registration',*([] if self.mechanical_fidelity.get('joint_stops') else ['No coordinate limits are enforced: the model declares ranges, holds zero CoordinateLimitForce, and OpenSim does not clamp during forward dynamics']),*([] if self.mechanical_fidelity.get('tissue_ligaments') else ['No tissue force elements: 645 classified tissue structures exist as geometry and carry no force in this plant'])]}
         if native['environment']=='supine':
@@ -345,6 +400,15 @@ class ArticulatedBodyPlant:
     def snapshot(self):return clone_snapshot_data(self.state)
     def advance(self,dt_s,forces=(),actuation=None):
         old=self.native.snapshot();mapped=[]
+        # The soft tissue solves at the pose the step STARTS from, before anything is
+        # integrated, and it raises rather than clamping when the rigid core would enter the
+        # support. Nothing is caught here: the step does not happen and the plant is left
+        # exactly where it was, which is what `ValueError('Bottomed out')` is for.
+        soft_state=soft_receipt=None;soft_ports=()
+        if self.soft_coupling is not None:
+            soft_state,soft_ports,soft_receipt=self.soft_coupling.advance_state(
+                self.soft_state,{b:r['transform_ground'] for b,r in old['bodies'].items()},finite(dt_s))
+            forces=list(forces)+[self._soft_force(p) for p in soft_ports]
         for f in forces:
             if set(f)!={'id','point_m','force_n'}:raise ValueError('Canonical force requires id, point_m, force_n')
             mapped.append(self.registration.force(f['id'],f['point_m'],f['force_n'],old))
@@ -352,12 +416,24 @@ class ArticulatedBodyPlant:
         try:
             result=self.native.advance(dt_s,mapped,actuation) if self.garments is None else self.garments.advance(self.native,dt_s,mapped,actuation)[0]
             work=result['positive_active_fiber_work_j']-old['positive_active_fiber_work_j']
+            if self.soft_coupling is not None:self.soft_state=soft_state;self.soft_receipt={'schema':'ihm.soft-tissue-coupling-frame.v1','pose_time_s':old['time_s'],'segments':soft_receipt,'ports':[copy.deepcopy(p) for p in soft_ports]}
             self.state=self._project(result,work);return self.snapshot()
         except BaseException:
             self.native.restore(checkpoint)
             if self.garments is not None:self.garments.restore(garment_checkpoint)
             raise
         finally:self.native.release(checkpoint)
+    def _soft_force(self,port):
+        """One layer's source-frame reaction as a canonical force port.
+
+        `CanonicalRegistration.force` maps canonical -> source with the same orthogonal
+        basis and offset, so this round trip is exact; scripts/verify_soft_tissue_coupled.py
+        gates it against the source triple it started from.
+        """
+        basis=self.registration.basis;offset=self.registration.global_map[:3,3]
+        return {'id':self.soft_force_ids[port['body']],
+                'point_m':(basis@np.asarray(port['point_m'],float)+offset).tolist(),
+                'force_n':(basis@np.asarray(port['force_n'],float)).tolist()}
     def body_point(self,**query):
         """Native source frame station query; no canonical-frame conversion."""
         return self.native.body_point(**query)
@@ -372,9 +448,13 @@ class ArticulatedBodyPlant:
             raise
         finally:
             if not self.native.closed:self.release(checkpoint)
-    def checkpoint(self):return {'native':self.native.checkpoint(),'frame':self.snapshot(),'garments':None if self.garments is None else self.garments.checkpoint()}
+    def checkpoint(self):return {'native':self.native.checkpoint(),'frame':self.snapshot(),'garments':None if self.garments is None else self.garments.checkpoint(),
+            'soft':None if self.soft_coupling is None else (copy.deepcopy(self.soft_state),copy.deepcopy(self.soft_receipt))}
     def restore(self,checkpoint):
         self.native.restore(checkpoint['native']);self.state=clone_snapshot_data(checkpoint['frame'])
+        # A held reaction is state: restoring the plant without it would leave the layer
+        # carrying a reaction from a step that has been rolled back.
+        if self.soft_coupling is not None:self.soft_state,self.soft_receipt=copy.deepcopy(checkpoint['soft'])
         if self.garments is not None:self.garments.restore(checkpoint['garments'])
     def release(self,checkpoint):self.native.release(checkpoint['native'])
     def close(self):self.native.close()

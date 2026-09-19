@@ -1440,3 +1440,265 @@ def build_selected_layers(root, selection, bodies=None):
     return {body: segment_layer(root, body, bundle=spec['bundle'], spacing_m=spec['spacing_m'],
                                 mapping=spec['mapping'], surface=spec.get('surface', 'voxel'),
                                 depth=spec.get('depth', 'segment_median')) for body in wanted}
+
+
+# ---------------------------------------------------------------------------------------
+# COUPLING THE LAYER INTO THE PLANT'S INTEGRATION LOOP
+# ---------------------------------------------------------------------------------------
+# docs/ACTUATION_STAGES.md's "fully present participant" mode is this coupling: the layer
+# deforms under contact and what it transmits reaches the thing that integrates.  Until now
+# nothing it computed reached the plant (docs/WORKBENCH_AUTHENTICITY.md 2.1).
+#
+# THE COST THAT SHAPES IT.  A loaded, warm-started heel step costs 136-159 ms against the
+# plant's 10 ms step (docs/SOFT_BODY.md, RT1h recorded FAILED).  One solve per plant step is
+# therefore not available, and this class is the honest coupling that is:
+#
+#   1. ONLY WHERE IT MATTERS.  Every plant step, each coupled segment's layer is tested for
+#      contact by one matrix-vector product over its own nodes (microseconds).  A segment
+#      whose skin is clear of the support returns EXACTLY zero and emits NO force port, so a
+#      plant with nothing in contact is the historical plant to the bit.  This is not an
+#      approximation: it is the same predicate `solve` uses to decide there is nothing to do.
+#   2. SUB-CYCLING.  A loaded segment is re-solved when `resolve_interval_s` has elapsed
+#      since its last solve, and the reaction is HELD in between.  What is held is the world
+#      force vector (the support's normal direction is fixed by the support) and the centre
+#      of pressure as a station in the SEGMENT frame, so the station follows the segment and
+#      the moment it delivers changes as the segment moves.  What staleness costs is measured
+#      in scripts/verify_soft_tissue_coupled.py, and the cadence is chosen from that.
+#   3. WARM STARTING.  Each solve starts from the last solve's shape in the segment frame,
+#      which `SoftTissueLayer.solve` takes as an argument like any other.
+#
+# THE TWO GATES THAT ARE NOT SUB-CYCLED.  Contact onset and BOTTOMING OUT are checked every
+# plant step, at full rate, because both are free.  A held reaction that sailed past the step
+# where the rigid core entered the support would be a coupling that hid its own failure.
+#
+# WHAT IT REFUSES TO SWALLOW.  `solve` raises when the rigid core would enter the support, and
+# when an element leaves the constitutive domain.  Both are re-raised here with the segment
+# and the depth named; neither is caught by the caller in `articulated.py`, so the plant step
+# does not happen and the plant is left exactly where it was.
+#
+# THE WRENCH, AND THE ONE COMPONENT A POINT FORCE CANNOT CARRY.  The engine's force port is a
+# point force on a body (`NativeMechanicalStream.advance`), so the layer's (force, moment)
+# pair is delivered as a force at its centre of pressure, p = (F x M)/|F|^2, which satisfies
+# p x F = M EXACTLY when M is perpendicular to F.  Frictionless contact against a half-space
+# puts every nodal contact force along the support normal, so M.F is zero up to the solve
+# residual -- and that is checked on every emit rather than assumed.  A wrench with a real
+# axial moment (friction, when it exists) CANNOT be delivered this way, and this raises
+# instead of silently dropping it.
+#
+# NOT REAL-TIME BY CONSTRUCTION, and not converged: no force from this layer is good to
+# better than about 10% (docs/SOFT_BODY.md CV7-CV10).  A cadence cannot fix either.
+
+COUPLING_SCHEMA = 'ihm.soft-tissue-coupling.v1'
+
+
+class SoftTissueBottomedOut(ValueError):
+    """The rigid core of a coupled segment would enter the support.
+
+    The tissue cannot carry the pose.  Raised BEFORE the plant step is taken, so the
+    plant is left where it was; the caller decides what to do about it.
+    """
+
+    def __init__(self, body, depth_m):
+        self.body = str(body)
+        self.depth_m = float(depth_m)
+        super().__init__('Bottomed out: the rigid core of %s penetrates the support by '
+                         '%.4f m; the soft tissue cannot carry this pose' % (self.body, self.depth_m))
+
+
+class SoftTissueLeftDomain(RuntimeError):
+    """A coupled layer's solve left the constitutive domain (minimum J <= 0.2)."""
+
+    def __init__(self, body, message):
+        self.body = str(body)
+        super().__init__('%s: %s' % (self.body, message))
+
+
+class SoftTissueWrenchNotDeliverable(ValueError):
+    """The layer's wrench cannot be delivered as a point force on the segment.
+
+    Either it carries a moment about its own force axis (which a point force cannot
+    produce), or its centre of pressure falls outside the segment's own layer.  Raised
+    rather than dropping the part that does not fit.
+    """
+
+
+class SoftTissueCoupling:
+    """Pose the coupled layers at the plant's own segment transforms and return force ports.
+
+    `advance_state` is a PURE function of `(state, transforms, dt_s)`: it returns a new
+    state and never touches the one it was given, and called twice at the same input it
+    returns bitwise the same thing.  All state a caller has to carry is the returned dict,
+    which is what makes checkpoint and rollback exact.
+
+    Frames: `transforms` are the plant's own `bodies[*]['transform_ground']` (4x4, native
+    SOURCE frame), the support is the half-space `sign * x[axis] >= sign * plane`, and the
+    emitted ports are `{'body', 'point_m', 'force_n'}` in that same source frame.
+    """
+
+    def __init__(self, layers, *, plane_axis, plane_sign, plane_value_m, resolve_interval_s,
+                 method='fast', force_tolerance_n=None, minimum_force_n=1e-9,
+                 axial_moment_relative=1e-6):
+        if not layers:
+            raise ValueError('A coupling needs at least one layer')
+        if plane_axis not in (0, 1, 2) or plane_sign not in (1, -1, 1.0, -1.0):
+            raise ValueError('Axis-aligned half-space required')
+        if not np.isfinite(plane_value_m) or not np.isfinite(resolve_interval_s) or resolve_interval_s <= 0:
+            raise ValueError('Finite support plane and a positive resolve interval required')
+        if method not in ('fast', 'newton'):
+            raise ValueError("Coupled solves use method='fast' or 'newton'")
+        self.layers = dict(layers)
+        self.bodies = sorted(self.layers)
+        self.axis = int(plane_axis)
+        self.sign = float(plane_sign)
+        self.plane = float(plane_value_m)
+        self.interval_s = float(resolve_interval_s)
+        self.method = str(method)
+        self.force_tolerance_n = force_tolerance_n
+        self.minimum_force_n = float(minimum_force_n)
+        self.axial_moment_relative = float(axial_moment_relative)
+        # the farthest any node of the layer sits from the segment origin: a centre of
+        # pressure outside it is not a point of this segment's tissue
+        self.radius_m = {b: float(np.linalg.norm(L.local, axis=1).max()) for b, L in self.layers.items()}
+
+    # -- identity ----------------------------------------------------------------------
+    def identity(self):
+        return {'schema': COUPLING_SCHEMA, 'bodies': list(self.bodies),
+                'support': {'axis': self.axis, 'sign': self.sign, 'plane_value_m': self.plane},
+                'resolve_interval_s': self.interval_s, 'method': self.method,
+                'force_tolerance_n': self.force_tolerance_n,
+                'minimum_force_n': self.minimum_force_n,
+                'axial_moment_relative': self.axial_moment_relative,
+                'layer_dof': {b: int(L.dof) for b, L in self.layers.items()},
+                'layer_nodes': {b: int(len(L.local)) for b, L in self.layers.items()},
+                'layer_meta': {b: {k: v for k, v in L.meta.items() if k != 'fit'}
+                               for b, L in self.layers.items()},
+                'basis': 'Contact gate and bottoming-out gate every step; the SOLVE is '
+                         'sub-cycled at resolve_interval_s and the reaction is held between '
+                         'solves as a world force at a segment-frame station. The wrench is '
+                         'delivered as a point force at the centre of pressure. No force from '
+                         'this layer is converged to better than about 10% (docs/SOFT_BODY.md).'}
+
+    def new_state(self):
+        return {b: None for b in self.bodies}
+
+    # -- the cheap per-step predicate ----------------------------------------------------
+    def gaps(self, body, rotation, translation):
+        """(skin gap, core gap) of this layer against the support, in metres, positive clear.
+
+        One matrix-vector product over the layer's own nodes -- the same quantity
+        `solve` computes to decide whether there is anything to do.
+        """
+        L = self.layers[body]
+        r = np.asarray(rotation, float)
+        t = np.asarray(translation, float)
+        height = L.local @ r[self.axis, :3] + t[self.axis]
+        gap = self.sign * (height - self.plane)
+        return float(gap.min()), float(gap[L.base].min())
+
+    # -- the step ------------------------------------------------------------------------
+    def advance_state(self, state, transforms, dt_s):
+        """(new state, force ports, receipts) for one plant step at `transforms`.
+
+        `state` is not modified.  `dt_s` only ages the held reactions, so the cadence is a
+        statement about TIME and not about how a caller happens to chop it up.
+        """
+        dt = float(dt_s)
+        if not np.isfinite(dt) or dt <= 0:
+            raise ValueError('Positive finite step required')
+        new_state, ports, receipts = {}, [], []
+        for body in self.bodies:
+            T = np.asarray(transforms[body], float)
+            if T.shape != (4, 4) or not np.isfinite(T).all():
+                raise ValueError('Finite 4x4 segment transform required: ' + body)
+            rotation, origin = T[:3, :3], T[:3, 3]
+            skin_gap, core_gap = self.gaps(body, rotation, origin)
+            # NOT sub-cycled: the tissue saying it cannot carry the pose is checked every step
+            if core_gap < 0:
+                raise SoftTissueBottomedOut(body, -core_gap)
+            if skin_gap >= 0:
+                new_state[body] = None
+                receipts.append({'body': body, 'in_contact': False, 'skin_gap_m': skin_gap,
+                                 'core_gap_m': core_gap, 'solved': False, 'held_age_s': 0.0,
+                                 'force_n': [0.0, 0.0, 0.0], 'moment_about_origin_nm': [0.0, 0.0, 0.0],
+                                 'wall_seconds': 0.0})
+                continue
+            previous = state.get(body)
+            due = previous is None or previous['age_s'] >= self.interval_s - 1e-15
+            wall = 0.0
+            if due:
+                began = time.perf_counter()
+                held = self._solve(body, rotation, origin, previous)
+                wall = time.perf_counter() - began
+            else:
+                held = {k: v for k, v in previous.items()}
+            emitted = self._emit(body, held, rotation, origin)
+            if emitted is not None:
+                ports.append(emitted)
+            receipts.append({'body': body, 'in_contact': True, 'skin_gap_m': skin_gap,
+                             'core_gap_m': core_gap, 'solved': bool(due),
+                             'held_age_s': float(held['age_s']),
+                             'depth_change_since_solve_m': float(-skin_gap - held['solved_depth_m']),
+                             'force_n': held['force_world_n'].tolist(),
+                             'moment_about_origin_nm': [] if emitted is None else
+                                 np.cross(np.asarray(emitted['point_m']) - origin,
+                                          np.asarray(emitted['force_n'])).tolist(),
+                             'solved_moment_about_origin_nm': held['moment_nm'].tolist(),
+                             'iterations': int(held['iterations']),
+                             'contact_nodes': int(held['contact_nodes']),
+                             'converged': bool(held['converged']),
+                             'free_residual_n': float(held['free_residual_n']),
+                             'balance_force_relative': float(held['balance_force_relative']),
+                             'wall_seconds': float(wall)})
+            held = {k: v for k, v in held.items()}
+            held['age_s'] = float(held['age_s'] + dt)
+            new_state[body] = held
+        return new_state, ports, receipts
+
+    def _solve(self, body, rotation, origin, previous):
+        layer = self.layers[body]
+        warm = None if previous is None else previous['positions_local_m']
+        try:
+            result = layer.solve(rotation=rotation, translation=origin, plane_axis=self.axis,
+                                 plane_value_m=self.plane, plane_sign=self.sign,
+                                 method=self.method, force_tolerance_n=self.force_tolerance_n,
+                                 warm_start_local_m=warm)
+        except ValueError as error:
+            if 'Bottomed out' in str(error):
+                raise SoftTissueBottomedOut(body, float('nan')) from error
+            raise
+        except RuntimeError as error:
+            raise SoftTissueLeftDomain(body, str(error)) from error
+        force = np.asarray(result['segment_force_n'], float)
+        moment = np.asarray(result['segment_moment_nm'], float)
+        magnitude = float(np.linalg.norm(force))
+        station = np.zeros(3)
+        if magnitude > self.minimum_force_n:
+            axial = float(force @ moment) / magnitude
+            scale = max(float(np.linalg.norm(moment)), magnitude * self.radius_m[body])
+            if abs(axial) > self.axial_moment_relative * scale:
+                raise SoftTissueWrenchNotDeliverable(
+                    '%s: the layer transmits %.3e N.m about its own force axis, which a point '
+                    'force cannot deliver (%.3e of the wrench scale, bar %.1e)'
+                    % (body, axial, abs(axial) / scale if scale else float('inf'),
+                       self.axial_moment_relative))
+            lever = np.cross(force, moment) / magnitude ** 2
+            if float(np.linalg.norm(lever)) > self.radius_m[body]:
+                raise SoftTissueWrenchNotDeliverable(
+                    '%s: the centre of pressure is %.4f m from the segment origin, outside the '
+                    'layer\'s own %.4f m' % (body, float(np.linalg.norm(lever)), self.radius_m[body]))
+            station = np.asarray(rotation, float).T @ lever
+        return {'force_world_n': force, 'moment_nm': moment, 'station_local_m': station,
+                'zero': magnitude <= self.minimum_force_n,
+                'positions_local_m': result['state']['positions_local_m'],
+                'age_s': 0.0, 'solved_depth_m': -self.gaps(body, rotation, origin)[0],
+                'iterations': int(result['iterations']),
+                'contact_nodes': int(result['contact_nodes']),
+                'converged': bool(result['converged']),
+                'free_residual_n': float(result['free_residual_n']),
+                'balance_force_relative': float(result['balance_force_relative'])}
+
+    def _emit(self, body, held, rotation, origin):
+        if held['zero']:
+            return None
+        point = np.asarray(origin, float) + np.asarray(rotation, float) @ held['station_local_m']
+        return {'body': body, 'point_m': point.tolist(), 'force_n': held['force_world_n'].tolist()}

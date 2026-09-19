@@ -197,6 +197,27 @@ SOFT_TISSUE_LAYERS = {
         'label': 'Deformable neo-Hookean layer, body-fitted, at the LOCAL measured depth; modulus read as '
                  'Young\'s (stiffest). radius_l refused: its local depth failed its own known answer'},
 }
+# THE COUPLED IDENTITIES.  Every entry above resolves a layer that a caller may build and
+# pose; NOTHING it computes reaches the integrator.  These two put it INTO the plant's
+# integration loop: `articulated.py` poses each coupled segment's layer at the plant's own
+# segment transform every step and applies what it transmits through the force port the
+# engine already accepts.  They build the SAME layer, bit for bit, as the entry they name --
+# only the coupling is added, and they still add NOTHING to the plant's kwargs, so the plant
+# an uncoupled run builds and the plant a coupled run builds are the same plant.
+#
+# `resolve_interval_s` is the cadence: how long a solved reaction is HELD before the layer is
+# re-solved.  A caller may name any of SOFT_TISSUE_RESOLVE_INTERVALS_S, which are the
+# intervals the staleness measurement actually covers; nothing else is accepted, because an
+# unmeasured cadence is an unmeasured fidelity claim.  The default is what that measurement
+# chose -- see scripts/verify_soft_tissue_coupled.py and docs/SOFT_BODY.md.
+SOFT_TISSUE_COUPLED = {
+    'layer_fitted_local_confined_coupled': {'layer': 'layer_fitted_local_confined'},
+    'layer_fitted_local_unconfined_coupled': {'layer': 'layer_fitted_local_unconfined'},
+}
+SOFT_TISSUE_RESOLVE_INTERVALS_S = (0.010, 0.020, 0.050, 0.100, 0.200, 0.500)
+DEFAULT_SOFT_TISSUE_RESOLVE_INTERVAL_S = 0.050
+SOFT_TISSUE_COUPLED_METHOD = 'fast'
+
 # Measured, and re-derived by scripts/verify_soft_tissue.py, which fails if it moves: at
 # 5 mm these segments' skin patches are thinner than their own measured depth
 # everywhere, so no cell is core and nothing carries the layer.
@@ -251,6 +272,22 @@ DISCLOSURE = {
         'muscle is inside the rigid core; segments are independent, with a seam at every '
         'boundary; the surface is voxelised at the cell size. Per-solve cost is seconds, not '
         'milliseconds: see docs/SOFT_BODY.md before calling it real-time.',
+    'soft_tissue_coupled':
+        'The deformable soft-tissue layer is IN the plant\'s integration loop. Every step, '
+        'each coupled segment\'s layer is posed at that segment\'s own transform and tested '
+        'against the support; a segment whose skin is clear returns exactly zero and emits no '
+        'force, so an unloaded coupled plant is the historical plant to the bit. A loaded '
+        'segment is re-solved every resolve_interval_s and its reaction is HELD in between '
+        '(the world force vector, at a centre of pressure carried as a station in the segment '
+        'frame), because one solve per 10 ms step costs 136-159 ms. What that staleness costs '
+        'is measured in scripts/verify_soft_tissue_coupled.py. THREE THINGS THIS IS NOT. (1) It '
+        'does not REPLACE the engine\'s own contact: a coupled segment that also carries an '
+        'engine contact element is a SECOND path to the floor, and the frame reports the '
+        'engine\'s own force on that segment beside the layer\'s so the double count is '
+        'visible. (2) No force from this layer is converged to better than about 10 per cent '
+        '(docs/SOFT_BODY.md CV7-CV10), and a cadence cannot fix that. (3) It is not real time: '
+        'a loaded solve is 9-16x the plant step, and the cadence only amortises it. When the '
+        'rigid core would enter the support the step RAISES rather than being clamped.',
 }
 
 
@@ -405,6 +442,26 @@ def resolve_fidelity(root, value=None, *, environment='supine'):
     if soft is None:
         selection['soft_tissue'] = None
     else:
+        # A coupled selection may name which segments to couple and at what cadence, because
+        # building every layer costs 484 s and a whole-body pose is not what a caller wants
+        # when one foot is on the floor. It is still an IDENTITY and never a path: the id
+        # comes from the table, the segments from the bundle's own anchored list, and the
+        # interval from the measured set. A string is the historical form and is unchanged.
+        couple = None
+        if isinstance(soft, dict):
+            if set(soft) - {'id', 'segments', 'resolve_interval_s'} or not isinstance(soft.get('id'), str):
+                raise ValueError('A soft tissue selection is an identity, optionally with '
+                                 '`segments` and `resolve_interval_s`')
+            couple = soft
+            soft = soft['id']
+        if not isinstance(soft, str):
+            raise ValueError('Unknown soft tissue layer')
+        coupled = SOFT_TISSUE_COUPLED.get(soft)
+        if coupled is not None:
+            soft = coupled['layer']
+        elif couple is not None and set(couple) - {'id'}:
+            raise ValueError('Only a COUPLED soft tissue identity takes `segments` or '
+                             '`resolve_interval_s`')
         if soft not in SOFT_TISSUE_LAYERS:
             raise ValueError('Unknown soft tissue layer')
         if environment not in SOFT_TISSUE_SUPPORT:
@@ -431,6 +488,36 @@ def resolve_fidelity(root, value=None, *, environment='supine'):
             'in_native_plant': False,
             'builder': 'ihm.assembly.soft_tissue_layer.build_selected_layers',
             'disclosure': DISCLOSURE['soft_tissue_layer']}
+        if coupled is not None:
+            anchored = [b for b in selection['soft_tissue']['segments']
+                        if b not in spec.get('refused_segments', ())]
+            wanted = anchored if couple is None or couple.get('segments') is None else list(couple['segments'])
+            if not wanted or len(set(wanted)) != len(wanted) or set(wanted) - set(anchored):
+                raise ValueError('Coupled segments must be distinct anchored segments of this '
+                                 'identity: ' + ', '.join(sorted(set(wanted) - set(anchored))))
+            interval = (DEFAULT_SOFT_TISSUE_RESOLVE_INTERVAL_S if couple is None
+                        else couple.get('resolve_interval_s', DEFAULT_SOFT_TISSUE_RESOLVE_INTERVAL_S))
+            if interval not in SOFT_TISSUE_RESOLVE_INTERVALS_S:
+                raise ValueError('The resolve interval must be one the staleness measurement '
+                                 'covers: ' + ', '.join(str(v) for v in SOFT_TISSUE_RESOLVE_INTERVALS_S))
+            selection['soft_tissue']['coupled_id'] = [k for k, v in SOFT_TISSUE_COUPLED.items()
+                                                      if v['layer'] == soft][0]
+            selection['soft_tissue']['coupled_segments'] = sorted(wanted)
+            selection['soft_tissue']['in_native_plant'] = False
+            selection['soft_tissue']['coupled_into_plant_loop'] = True
+            selection['soft_tissue']['coupling'] = {
+                'resolve_interval_s': float(interval),
+                'method': SOFT_TISSUE_COUPLED_METHOD,
+                'caller': 'ihm.assembly.articulated.ArticulatedBodyPlant.advance',
+                'force_path': 'Canonical registration force routing: one point force per '
+                              'loaded segment at the layer\'s centre of pressure, through the '
+                              'same `forces=` port a caller uses.',
+                'held_between_solves': 'the world force vector and a segment-frame station',
+                'gates_every_step': 'contact onset and bottoming out',
+                'raises': ['SoftTissueBottomedOut', 'SoftTissueLeftDomain',
+                           'SoftTissueWrenchNotDeliverable'],
+                'measurement': 'scripts/verify_soft_tissue_coupled.py',
+                'disclosure': DISCLOSURE['soft_tissue_coupled']}
 
     selection['basis'] = ('Server-owned bundles resolved by identity; a client never supplies '
                           'a path, a mesh or a material.')
