@@ -683,6 +683,7 @@ and none of it is comfortable:
   at the bottom of a 770 N landing — so a coupled `calcn_l` returns **exactly 0 N** in
   every upright trajectory the scaffold can produce. And if it touched: 5.57 N at 2.5 mm,
   leaving the constitutive domain at 3.0 mm, against 761 N of weight.
+  **The 36.3 mm is now decomposed** (Tier 2): 15.407 mm of it is the source spheres' loaded stand-off, which matches this specimen's own heel pad to half a millimetre and is correct; the other 20.293 mm is skin sitting ABOVE its own bone, which a body cannot do. Repairing the placement levels the sole to 5.5 mm — and the body still topples, for a different reason.
 * **It does not replace the engine's own contact.** No option here removes one segment's
   engine contact, so a coupled segment that has one carries both. The double count is
   reported in every frame beside the layer's own force rather than left to be inferred.

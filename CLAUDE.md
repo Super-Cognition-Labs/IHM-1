@@ -81,6 +81,25 @@ report what the crude body did as what the body did.
   `out`, i.e. almost the whole repository by volume. Use `/usr/bin/grep` or `git grep`, and
   say which, whenever you quote a count.
 
+## Twenty-five steps cannot tell settling from falling
+
+**A short run shows a transient; the thing you want to know is what it converges to.**
+Repairing the skin contact bundle's plantar placement cut the sole's out-of-level span
+from 44.2 mm to 5.5 mm, cut the 0.25 s drift from −55.1 mm to −9.4 mm and the overshoot
+from 134% to 88% of body weight. At 25 steps that reads as a repair. Run to 1.00 s and
+the same arm is **671.8 mm down with its hands on the floor**, and the shipped bundle's
+integrator FAILS outright at t = 0.887894 s.
+
+The measured reason was invisible at 0.25 s: every skin vertex that reaches the floor
+is BEHIND the centre of mass — 19.2 mm on the shipped bundle, 87.5 mm on the repaired
+one — because the hard partition gives the forefoot skin to the `toes` body. The body
+was never settling. It was toppling slowly enough to look like settling.
+
+This is the ledger's "the maximum over a run's evaluations is not the run's result" one
+level up: there the risk is picking a lucky evaluation, here it is stopping before the
+answer exists. **Before quoting a settle, run it long enough for the failure mode to
+appear, and say how long you ran.**
+
 ## A factorial identifies a FACTOR, not a mechanism
 
 **The mechanism you attribute to a factor afterwards is a separate claim, and the
