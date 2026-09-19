@@ -1,0 +1,33 @@
+{
+  "catalog_path": "data/models/articulated_spine_v1/catalog.json",
+  "catalog_sha256": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+  "default_enabled": false,
+  "derived_from": "data/models/articulated_spine_v1/model.osim with mtp_{r,l} welded at q = 0",
+  "model_path": "data/models/articulated_spine_v1/model_mtp_welded.osim",
+  "model_sha256": "c3993d0db9fa53759e6262728002a8062f7e5c2066f09c2de21390a60dff08bb",
+  "native_acceptance_complete": false,
+  "rationale": "docs/FOOT_JOINTS.md's standing recommendation: weld mtp in any NEW plant. The shipped path polynomials were fitted with the toes welded (exampleMocoInverse.cpp:51), so no muscle has an arm about mtp_angle in this plant either.",
+  "removed_forces_in_model": [],
+  "removed_passive_terms": [
+    "PassiveToeDamping_l",
+    "PassiveToeDamping_r"
+  ],
+  "schema": "ihm.articulated-spine-mtp-welded.v1",
+  "scope": "A SEPARATE plant. articulated_spine_v1/model.osim is unchanged and gate F2 remains FAILED on it. No number measured here is a score for F2.",
+  "source_overrides": {
+    "subject_walk_scaled_ExpressionBasedCoordinateForceSet.xml": {
+      "path": "data/models/articulated_spine_v1/passive_mtp_welded.xml",
+      "sha256": "1bd22409e093dfc22ef623d0f3ef7a9473d9d9cf352a1aeb7c58c4193c76d856"
+    }
+  },
+  "sources": {
+    "data/models/articulated_spine_v1/catalog.json": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+    "data/models/articulated_spine_v1/model.osim": "b1b8d725d192b81e902b047fc70ec5bc329d67a265be0ef1d74923b6318cc0ea",
+    "data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/example3DWalking/subject_walk_scaled_ExpressionBasedCoordinateForceSet.xml": "ff09a63fa9c2036a3692214889c87bee28bea6f51a503233692b288c5b28aba0",
+    "scripts/build_mtp_welded_spine.py": "bd3320fdcb99be8c81bc138a237b2980a6548412c406887b834ac869a676f159"
+  },
+  "welded_coordinates": [
+    "mtp_angle_l",
+    "mtp_angle_r"
+  ]
+}

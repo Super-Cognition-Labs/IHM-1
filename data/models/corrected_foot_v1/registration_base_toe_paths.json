@@ -1,0 +1,37 @@
+{
+  "arm": "base_toe_paths",
+  "catalog_path": "data/models/engineering_stance_v1/catalog.json",
+  "catalog_sha256": "29e7fd83a6f6e265abc67c1fd5aaa912cc58341393666aff5fa0afd268d10ce5",
+  "default_enabled": false,
+  "derived_from": "data/models/engineering_stance_v1/model.osim, unchanged",
+  "geometry_path_muscles": [
+    "edl_l",
+    "edl_r",
+    "ehl_l",
+    "ehl_r",
+    "fdl_l",
+    "fdl_r",
+    "fhl_l",
+    "fhl_r"
+  ],
+  "model_path": "data/models/engineering_stance_v1/model.osim",
+  "model_sha256": "be3baf542b44425c2802095439cabf976eccaad42406564338d20c2deb421d68",
+  "native_acceptance_complete": false,
+  "role": "shipped geometry, toe muscles on their own GeometryPaths: docs/FOOT_JOINTS.md's base_toe_geometry_paths arm, rebuilt here",
+  "schema": "ihm.corrected-foot.v1",
+  "scope": "An experimental variant for docs/FOOT_GEOMETRY.md: the upstream mtp offset/axis defect repaired. No linearization, no stance acceptance, not the identified plant.",
+  "source_overrides": {
+    "subject_walk_scaled_FunctionBasedPathSet.xml": {
+      "path": "data/models/corrected_foot_v1/muscle_paths.xml",
+      "sha256": "e9c8428aad126ec5ed680987ee05cff29ac1247fec0e2f1817893b35eb5131b5"
+    }
+  },
+  "sources": {
+    "data/models/engineering_stance_v1/model.osim": "be3baf542b44425c2802095439cabf976eccaad42406564338d20c2deb421d68",
+    "data/raw/anatomy/opensim-models/source/Models/Rajagopal/Rajagopal2016.osim": "3f5c5f23e486073f2ad2aa4a4967ffe2fcdd582b1e355512bc54f70c36376bf4",
+    "data/raw/anatomy/opensim-models/source/Models/Rajagopal/RajagopalLaiUhlrich2023.osim": "8f30d0b64750b87eb7f705907862590535212b4afd7e919faa3fd7d1683d22ec",
+    "data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/example3DWalking/subject_walk_scaled.osim": "806ad1b248c6b2bc48ab43b58865915d1664e144b4ff6846457d80adacc23ce5",
+    "data/raw/mechanics/opensim-core/OpenSim/Examples/Moco/example3DWalking/subject_walk_scaled_FunctionBasedPathSet.xml": "932ac403e4d6d0d10d9a9da551e43d0ded94dd2b99c370f9b25053ee9232f8a5",
+    "scripts/build_corrected_foot.py": "73ffce443ada0aec3de848e7137487ae4f22d721f45550cf81f15e7437619cd3"
+  }
+}
