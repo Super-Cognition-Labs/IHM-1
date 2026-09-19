@@ -2438,3 +2438,76 @@ everything else here); and the known-WRONG canonical map still prints its record
 20 mm one.
 
 This is the 22-segment scaffold's foot, not a human foot.
+
+### PRE-REGISTRATION: one map per PIECE, written before the bundle is built (2026-09-18)
+
+The diagnosis above says the 36 mm is the skin's placement at the foot under one global
+similarity. This file already measured the obvious repair and recorded it as worse:
+*per-segment registration does not carry the skin*, 0.873 against the global map's 0.888,
+with the toes collapsing to 0.16 / 0.10.
+
+**That measurement was of a BLENDED skin, and a contact bundle is not one.** Linear blend
+skinning mixes neighbouring segments' maps over the vertices near a joint, so a per-segment
+map's scale and translation distort the surface across the seam. The segment contact bundle
+has no such seam to protect: it is **already a hard partition into 20 independent closed
+meshes**, each capped separately, each loaded as its own `ContactMesh` paired only with the
+floor — never with each other (`native_mechanical_stream.cpp`: one
+`ElasticFoundationForce` per (mesh, floor) pair, never one set over all of them). Applying
+each piece's own segment map RIGIDLY to that piece changes nothing about how the engine
+treats it. The blend is what failed, and a bundle does not need one.
+
+The maps already exist and are already gated: `data/derived/anatomy-segment-registration`
+(`scripts/fit_segment_registration.py`, symmetric trimmed ICP from the global map, its own
+`report.json` gate_a 4.4e-16 and gate_b), fitted at the **same** `reference_pose_rad` as the
+binding similarity. Nothing is re-fitted here. `calcn_l` scale **1.2220**, nearest-surface RMS
+**14.96 → 6.09 mm**.
+
+**Known answer, and nothing below is read if it fails.** Rebuilding with
+`--registration binding` must reproduce `data/derived/segment-contact-meshes/skin` — every
+mesh's sha256, every record — because the code path for the existing choices must not move.
+
+**Gates, fixed here:**
+
+1. **Gate 3, unchanged.** `calcn_l` and `calcn_r` seat in **[−25, −5] mm**, the band fixed on
+   2026-09-10 against the in vivo pad (9.6–17.7 mm, Teng 2022) and this specimen's own
+   plantar band (14.91 / 14.82 mm, measured above). The band is not touched.
+   *Predicted, from the raw geometry before any cut or cap:* **−10.36 / −9.94 mm**. If the
+   cut and the caps move it, that is itself the finding.
+2. **Orientation.** Every per-segment map's rotation block has **det > 0** — a similarity with
+   a negative determinant is a reflection and would invert every triangle's winding, and
+   therefore every contact normal. Refuse the bundle if any does.
+3. **Admissibility.** All 20 pieces pass `simtk_precondition` — closed, consistently
+   oriented, non-degenerate edge-2-manifold — as they do under the global map. A similarity
+   cannot break manifoldness, so this gate exists to catch the cap builder, not the map.
+4. **Enclosure is NOT gated here, and the reason is stated rather than discovered later.**
+   The whole-skin enclosure measure (`measure_skin_enclosure_whole.py`, the partition-free
+   one a registration is judged by) assumes ONE surface. Twenty pieces under twenty different
+   similarities are not one surface, so the instrument does not apply and there is no honest
+   way to score the bundle against 0.888. The per-piece measure is the one this file already
+   recorded as structurally unpassable. Both are **reported** and neither is a bar.
+
+**Reported, not gated, because no bar for them exists and inventing one after seeing the
+geometry is the move this file forbids:** the seam — the gap or overlap between the `calcn`
+and `toes` pieces at the MTP and between `calcn` and `tibia` at the ankle, under both maps;
+and each piece's area change.
+
+**The stance arm, and its protocol.** 25 advances of 10 ms from
+`engineering_stance_v1/initial_pose.json`, joint stops on, `crawl.joint_stops()`, target mass
+77.6122029 kg — `measure_segment_contact_meshes.py`'s own protocol, unchanged. Three arms on
+the identical pose: `spheres` (the plant today), `skin` (the shipped bundle, source feet
+replaced) and the new bundle (source feet replaced). Every number is quoted at the **final**
+step; the maximum over the run is reported separately and labelled a maximum.
+
+**What each outcome means, fixed now:**
+
+| the new bundle's calcn elements | reading |
+|---|---|
+| carry load where the shipped bundle's carry zero | the seat was what kept the heel out of the load path, and the repair reaches it |
+| carry zero as well | the seat is not sufficient; something else keeps the heel off the floor, and it is named before anything else is tried |
+| carry load and the body still falls | the seat is necessary and not sufficient; reported as a partial result and NOT as the skin standing |
+
+**And a limit declared before the run.** A per-piece bundle is **not** an anatomical skin. It
+is twenty rigid pieces at twenty different scales, so the surface it presents has steps at
+every seam that the real body does not have. It is a better CONTACT SCAFFOLD, measured
+against a pad thickness, and nothing here licenses calling it the body's skin. The fused
+forefoot (*the forefoot is a mitten*) is untouched by any of it.
