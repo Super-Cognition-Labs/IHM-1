@@ -169,6 +169,12 @@ if __name__=='__main__':
           # docs/SEGMENT_CONTACT_SURFACES.md, "one map per PIECE".
           'skin_per_segment':(ROOT/'data/derived/segment-contact-meshes/skin-per-segment',True,None),
           'skin_per_segment_carried':(ROOT/'data/derived/segment-contact-meshes/skin-per-segment',False,None),
+          # The topple separation (docs/SKIN_STANCE_SUPPORT.md): the same per-piece skin with
+          # only the posterior source spheres (heel + lateral rearfoot), or only the anterior
+          # ones (midfoot + toe).  If the skin falls because nothing supports it IN FRONT of
+          # the centre of mass, the anterior arm stands and the posterior arm falls forward.
+          'skin_per_segment_posterior':(ROOT/'data/derived/segment-contact-meshes/skin-per-segment','posterior',None),
+          'skin_per_segment_anterior':(ROOT/'data/derived/segment-contact-meshes/skin-per-segment','anterior',None),
           # Each patch its own measured depth and in vivo modulus (apply_soft_tissue_layer_map.py).
           # The bundle carries the layer, so no material is passed and none can override it.
           'skin_layer_map':(ROOT/'data/derived/segment-contact-meshes/skin-layer-map-v1',True,None)}
@@ -177,7 +183,7 @@ if __name__=='__main__':
     # 9x the baseline per advance -- not because the skin cannot reach the floor.
     # Measured at this pose on the shipped bundle: toes_l -8.5 mm (through the
     # floor plane) against calcn_l +35.700 mm. scripts/verify_skin_contact.py.
-    selected=args.arm or [n for n in arms if n not in ('skin','skin_per_segment','skin_per_segment_carried')]
+    selected=args.arm or [n for n in arms if not n.startswith('skin')]
     reports=[]
     for name in selected:
         bundle,replace,material=arms[name]

@@ -14,6 +14,10 @@ from ..assembly.snapshot_data import clone_snapshot_data
 RESPONSE_TIMEOUT_S=float(os.environ.get('IHM_NATIVE_RESPONSE_TIMEOUT_S','120'))
 
 SOURCE_FILES=('subject_walk_scaled.osim','subject_walk_scaled_ExpressionBasedCoordinateForceSet.xml','subject_walk_scaled_FunctionBasedPathSet.xml','subject_walk_scaled_ContactForceSet.xml','subject_walk_scaled_ContactGeometrySet.xml')
+# segment_contact_replaces_source_feet: False keeps all 12 source foot spheres beside the
+# meshes, True removes them, 'posterior'/'anterior' keep only that subset (heel + lateral
+# rearfoot, or midfoot + toe).  docs/SKIN_STANCE_SUPPORT.md.
+FOOT_MODES={False:0,True:1,'posterior':2,'anterior':3}
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def finite(value):
     if isinstance(value,(bool,np.bool_)) or not np.isscalar(value) or not np.isfinite(value):raise ValueError('Finite scalar required')
@@ -242,7 +246,7 @@ class NativeMechanicalStream:
                 ' '.join(map(str,[*header,
                                   material['dissipation_s_m'],material['static_friction'],material['dynamic_friction'],
                                   material['viscous_friction'],material['transition_velocity_m_s'],
-                                  1 if segment_contact_replaces_source_feet else 0]))+'\n'
+                                  FOOT_MODES[segment_contact_replaces_source_feet]]))+'\n'
                 +''.join(' '.join(map(str,row))+'\n' for row in rows))
         elif segment_contact_material is not None or segment_contact_replaces_source_feet:
             raise ValueError('Segment contact material/foot replacement requires a segment contact mesh bundle')
@@ -339,7 +343,7 @@ class NativeMechanicalStream:
                    'scene_object_contact_basis':'Free rigid spheres with SimTK sphere-sphere collision through OpenSim HuntCrossleyForce, one force per object/body-element pair so no object is tested against another object or against the body\'s own overlapping proxies. Contact material transferred from the source foot contact set; the body elements touched are engineering proxies, not an anatomical skin surface.',
                    'segment_contact_meshes':None if meshes is None else {k:v for k,v in meshes.items() if k!='records'},
                    'segment_contact_material':None if meshes is None else self.segment_contact_material,
-                   'segment_contact_replaces_source_feet':bool(meshes is not None and segment_contact_replaces_source_feet),
+                   'segment_contact_replaces_source_feet':(segment_contact_replaces_source_feet if meshes is not None and isinstance(segment_contact_replaces_source_feet,str) else bool(meshes is not None and segment_contact_replaces_source_feet)),
                    'segment_contact_basis':'Real segment surfaces as OpenSim ContactMesh over SimTK::ContactGeometry::TriangleMesh, carried by ElasticFoundationForce -- an independent spring at the centroid of every triangle, over the faces SimTK\'s HalfSpaceTriangleMesh collision finds below the plane. No convex hull is taken anywhere on that path. The stiffness is derived from a declared Young modulus, Poisson ratio and layer thickness, which is the elastic foundation\'s own reading of what it represents: a uniform soft layer over a rigid substrate.',
                    'tissue_ligaments':ligaments,'tissue_ligament_bundle':None if ligaments is None else str(tissue_ligaments),
                    'tissue_ligament_stiffness_scale':None if ligaments is None else float(tissue_ligament_stiffness_scale),

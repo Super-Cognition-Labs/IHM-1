@@ -123,6 +123,10 @@ int main(int argc,char** argv){try{
  std::vector<BoneMesh> bone_meshes;std::set<std::string> bone_bodies;std::map<std::string,BoneMesh> bone_force;
  double bone_stiffness=0,bone_dissipation=0,bone_static=0,bone_dynamic=0,bone_viscous=0,bone_transition=0;
  bool bone_replaces_source_feet=false;std::string bone_layer;
+ // 2/3 keep a SUBSET of the 12 source foot spheres beside the meshes: 2 = posterior only
+ // (heel + lateral rearfoot), 3 = anterior only (midfoot + toe).  Instruments that separate
+ // WHERE the support is from WHAT carries it; docs/SKIN_STANCE_SUPPORT.md.
+ int bone_foot_subset=0;
  if(fs::exists(source/"segment_contact_meshes.txt")){
   if(environment!="upright")throw std::runtime_error("bone contact meshes require the upright environment");
   std::ifstream spec(source/"segment_contact_meshes.txt");std::string schema;int count=0,replace=0;
@@ -132,11 +136,11 @@ int main(int argc,char** argv){try{
   const bool per_row=schema=="IHM_SEGMENT_CONTACT_MESHES_V2";
   if(!per_row)spec>>bone_stiffness;
   spec>>bone_dissipation>>bone_static>>bone_dynamic>>bone_viscous>>bone_transition>>replace;
-  if(!spec||(schema!="IHM_SEGMENT_CONTACT_MESHES_V1"&&!per_row)||(bone_layer!="bone"&&bone_layer!="skin")||count<1||count>256||(replace!=0&&replace!=1))throw std::runtime_error("invalid bone contact mesh schema/count");
+  if(!spec||(schema!="IHM_SEGMENT_CONTACT_MESHES_V1"&&!per_row)||(bone_layer!="bone"&&bone_layer!="skin")||count<1||count>256||(replace<0||replace>3))throw std::runtime_error("invalid bone contact mesh schema/count");
   for(double value:{bone_stiffness,bone_dissipation,bone_static,bone_dynamic,bone_viscous,bone_transition})
    if(!std::isfinite(value)||value<0)throw std::runtime_error("invalid bone contact material");
   if((!per_row&&!(bone_stiffness>0))||!(bone_transition>0))throw std::runtime_error("bone contact needs positive stiffness and transition velocity");
-  bone_replaces_source_feet=replace==1;
+  bone_replaces_source_feet=replace==1;bone_foot_subset=replace>=2?replace:0;
   for(int i=0;i<count;i++){
    BoneMesh row;spec>>row.body>>row.element>>row.file>>row.faces;
    if(per_row)spec>>row.stiffness;else row.stiffness=bone_stiffness;
@@ -158,7 +162,13 @@ int main(int argc,char** argv){try{
   // The source ContactForceSet is the 12 anatomically placed foot contacts.
   // They are NOT inertia proxies, so they stay unless the caller has asked for
   // the feet to be carried by bone meshes as well.
-  if(!bone_replaces_source_feet)for(int i=0;i<contact_templates.getSize();i++)model.addComponent(contact_templates.get(i).clone());
+  if(!bone_replaces_source_feet)for(int i=0;i<contact_templates.getSize();i++){
+   const std::string name=contact_templates.get(i).getName();
+   const bool posterior=name.rfind("contactHeel_",0)==0||name.rfind("contactLateralRearfoot_",0)==0;
+   if(bone_foot_subset==2&&!posterior)continue;
+   if(bone_foot_subset==3&&posterior)continue;
+   model.addComponent(contact_templates.get(i).clone());
+  }
   // The walking source only supplies foot contact. A falling trunk previously
   // passed through the floor until pelvis_ty hit its -1 m coordinate clamp.
   // Give the other segments unilateral contact, without anchoring their pose.
