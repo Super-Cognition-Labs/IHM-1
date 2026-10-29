@@ -1,0 +1,833 @@
+{
+ "schema": "ihm.stance-kernel-controls.v1",
+ "preregistration": "docs/STANCE_KERNEL_CONTROLS.md",
+ "policies": {
+  "fused": "data/models/ibm_cortical_stance_v1/cortical_stance.pt",
+  "c16": "data/models/ibm_curriculum16_stance_v1/cortical_stance.pt",
+  "perm-20260908": "data/models/ibm_curriculum16_shuffled_stance_v1/cortical_stance.pt",
+  "perm-1": "data/runtime/motor-learning/stance-kernel-controls/policies/perm-1/stance/cortical_stance.pt",
+  "perm-2": "data/runtime/motor-learning/stance-kernel-controls/policies/perm-2/stance/cortical_stance.pt",
+  "rand-11": "data/runtime/motor-learning/stance-kernel-controls/policies/rand-11/stance/cortical_stance.pt",
+  "rand-12": "data/runtime/motor-learning/stance-kernel-controls/policies/rand-12/stance/cortical_stance.pt",
+  "rand-13": "data/runtime/motor-learning/stance-kernel-controls/policies/rand-13/stance/cortical_stance.pt",
+  "perm-20260908-rebuilt": "data/runtime/motor-learning/stance-kernel-controls/policies/perm-20260908-rebuilt/stance/cortical_stance.pt"
+ },
+ "learned": [
+  "fused",
+  "c16"
+ ],
+ "controls": [
+  "perm-20260908",
+  "perm-1",
+  "perm-2",
+  "rand-11",
+  "rand-12",
+  "rand-13"
+ ],
+ "conditions": [
+  "A_+5_+0",
+  "A_-5_+0",
+  "A_+0_+5",
+  "A_+0_-5",
+  "B_+5_+5",
+  "B_+5_-5",
+  "B_-5_+5",
+  "B_-5_-5",
+  "C_+10_+0",
+  "C_+7.07107_+7.07107",
+  "C_+0_+10",
+  "C_-7.07107_+7.07107",
+  "C_-10_+0",
+  "C_-7.07107_-7.07107",
+  "C_+0_-10",
+  "C_+7.07107_-7.07107",
+  "D_+20_+0",
+  "D_+14.1421_+14.1421",
+  "D_+0_+20",
+  "D_-14.1421_+14.1421",
+  "D_-20_+0",
+  "D_-14.1421_-14.1421",
+  "D_+0_-20",
+  "D_+14.1421_-14.1421"
+ ],
+ "complete_conditions": 0,
+ "mean_delta_ln_peak": NaN,
+ "ci95": [
+  NaN,
+  NaN
+ ],
+ "verdict": "no complete conditions",
+ "recovered_of": 24,
+ "recovered": {
+  "fused": 15,
+  "c16": 7
+ },
+ "learned_recover_more_than_every_control": true,
+ "median_control_range_ln": null,
+ "per_condition": [],
+ "rows": {
+  "fused": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "a905fd415df74fdd352eccc90075825c6080ecfa06e623d0c5ae2bb9dcb01a7f",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011682449025488806,
+     "final_m": 0.0001463636366451083,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "341772119c32936c099cb5d2191e7348e92d237e342e889ba81f3642687379d5",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0013963485867865518,
+     "final_m": 0.00013792710774415416,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "c1ca3dfb9d27a9671d23472e2af9edeaccebc4000173aeedbfb8982b6f1cd6a0",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0016182411395016967,
+     "final_m": 0.00012376140049488537,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "73fa244b6eef642a46e279a751363315b1bc33aca0f73c586c9a0401cfdc6238",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014176571762002876,
+     "final_m": 0.0001229068179862094,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "7fa6ef3dee38d521dca93ef1674f5451f76c9508b8f6ee7bd8669a84eb8f02d7",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0017843922631960102,
+     "final_m": 0.00019555200361723484,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "cc89c4eb48dd758e77cb2967c55fe1d1617e271cc096e6dfc419721fefc48afd",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0016768500429564324,
+     "final_m": 0.00020265106906391166,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "77ea3a66776c5b2189206918d924d5981d9c52f71be62a2bb7d7e9fe0ab9d132",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0021769674268980565,
+     "final_m": 0.00018039567858965725,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "8293fe77b923c0ece628c9008ebee458e6a18b6f5ee67ea3327541b36c646586",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0022639607166924287,
+     "final_m": 0.0001717009663263524,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "e39491d8772713f8adb5d0f1bd81dae5d875dc52bf64626b02758c2813140ba8",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0023717446405557485,
+     "final_m": 0.0002983444028203841,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7014646939594882,
+     "elapsed_s": 2.679999999999987,
+     "error": null
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "45317fbc35e88d0919c9bfad75afaeb7939ba80f05ff54f8ad4c503e5a9b3289",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002583533607494719,
+     "final_m": 0.00027531277121268887,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "32518d50eb358a5ab431519a3f80ddaa3659f8e630e342adc2f292bdb8b399aa",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0037374008792880947,
+     "final_m": 0.00023585011612850515,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5067779476342955,
+     "elapsed_s": 2.3299999999999943,
+     "error": null
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "29dc45f577d63d12b049e37a3a894b34aeb7b59a95b4a5ae1e0ad69a0d78abc5",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0031980100539648866,
+     "final_m": 0.0002512012630298017,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "75f907a35e550189d699f434805db9c56a74a9780293c8917a9756f5d4e71a6a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002765870979891499,
+     "final_m": 0.00027428092852224223,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "a740f562ea8f5af1ee9f672eb585d35629aeeea6879d35b8b55edc328cd4918c",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0035473396078621296,
+     "final_m": 0.0002020367810894404,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.36775180376838024,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "d903a0998171bae39c2b7d5eae4a7a848e9d3d6b44566703eb7e48dc665aecb1",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.004184066289601784,
+     "final_m": 0.00016573959537990118,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4326832692764774,
+     "elapsed_s": 2.3099999999999947,
+     "error": null
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "ae53c7fb6a196bf0dc484d9f3a098502d1b91183a311f303b61818d35708b162",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.2720187609714125,
+     "final_m": 0.2720187609714125,
+     "elapsed_s": 2.7999999999999843
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "2d4929b7ee7489bcf33d569c1b0c433ba50c6f9234018bc0250b719be5491bf0",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.3769319735305233,
+     "final_m": 0.3769319735305233,
+     "elapsed_s": 2.4099999999999926
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "8880f90a2fff3ffe2ee17cc45c431f9ef41be5da67042121cc8a7025547fdcbe",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.36390720973234814,
+     "final_m": 0.36390720973234814,
+     "elapsed_s": 2.299999999999995
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "9d0099d7639723c76235f7969970a0749a81f5f918953dc9a90392612ed4a91d",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.4027510943340835,
+     "final_m": 0.4027510943340835,
+     "elapsed_s": 2.289999999999995
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "d08bd691cedddf179f5987efd1f4f91d338ffd74776fb0c91e67e18c893b610e",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.1836004817101782,
+     "final_m": 0.1836004817101782,
+     "elapsed_s": 2.5499999999999896
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "f0d13fb81f72e2074598254bdce107d0b2e1c98d88b82e8fadd6c74405b64cdd",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.19820054148854607,
+     "final_m": 0.19820054148854607,
+     "elapsed_s": 2.579999999999989
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "aa186d364506ca12c5ce58c8924535cddba07633d12317ede51e51c8a2ae08d4",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 2.259163889850472 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 2.25916.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.26504238098252864,
+     "final_m": 0.26504238098252864,
+     "elapsed_s": 2.249999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37612585271931953,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "aebd4f48dd7e350fc49be3bc975206dc2dd56375379794a89401507f29c42b49",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.13899171322971435,
+     "final_m": 0.13899171322971435,
+     "elapsed_s": 2.0799999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "88e6e464bd0b8fd82b429a9a1935c3a8c70b3b118b1766ed180433720bfae83a",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 2.0449683010931374 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 2.04497.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.2714259283639536,
+     "final_m": 0.2714259283639536,
+     "elapsed_s": 2.0400000000000005
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7490532427872454,
+     "elapsed_s": 2.5999999999999885,
+     "error": null
+    }
+   }
+  },
+  "c16": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "4db351dd6cda3ac7e51fbf23c0895adfe86f68f30db775ba2293d36400ed651a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011938688842664203,
+     "final_m": 0.00014423296125949347,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "64d7bdd65d44460f187570a38f6a6d926bb50932ce096e31c3aa1a08ae5e9bc3",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0013653044172494888,
+     "final_m": 0.00013966125163200347,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "fff7767eddc34d14553f174a029f742ed020b52a7f2317aa594ea869adfce36a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014834735498302182,
+     "final_m": 0.00012294843160349454,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "36d058d46f0a453eb4f3f847665500628aaf7410448851da2a7ac74c558a8bd2",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0021818262459063413,
+     "final_m": 0.00011994168759322328,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "77670156ce3642919ae19d2c98019398d72c89eed59796b8cd7f9ccde1fd539a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0017469161049078713,
+     "final_m": 0.0001922536192666138,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "f41dc9e22beb6c209176314a64519dde73ac9cfb490e161dbdc01bc86f0e5281",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 5.2782517438477878 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 5.27825.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.5033596585548092,
+     "final_m": 0.5033596585548092,
+     "elapsed_s": 5.269999999999932
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "1345984c24527e4666e943bed536614dcbe4ace340e0a031e4fc6f1ad62cf9c2",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0019380501952662612,
+     "final_m": 0.00018184567217326722,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "51d66202f6b68a3f31f957c573878bc6e68e9563c5e4d0ae454463482a58fbf8",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002128673244604682,
+     "final_m": 0.00018274939078733243,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "a96690f4be08d330715c1f9b2fd9ea944d1ddc536a6bea8af59c2818f9e4d89b",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5301588920483602,
+     "final_m": 0.5301588920483602,
+     "elapsed_s": 3.9699999999999593
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   }
+  }
+ }
+}

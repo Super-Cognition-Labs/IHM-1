@@ -91,3 +91,21 @@ exceeds 5% the margin is too tight to resolve and the result will say so.
 It tests one body, one mass, one policy family whose decoder is solved offline onto an
 engineered LQR gain. Equivalence here would mean *this pipeline does not use kernel
 content*, not that no pipeline could.
+
+## Status: interrupted 2026-10-29, partial and NOT scored
+
+Stopped on request (gb10-direct reassigned) after the build phase and 33 of the 72
+existing-policy evaluations. No verdict is drawn from a partial run.
+
+- **Built** (on gb10-direct, IBM-1 pinned at donor commit `267ad26`, equation source
+  `9329ce…`, so the controls use the same equations as the existing policies):
+  `perm-1`, `perm-2`, `rand-11`, `rand-12`, `rand-13` and the instrument rebuild
+  `perm-20260908-rebuilt`, under `data/runtime/motor-learning/stance-kernel-controls/policies/`.
+- **Instrument check 1, half met:** this host's native plant reproduces `c16` on
+  (+5, +5) at **1.7469 mm** and `fused` at **1.7844 mm**, the earlier numbers to the
+  printed digit. The `perm-20260908` half never ran before the stop.
+- **Evaluated:** `fused` 24/24 conditions (recovers 15), `c16` 9/24 (recovers 7). Nothing
+  else. Rows: `out/stance_kernel_controls_partial.json`.
+- **Resume:** `scripts/run_stance_kernel_controls.py --phase eval --jobs 12` (skips done
+  conditions), then `--phase collect`. The IBM-1 checkout used for training must stay at
+  `267ad26`; evaluation does not read IBM-1.
