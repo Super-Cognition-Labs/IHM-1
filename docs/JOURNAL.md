@@ -67,3 +67,7 @@ the original host had at the time (it was likely uncommitted). The tested IBM-1 
 kept as worktrees (`~/Documents/IBM-1-sep09`, `IBM-1-sep21`); a HOME shim
 (`~/ihm-run/home-sep*/Documents/IBM-1 -> worktree`) selects one without moving the pinned
 checkout.
+
+**Paper.** `docs/paper/IHM-1.md` written from the brief, the docs and the runs above; claims checked
+against the result files (e.g. "severed arms always fall": 0 of 216 severed runs completed the
+horizon). No pandoc or LaTeX on either host, so the paper is Markdown with relative figure links.
