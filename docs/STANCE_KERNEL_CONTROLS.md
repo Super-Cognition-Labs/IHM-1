@@ -92,20 +92,51 @@ It tests one body, one mass, one policy family whose decoder is solved offline o
 engineered LQR gain. Equivalence here would mean *this pipeline does not use kernel
 content*, not that no pipeline could.
 
-## Status: interrupted 2026-10-29, partial and NOT scored
+## Result (2026-10-30, all 216 arm-runs, scored as pre-registered)
 
-Stopped on request (gb10-direct reassigned) after the build phase and 33 of the 72
-existing-policy evaluations. No verdict is drawn from a partial run.
+Run on gb10-direct (second host), `scripts/run_stance_kernel_controls.py --phase eval --jobs 10`
+then `--phase collect` → `out/stance_kernel_controls.json`.
 
-- **Built** (on gb10-direct, IBM-1 pinned at donor commit `267ad26`, equation source
-  `9329ce…`, so the controls use the same equations as the existing policies):
-  `perm-1`, `perm-2`, `rand-11`, `rand-12`, `rand-13` and the instrument rebuild
-  `perm-20260908-rebuilt`, under `data/runtime/motor-learning/stance-kernel-controls/policies/`.
-- **Instrument check 1, half met:** this host's native plant reproduces `c16` on
-  (+5, +5) at **1.7469 mm** and `fused` at **1.7844 mm**, the earlier numbers to the
-  printed digit. The `perm-20260908` half never ran before the stop.
-- **Evaluated:** `fused` 24/24 conditions (recovers 15), `c16` 9/24 (recovers 7). Nothing
-  else. Rows: `out/stance_kernel_controls_partial.json`.
-- **Resume:** `scripts/run_stance_kernel_controls.py --phase eval --jobs 12` (skips done
-  conditions), then `--phase collect`. The IBM-1 checkout used for training must stay at
-  `267ad26`; evaluation does not read IBM-1.
+**Instrument checks: all pass.** (1) `c16` reproduces **1.7469 mm** and `perm-20260908`
+reproduces **1.7452 mm** on (+5, +5), to the printed digit; the rebuilt `perm-20260908` also gives
+1.7452 mm, so the pipeline itself reproduces. (2) Each row carries its own `artifact_sha256`. (3) Every
+run's force is read back from its own report (`force_n`). (4) Checked by the builder at build time.
+
+**The pre-registered statistic: inconclusive at this n.** Only **3 of 24 conditions** had all eight
+full arms complete the 10 s horizon (A: +5,0; −5,0; 0,+5), because the controls fall often. Over those
+three, mean Δ ln(peak) = **−0.032**, 95% bootstrap CI **[−0.070, −0.003]** (10,000 resamples, seed 0).
+That is neither ≤ −0.05 with an upper bound below 0, nor inside ±0.05: inconclusive. And the floor the
+margin needed is not there: the median spread among the six controls is **0.071** in ln(peak), wider
+than the 5% margin, so the margin is too tight to resolve on this pipeline, as the pre-registration
+said it would report.
+
+**Recovery (of 24 conditions; completed the horizon without a fall):**
+
+| policy | kernel | A (4) | B (4) | C (8) | D (8) | total |
+|---|---|---:|---:|---:|---:|---:|
+| `fused` | learned | 4 | 4 | 7 | 0 | **15** |
+| `c16` | learned | 4 | 3 | 3 | 0 | **10** |
+| `perm-20260908` | permuted | 4 | 4 | 4 | 0 | 12 |
+| `perm-1` | permuted | 3 | 3 | 3 | 0 | 9 |
+| `perm-2` | permuted | 3 | 1 | 0 | 0 | 4 |
+| `rand-11` | random | 4 | 3 | 2 | 0 | 9 |
+| `rand-12` | random | 4 | 1 | 0 | 0 | 5 |
+| `rand-13` | random | 4 | 3 | 3 | 0 | 10 |
+| `perm-20260908-rebuilt` | instrument | 4 | 4 | 4 | 0 | 12 |
+
+The pre-registered recovery rule ("both learned kernels recover strictly more conditions than every
+control") is **not met**: `c16` recovers 10, `perm-20260908` 12. Nothing at 20 N (set D) is recovered
+by any kernel. Descriptively, the learned pair averages 12.5 recoveries against 8.2 for the six
+controls, and `fused` alone is the only policy that recovers most of the 10 N set (7/8) — a pattern
+worth a larger, pre-registered n, not a finding.
+
+**What changed from the n = 1 reading.** The earlier single comparison drew a control that happens to
+be one of the strong ones. On the very push it used, (+5, +5), three of the six controls fall
+(`perm-2` 524 mm, `rand-12` 373 mm, `rand-13` 162 mm) while both learned kernels hold. So "a permuted
+kernel does as well" was true of that permutation and is not true of permutations in general; and
+"the learned content helps" is not shown either. The defensible statement is: **kernel content
+changes whether this pipeline recovers, the control-to-control spread is larger than any
+learned-vs-control difference this design can resolve, and the learned kernels are not shown to be
+better.**
+
+Runs: `data/runtime/motor-learning/stance-kernel-controls/evals/` on gb10-direct (gitignored).

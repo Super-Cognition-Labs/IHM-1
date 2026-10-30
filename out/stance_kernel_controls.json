@@ -1,0 +1,5085 @@
+{
+ "schema": "ihm.stance-kernel-controls.v1",
+ "preregistration": "docs/STANCE_KERNEL_CONTROLS.md",
+ "policies": {
+  "fused": "data/models/ibm_cortical_stance_v1/cortical_stance.pt",
+  "c16": "data/models/ibm_curriculum16_stance_v1/cortical_stance.pt",
+  "perm-20260908": "data/models/ibm_curriculum16_shuffled_stance_v1/cortical_stance.pt",
+  "perm-1": "data/runtime/motor-learning/stance-kernel-controls/policies/perm-1/stance/cortical_stance.pt",
+  "perm-2": "data/runtime/motor-learning/stance-kernel-controls/policies/perm-2/stance/cortical_stance.pt",
+  "rand-11": "data/runtime/motor-learning/stance-kernel-controls/policies/rand-11/stance/cortical_stance.pt",
+  "rand-12": "data/runtime/motor-learning/stance-kernel-controls/policies/rand-12/stance/cortical_stance.pt",
+  "rand-13": "data/runtime/motor-learning/stance-kernel-controls/policies/rand-13/stance/cortical_stance.pt",
+  "perm-20260908-rebuilt": "data/runtime/motor-learning/stance-kernel-controls/policies/perm-20260908-rebuilt/stance/cortical_stance.pt"
+ },
+ "learned": [
+  "fused",
+  "c16"
+ ],
+ "controls": [
+  "perm-20260908",
+  "perm-1",
+  "perm-2",
+  "rand-11",
+  "rand-12",
+  "rand-13"
+ ],
+ "conditions": [
+  "A_+5_+0",
+  "A_-5_+0",
+  "A_+0_+5",
+  "A_+0_-5",
+  "B_+5_+5",
+  "B_+5_-5",
+  "B_-5_+5",
+  "B_-5_-5",
+  "C_+10_+0",
+  "C_+7.07107_+7.07107",
+  "C_+0_+10",
+  "C_-7.07107_+7.07107",
+  "C_-10_+0",
+  "C_-7.07107_-7.07107",
+  "C_+0_-10",
+  "C_+7.07107_-7.07107",
+  "D_+20_+0",
+  "D_+14.1421_+14.1421",
+  "D_+0_+20",
+  "D_-14.1421_+14.1421",
+  "D_-20_+0",
+  "D_-14.1421_-14.1421",
+  "D_+0_-20",
+  "D_+14.1421_-14.1421"
+ ],
+ "complete_conditions": 3,
+ "mean_delta_ln_peak": -0.03197075096554247,
+ "ci95": [
+  -0.07006107813253504,
+  -0.0033146729101884986
+ ],
+ "verdict": "inconclusive at this n",
+ "recovered_of": 24,
+ "recovered": {
+  "fused": 15,
+  "c16": 10,
+  "perm-20260908": 12,
+  "perm-1": 9,
+  "perm-2": 4,
+  "rand-11": 9,
+  "rand-12": 5,
+  "rand-13": 10,
+  "perm-20260908-rebuilt": 12
+ },
+ "learned_recover_more_than_every_control": false,
+ "median_control_range_ln": 0.0712599612061604,
+ "per_condition": [
+  {
+   "condition": "A_+5_+0",
+   "delta": -0.0033146729101884986,
+   "control_range": 0.0712599612061604,
+   "perm_mean": -0.0016896563232871031,
+   "rand_mean": 0.008319002143664989
+  },
+  {
+   "condition": "A_-5_+0",
+   "delta": -0.02253650185390388,
+   "control_range": 0.04933843174012331,
+   "perm_mean": 0.014478016075115008,
+   "rand_mean": 0.03059498763269186
+  },
+  {
+   "condition": "A_+0_+5",
+   "delta": -0.07006107813253504,
+   "control_range": 0.21776042368239246,
+   "perm_mean": 0.06118283831764604,
+   "rand_mean": 0.07893931794742226
+  }
+ ],
+ "rows": {
+  "fused": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "a905fd415df74fdd352eccc90075825c6080ecfa06e623d0c5ae2bb9dcb01a7f",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011682449025488806,
+     "final_m": 0.0001463636366451083,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "341772119c32936c099cb5d2191e7348e92d237e342e889ba81f3642687379d5",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0013963485867865518,
+     "final_m": 0.00013792710774415416,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "c1ca3dfb9d27a9671d23472e2af9edeaccebc4000173aeedbfb8982b6f1cd6a0",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0016182411395016967,
+     "final_m": 0.00012376140049488537,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "73fa244b6eef642a46e279a751363315b1bc33aca0f73c586c9a0401cfdc6238",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014176571762002876,
+     "final_m": 0.0001229068179862094,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "7fa6ef3dee38d521dca93ef1674f5451f76c9508b8f6ee7bd8669a84eb8f02d7",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0017843922631960102,
+     "final_m": 0.00019555200361723484,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "cc89c4eb48dd758e77cb2967c55fe1d1617e271cc096e6dfc419721fefc48afd",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0016768500429564324,
+     "final_m": 0.00020265106906391166,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "77ea3a66776c5b2189206918d924d5981d9c52f71be62a2bb7d7e9fe0ab9d132",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0021769674268980565,
+     "final_m": 0.00018039567858965725,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "8293fe77b923c0ece628c9008ebee458e6a18b6f5ee67ea3327541b36c646586",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0022639607166924287,
+     "final_m": 0.0001717009663263524,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "e39491d8772713f8adb5d0f1bd81dae5d875dc52bf64626b02758c2813140ba8",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0023717446405557485,
+     "final_m": 0.0002983444028203841,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7014646939594882,
+     "elapsed_s": 2.679999999999987,
+     "error": null
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "45317fbc35e88d0919c9bfad75afaeb7939ba80f05ff54f8ad4c503e5a9b3289",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002583533607494719,
+     "final_m": 0.00027531277121268887,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "32518d50eb358a5ab431519a3f80ddaa3659f8e630e342adc2f292bdb8b399aa",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0037374008792880947,
+     "final_m": 0.00023585011612850515,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5067779476342955,
+     "elapsed_s": 2.3299999999999943,
+     "error": null
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "29dc45f577d63d12b049e37a3a894b34aeb7b59a95b4a5ae1e0ad69a0d78abc5",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0031980100539648866,
+     "final_m": 0.0002512012630298017,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "75f907a35e550189d699f434805db9c56a74a9780293c8917a9756f5d4e71a6a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002765870979891499,
+     "final_m": 0.00027428092852224223,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "a740f562ea8f5af1ee9f672eb585d35629aeeea6879d35b8b55edc328cd4918c",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0035473396078621296,
+     "final_m": 0.0002020367810894404,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.36775180376838024,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "d903a0998171bae39c2b7d5eae4a7a848e9d3d6b44566703eb7e48dc665aecb1",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.004184066289601784,
+     "final_m": 0.00016573959537990118,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4326832692764774,
+     "elapsed_s": 2.3099999999999947,
+     "error": null
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "ae53c7fb6a196bf0dc484d9f3a098502d1b91183a311f303b61818d35708b162",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.2720187609714125,
+     "final_m": 0.2720187609714125,
+     "elapsed_s": 2.7999999999999843
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "2d4929b7ee7489bcf33d569c1b0c433ba50c6f9234018bc0250b719be5491bf0",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.3769319735305233,
+     "final_m": 0.3769319735305233,
+     "elapsed_s": 2.4099999999999926
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "8880f90a2fff3ffe2ee17cc45c431f9ef41be5da67042121cc8a7025547fdcbe",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.36390720973234814,
+     "final_m": 0.36390720973234814,
+     "elapsed_s": 2.299999999999995
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "9d0099d7639723c76235f7969970a0749a81f5f918953dc9a90392612ed4a91d",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.4027510943340835,
+     "final_m": 0.4027510943340835,
+     "elapsed_s": 2.289999999999995
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "d08bd691cedddf179f5987efd1f4f91d338ffd74776fb0c91e67e18c893b610e",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.1836004817101782,
+     "final_m": 0.1836004817101782,
+     "elapsed_s": 2.5499999999999896
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "f0d13fb81f72e2074598254bdce107d0b2e1c98d88b82e8fadd6c74405b64cdd",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.19820054148854607,
+     "final_m": 0.19820054148854607,
+     "elapsed_s": 2.579999999999989
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "aa186d364506ca12c5ce58c8924535cddba07633d12317ede51e51c8a2ae08d4",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 2.259163889850472 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 2.25916.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.26504238098252864,
+     "final_m": 0.26504238098252864,
+     "elapsed_s": 2.249999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37612585271931953,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "aebd4f48dd7e350fc49be3bc975206dc2dd56375379794a89401507f29c42b49",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.13899171322971435,
+     "final_m": 0.13899171322971435,
+     "elapsed_s": 2.0799999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "0747ac07a4baa02d30964933c1f1fd1bf1285d9a30a9c35e9eac7de2e2c98042",
+    "report_sha256": "88e6e464bd0b8fd82b429a9a1935c3a8c70b3b118b1766ed180433720bfae83a",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 2.0449683010931374 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 2.04497.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.2714259283639536,
+     "final_m": 0.2714259283639536,
+     "elapsed_s": 2.0400000000000005
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7490532427872454,
+     "elapsed_s": 2.5999999999999885,
+     "error": null
+    }
+   }
+  },
+  "c16": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "4db351dd6cda3ac7e51fbf23c0895adfe86f68f30db775ba2293d36400ed651a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011938688842664203,
+     "final_m": 0.00014423296125949347,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "64d7bdd65d44460f187570a38f6a6d926bb50932ce096e31c3aa1a08ae5e9bc3",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0013653044172494888,
+     "final_m": 0.00013966125163200347,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "fff7767eddc34d14553f174a029f742ed020b52a7f2317aa594ea869adfce36a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014834735498302182,
+     "final_m": 0.00012294843160349454,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "36d058d46f0a453eb4f3f847665500628aaf7410448851da2a7ac74c558a8bd2",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0021818262459063413,
+     "final_m": 0.00011994168759322328,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "77670156ce3642919ae19d2c98019398d72c89eed59796b8cd7f9ccde1fd539a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0017469161049078713,
+     "final_m": 0.0001922536192666138,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "f41dc9e22beb6c209176314a64519dde73ac9cfb490e161dbdc01bc86f0e5281",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 5.2782517438477878 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 5.27825.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.5033596585548092,
+     "final_m": 0.5033596585548092,
+     "elapsed_s": 5.269999999999932
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "1345984c24527e4666e943bed536614dcbe4ace340e0a031e4fc6f1ad62cf9c2",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0019380501952662612,
+     "final_m": 0.00018184567217326722,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "51d66202f6b68a3f31f957c573878bc6e68e9563c5e4d0ae454463482a58fbf8",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002128673244604682,
+     "final_m": 0.00018274939078733243,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "4406e7bc5c95bb65b6ea653378ff36374f4f4c9589b970af8a5d88a0dbd1d145",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.3141956353629384,
+     "final_m": 0.3141956353629384,
+     "elapsed_s": 3.3999999999999715
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "a96690f4be08d330715c1f9b2fd9ea944d1ddc536a6bea8af59c2818f9e4d89b",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5301588920483602,
+     "final_m": 0.5301588920483602,
+     "elapsed_s": 3.9699999999999593
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "429896cbc39ca1e92c13f06a19172ccafcbb472c3558ac2e47b863dfd6bc9d56",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.003114416620040826,
+     "final_m": 0.00023463728610860623,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5067779476342955,
+     "elapsed_s": 2.3299999999999943,
+     "error": null
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "965ef1d31b5486897327fce917d31f1d4cb3d855ab226754398a11bf1e06cbde",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0027044058499917875,
+     "final_m": 0.00025266769535242753,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "ee909c7d5dc7b4c6da37163740ca1aa3e334872196cfd9fbf3e5e1bd04bf985a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0026466262283063612,
+     "final_m": 0.0002831321661633008,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "e380d6b5b5204a61c060079f5078328e47f2ebea54582a8461093e24e6a868e5",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.5095200994515833,
+     "final_m": 0.5095200994515833,
+     "elapsed_s": 3.6899999999999653
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "7a26241e63c6806ba0148fc0c083f86af29816feda596eb9560c55f965aa475e",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.2798396342906264,
+     "final_m": 0.2798396342906264,
+     "elapsed_s": 2.759999999999985
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "e260997f012986c3b679312f701f82426cc143c7f668a13511f9ec8c501aefb0",
+    "full": {
+     "completed": false,
+     "error": "JSONDecodeError: Invalid control character at: line 1 column 376 (char 375)",
+     "peak_m": 0.2899394266603542,
+     "final_m": 0.2899394266603542,
+     "elapsed_s": 2.99999999999998
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "5a24d9d51d8d778f6f78afe386e6816e8b827c7449b1dee5a86868fc167446ca",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 2.2760294601033424 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 2.27603.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.1963537678662538,
+     "final_m": 0.1963537678662538,
+     "elapsed_s": 2.2699999999999956
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7172154589477235,
+     "elapsed_s": 2.5099999999999905,
+     "error": null
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "0c5e1bfb5ef9c2b3b4ebdff53b02a35bf8a308e4b7a6fa5afc0d33929ad6a6bc",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.2780585650750545,
+     "final_m": 0.2780585650750545,
+     "elapsed_s": 2.429999999999992
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "c65192d7a41ccfc89f435352f68b770b2aaab6a25d4d932c178b7294eebed0cc",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 3.1542541743224106 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 3.15425.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.5071182519126876,
+     "final_m": 0.5071182519126876,
+     "elapsed_s": 3.149999999999977
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5721765505261818,
+     "elapsed_s": 2.3099999999999947,
+     "error": null
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "798345c0c7fb2912330afe996e03727a8fd6027702e811d0a586828cd27a113b",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.2987974020110417,
+     "final_m": 0.2987974020110417,
+     "elapsed_s": 2.6399999999999877
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "9bf4c0c17872deb83037befc05189fe4cbf3697caa5f23d5dc426b766efb1932",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.5096957332110557,
+     "final_m": 0.5096957332110557,
+     "elapsed_s": 2.899999999999982
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "d8f98eca14546f9d5bf5d91366c600ce08bc3fc2d47f7860d2ab0f8103f91675",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.2068219137040349,
+     "final_m": 0.2068219137040349,
+     "elapsed_s": 2.249999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "b7902e0a7f96d6bb3ef4371f0fba0f40571ceffc178b1ea35d2719613cd70f1b",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.3234451854379147,
+     "final_m": 0.3234451854379147,
+     "elapsed_s": 2.3799999999999932
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "fc848477a52282e406f7bd037b3061045b45275dad9bf9355ccde9e2af7cb461",
+    "report_sha256": "7a88de4e61966a3c8e28d674b04a559592104156617bd2d4068910a97ab4ef0d",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 2.3746683777626578 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 2.37467.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.20575684071996916,
+     "final_m": 0.20575684071996916,
+     "elapsed_s": 2.3699999999999934
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7490532427872454,
+     "elapsed_s": 2.5999999999999885,
+     "error": null
+    }
+   }
+  },
+  "perm-20260908": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "0563c35b94d25e83ac088184df05b5a4cd127d82b008a17191ff3190f31762e5",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011570329830397975,
+     "final_m": 0.0001471669018586208,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "a3b4f277cb54755a7750fc9d79239ce3f85cd50f85c5fee220c8ee56b5c26035",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014266306615371704,
+     "final_m": 0.00013609252555526788,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "f7270f2ddc1aa23d6584ae5078427a2af39509afb9eeef9307025e6dab8a941a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.001707451463927873,
+     "final_m": 0.00012622548015428365,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "77e28f476b05629824fb054df4aec4aa46d2973c281541cc71b3e65eb60a8f71",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.001327108921649635,
+     "final_m": 0.0001315870666925278,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "bd054ca9a2966d7b7905233291d2aad2f7d236499dbc497e844e38aa6f3e41e7",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0017451588654991681,
+     "final_m": 0.0002025120945181482,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "dde0f66c48ebd3ba645b984cee9357c876091cc04d47e28ca7fd519bbb865e6d",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.001695567786926583,
+     "final_m": 0.0002121102583676133,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "09c1bcbfd3d24e1a74ba9406b8dd2d751448b352f6da1c118f648b7d083084ef",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002246901366426219,
+     "final_m": 0.00017906224977825246,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "fc43f1bd6f9cd3b2f4611085981f01a4516c04abb7fd7878ac93bd89a5d186d9",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0020622846696647006,
+     "final_m": 0.00017962495260636104,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "895520e6ca791306418fa705ad1d33df567a97c80b53feb34e490cc5d251cef7",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0023260020980657593,
+     "final_m": 0.00029621225984233874,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7014646939594882,
+     "elapsed_s": 2.679999999999987,
+     "error": null
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "29ff12747602d3042b429e4ca924ef5f3d9ed6bcc740822b5ece686860326fd6",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002590138832583775,
+     "final_m": 0.00029003850637494464,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "c2fd6676ee42804e98446433e28f5fd4a2a37d80e17b4004bb6aa0611378b179",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.18211926918425358,
+     "final_m": 0.18211926918425358,
+     "elapsed_s": 3.979999999999959
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "d5934cedc5ee7b1f1bf95988c8aaef642d0737feebd79bcb0b3c2928ed40eca0",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0034941470308707083,
+     "final_m": 0.00025008304598396334,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "911584a255675e8e1055f0732cb69aba367b361e05b00cb34b5617a0c531e428",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002876061001063212,
+     "final_m": 0.00026766253917890183,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "ebed857012d4790a12dd3f9e752451ab80848c22703428647fe0da43479dfaf2",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.1466559346376926,
+     "final_m": 0.1466559346376926,
+     "elapsed_s": 2.199999999999997
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "ee0f8b3d685e0f4f7fc26f25676c18d9c1a20d8ad8a596e362d23165ee5aa799",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.14787485977222198,
+     "final_m": 0.14787485977222198,
+     "elapsed_s": 2.0300000000000007
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "8b985fe6f6b3c83cfd40f7051777f5a8d18a42e88d097ec23057013f969d2063",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.17401434138153643,
+     "final_m": 0.17401434138153643,
+     "elapsed_s": 3.189999999999976
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "ccf0188ddb5f5dd50ac5a32c1f7d7589c18e89102be5646934eaeecf37c5197e",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.15035800137913416,
+     "final_m": 0.15035800137913416,
+     "elapsed_s": 2.709999999999986
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "89921d22d933912a64b289ad4e0d20324f2066c296a1cc1bf618d9fc0fdc59af",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.3687035490650079,
+     "final_m": 0.3687035490650079,
+     "elapsed_s": 2.9199999999999817
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "a3cd2f086544ec97d97c5d30647b23569e6ac370b6e70c07300c1f6c4fa2366f",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.14110594667140275,
+     "final_m": 0.14110594667140275,
+     "elapsed_s": 2.1699999999999977
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "5e95eadd269c5b7cd25b691f32756e72f6befa470c165700d3244c81c106c015",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.17040588773216622,
+     "final_m": 0.17040588773216622,
+     "elapsed_s": 2.1899999999999973
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "f0d43d00af59cb3292f94f04ed45700d57300c611eeb54305887e96df09150ed",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.15401198679492445,
+     "final_m": 0.15401198679492445,
+     "elapsed_s": 2.149999999999998
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "c015e95d4f9c906093942bf381b771840b623bb2ae53b57f08fc2be6d3afb4ff",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.16288425857417174,
+     "final_m": 0.16288425857417174,
+     "elapsed_s": 1.8800000000000014
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "4f1c7b08d64d0ad832ac4bd585564179df502fc262c20142d1276d84d35d0405",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.17302895486147998,
+     "final_m": 0.17302895486147998,
+     "elapsed_s": 1.8800000000000014
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "307cb652f1014f7f39d5ad4c2454634da22f477ee93eca39f24f13315b0f6696",
+    "report_sha256": "0258891c0d0ee27d6e72ea358a703e43c508eed9534ef4a46a7802c844a64aea",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.20305637167536958,
+     "final_m": 0.20305637167536958,
+     "elapsed_s": 1.9900000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   }
+  },
+  "perm-1": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "80fe533014c778d502b1f667622a99938182605d2ba48826bec2aabe066040f7",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011730354951814633,
+     "final_m": 0.00014695157572881291,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "9cce9f758682cef7284a4be2069bd541e2116f1dd6ee195723eabba6c222db8b",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0013980746871734187,
+     "final_m": 0.00013926261567094602,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "b5937653f9572fb85509c29a22da1ad97ad2a07742703ba88191073e954b2ca2",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0017608511906286749,
+     "final_m": 0.00011797037673355064,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "c47470cc45984704afe7f5fd949636ad51baba0d0a60533340913e22258f9a3d",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.27843301599916565,
+     "final_m": 0.27843301599916565,
+     "elapsed_s": 7.879999999999876
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "835a0e19b472b041f41ce4868de52dd89d3f4d8bbaaeff0896c0e5054a5e319d",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.001759426028560854,
+     "final_m": 0.00019376081651382372,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "f74657c23fd262a7c430c63ecd9e2952bc2311df86ed3ea9a1fd9fe8211b578d",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.300959611610864,
+     "final_m": 0.300959611610864,
+     "elapsed_s": 2.2699999999999956
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "af49e93aea0ea2ca19b57eefd51b54b5bae6a17bfe1eec2325b5cfbc25222cf6",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002474233630837301,
+     "final_m": 0.00017264832909725752,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "cc3c1b246d69406ea71f1919e26ce0b3650784ec7a06c0cce12bfe2111bee112",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0018690352474381852,
+     "final_m": 0.0001840714354149687,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "783a2e72dd5020d89dd94210184e66554338451b1ffa5e1b928acb83180b699e",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.28302589971509445,
+     "final_m": 0.28302589971509445,
+     "elapsed_s": 3.699999999999965
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "a5acb5ff51621bad11bd33df2a81560501f1d64a705f0d301d863e6c137e99fb",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.3952106401697033,
+     "final_m": 0.3952106401697033,
+     "elapsed_s": 2.6499999999999875
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "3c27c1c32b438acdf82ded3de0a3a71760a20afc93fdc22305741f032721c6aa",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.00444778615585964,
+     "final_m": 0.00015942465850373269,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5067779476342955,
+     "elapsed_s": 2.3299999999999943,
+     "error": null
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "c8b3b57fe1b664529c19f3ab68092e5b92069e748bd337a320e2d12425030e67",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.003936320050601872,
+     "final_m": 0.000228387989985358,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "1a239874cde2caefdb293a93a352db6ae8d0a35adf69bfe2445a0ba817a65dec",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002767422248336173,
+     "final_m": 0.0002803252185317635,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "b5033250bcd164351402129df6dd38365f6d2be350bd6360575150698ccd8932",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.30778542603326126,
+     "final_m": 0.30778542603326126,
+     "elapsed_s": 2.2199999999999966
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "6a9d6579cae463b1088e78c43640c6c39eed32cfaeb32a1e5280d8c499f212f6",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.33332927390613754,
+     "final_m": 0.33332927390613754,
+     "elapsed_s": 1.9600000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "62233a29936009ecee931b7f8e40d88be79dc7ae6ffa5de92eda338c236664c0",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.32829662284985706,
+     "final_m": 0.32829662284985706,
+     "elapsed_s": 2.0400000000000005
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "d664aeadaa9f94804c8e37241d8840246dee952c14a38051b865a513fac6ce62",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.327650198521656,
+     "final_m": 0.327650198521656,
+     "elapsed_s": 2.1399999999999983
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "7b3b72916b2b9a5f0f0ffb974fafbf71a6dbb931861ed8ae39b4119ba1e2961f",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.26490533322140075,
+     "final_m": 0.26490533322140075,
+     "elapsed_s": 2.109999999999999
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "b4aeea5c2e716cba538e6fa8cf19f2c39de48248c190c31c0a87aa89f1da5a25",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.30043916620811234,
+     "final_m": 0.30043916620811234,
+     "elapsed_s": 2.1799999999999975
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "a6f84f183cbbe72bf8b4b053a142de13f0e48a86f24bb1eb9845f6397d82b8c8",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.518269631491732,
+     "final_m": 0.518269631491732,
+     "elapsed_s": 2.669999999999987
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37558768779073887,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "abac0a0c278690b5f8ebe3f9767f4028b3e8ad7aab4ba4b0aef2c01485594ca5",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.26266258125410114,
+     "final_m": 0.26266258125410114,
+     "elapsed_s": 3.229999999999975
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "281b923b60b355f790603cbf5ccd85a8bcd6ef67a6eeda730a0d456f2fbcfec6",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.29751504283658553,
+     "final_m": 0.29751504283658553,
+     "elapsed_s": 1.8400000000000014
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "9ce3d63976ba1a85ea1f666ab0d5da1873feed5db15d3f755a8d2f5228d3c747",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.3220514222417248,
+     "final_m": 0.3220514222417248,
+     "elapsed_s": 1.8100000000000014
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "6286743225b65eede1d83be311253d0175f6fb3db46fee60a907e981da7f0c01",
+    "report_sha256": "aec9f544ffcd83c14e3d9b6985c52146f890b66b04abaf78fc6da8d0f88961a3",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.4067535634538138,
+     "final_m": 0.4067535634538138,
+     "elapsed_s": 1.8900000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   }
+  },
+  "perm-2": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "d74decd256ef9ca43972d935e5aab0209331d55d0f9464f45da34846e0f3c01e",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0012074731261389874,
+     "final_m": 0.00014482853621092427,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "e3b2186d855910a3fb6b6aeda84544ef28ab96e8fdb874138b578f89c26e5d46",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0013783396795121546,
+     "final_m": 0.00013440231200694954,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "0d0da5ffbd11c6ef210e3184e51cba243858e9ba8fbc1b7506eb7d50ed64177d",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014863724676635946,
+     "final_m": 0.00012907360015351947,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "debfc4b747ca275d6605ba3e56a6edb4e84ce8b35b00d9ee931646609529dc05",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5082735296409367,
+     "final_m": 0.5082735296409367,
+     "elapsed_s": 3.0199999999999796
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "5a5c0ef8995e959b1c71792a9e940c027f995cb64137146e503bf13ed00c6781",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5241470437259855,
+     "final_m": 0.5241470437259855,
+     "elapsed_s": 3.5999999999999672
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "93afc0a79dd04dcf000a6c73a7c793abe991135d76a48fe9fdf04a9e1fd189d6",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.48502868923406134,
+     "final_m": 0.48502868923406134,
+     "elapsed_s": 2.3299999999999943
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "b5346d1919e2253f62a972b5a7dc75878079df750442cdae74c7288c99d434ea",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0020337018012734913,
+     "final_m": 0.00017883420429021116,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "ab74b56473378abaa4347435b2829b7ea4ae2a4cd9485cf2ac20d094edab9edd",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5348022084305962,
+     "final_m": 0.5348022084305962,
+     "elapsed_s": 2.6499999999999875
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "463071395137be4173f27fbe9e0bcd2167f0df607a736d078e9999181e9698ad",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5363674047851683,
+     "final_m": 0.5363674047851683,
+     "elapsed_s": 2.6099999999999883
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7014646939594882,
+     "elapsed_s": 2.679999999999987,
+     "error": null
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "567832b4ae5fac7e944be42469aab891e97918f425f0e3483153ae93893ebf9e",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.4924668804548697,
+     "final_m": 0.4924668804548697,
+     "elapsed_s": 2.3299999999999943
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "4d5fc45f75e200a3e0e7c4b8ab81b53be0865c144a44d4a461b7977242620678",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.49278100184088164,
+     "final_m": 0.49278100184088164,
+     "elapsed_s": 2.5099999999999905
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5067779476342955,
+     "elapsed_s": 2.3299999999999943,
+     "error": null
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "05a86c6dc61b5b80e000cebdf23e4fe5d8f09358b05428e3e9b84d17f9595d52",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.541197009887702,
+     "final_m": 0.541197009887702,
+     "elapsed_s": 3.0199999999999796
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "58b61e95dd2f0b165d8dd7df4f2f0ba85fb703627e76f231d56443e4fe19a1bb",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.48669183871679794,
+     "final_m": 0.48669183871679794,
+     "elapsed_s": 2.849999999999983
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "1bd7f0e8a67c73d86d1a7be3ad36ecfcb7c551c7ac7e90448ea7bf7b636892f6",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5119772242984509,
+     "final_m": 0.5119772242984509,
+     "elapsed_s": 2.1399999999999983
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.36775180376838024,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "0546ad5a64a0245ed09c24f5f1ad3dcd747fad23e606b815ba362ab0cd5c5170",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.49772037667196106,
+     "final_m": 0.49772037667196106,
+     "elapsed_s": 2.020000000000001
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4326832692764774,
+     "elapsed_s": 2.3099999999999947,
+     "error": null
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "80867b7d9bc9e51a2222a927760d7fc724975deb3dea5b4c8ac0560841eac2a0",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.48736020618764664,
+     "final_m": 0.48736020618764664,
+     "elapsed_s": 2.0799999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7362861442902455,
+     "elapsed_s": 2.7799999999999847,
+     "error": null
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "bb33bd2eb4773aad06f20a6425bfa457cb30e3b02f6b9ccd54a83bffe7977900",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5398247774386344,
+     "final_m": 0.5398247774386344,
+     "elapsed_s": 2.0400000000000005
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7172154589477235,
+     "elapsed_s": 2.5099999999999905,
+     "error": null
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "19c750d8592c8d2cabf392db53fe8c9173682f31484309c06f76ada85692ce80",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.500483228862212,
+     "final_m": 0.500483228862212,
+     "elapsed_s": 2.0400000000000005
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7724201583779527,
+     "elapsed_s": 2.619999999999988,
+     "error": null
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "0659f46eca571e77ca33857c39a3035ffbd026eff17a93c8d27bbe205f10137f",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5176231409747917,
+     "final_m": 0.5176231409747917,
+     "elapsed_s": 2.1199999999999988
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5721765505261818,
+     "elapsed_s": 2.3099999999999947,
+     "error": null
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "cfc5b3e4d695ab963a43adf326c02226ebedce3378284987180c74b4b0acaac2",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.48711854708287444,
+     "final_m": 0.48711854708287444,
+     "elapsed_s": 2.259999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37558768779073887,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "a0c34a9637d56d2267a138985c8e64380eeebb8bf74cd265d5ff9f9b376b7975",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.48630072654501283,
+     "final_m": 0.48630072654501283,
+     "elapsed_s": 2.149999999999998
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671423410664212,
+     "elapsed_s": 1.7900000000000014,
+     "error": null
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "405a5724db343c276e69f0d24bae6c49b4aa5fdf64bf0c77a169c9898faaa825",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5252047081213302,
+     "final_m": 0.5252047081213302,
+     "elapsed_s": 1.9300000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37612585271931953,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "e2e4dbc120c349c260ad740c055e40a4633af72b47d9765921b75cad7a8e5872",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5238943763168142,
+     "final_m": 0.5238943763168142,
+     "elapsed_s": 1.9100000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.48693297808946445,
+     "elapsed_s": 2.2799999999999954,
+     "error": null
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "1dd0ee86bd0e6b7bf115a7ddf0b7c83dedba7c5d070e8ee18e5eb169f1720648",
+    "report_sha256": "919eb9f1bdb8e3b798fe0d265a2384ff74038b8195c804a1d37accb0bf79bc39",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5080673741733771,
+     "final_m": 0.5080673741733771,
+     "elapsed_s": 1.9300000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7490532427872454,
+     "elapsed_s": 2.5999999999999885,
+     "error": null
+    }
+   }
+  },
+  "rand-11": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "7641f2b3a3c71f16486197e1d7eb8f77c38712fe646fc4d1af14253160f09255",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0012424918460008638,
+     "final_m": 0.0001446884837667401,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "c30961dd7764cb4a7a4904e2b937f6a79d1d1f6b5cf9ca7de07bb0808afac941",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0013862754439639888,
+     "final_m": 0.0001412310234741195,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "24296c1ad751ac8694beb6959ce2a7b6223f7e89379c76f5f1f0a54aa6c4f27d",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0015174116510057894,
+     "final_m": 0.00012179562574845152,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "2b166718c5327c088b868f654f8c43e011cef409df26c7c44eb9e72d597bd14d",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0018148494157971637,
+     "final_m": 0.00012015449079600026,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "0fcc7223a5b3c72060af260b5e457a29efae9679a8b714f7fe286ad2d00249f0",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002161423328351585,
+     "final_m": 0.00019056731439194222,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "7cd73333225dcafde181d60b6ab21d3dd32452553eadf136793499e6bc95c483",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002374283749546121,
+     "final_m": 0.00019287026625147642,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "5692d155cf47f88224fbcdf5ae17033f0aaf92d0dce304262b9004efea981361",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.5121407486820889,
+     "final_m": 0.5121407486820889,
+     "elapsed_s": 2.8299999999999836
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "15bb4d9326b4d4740d17c5b45f49f96bd0fbbb8ee6f56bfc09a30cc26a82ad55",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.003092078446917295,
+     "final_m": 0.00018295794997380516,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "09ec81404fc13a031d41db16b5722ef34b37c74ed3b0227a7c819630ffade033",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0028974473106597827,
+     "final_m": 0.0002861461889535613,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7014646939594882,
+     "elapsed_s": 2.679999999999987,
+     "error": null
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "e6b0615e9b0ae5abd354ac5663869f4b1596e2c4ffcae98500db2e38c21f89b8",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0036739516517964093,
+     "final_m": 0.0002716648500223102,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "9705b41d6a9bbdeecb8bda44aa44afb3d4dd0a958c108d0dc269c8b4eda03a5e",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.8075846003753172,
+     "final_m": 0.8075846003753172,
+     "elapsed_s": 2.9899999999999802
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5067779476342955,
+     "elapsed_s": 2.3299999999999943,
+     "error": null
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "5d417cc63e47ce37feecbfe7404567ee2b66dacc5d988eeb811d6e8d35fb06ec",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.782828408986959,
+     "final_m": 0.782828408986959,
+     "elapsed_s": 2.7999999999999843
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "3d0d22511e9c76b8797fcbf3025b92f016d9c026ce7481ef1d50ecfe7b330305",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.8513704869435976,
+     "final_m": 0.8513704869435976,
+     "elapsed_s": 2.7499999999999853
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "ad1d4c84dcc0a7e1f9d27e3c20358e3c2f6f16bcb4ef236e8b12ed4dda330964",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.8379731751605125,
+     "final_m": 0.8379731751605125,
+     "elapsed_s": 2.759999999999985
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.36775180376838024,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "cc1b6313d8406e818586e1bc63148a4252ea7ac219d26c4cf5bdb1300db19279",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.5456881523846059,
+     "final_m": 0.5456881523846059,
+     "elapsed_s": 2.619999999999988
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "4d1e673d7a46ea3a6298aa203861426841aeed819ef8fb5dd6cf5826e23cb201",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.8667643549072104,
+     "final_m": 0.8667643549072104,
+     "elapsed_s": 3.979999999999959
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7362861442902455,
+     "elapsed_s": 2.7799999999999847,
+     "error": null
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "306901ec9943da140ccb937313cb74da6718017314a07c1eca0970ecd4f585f3",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5594275669928497,
+     "final_m": 0.5594275669928497,
+     "elapsed_s": 2.819999999999984
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7172154589477235,
+     "elapsed_s": 2.5099999999999905,
+     "error": null
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "741980a5ddfb5692325d5bf568bc2a0925964c443040b9a19f8ef51c8e145a7b",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5962991927575285,
+     "final_m": 0.5962991927575285,
+     "elapsed_s": 2.5099999999999905
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7724201583779527,
+     "elapsed_s": 2.619999999999988,
+     "error": null
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "a1f874a76c1b315d61603b9d28cb94ca9eac04ff1c816550c7a17f6c09c23e33",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5662202929915746,
+     "final_m": 0.5662202929915746,
+     "elapsed_s": 2.52999999999999
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5721765505261818,
+     "elapsed_s": 2.3099999999999947,
+     "error": null
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "501d08febef9303ac2dfa02589e76a02a1c0f28c8aafa8883a2b6342158b4883",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.7722186572899018,
+     "final_m": 0.7722186572899018,
+     "elapsed_s": 2.6499999999999875
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37558768779073887,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "fc72a009ae91b9235eecd6e86ea0080ee0e8b95b5db5f27da70b0e0a050fa885",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.7711595139269674,
+     "final_m": 0.7711595139269674,
+     "elapsed_s": 2.5999999999999885
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671423410664212,
+     "elapsed_s": 1.7900000000000014,
+     "error": null
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "dc4b46e660c6495e2e220b592f3f08c4a168946521534286a87aed06b2d8e05e",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.7656716750476913,
+     "final_m": 0.7656716750476913,
+     "elapsed_s": 2.579999999999989
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37612585271931953,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "da4077ca95679a8fd96dfd833147e56fd0d2e11105e94b22cbebdfaf35be3910",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.7676047225601107,
+     "final_m": 0.7676047225601107,
+     "elapsed_s": 2.569999999999989
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.48693297808946445,
+     "elapsed_s": 2.2799999999999954,
+     "error": null
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "07c047e4512b202306ac67686beeee4f476e4206b4b05345b1234f19aec46db8",
+    "report_sha256": "b59fde41f35db130e5b8afd5b75213b0fdc7c1155282ff8ec76cb921b95d241f",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.6807418520249213,
+     "final_m": 0.6807418520249213,
+     "elapsed_s": 2.5999999999999885
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7490532427872454,
+     "elapsed_s": 2.5999999999999885,
+     "error": null
+    }
+   }
+  },
+  "rand-12": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "2ee9d8ffa536baf68e13450950808e827f3db5eac3547601d20bf024376b833a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011695319240457138,
+     "final_m": 0.00014513779531590871,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "d3192221fa14fa9a26ff8e9e7537a4b35cd62968bb00ef26516898c09b794a85",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014373532750418304,
+     "final_m": 0.00013819003673285108,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "6060f8476335c792271c51142f25037922012e35e70020ff475c15dd18e0428b",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0016808543453571342,
+     "final_m": 0.00011422079069682818,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "9ab06b9d83c8b22234a5e55eb8634692745360c1bca62e135b3adde7814cdaf3",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002058954681968812,
+     "final_m": 0.00011437482942669927,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "6f4479144796612d5c9128159b82d2a8b05f34067cd29c31bf3552e6aa0b53a6",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.37320264982166895,
+     "final_m": 0.37320264982166895,
+     "elapsed_s": 2.9299999999999815
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "d3fd6929f5e1b25f77162b5db38c29d5e48a9a8cb3ec8c0849ee5acbec207d1a",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3745539990485865,
+     "final_m": 0.3745539990485865,
+     "elapsed_s": 3.0299999999999794
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "3efefc4c8c826cfb46070ad6846b63b2112f71982a1a86692314bedb0cbe299c",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.35957228399380514,
+     "final_m": 0.35957228399380514,
+     "elapsed_s": 4.6399999999999455
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "ee627c033af3004760307729f28e52d20054b65fef9aed3939592fb96f1212b7",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0025886152238414266,
+     "final_m": 0.0001718690293973229,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "31a669d96c215a0229cc5c4980234b3974f5d533e16ccf5f345074cac3bd2c86",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3741883650546665,
+     "final_m": 0.3741883650546665,
+     "elapsed_s": 3.509999999999969
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7014646939594882,
+     "elapsed_s": 2.679999999999987,
+     "error": null
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "11e53cce7e32714fccfb8875f3178b4c305365b781e5fe74797279f8af2324c6",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3640417692580924,
+     "final_m": 0.3640417692580924,
+     "elapsed_s": 2.399999999999993
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "1ced23154a006566013f15d97b9a0c8f8b6eec0d82884869b90698a339f7de20",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.38511884266455954,
+     "final_m": 0.38511884266455954,
+     "elapsed_s": 2.5499999999999896
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5067779476342955,
+     "elapsed_s": 2.3299999999999943,
+     "error": null
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "eecb61a5824a1b7636fda73c587ff07b5da57dbd51db260b8859cb5d71b02a03",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.37028249300585303,
+     "final_m": 0.37028249300585303,
+     "elapsed_s": 2.709999999999986
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "54aceaac989d9f086711715e5302be3158c095c1f225808c2360f8f511faa942",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3868089430027149,
+     "final_m": 0.3868089430027149,
+     "elapsed_s": 3.239999999999975
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "89f3726882b03dbba6efd3afcef8545ed9ff560c8d02f0d029b200ed85231c2b",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3721979636848626,
+     "final_m": 0.3721979636848626,
+     "elapsed_s": 2.53999999999999
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.36775180376838024,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "50fbb9d6e725c11c6f698e7c83d107c4fd5da8a00d0cdd0fa832ac5725147d2d",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3642666711456857,
+     "final_m": 0.3642666711456857,
+     "elapsed_s": 2.239999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4326832692764774,
+     "elapsed_s": 2.3099999999999947,
+     "error": null
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "fe1481820d7c8c0743207aee5722329dcc747efd37776c92b8d8daf4bfbd6648",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.379737840865254,
+     "final_m": 0.379737840865254,
+     "elapsed_s": 2.429999999999992
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7362861442902455,
+     "elapsed_s": 2.7799999999999847,
+     "error": null
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "75d428b70b1c2d75d85981545adf3d0fd5126f7f79febd365f25021089172855",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3841892271253645,
+     "final_m": 0.3841892271253645,
+     "elapsed_s": 1.9400000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7172154589477235,
+     "elapsed_s": 2.5099999999999905,
+     "error": null
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "ce5d8f2f216d41873f8f14a6a0a08ea0d18258a2235759a6413141d9d91f96b0",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3850407056753471,
+     "final_m": 0.3850407056753471,
+     "elapsed_s": 1.8600000000000014
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7724201583779527,
+     "elapsed_s": 2.619999999999988,
+     "error": null
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "dbb3d9572dc5163147ec9af7f8580b2530fd9edc68dcbc88fe9603a355ec4718",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3724022824607076,
+     "final_m": 0.3724022824607076,
+     "elapsed_s": 2.020000000000001
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.5721765505261818,
+     "elapsed_s": 2.3099999999999947,
+     "error": null
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "686f8aa555c2b6d16b249d6edcbccfe66cc87ab1bcc3e4ef490911e70fcf80c9",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3772687014175661,
+     "final_m": 0.3772687014175661,
+     "elapsed_s": 2.149999999999998
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37558768779073887,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "2a9c5d7d99bfe460e54689fbfffd1d990b4ff6332c7417d0de69c0571f959b34",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3770919504659989,
+     "final_m": 0.3770919504659989,
+     "elapsed_s": 2.2799999999999954
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671423410664212,
+     "elapsed_s": 1.7900000000000014,
+     "error": null
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "a455fedbc904cfc9c7afef5fee314f508ebd1fe2df762822b2710e19ee3a4de9",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.3763046145093323,
+     "final_m": 0.3763046145093323,
+     "elapsed_s": 1.9600000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37612585271931953,
+     "elapsed_s": 1.8300000000000014,
+     "error": null
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "10385198aab5fd2699fb4eb33a05b1d000a1cd58288671c64e1f2fab82403649",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.37585074142426583,
+     "final_m": 0.37585074142426583,
+     "elapsed_s": 1.9000000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.48693297808946445,
+     "elapsed_s": 2.2799999999999954,
+     "error": null
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "5c515613ecd71d701c3db71ca8f3ce3886fdfd12c47342c72833f4439f63510a",
+    "report_sha256": "ec78f31eeca8036b06d9b66139d439051df4b03f161d2dbf7fbe58610dc6a6eb",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.39926854665129863,
+     "final_m": 0.39926854665129863,
+     "elapsed_s": 1.9200000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7490532427872454,
+     "elapsed_s": 2.5999999999999885,
+     "error": null
+    }
+   }
+  },
+  "rand-13": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "f7a907ffa3796d22f763d5f4bf0de3716cb64910340c3d12a5b90765d4177153",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011621678418924906,
+     "final_m": 0.00014591926910744135,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "3bbcf9a77a67219a6e6c25798f51091bc7372356411d8fd665e395910aeb4939",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014480503649433214,
+     "final_m": 0.00013778752403746663,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "a7acdc2fc5ca3713f05d74dd23baa15f799a47f4c05e3f63b200c6d2d925d162",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0018479907905842713,
+     "final_m": 0.00013600753152882,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "ed9dfe4770be9a6134b43a7702fcf448aed90148f149ce7afbdd10a584393eeb",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0019714752184236835,
+     "final_m": 0.00012191978538311248,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "7c712c55637cd03cdbf21da1f04f05b6ff511eda6bff9ec7b2a61776cf084260",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.16219139424574452,
+     "final_m": 0.16219139424574452,
+     "elapsed_s": 2.869999999999983
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "37674c02c46f8ef697036628f7ee76a94c1f9bf8d7a60b3f5092e4f408340f87",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0018152969427579543,
+     "final_m": 0.0001948159125666338,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "200f1c13a79d3d89d221ec7e074b8b8b043a1ebb41ae9cd931946259728cd577",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0027527785270384636,
+     "final_m": 0.00018175990361509421,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "6913dc498dbda78064347f592cba9c330f915d672b104a60db6d911cc450481b",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0029510465464117662,
+     "final_m": 0.00017649668929241449,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "454daba778ff7275519c2d5eb4e1591a4fdc5c511d0cb1c4dee3461c5734a785",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.1634048001293693,
+     "final_m": 0.1634048001293693,
+     "elapsed_s": 2.709999999999986
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "ccfa2e83c538ce9de13330d4a82bc15077cc5af2dec4aadaddff29ea2e40c885",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.16778986201510845,
+     "final_m": 0.16778986201510845,
+     "elapsed_s": 1.9600000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "978b90c79355dd90113391e7168e79da0f5bc10d39a1b68b26f9c9e41f129ef8",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.16651437305210337,
+     "final_m": 0.16651437305210337,
+     "elapsed_s": 1.9300000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "a21ff882d99bd31fc3df46d821bf2344e1fc7603d89bd7baee049fc26412c58b",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.16450754057623274,
+     "final_m": 0.16450754057623274,
+     "elapsed_s": 2.6399999999999877
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "45cb7d89ef7f021b7071be9ddc836aa5a58334e7972a215a885923684475745a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0037314223897680007,
+     "final_m": 0.00027277477768852375,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "d2f12018190ab3424aa35cff730c27d9b138446d5eed54aa01440ca1c872aef5",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.004973281753242874,
+     "final_m": 0.00024669883024740154,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.36775180376838024,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "8687c9acd4e246e5d01fae5b73b4b1cfd12568b568e5bdc021d84d585cd3b33b",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.17300756313519697,
+     "final_m": 0.17300756313519697,
+     "elapsed_s": 2.859999999999983
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "e70f56d13769f89e9e4ae8b948f7957e696a4ff33025e87f5f0fefe61aa8ab11",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.00416118047448105,
+     "final_m": 0.00025975482774189223,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7362861442902455,
+     "elapsed_s": 2.7799999999999847,
+     "error": null
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "4b804fd5fa474d3c156f8f32403f694c1e41018b2e100455adf10defd698b249",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.47743891739085464,
+     "final_m": 0.47743891739085464,
+     "elapsed_s": 2.0799999999999996
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7172154589477235,
+     "elapsed_s": 2.5099999999999905,
+     "error": null
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "d8a6db8169ec452ec371839da0f098237b327b88efa11d17d57d45fa7275c1fa",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.5554650292823021,
+     "final_m": 0.5554650292823021,
+     "elapsed_s": 2.099999999999999
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7724201583779527,
+     "elapsed_s": 2.619999999999988,
+     "error": null
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "e982b3efeeb68be41897f3aa12da1b389c3f410fb1c4261686cef6a72d0ecf0d",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.46852668229041594,
+     "final_m": 0.46852668229041594,
+     "elapsed_s": 1.9800000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "08d55060f6855e055db723c18b21cdcbaa2fa5f17c530ae5afbb2b6742d5a94a",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.2135391783816181,
+     "final_m": 0.2135391783816181,
+     "elapsed_s": 1.8600000000000014
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "5c190613d4a34d2923f5b47f4a6d8d4a6f1c78071c5811674c427e8788682098",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.16373257735029748,
+     "final_m": 0.16373257735029748,
+     "elapsed_s": 2.07
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "798a6cb6953c6f8b78c74ca60e0b307309114003bd1d2135eedfad03385a8729",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.2119124000826867,
+     "final_m": 0.2119124000826867,
+     "elapsed_s": 2.4099999999999926
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "64a75620ddced3bcb1f9f13416ba7600c90ede2a010fbd5c14171c4a21ea924e",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.6616308253130716,
+     "final_m": 0.6616308253130716,
+     "elapsed_s": 2.339999999999994
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.48693297808946445,
+     "elapsed_s": 2.2799999999999954,
+     "error": null
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "ae898f930b22573d6ad508c90457db3808f579a83d577fafa5a30ee46d3aea55",
+    "report_sha256": "40dee98aff6d78887e4e6836417911dfcfb89c2b2217c2168483155e10ae9324",
+    "full": {
+     "completed": false,
+     "error": null,
+     "peak_m": 0.46764650424250204,
+     "final_m": 0.46764650424250204,
+     "elapsed_s": 2.1699999999999977
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7490532427872454,
+     "elapsed_s": 2.5999999999999885,
+     "error": null
+    }
+   }
+  },
+  "perm-20260908-rebuilt": {
+   "A_+5_+0": {
+    "set": "A",
+    "force_n": [
+     5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "b7ff19fa5e268caaf85da48dc99387b969713be75f3fe4b47290f84664e7e3bf",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0011570329830397975,
+     "final_m": 0.0001471669018586208,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7041781032709781,
+     "elapsed_s": 2.859999999999983,
+     "error": null
+    }
+   },
+   "A_-5_+0": {
+    "set": "A",
+    "force_n": [
+     -5.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "8c8f7107ef2e5b7d92104e0163d59434c879af85f1ea3bd55e483dc67f46c0c9",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0014266306615371704,
+     "final_m": 0.00013609252555526788,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37586173432569553,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "A_+0_+5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "01b6966999d9b2527c7419ee93abaab74194af1fb66bac2d073830b64db46f9a",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.001707451463927873,
+     "final_m": 0.00012622548015428365,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4676449977795194,
+     "elapsed_s": 2.3599999999999937,
+     "error": null
+    }
+   },
+   "A_+0_-5": {
+    "set": "A",
+    "force_n": [
+     0.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "7608b5a502dc146dfee0f0255c184e64aeecfa648576a823a7a407b2d8d2c9de",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.001327108921649635,
+     "final_m": 0.0001315870666925278,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.4064936218373972,
+     "elapsed_s": 2.349999999999994,
+     "error": null
+    }
+   },
+   "B_+5_+5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "ce1d894eae96e1da555e6b6717dcadbe122ae81a010a0b54e08bcd93a35d0432",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0017451588654991681,
+     "final_m": 0.0002025120945181482,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7697086139282999,
+     "elapsed_s": 2.899999999999982,
+     "error": null
+    }
+   },
+   "B_+5_-5": {
+    "set": "B",
+    "force_n": [
+     5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "9523f686067897df3437e982251f80cdcb42f9bebb09a4a69de71f647bd4ea3e",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.001695567786926583,
+     "final_m": 0.0002121102583676133,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7529468572398086,
+     "elapsed_s": 2.8799999999999826,
+     "error": null
+    }
+   },
+   "B_-5_+5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     5.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "ff79a262fd67b57c094a348c16f228a54f5503ef860f6e7736d8c0a463891050",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002246901366426219,
+     "final_m": 0.00017906224977825246,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.37606840720766765,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "B_-5_-5": {
+    "set": "B",
+    "force_n": [
+     -5.0,
+     0.0,
+     -5.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "7756ba04a185f9b8dd977f687e2d0aac9995b50ddf5d395a971700d1edda539c",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0020622846696647006,
+     "final_m": 0.00017962495260636104,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3766774491184615,
+     "elapsed_s": 1.9400000000000015,
+     "error": null
+    }
+   },
+   "C_+10_+0": {
+    "set": "C",
+    "force_n": [
+     10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "93803474f12a08f6d082f137e543708f7fac527a7b365eb0e7f21eb8002d6f6e",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0023260020980657593,
+     "final_m": 0.00029621225984233874,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7014646939594882,
+     "elapsed_s": 2.679999999999987,
+     "error": null
+    }
+   },
+   "C_+7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "f69153fe20ba95e74de640e00697b61a9764bf9cd0ae7e39ef9aaf6345f19165",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002590138832583775,
+     "final_m": 0.00029003850637494464,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.7744799034720036,
+     "elapsed_s": 2.809999999999984,
+     "error": null
+    }
+   },
+   "C_+0_+10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     10.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "3caf0a8919fe58f37e7cbc023c502446020d127a6d7f1323c89125c4d924fc82",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.18211926918425358,
+     "final_m": 0.18211926918425358,
+     "elapsed_s": 3.979999999999959
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_-7.07107_+7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     7.071068
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "aa7c895760ab8d02d3bf90ec788aa3bce8421a4e8772abd5f406b98e1aa234c7",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.0034941470308707083,
+     "final_m": 0.00025008304598396334,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.3671785849938659,
+     "elapsed_s": 1.9000000000000015,
+     "error": null
+    }
+   },
+   "C_-10_+0": {
+    "set": "C",
+    "force_n": [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "3ac05bf9617aa389ed539a4493043665e8b08668d787be5aafd66f1f0064ada6",
+    "full": {
+     "completed": true,
+     "error": null,
+     "peak_m": 0.002876061001063212,
+     "final_m": 0.00026766253917890183,
+     "elapsed_s": 9.999999999999831
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.38025465917503953,
+     "elapsed_s": 1.8700000000000014,
+     "error": null
+    }
+   },
+   "C_-7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     -7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "581c1c91ac9197549b7832ab9e48fdcb14babe36de4a1d8e4e108f6634655e4e",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.1466559346376926,
+     "final_m": 0.1466559346376926,
+     "elapsed_s": 2.199999999999997
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+0_-10": {
+    "set": "C",
+    "force_n": [
+     0.0,
+     0.0,
+     -10.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "e21e7f8110f8ff253aed281f750ab90232f123aca1ec8215ff7d5a97c1ace5ff",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.14787485977222198,
+     "final_m": 0.14787485977222198,
+     "elapsed_s": 2.0300000000000007
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "C_+7.07107_-7.07107": {
+    "set": "C",
+    "force_n": [
+     7.071068,
+     0.0,
+     -7.071068
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "690b42fb90f229bb7a50921294e6cb3d9832422a30926deb0dec421bebc34ec0",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.19388437210230364,
+     "final_m": 0.19388437210230364,
+     "elapsed_s": 3.2099999999999755
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+20_+0": {
+    "set": "D",
+    "force_n": [
+     20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "c2c14560c5f5b880bf089b7e22c417fac07070992af758224d67143cd99a442a",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.15035800137913416,
+     "final_m": 0.15035800137913416,
+     "elapsed_s": 2.709999999999986
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "564f64f3497f6dd5c0fa405aef51451f79116b0e1a000a5dc71f1b767bc5c50e",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.3687035490650079,
+     "final_m": 0.3687035490650079,
+     "elapsed_s": 2.9199999999999817
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_+20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     20.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "4c10b5dff870e6f10bcd2917f22d312494de0b0959a459b3c68e0cbd0e1d6213",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.14897306523550552,
+     "final_m": 0.14897306523550552,
+     "elapsed_s": 2.1799999999999975
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_+14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     14.142136
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "ee75380e4fa4e25b7096a8f022b471b9913f578ecb23b953f5e9dd0c4589077a",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.17933939442516156,
+     "final_m": 0.17933939442516156,
+     "elapsed_s": 2.199999999999997
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-20_+0": {
+    "set": "D",
+    "force_n": [
+     -20.0,
+     0.0,
+     0.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "cc07ba6fe257573dc6442e99a0f47b011828625aebac0c9d8427c3b34dd1e56d",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.15401198679492445,
+     "final_m": 0.15401198679492445,
+     "elapsed_s": 2.149999999999998
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_-14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     -14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "281318a1a03a09162a3be912917aa813a5e7800cf7949de45cfc796c20f7d8f0",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.16288425857417174,
+     "final_m": 0.16288425857417174,
+     "elapsed_s": 1.8800000000000014
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   },
+   "D_+0_-20": {
+    "set": "D",
+    "force_n": [
+     0.0,
+     0.0,
+     -20.0
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "5592006c84544aa6fbfa8d77d25857062913bcde0e633c357992ac848c75d57e",
+    "full": {
+     "completed": false,
+     "error": "NativeCommandRejected: SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\n  Integrator step failed at time 1.895821921297727 apparently because:\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 1.89582.\n  (Required condition 't1 > t0' was not met.)\n",
+     "peak_m": 0.1824726916599889,
+     "final_m": 0.1824726916599889,
+     "elapsed_s": 1.8900000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": 0.48693297808946445,
+     "elapsed_s": 2.2799999999999954,
+     "error": null
+    }
+   },
+   "D_+14.1421_-14.1421": {
+    "set": "D",
+    "force_n": [
+     14.142136,
+     0.0,
+     -14.142136
+    ],
+    "artifact_sha256": "307193fa26d13590ca990614502e0cd379052861d7b0e4a4a80e988f67c3dd1e",
+    "report_sha256": "9c016aa3ca82495360433a5a8236396b4744144965798d48c79244ba27200a9f",
+    "full": {
+     "completed": false,
+     "error": "TimeoutError: Native mechanical stream response timed out after 120.0s",
+     "peak_m": 0.20305637167536958,
+     "final_m": 0.20305637167536958,
+     "elapsed_s": 1.9900000000000015
+    },
+    "sever": {
+     "completed": false,
+     "peak_m": null,
+     "elapsed_s": null,
+     "error": "Not run: preceding native failure closed the matched checkpoint owner"
+    }
+   }
+  }
+ }
+}
