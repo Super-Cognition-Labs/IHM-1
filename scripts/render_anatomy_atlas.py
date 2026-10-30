@@ -198,6 +198,9 @@ def main():
     A = Atlas(); W, H, ss = args.W, args.H, args.ss
     Vs, Fs = A.skin
     centre = (Vs.min(0) + Vs.max(0)) / 2; extent = float((Vs.max(0) - Vs.min(0))[1]) * 1.04
+    # The canonical frame is centred (feet at y = -0.865 m), so heights are given above the
+    # sole and converted here.
+    floor = float(Vs.min(0)[1]); Y = lambda h: floor + h
     want = lambda k: not args.only or k in args.only
     skin = [(Vs, Fs, SYSTEM_RGB["skin"])]
     bones = A.layer(lambda e: e["system"] == "skeletal" or e["role"] in ("rigid_bone", "cartilage"))
@@ -251,29 +254,29 @@ def main():
         ps = [label(finish(view(sag, (1, 0.12, 0.25))[0], W, H, ss), "Midsagittal section", "left half removed, viewed from the left"),
               label(finish(view(cor, (0.15, 0.10, 1))[0], W, H, ss), "Coronal section", "anterior half removed")]
         for level, name in ((1.30, "Thorax"), (1.05, "Abdomen"), (0.85, "Pelvis")):
-            tr = clip_scene(scene, lambda V, l=level: V[:, 1] <= l)
-            c = np.array([cx, level - 0.12, cz]); ps.append(label(finish(view(tr, (0, 1.0, 0.55), centre=c, extent=0.75)[0], W, H, ss),
-                                                                 f"Transverse, {name.lower()}", f"cut at y = {level:.2f} m, viewed from above"))
+            tr = clip_scene(scene, lambda V, l=Y(level): V[:, 1] <= l)
+            c = np.array([cx, Y(level) - 0.05, cz]); ps.append(label(finish(view(tr, (0, 1.0, 0.18), centre=c, extent=0.62)[0], W, H, ss),
+                                                                 f"Transverse, {name.lower()}", f"cut {level:.2f} m above the sole, viewed from above"))
         save(sheet(ps, "Sections through every layer: skin, muscle, organs, vessels, nerves, bone. " + ATTRIBUTION), out, "05_sections")
 
     if want("peel"):
-        layers = [(skin, -0.09), (muscles, 0.0), (A.layer(lambda e: e["system"] not in ("skeletal", "muscular", "integumentary") and e["role"] not in ("muscle", "tendon", "rigid_bone", "cartilage")), 0.09), (bones, 9.0)]
+        layers = [(skin, -0.09), (muscles, 0.0), (A.layer(lambda e: e["system"] not in ("skeletal", "muscular", "integumentary", "connective") and e["role"] not in ("muscle", "tendon", "rigid_bone", "cartilage")), 0.09), (bones, 9.0)]
         scene = []
         for layer, bound in layers:
             scene += clip_scene(layer, lambda V, b=bound: V[:, 0] <= b)
         whole = label(finish(view(scene, FRONT)[0], W, H, ss), "Dissection", "skin | muscle | organs and vessels | bone")
-        tc = np.array([centre[0], 1.15, centre[2]])
-        torso = label(finish(view(scene, (0.25, 0.08, 1), centre=tc, extent=0.85)[0], W, H, ss), "Dissection, trunk", "")
+        tc = np.array([centre[0], Y(1.22), centre[2]])
+        torso = label(finish(view(scene, (0.25, 0.08, 1), centre=tc, extent=1.05)[0], W, H, ss), "Dissection, trunk", "")
         tscene = []
-        for layer, bound in [(skin, 1.38), (muscles, 1.18), (layers[2][0], 0.98), (bones, 9.0)]:
+        for layer, bound in [(skin, Y(1.38)), (muscles, Y(1.18)), (layers[2][0], Y(0.98)), (bones, -9.0)]:
             tscene += clip_scene(layer, lambda V, b=bound: V[:, 1] >= b)
-        steps = label(finish(view(tscene, (0.3, 0.05, 1), centre=tc, extent=0.95)[0], W, H, ss), "Dissection by level", "skin above, then muscle, organs, bone")
+        steps = label(finish(view(tscene, (0.3, 0.05, 1), centre=tc, extent=1.05)[0], W, H, ss), "Dissection by level", "skin above, then muscle, organs, bone")
         save(sheet([whole, torso, steps], "A peel-away dissection: each layer cut back to show the next. " + ATTRIBUTION), out, "06_dissection")
 
     if want("head"):
-        hc = np.array([centre[0], 1.60, centre[2]])
+        hc = np.array([centre[0], Y(1.60), centre[2]])
         scene = everything()
-        sag = clip_scene(scene, lambda V: (V[:, 0] <= centre[0]) | (V[:, 1] < 1.40))
+        sag = clip_scene(scene, lambda V: (V[:, 0] <= centre[0]) | (V[:, 1] < Y(1.40)))
         ps = [label(finish(view(skin, (0.6, 0.05, 1), h=W, centre=hc, extent=0.34)[0], W, W, ss), "Head", ""),
               label(finish(view(A.layer(lambda e: e["role"] in ("muscle", "tendon", "rigid_bone", "cartilage")), (0.6, 0.05, 1), h=W, centre=hc, extent=0.34)[0], W, W, ss), "Muscles of the head and neck", ""),
               label(finish(view(sag, (1, 0.05, 0.1), h=W, centre=hc, extent=0.34)[0], W, W, ss), "Midsagittal, head", "")]
