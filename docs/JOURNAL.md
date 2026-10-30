@@ -37,9 +37,13 @@ fascia sheet that hid everything under it), and the by-level panel clipped bones
 lungs; abdomen: bowel and aorta; pelvis), and the dissection reads skin → muscle → organs →
 bone.
 
-**A process-lifetime trap.** A render started with `setsid nohup … &` inside a non-
-interactive `ssh` died silently after four sheets when the ssh session ended (no traceback,
-memory was fine). Long jobs now run as `systemd-run --user --unit=…` with the log as a file.
+**The full-scene sheets do not fit at 3x supersampling.** The first final render died
+silently after four sheets; I first blamed the ssh session ending (and wrote "memory was
+fine", read after the fact). Rerun as `systemd-run --user`, it was killed by the OOM killer
+(`Result: oom-kill`): sections/peel/head rasterise every public entity (~14 M triangles)
+into a 2700x5100 super-sampled buffer in numpy. Sheets 05-07 are rendered at `--ss 2`
+(supersampling only sets anti-aliasing; output size is unchanged), 01-04 at `--ss 3`. Long
+jobs run as `systemd-run --user --unit=... -p MemoryMax=...` with the log as a file.
 
 **120 s supine session (`verify_unified_world.py --environment supine --arms full`):
 not reproducible on the second host; stopped after eight attempts.** The implicit IBM

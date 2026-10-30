@@ -1,0 +1,931 @@
+{
+  "schema": "ihm.segment-contact-measurement.v1",
+  "pose": "data/models/engineering_stance_v1/initial_pose.json",
+  "registration": "data/models/engineering_stance_v1/registration.json",
+  "target_mass_kg": 77.6122029,
+  "steps": 200,
+  "dt_s": 0.01,
+  "work": "data/derived/segment-contact-measure/run-1793352347",
+  "arms": [
+    {
+      "arm": "spheres",
+      "bundle": null,
+      "replaces_source_feet": false,
+      "steps": 200,
+      "dt_s": 0.01,
+      "weight_n": 761.375710449,
+      "contact_material": null,
+      "initial": {
+        "contact_elements": 28,
+        "contact_elements_loaded": 12,
+        "total_contact_force_n": [
+          -4.662081638353696e-14,
+          761.3757112009141,
+          0.0
+        ],
+        "reported_total_contact_force_n": [
+          -4.662081638353696e-14,
+          761.3757112009141,
+          0
+        ],
+        "vertical_contact_force_n": 761.3757112009141,
+        "momentum_balance_residual_n": [
+          -2.449481995713071e-14,
+          -4.22599629765622e-14,
+          -5.9853035721464446e-15
+        ],
+        "momentum_balance_residual_norm_n": 4.9211020456432375e-14,
+        "foot_contact_force_n": {
+          "r": 380.2800448577658,
+          "l": 381.0956663431484
+        },
+        "contact_model": "source_feet_and_inertia_inscribed_body_spheres",
+        "segment_contact_meshes": 0,
+        "segment_contact_mesh_layer": null,
+        "pelvis_ty_m": 1.0186834515222531,
+        "loaded": [
+          {
+            "name": "contactMedialMidfoot_l",
+            "body": "calcn_l",
+            "force_n": 84.30468292529872,
+            "vertical_n": 84.30468292529872,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialMidfoot_r",
+            "body": "calcn_r",
+            "force_n": 84.1269759230551,
+            "vertical_n": 84.1269759230551,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactHeel_l",
+            "body": "calcn_l",
+            "force_n": 75.44646617134124,
+            "vertical_n": 75.44646617134124,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactHeel_r",
+            "body": "calcn_r",
+            "force_n": 75.27583250502714,
+            "vertical_n": 75.27583250502714,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralRearfoot_l",
+            "body": "calcn_l",
+            "force_n": 70.63852367522088,
+            "vertical_n": 70.63852367522088,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralRearfoot_r",
+            "body": "calcn_r",
+            "force_n": 70.47195038523554,
+            "vertical_n": 70.47195038523554,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralMidfoot_l",
+            "body": "calcn_l",
+            "force_n": 68.72805489245357,
+            "vertical_n": 68.72805489245357,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralMidfoot_r",
+            "body": "calcn_r",
+            "force_n": 68.5631441739558,
+            "vertical_n": 68.5631441739558,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralToe_l",
+            "body": "toes_l",
+            "force_n": 61.94046568132939,
+            "vertical_n": 61.94046568132939,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralToe_r",
+            "body": "toes_r",
+            "force_n": 61.82188881446914,
+            "vertical_n": 61.82188881446914,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialToe_l",
+            "body": "toes_l",
+            "force_n": 20.03747299750458,
+            "vertical_n": 20.03747299750458,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialToe_r",
+            "body": "toes_r",
+            "force_n": 20.020253056023055,
+            "vertical_n": 20.020253056023055,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          }
+        ]
+      },
+      "max_momentum_balance_residual_norm_n": 6.452425955755837e-13,
+      "final": {
+        "contact_elements": 28,
+        "contact_elements_loaded": 11,
+        "total_contact_force_n": [
+          28.323286063334542,
+          328.1015602833707,
+          -1.633203454016734
+        ],
+        "reported_total_contact_force_n": [
+          28.323286063334542,
+          328.1015602833707,
+          -1.633203454016734
+        ],
+        "vertical_contact_force_n": 328.1015602833707,
+        "momentum_balance_residual_n": [
+          -9.675276923282353e-15,
+          8.40618146839543e-14,
+          -2.2836193207903838e-14
+        ],
+        "momentum_balance_residual_norm_n": 8.764411783873683e-14,
+        "foot_contact_force_n": {
+          "r": 177.14397960825193,
+          "l": 150.9575806751188
+        },
+        "contact_model": "source_feet_and_inertia_inscribed_body_spheres",
+        "segment_contact_meshes": 0,
+        "segment_contact_mesh_layer": null,
+        "pelvis_ty_m": 0.9690209875162973,
+        "loaded": [
+          {
+            "name": "contactLateralToe_r",
+            "body": "toes_r",
+            "force_n": 63.1424445246598,
+            "vertical_n": 62.71481295225969,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialMidfoot_r",
+            "body": "calcn_r",
+            "force_n": 58.29246172806177,
+            "vertical_n": 56.165817331318046,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialToe_l",
+            "body": "toes_l",
+            "force_n": 55.88147714825605,
+            "vertical_n": 54.9068158393371,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialToe_r",
+            "body": "toes_r",
+            "force_n": 48.839682594052285,
+            "vertical_n": 47.98700145578318,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralToe_l",
+            "body": "toes_l",
+            "force_n": 47.34079437754904,
+            "vertical_n": 46.79480396321109,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialMidfoot_l",
+            "body": "calcn_l",
+            "force_n": 47.69351175137914,
+            "vertical_n": 46.00791577054721,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralMidfoot_r",
+            "body": "calcn_r",
+            "force_n": 10.372836186424712,
+            "vertical_n": 10.214381570958466,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralMidfoot_l",
+            "body": "calcn_l",
+            "force_n": 3.3216512865672123,
+            "vertical_n": 3.247440675776628,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralRearfoot_r",
+            "body": "calcn_r",
+            "force_n": 0.06628614741019917,
+            "vertical_n": 0.061966298935973683,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralRearfoot_l",
+            "body": "calcn_l",
+            "force_n": 0.0006574472080339509,
+            "vertical_n": 0.0006044262469750332,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactHeel_r",
+            "body": "calcn_r",
+            "force_n": 1.1677380280244343e-09,
+            "vertical_n": -1.0034285831642518e-09,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          }
+        ]
+      },
+      "cost": {
+        "advances": 200,
+        "median_s": 0.05194568447768688,
+        "mean_s": 0.0556258246046491,
+        "worst_s": 0.10296803305391222,
+        "best_s": 0.049563426058739424,
+        "total_wall_s": 11.132759494939819,
+        "simulated_s": 2.0000000000000013,
+        "real_time_factor": 0.17977261588611534
+      }
+    },
+    {
+      "arm": "skin_per_segment_carried",
+      "bundle": "data/derived/segment-contact-meshes/skin-per-segment",
+      "replaces_source_feet": false,
+      "steps": 200,
+      "dt_s": 0.01,
+      "weight_n": 761.375710449,
+      "contact_material": {
+        "youngs_modulus_pa": 100000.0,
+        "poissons_ratio": 0.45,
+        "layer_thickness_m": 0.01,
+        "dissipation_s_m": 2.0,
+        "static_friction": 0.8,
+        "dynamic_friction": 0.7,
+        "viscous_friction": 0.5,
+        "transition_velocity_m_s": 0.05,
+        "stiffness_pa_per_m": 37931034.482758634
+      },
+      "initial": {
+        "contact_elements": 32,
+        "contact_elements_loaded": 13,
+        "total_contact_force_n": [
+          -4.662081638353696e-14,
+          761.6556721213013,
+          0.0
+        ],
+        "reported_total_contact_force_n": [
+          -4.662081638353696e-14,
+          761.6556721213013,
+          0
+        ],
+        "vertical_contact_force_n": 761.6556721213013,
+        "momentum_balance_residual_n": [
+          -2.1102220326799136e-14,
+          1.4438840692571078e-13,
+          -5.985344201293737e-15
+        ],
+        "momentum_balance_residual_norm_n": 1.4604499341803325e-13,
+        "foot_contact_force_n": {
+          "r": 380.56000577815297,
+          "l": 381.0956663431484
+        },
+        "contact_model": "source_feet_and_real_skin_meshes_elastic_foundation",
+        "segment_contact_meshes": 20,
+        "segment_contact_mesh_layer": "skin",
+        "pelvis_ty_m": 1.0186834515222531,
+        "loaded": [
+          {
+            "name": "contactMedialMidfoot_l",
+            "body": "calcn_l",
+            "force_n": 84.30468292529872,
+            "vertical_n": 84.30468292529872,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialMidfoot_r",
+            "body": "calcn_r",
+            "force_n": 84.1269759230551,
+            "vertical_n": 84.1269759230551,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactHeel_l",
+            "body": "calcn_l",
+            "force_n": 75.44646617134124,
+            "vertical_n": 75.44646617134124,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactHeel_r",
+            "body": "calcn_r",
+            "force_n": 75.27583250502714,
+            "vertical_n": 75.27583250502714,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralRearfoot_l",
+            "body": "calcn_l",
+            "force_n": 70.63852367522088,
+            "vertical_n": 70.63852367522088,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralRearfoot_r",
+            "body": "calcn_r",
+            "force_n": 70.47195038523554,
+            "vertical_n": 70.47195038523554,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralMidfoot_l",
+            "body": "calcn_l",
+            "force_n": 68.72805489245357,
+            "vertical_n": 68.72805489245357,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralMidfoot_r",
+            "body": "calcn_r",
+            "force_n": 68.5631441739558,
+            "vertical_n": 68.5631441739558,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralToe_l",
+            "body": "toes_l",
+            "force_n": 61.94046568132939,
+            "vertical_n": 61.94046568132939,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralToe_r",
+            "body": "toes_r",
+            "force_n": 61.82188881446914,
+            "vertical_n": 61.82188881446914,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialToe_l",
+            "body": "toes_l",
+            "force_n": 20.03747299750458,
+            "vertical_n": 20.03747299750458,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactMedialToe_r",
+            "body": "toes_r",
+            "force_n": 20.020253056023055,
+            "vertical_n": 20.020253056023055,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "mesh_support_skin_toes_r",
+            "body": "toes_r",
+            "force_n": 0.2799609203871908,
+            "vertical_n": 0.2799609203871908,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 5622
+          }
+        ],
+        "lowest_mesh_vertex_above_floor_m": -0.0008594107790429982,
+        "lowest_mesh_vertex_element": "skin_toes_r"
+      },
+      "max_momentum_balance_residual_norm_n": 5.070928397323583e-12,
+      "max_compression_m": {
+        "skin_calcn_l": 0.0,
+        "skin_calcn_r": 0.005666670411655084,
+        "skin_femur_l": 0.0,
+        "skin_femur_r": 0.0,
+        "skin_hand_l": 0.015150611328825475,
+        "skin_hand_r": 0.01597211988871053,
+        "skin_humerus_l": 0.0,
+        "skin_humerus_r": 0.0,
+        "skin_patella_l": 0.0,
+        "skin_patella_r": 0.0,
+        "skin_pelvis": 0.0,
+        "skin_radius_l": 0.0,
+        "skin_radius_r": 0.0,
+        "skin_tibia_l": 0.0,
+        "skin_tibia_r": 0.0,
+        "skin_toes_l": 0.013368054035101141,
+        "skin_toes_r": 0.00375983970242914,
+        "skin_torso": 0.0,
+        "skin_ulna_l": 0.0,
+        "skin_ulna_r": 0.0
+      },
+      "final": {
+        "contact_elements": 32,
+        "contact_elements_loaded": 4,
+        "total_contact_force_n": [
+          52.55546111886177,
+          190.13983626298347,
+          -229.90118032999163
+        ],
+        "reported_total_contact_force_n": [
+          52.55546111886177,
+          190.13983626298347,
+          -229.90118032999163
+        ],
+        "vertical_contact_force_n": 190.13983626298347,
+        "momentum_balance_residual_n": [
+          -1.087224595297729e-14,
+          1.6467933098799077e-13,
+          -1.657548077158621e-14
+        ],
+        "momentum_balance_residual_norm_n": 1.6586812336770278e-13,
+        "foot_contact_force_n": {
+          "r": 0,
+          "l": 142.90265988132822
+        },
+        "contact_model": "source_feet_and_real_skin_meshes_elastic_foundation",
+        "segment_contact_meshes": 20,
+        "segment_contact_mesh_layer": "skin",
+        "pelvis_ty_m": 0.2749257731104735,
+        "loaded": [
+          {
+            "name": "contactLateralToe_l",
+            "body": "toes_l",
+            "force_n": 280.99918460803326,
+            "vertical_n": 141.14407892412015,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "mesh_support_skin_hand_l",
+            "body": "hand_l",
+            "force_n": 51.629244786089906,
+            "vertical_n": 47.23717638165524,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 10688
+          },
+          {
+            "name": "contactLateralMidfoot_l",
+            "body": "calcn_l",
+            "force_n": 3.237608781038438,
+            "vertical_n": 1.7069725160202491,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "mesh_support_skin_toes_l",
+            "body": "toes_l",
+            "force_n": 0.09571522292933796,
+            "vertical_n": 0.05160844118781817,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 5504
+          }
+        ],
+        "lowest_mesh_vertex_above_floor_m": -0.003039322190495422,
+        "lowest_mesh_vertex_element": "skin_hand_l"
+      },
+      "cost": {
+        "advances": 200,
+        "median_s": 0.07158450450515375,
+        "mean_s": 0.17036047717090697,
+        "worst_s": 1.5880521110957488,
+        "best_s": 0.052173112984746695,
+        "total_wall_s": 34.32571067195386,
+        "simulated_s": 2.0000000000000013,
+        "real_time_factor": 0.05869906075672662
+      }
+    },
+    {
+      "arm": "skin_per_segment",
+      "bundle": "data/derived/segment-contact-meshes/skin-per-segment",
+      "replaces_source_feet": true,
+      "steps": 200,
+      "dt_s": 0.01,
+      "weight_n": 761.375710449,
+      "contact_material": {
+        "youngs_modulus_pa": 100000.0,
+        "poissons_ratio": 0.45,
+        "layer_thickness_m": 0.01,
+        "dissipation_s_m": 2.0,
+        "static_friction": 0.8,
+        "dynamic_friction": 0.7,
+        "viscous_friction": 0.5,
+        "transition_velocity_m_s": 0.05,
+        "stiffness_pa_per_m": 37931034.482758634
+      },
+      "initial": {
+        "contact_elements": 20,
+        "contact_elements_loaded": 1,
+        "total_contact_force_n": [
+          0.0,
+          0.2799609203871908,
+          0.0
+        ],
+        "reported_total_contact_force_n": [
+          0,
+          0.2799609203871908,
+          0
+        ],
+        "vertical_contact_force_n": 0.2799609203871908,
+        "momentum_balance_residual_n": [
+          -4.2368439497850626e-14,
+          -5.477967352147959e-14,
+          1.721546192410826e-15
+        ],
+        "momentum_balance_residual_norm_n": 6.927381191976897e-14,
+        "foot_contact_force_n": {
+          "r": 0.2799609203871908,
+          "l": 0
+        },
+        "contact_model": "real_skin_meshes_elastic_foundation",
+        "segment_contact_meshes": 20,
+        "segment_contact_mesh_layer": "skin",
+        "pelvis_ty_m": 1.0186834515222531,
+        "loaded": [
+          {
+            "name": "mesh_support_skin_toes_r",
+            "body": "toes_r",
+            "force_n": 0.2799609203871908,
+            "vertical_n": 0.2799609203871908,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 5622
+          }
+        ],
+        "lowest_mesh_vertex_above_floor_m": -0.0008594107790429982,
+        "lowest_mesh_vertex_element": "skin_toes_r"
+      },
+      "max_momentum_balance_residual_norm_n": 5.034724055465603e-12,
+      "max_compression_m": {
+        "skin_calcn_l": 0.009049983218511862,
+        "skin_calcn_r": 0.010117989837903036,
+        "skin_femur_l": 0.0,
+        "skin_femur_r": 0.004226850066609833,
+        "skin_hand_l": 0.008281983079214891,
+        "skin_hand_r": 0.008657901113760164,
+        "skin_humerus_l": 0.0,
+        "skin_humerus_r": 0.0028417422961388855,
+        "skin_patella_l": 0.0,
+        "skin_patella_r": 0.0,
+        "skin_pelvis": 0.029407155495314335,
+        "skin_radius_l": 0.0,
+        "skin_radius_r": 0.0,
+        "skin_tibia_l": 0.0,
+        "skin_tibia_r": 0.009515671549444132,
+        "skin_toes_l": 0.01439814904043446,
+        "skin_toes_r": 0.013736119908927757,
+        "skin_torso": 0.015917734909912856,
+        "skin_ulna_l": 0.009498474301134055,
+        "skin_ulna_r": 0.01204216151544038
+      },
+      "final": {
+        "contact_elements": 20,
+        "contact_elements_loaded": 6,
+        "total_contact_force_n": [
+          2.847271602587126,
+          744.0887330210542,
+          -19.76976039685313
+        ],
+        "reported_total_contact_force_n": [
+          2.847271602587126,
+          744.0887330210542,
+          -19.76976039685313
+        ],
+        "vertical_contact_force_n": 744.0887330210542,
+        "momentum_balance_residual_n": [
+          -8.257195822582197e-13,
+          4.991698653854545e-14,
+          -9.971758034719404e-13
+        ],
+        "momentum_balance_residual_norm_n": 1.2956327091809963e-12,
+        "foot_contact_force_n": {
+          "r": 0,
+          "l": 32.12923887712626
+        },
+        "contact_model": "real_skin_meshes_elastic_foundation",
+        "segment_contact_meshes": 20,
+        "segment_contact_mesh_layer": "skin",
+        "pelvis_ty_m": 0.22887425227881683,
+        "loaded": [
+          {
+            "name": "mesh_support_skin_pelvis",
+            "body": "pelvis",
+            "force_n": 271.19376749707965,
+            "vertical_n": 267.8565938495873,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 14166
+          },
+          {
+            "name": "mesh_support_skin_torso",
+            "body": "torso",
+            "force_n": 195.92530343863916,
+            "vertical_n": 194.396002363042,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 26856
+          },
+          {
+            "name": "mesh_support_skin_femur_r",
+            "body": "femur_r",
+            "force_n": 134.72365750936575,
+            "vertical_n": 132.31679410712118,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 5020
+          },
+          {
+            "name": "mesh_support_skin_tibia_r",
+            "body": "tibia_r",
+            "force_n": 83.45943300337619,
+            "vertical_n": 80.05341419852083,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 4902
+          },
+          {
+            "name": "mesh_support_skin_ulna_r",
+            "body": "ulna_r",
+            "force_n": 40.18649300838983,
+            "vertical_n": 37.33668962565657,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 1600
+          },
+          {
+            "name": "mesh_support_skin_toes_l",
+            "body": "toes_l",
+            "force_n": 40.99302363678208,
+            "vertical_n": 32.12923887712626,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 5504
+          }
+        ],
+        "lowest_mesh_vertex_above_floor_m": -0.022913075184957027,
+        "lowest_mesh_vertex_element": "skin_pelvis"
+      },
+      "cost": {
+        "advances": 200,
+        "median_s": 0.2644875639816746,
+        "mean_s": 0.3266070159105584,
+        "worst_s": 1.7869477039203048,
+        "best_s": 0.08398515707813203,
+        "total_wall_s": 65.57925789197907,
+        "simulated_s": 2.0000000000000013,
+        "real_time_factor": 0.03061783584813902
+      }
+    },
+    {
+      "arm": "skin_per_segment_posterior",
+      "bundle": "data/derived/segment-contact-meshes/skin-per-segment",
+      "replaces_source_feet": "posterior",
+      "steps": 200,
+      "dt_s": 0.01,
+      "weight_n": 761.375710449,
+      "contact_material": {
+        "youngs_modulus_pa": 100000.0,
+        "poissons_ratio": 0.45,
+        "layer_thickness_m": 0.01,
+        "dissipation_s_m": 2.0,
+        "static_friction": 0.8,
+        "dynamic_friction": 0.7,
+        "viscous_friction": 0.5,
+        "transition_velocity_m_s": 0.05,
+        "stiffness_pa_per_m": 37931034.482758634
+      },
+      "initial": {
+        "contact_elements": 24,
+        "contact_elements_loaded": 5,
+        "total_contact_force_n": [
+          -1.7869603550922473e-14,
+          292.11273365721195,
+          0.0
+        ],
+        "reported_total_contact_force_n": [
+          -1.7869603550922473e-14,
+          292.11273365721195,
+          0
+        ],
+        "vertical_contact_force_n": 292.11273365721195,
+        "momentum_balance_residual_n": [
+          -1.1114416804917214e-13,
+          1.6540600996628663e-13,
+          3.0335424618424733e-14
+        ],
+        "momentum_balance_residual_norm_n": 2.0157483030152863e-13,
+        "foot_contact_force_n": {
+          "r": 146.02774381064987,
+          "l": 146.0849898465621
+        },
+        "contact_model": "source_feet_and_real_skin_meshes_elastic_foundation",
+        "segment_contact_meshes": 20,
+        "segment_contact_mesh_layer": "skin",
+        "pelvis_ty_m": 1.0186834515222531,
+        "loaded": [
+          {
+            "name": "contactHeel_l",
+            "body": "calcn_l",
+            "force_n": 75.44646617134124,
+            "vertical_n": 75.44646617134124,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactHeel_r",
+            "body": "calcn_r",
+            "force_n": 75.27583250502714,
+            "vertical_n": 75.27583250502714,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralRearfoot_l",
+            "body": "calcn_l",
+            "force_n": 70.63852367522088,
+            "vertical_n": 70.63852367522088,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactLateralRearfoot_r",
+            "body": "calcn_r",
+            "force_n": 70.47195038523554,
+            "vertical_n": 70.47195038523554,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "mesh_support_skin_toes_r",
+            "body": "toes_r",
+            "force_n": 0.2799609203871908,
+            "vertical_n": 0.2799609203871908,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 5622
+          }
+        ],
+        "lowest_mesh_vertex_above_floor_m": -0.0008594107790429982,
+        "lowest_mesh_vertex_element": "skin_toes_r"
+      },
+      "max_momentum_balance_residual_norm_n": 7.603949956480938e-12,
+      "max_compression_m": {
+        "skin_calcn_l": 0.0,
+        "skin_calcn_r": 0.002136533075587914,
+        "skin_femur_l": 0.0022509583008702427,
+        "skin_femur_r": 0.005090476518918571,
+        "skin_hand_l": 0.008593987358980593,
+        "skin_hand_r": 0.008221501282708418,
+        "skin_humerus_l": 0.0,
+        "skin_humerus_r": 0.01160074235309197,
+        "skin_patella_l": 0.012272992191837757,
+        "skin_patella_r": 0.0,
+        "skin_pelvis": 0.043981685330232084,
+        "skin_radius_l": 0.0,
+        "skin_radius_r": 0.0,
+        "skin_tibia_l": 0.0,
+        "skin_tibia_r": 0.008423814425655665,
+        "skin_toes_l": 0.015032126087007838,
+        "skin_toes_r": 0.014608368369010687,
+        "skin_torso": 0.015113108646028273,
+        "skin_ulna_l": 0.0,
+        "skin_ulna_r": 0.014142574924843443
+      },
+      "final": {
+        "contact_elements": 24,
+        "contact_elements_loaded": 8,
+        "total_contact_force_n": [
+          -8.561855628817948,
+          790.347247196583,
+          9.558873392801397
+        ],
+        "reported_total_contact_force_n": [
+          -8.561855628817948,
+          790.347247196583,
+          9.558873392801397
+        ],
+        "vertical_contact_force_n": 790.347247196583,
+        "momentum_balance_residual_n": [
+          -6.714433987497554e-13,
+          4.4406329435789163e-13,
+          5.288833022522406e-13
+        ],
+        "momentum_balance_residual_norm_n": 9.631957197381233e-13,
+        "foot_contact_force_n": {
+          "r": 12.82279908924835,
+          "l": 31.359771677167636
+        },
+        "contact_model": "source_feet_and_real_skin_meshes_elastic_foundation",
+        "segment_contact_meshes": 20,
+        "segment_contact_mesh_layer": "skin",
+        "pelvis_ty_m": 0.21261135782958052,
+        "loaded": [
+          {
+            "name": "mesh_support_skin_femur_r",
+            "body": "femur_r",
+            "force_n": 220.20477413633066,
+            "vertical_n": 214.48224769395574,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 5020
+          },
+          {
+            "name": "mesh_support_skin_torso",
+            "body": "torso",
+            "force_n": 195.08831571742573,
+            "vertical_n": 194.30269557998793,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 26856
+          },
+          {
+            "name": "mesh_support_skin_tibia_r",
+            "body": "tibia_r",
+            "force_n": 147.4341595148667,
+            "vertical_n": 147.04956596652568,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 4902
+          },
+          {
+            "name": "mesh_support_skin_humerus_r",
+            "body": "humerus_r",
+            "force_n": 127.99385563798766,
+            "vertical_n": 121.06347386596528,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 4178
+          },
+          {
+            "name": "mesh_support_skin_patella_l",
+            "body": "patella_l",
+            "force_n": 70.24574628061208,
+            "vertical_n": 69.26669332373237,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 654
+          },
+          {
+            "name": "mesh_support_skin_toes_l",
+            "body": "toes_l",
+            "force_n": 33.40239340494678,
+            "vertical_n": 31.359771677167636,
+            "geometry_type": "skin_mesh_elastic_foundation",
+            "mesh_faces": 5504
+          },
+          {
+            "name": "contactLateralRearfoot_r",
+            "body": "calcn_r",
+            "force_n": 13.705267224764938,
+            "vertical_n": 12.821187145948674,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          },
+          {
+            "name": "contactHeel_r",
+            "body": "calcn_r",
+            "force_n": 0.0017495335539681983,
+            "vertical_n": 0.0016119432996767901,
+            "geometry_type": "sphere",
+            "mesh_faces": null
+          }
+        ],
+        "lowest_mesh_vertex_above_floor_m": -0.009037538359001562,
+        "lowest_mesh_vertex_element": "skin_patella_l"
+      },
+      "cost": {
+        "advances": 200,
+        "median_s": 0.3063560185255483,
+        "mean_s": 0.35385181455756537,
+        "worst_s": 1.7731796320294961,
+        "best_s": 0.08045540400780737,
+        "total_wall_s": 71.00930069002789,
+        "simulated_s": 2.0000000000000013,
+        "real_time_factor": 0.028260417464591483
+      }
+    },
+    {
+      "arm": "skin_per_segment_anterior",
+      "failed": "NativeCommandRejected(\"SimTK Exception thrown at AbstractIntegratorRep.cpp:428:\\n  Integrator step failed at time 1.083491875354692 apparently because:\\nSimTK Exception thrown at AbstractIntegratorRep.cpp:546:\\n  Error detected by Simbody method AbstractIntegrator::takeOneStep(): Unable to advance time past 1.08349.\\n  (Required condition 't1 > t0' was not met.)\\n\")"
+    }
+  ]
+}

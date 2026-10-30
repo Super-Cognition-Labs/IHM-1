@@ -45,3 +45,40 @@ replace / posterior / anterior / carried, read out of the run's own snapshot, ne
 **Not separated by this run:** a stand with the anterior subset does not say the SKIN could
 do it with a continuous carrier; it says a front support is sufficient and its absence is
 what the per-piece skin lacks.
+
+## Result (2026-10-30, second host, scored as pre-registered at the 2 s horizon)
+
+`scripts/measure_segment_contact_meshes.py --steps {100,200}` with the five arms →
+`out/skin_stance_support_100.json`, `out/skin_stance_support_200.json`. Passive plant: the
+script calls `advance(dt)` with no excitations or commands, so the body is held only by its
+joint stops and its contacts.
+
+**Instrument checks.** (1) At 1.00 s `skin_per_segment_carried` reproduces **−1.30 mm** and
+`skin_per_segment` reproduces **−671.78 mm**: the engine edit did not move the existing arms.
+(2) Contact elements read from each run's own initial snapshot: **20 / 24 / 28 / 32** for
+replace / posterior / anterior / carried, i.e. 20 meshes + 0 / 4 / 8 / 12 spheres, and 28 for
+spheres-only. (3) Both subsets fail at 2 s, so each could fail.
+
+| arm | contact elements | drift at 1.00 s | drift at 2.00 s | outcome (2 s) |
+|---|---:|---:|---:|---|
+| `spheres` (source feet, no skin) | 28 | 0.00 mm | −49.66 mm | sagging |
+| `skin_per_segment_carried` (skin + all 12) | 32 | −1.30 mm | **−743.76 mm** | **falls** |
+| `skin_per_segment` (skin only) | 20 | −671.78 mm | −789.81 mm | falls |
+| `skin_per_segment_posterior` (skin + 4 heel/rearfoot) | 24 | −578.14 mm | −806.07 mm | falls |
+| `skin_per_segment_anterior` (skin + 8 midfoot/toe) | 28 | −25.15 mm | integrator failed at t = 1.0835 s | falls |
+
+**By the pre-registered table: posterior falls, anterior falls → "refuted: neither subset
+suffices".** But the result does not stop there, because the reference it was built on did not
+survive the longer horizon either: **the carried arm, the "identical geometry with all 12 spheres
+that stands (−1.3 mm)", is 744 mm down at 2 s**, and even the source-sphere feet with no skin at all
+are sagging 50 mm. The "stand" that motivated this experiment was a 1 s transient. So the question
+"where must the support be for the skin to stand?" is not answerable on a passive plant: nothing
+stands passively for 2 s, and what the arms differ in is *how fast* they go. In that ordering the
+anterior subset is the slowest-falling skin arm at 1 s (−25 mm against −578 mm for posterior), which
+is consistent with the front-support hypothesis but is a rate, not the stand/fall outcome that was
+pre-registered, and it is not claimed as a confirmation.
+
+What it does settle: (a) the 1 s numbers in `SEGMENT_CONTACT_SURFACES.md` are transients, not
+equilibria, for every arm including the reference; (b) a stance comparison of contact models needs
+a controller in the loop (as the cortical/LQR stance runs have), or a horizon long enough to see the
+passive fall in every arm, and should report time-to-fall rather than a 1 s drift.
